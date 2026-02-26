@@ -1,18 +1,38 @@
-# Unorganized Notes
+# Rough/Unorganized Notes
 
-## APIs Used
-**1. OpenAI API (Backend)**
+## Action Items
+1. Narrowing scope, writing user stories
 
-Used for natural language processing, data analysis, and generating insights from the collected data. It can help in summarizing large datasets, extracting key information, and providing recommendations based on the data. 
+2. How we make it work (system architecture)
+    - Best practices
 
-**2. Firecrawl API (Web Scraping Tool)**
+3. Security Questionnaire
 
-Used for web crawling and data collection from various sources. It can help in gathering real-time data from websites, social media platforms, and other online sources relevant to the chosen problem domain. 
+4. Research AI tools
+    - Work trees
 
-**3. RabbitMQ API (Backend)**
+5. Security considerations
+    - Best practices
 
-Used for message queuing and handling asynchronous tasks. It can help in managing the flow of data between different components of the application, ensuring that data processing and analysis are done efficiently without blocking the main application thread. 
+## Project Questions
+**1. User Privacy**: How will we handle user's privacy?
+- Only ask users for zip/area code. 
+- Does not use cookies to track users and  gather data without their consent. 
+- No user accounts.
 
-**4. Docker Engine API (Backend)**
+**2. Self-Sustainability**: How could this project stay afloat financially?
+- One-Time Payment Methods?
+    - Information deleted after payment is made. 
+    - User needs to keep paying for the service (could be problematic)
+- Subscription?
+    - Need some way to store user payment method, which needs some way to keep track of users.
 
-Used for containerization and deployment of the application. It can help in creating, managing, and deploying the application in a consistent environment, ensuring that it runs smoothly across different platforms and environments.
+**3. Target Audience**: Who are we targeting?
+- Travellers? 
+    - Need weather information to plan trips
+- Truckers?
+    - Need weather information for travelling conditions. 
+- Industry Owners?
+    - Need weather information for project construction. 
+- General Public?
+    - Everyone needs weather information for different reasons (*LARGE SCOPE!!*)
