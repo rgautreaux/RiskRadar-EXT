@@ -17,7 +17,7 @@
 
 ### **Max Compeaux** 
 - ULID: C00513380
-- Role: Backend Developer
+- Role: AI Backend Developer
 - Email: maxcompeaux@gmail.com
 
 ### **Rebecca Gautreaux**

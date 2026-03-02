@@ -1,19 +1,4 @@
 # Rough/Unorganized Notes
-
-## Action Items
-1. Narrowing scope, writing user stories
-
-2. How we make it work (system architecture)
-    - Best practices
-
-3. Security Questionnaire
-
-4. Research AI tools
-    - Work trees
-
-5. Security considerations
-    - Best practices
-
 ## Project Questions
 **1. User Privacy**: How will we handle user's privacy?
 - Only ask users for zip/area code. 
@@ -36,3 +21,17 @@
     - Need weather information for project construction. 
 - General Public?
     - Everyone needs weather information for different reasons (*LARGE SCOPE!!*)
+
+## Action Items
+1. Narrowing scope, writing user stories
+
+2. How we make it work (system architecture)
+    - Best practices
+    
+3. Security Questionnaire
+
+4. Research AI tools
+    - Work trees
+
+5. Security considerations
+    - Best practices
