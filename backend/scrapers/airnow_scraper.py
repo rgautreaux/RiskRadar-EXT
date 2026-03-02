@@ -26,15 +26,12 @@ class AirNowScraper(BaseScraper):
     alert_type = "air_quality"
 
     def fetch_raw_data(self) -> list[dict]:
-        if not settings.AIRNOW_API_KEY:
-            raise RuntimeError("AIRNOW_API_KEY not set")
-
         url = "https://www.airnowapi.org/aq/observation/zipCode/current/"
         params = {
             "format": "application/json",
             "zipCode": settings.DEFAULT_ZIP_CODE,
             "distance": 25,
-            "API_KEY": settings.AIRNOW_API_KEY,
+            "API_KEY": "B77FFDEA-971C-4B29-A506-0254F5C893D6",
         }
 
         resp = httpx.get(url, params=params, timeout=30)
