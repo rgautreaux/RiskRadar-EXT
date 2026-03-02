@@ -16,8 +16,8 @@ class Settings(BaseSettings):
 
     # LLM
     LLM_API_KEY: str = ""
-    LLM_PROVIDER: str = "openai"
-    LLM_MODEL: str = "gpt-4o-mini"
+    LLM_PROVIDER: str = "deepseek"
+    LLM_MODEL: str = "deepseek-chat"
 
     # App Config
     DEFAULT_ZIP_CODE: str = "90001"

@@ -112,10 +112,17 @@ class WebScraper(BaseScraper):
 
     def _call_llm(self, system: str, user: str) -> str:
         """Call the configured LLM provider."""
-        if settings.LLM_PROVIDER == "openai":
+        if settings.LLM_PROVIDER in ("openai", "deepseek"):
             import openai
 
-            client = openai.OpenAI(api_key=settings.LLM_API_KEY)
+            if settings.LLM_PROVIDER == "deepseek":
+                client = openai.OpenAI(
+                    api_key=settings.LLM_API_KEY,
+                    base_url="https://api.deepseek.com",
+                )
+            else:
+                client = openai.OpenAI(api_key=settings.LLM_API_KEY)
+
             resp = client.chat.completions.create(
                 model=settings.LLM_MODEL,
                 messages=[

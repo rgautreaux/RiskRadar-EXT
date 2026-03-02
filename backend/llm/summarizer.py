@@ -16,10 +16,18 @@ logger = logging.getLogger(__name__)
 class Summarizer:
     def _call_llm(self, system: str, user: str) -> tuple[str, int]:
         """Call the configured LLM provider. Returns (text, token_count)."""
-        if settings.LLM_PROVIDER == "openai":
+        if settings.LLM_PROVIDER in ("openai", "deepseek"):
             import openai
 
-            client = openai.OpenAI(api_key="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")
+            # DeepSeek uses the OpenAI-compatible API with a different base URL
+            if settings.LLM_PROVIDER == "deepseek":
+                client = openai.OpenAI(
+                    api_key="sk-190105abaaf345c38ff6e75984afb6cc",
+                    base_url="https://api.deepseek.com",
+                )
+            else:
+                client = openai.OpenAI(api_key=settings.LLM_API_KEY)
+
             resp = client.chat.completions.create(
                 model=settings.LLM_MODEL,
                 messages=[
@@ -35,7 +43,7 @@ class Summarizer:
         elif settings.LLM_PROVIDER == "anthropic":
             import anthropic
 
-            client = anthropic.Anthropic(api_key=settings.LLM_API_KEY)
+            client = anthropic.Anthropic(api_key="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")
             resp = client.messages.create(
                 model=settings.LLM_MODEL,
                 max_tokens=2000,
