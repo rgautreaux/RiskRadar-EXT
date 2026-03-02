@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     DEFAULT_LON: float = -118.2437
     SCRAPE_INTERVAL_MINUTES: int = 30
     NWS_USER_AGENT: str = "RiskRadar/1.0 (school-project)"
+    SOURCES_CONFIG_PATH: str = str(BASE_DIR / "config" / "sources.yaml")
 
     class Config:
         env_file = str(BASE_DIR.parent / ".env")

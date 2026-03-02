@@ -19,7 +19,7 @@ class Summarizer:
         if settings.LLM_PROVIDER == "openai":
             import openai
 
-            client = openai.OpenAI(api_key=settings.LLM_API_KEY)
+            client = openai.OpenAI(api_key="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")
             resp = client.chat.completions.create(
                 model=settings.LLM_MODEL,
                 messages=[
