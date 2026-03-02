@@ -50,6 +50,10 @@
 
 **Usage**: In RiskRadar, it is used to build the front-end user interface, providing an interactive and responsive dashboard for visualizing risk data, displaying analysis results, and enabling users to interact with the system's features.
 
+### 3. Node.js
+**Description**: Node.js is an open-source, cross-platform JavaScript runtime built on Chrome's V8 engine that allows JavaScript to run outside the browser, powering server-side applications, build tooling, and package management via npm.
+
+**Usage**: In RiskRadar, it is used as the runtime environment for the React front end, managing project dependencies through npm, running the development server, and executing the build toolchain that compiles and bundles the front-end application.
 ---
 
 ## Database
@@ -71,3 +75,15 @@ For full schema documentation, normalization analysis, and known issues, see [DA
 **Description**: Apache HTTP Server is an open-source, cross-platform web server maintained by the Apache Software Foundation, widely used to serve web content and proxy requests between clients and back-end applications.
 
 **Usage**: In RiskRadar, it is used (via XAMPP alongside PHP and phpMyAdmin) as the local web server during development, serving the application and providing database administration through phpMyAdmin.
+
+## IDEs
+### 1. Android Studio
+**Description**: Android Studio is Google's official integrated development environment (IDE) for Android application development, built on JetBrains' IntelliJ IDEA. It provides code editing, debugging, performance tooling, and a built-in Android Emulator for testing applications on virtual devices.
+
+**Usage**: In RiskRadar, it is used as the development environment for testing the mobile application on Android, providing the Android Emulator for local device simulation and debugging of the Expo-based React Native build.
+
+## CLIs
+### 1. Expo
+**Description**: Expo is an open-source platform and command-line interface for building universal React Native applications. It provides a managed workflow with pre-configured native modules, over-the-air updates, and streamlined build and deployment tooling for iOS and Android.
+
+**Usage**: In RiskRadar, it is used to develop, build, and deploy the cross-platform mobile application from a single React-based codebase, and to manage push notification delivery to user devices via the device tokens stored in the database.
