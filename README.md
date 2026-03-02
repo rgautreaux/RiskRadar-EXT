@@ -11,22 +11,9 @@ RiskRadar is designed to help users identify and manage potential environmental 
 
 ---
 
-### Project Implementation
-The project is implemented using a combination of technologies including:
-- **Frontend**: Python, 
-- **Backend**: MySQL,
-- 
----
-
-### Project Architecture
-- **Data Scraper** to gather real-time environmental data from various reputable sources
-- **MySQL Database** for storing user data and environmental information obtained by the Data Scraper.
-
----
-
-### Project Sources
-
-
----
-
 ### Team Members, Roles, Responsibilities, and Contributions
+
+
+---
+
+# RiskRadar Backend
