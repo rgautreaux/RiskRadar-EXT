@@ -89,6 +89,9 @@ ALTER TABLE `users`
   CHANGE COLUMN `user_id` `id` INT(11) NOT NULL;
 
 ALTER TABLE `users`
+  ADD COLUMN IF NOT EXISTS `device_token` TEXT NULL AFTER `id`;
+
+ALTER TABLE `users`
   MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT,
   MODIFY COLUMN `device_token` TEXT NULL,
   MODIFY COLUMN `display_name` TEXT NULL,
