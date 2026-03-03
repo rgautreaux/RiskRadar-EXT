@@ -13,6 +13,22 @@ RiskRadar is designed to help users identify and manage potential environmental 
 
 ### Team Members, Roles, Responsibilities, and Contributions
 
+| Qui                           | Back-end development, Jira                                                                 | (Contributions) |
+
+
+| Noah                           | Security analyst, database                                                                  | (Contributions) |
+
+
+| Celeste                           | Research analyst, front-end                                                                  | (Contributions) |
+
+
+| Ben                           | Front-end/ UI development, Jira                                                                  | (Contributions) |
+
+
+| Max                           | Back-end/Front-end                                                                | (Contributions) |
+
+
+| Rebecca                           | Database development, Wireframes | (Contributions) |
 
 ---
 
