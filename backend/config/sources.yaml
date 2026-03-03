@@ -1,0 +1,98 @@
+# -------------------------------------------------------
+# RiskRadar Source Registry
+# Add new data sources here. No Python code needed.
+#
+# api_sources:  REST API endpoints with field mappings
+# web_sources:  Arbitrary websites scraped via Firecrawl + LLM
+# -------------------------------------------------------
+
+api_sources:
+
+  # USGS Earthquake API — no API key required
+  - name: "usgs_earthquakes"
+    enabled: true
+    alert_type: "earthquake"
+    url: "https://earthquake.usgs.gov/fdsnws/event/1/query"
+    method: "GET"
+    interval_minutes: 30
+    request:
+      params:
+        format: "geojson"
+        starttime: "{today_minus_1}"
+        endtime: "{today}"
+        minmagnitude: 2.5
+        latitude: "{default_lat}"
+        longitude: "{default_lon}"
+        maxradiuskm: 500
+      headers: {}
+    auth:
+      type: "none"
+    response:
+      format: "json"
+      items_path: "features"
+    field_mapping:
+      source_id: "id"
+      title: "properties.title"
+      description: "properties.place"
+      latitude: "geometry.coordinates[1]"
+      longitude: "geometry.coordinates[0]"
+      location_name: "properties.place"
+      event_start: "properties.time"
+      event_end: null
+      raw_data: "__full_item__"
+    severity:
+      type: "threshold"
+      field: "properties.mag"
+      thresholds:
+        - gte: 6.0
+          value: "critical"
+        - gte: 4.5
+          value: "high"
+        - gte: 3.0
+          value: "moderate"
+        - default: "low"
+
+  # --- Add more API sources below ---
+  # Copy the template above and change the values.
+  #
+  # Auth types:
+  #   type: "none"                              No auth
+  #   type: "query_param"                       API key as query parameter
+  #     env_var: "MY_API_KEY"                   Env var name (set in .env)
+  #     param_name: "api_key"                   Query param name
+  #   type: "header"                            API key in header
+  #     env_var: "MY_API_KEY"
+  #     header_name: "X-Api-Key"
+  #   type: "bearer"                            Bearer token
+  #     env_var: "MY_TOKEN"
+  #
+  # Severity types:
+  #   type: "fixed"       value: "moderate"     Every alert gets same severity
+  #   type: "mapping"     field: "urgency"      String lookup
+  #     map: { Immediate: critical, Expected: high }
+  #     default: "moderate"
+  #   type: "threshold"   field: "magnitude"    Numeric comparison
+  #     thresholds:
+  #       - gte: 5.0
+  #         value: "critical"
+  #       - default: "low"
+
+web_sources: []
+
+  # --- Add web sources below ---
+  # These use Firecrawl + LLM to scrape arbitrary websites.
+  # Requires FIRECRAWL_API_KEY and LLM_API_KEY in .env.
+  #
+  # Example:
+  # - name: "cal_fire_incidents"
+  #   enabled: true
+  #   alert_type: "wildfire"
+  #   url: "https://www.fire.ca.gov/incidents"
+  #   interval_minutes: 60
+  #   extraction_hints: |
+  #     Extract active wildfire incidents. For each, find: name, location,
+  #     acreage, containment %, start date. Severity: >10000 acres = critical,
+  #     >1000 = high, >100 = moderate, else low.
+  #   firecrawl_options:
+  #     wait_for: 3000
+  #     only_main_content: true

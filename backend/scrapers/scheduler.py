@@ -6,57 +6,34 @@ from datetime import datetime, timedelta, timezone
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from config.settings import settings
-from scrapers.nws_scraper import NWSScraper
-from scrapers.airnow_scraper import AirNowScraper
-from scrapers.epa_scraper import EPAScraper
-from scrapers.firms_scraper import FIRMSScraper
+from scrapers.registry import load_all_scrapers
 
 logger = logging.getLogger(__name__)
 
 
 def start_scheduler() -> BackgroundScheduler:
     scheduler = BackgroundScheduler()
-    interval = settings.SCRAPE_INTERVAL_MINUTES
+    default_interval = settings.SCRAPE_INTERVAL_MINUTES
     now = datetime.now(timezone.utc)
 
-    # NWS — no key needed, run immediately
-    scheduler.add_job(
-        NWSScraper().run,
-        "interval",
-        minutes=interval,
-        next_run_time=now,
-        id="nws",
-    )
+    scrapers = load_all_scrapers()
 
-    # AirNow — needs API key
-    if settings.AIRNOW_API_KEY:
+    for entry in scrapers:
+        interval = entry["interval_minutes"] or default_interval
+        offset = entry["stagger_offset_minutes"]
+
         scheduler.add_job(
-            AirNowScraper().run,
+            entry["scraper"].run,
             "interval",
             minutes=interval,
-            next_run_time=now + timedelta(minutes=1),
-            id="airnow",
+            next_run_time=now + timedelta(minutes=offset),
+            id=entry["id"],
         )
-
-    # EPA — no key needed, less frequent
-    scheduler.add_job(
-        EPAScraper().run,
-        "interval",
-        minutes=60,
-        next_run_time=now + timedelta(minutes=3),
-        id="epa",
-    )
-
-    # NASA FIRMS — needs API key
-    if settings.NASA_FIRMS_MAP_KEY:
-        scheduler.add_job(
-            FIRMSScraper().run,
-            "interval",
-            minutes=interval,
-            next_run_time=now + timedelta(minutes=5),
-            id="firms",
+        logger.info(
+            f"Registered scraper '{entry['id']}': "
+            f"interval={interval}m, first_run=+{offset}m"
         )
 
     scheduler.start()
-    logger.info("Scheduler started — scrapers registered")
+    logger.info(f"Scheduler started — {len(scrapers)} scrapers registered")
     return scheduler

@@ -16,8 +16,8 @@ class Settings(BaseSettings):
 
     # LLM
     LLM_API_KEY: str = ""
-    LLM_PROVIDER: str = "openai"
-    LLM_MODEL: str = "gpt-4o-mini"
+    LLM_PROVIDER: str = "deepseek"
+    LLM_MODEL: str = "deepseek-chat"
 
     # App Config
     DEFAULT_ZIP_CODE: str = "90001"
@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     DEFAULT_LON: float = -118.2437
     SCRAPE_INTERVAL_MINUTES: int = 30
     NWS_USER_AGENT: str = "RiskRadar/1.0 (school-project)"
+    SOURCES_CONFIG_PATH: str = str(BASE_DIR / "config" / "sources.yaml")
 
     class Config:
         env_file = str(BASE_DIR.parent / ".env")
