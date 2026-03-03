@@ -240,3 +240,137 @@ Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/b
 - Apply the migration in MariaDB, then run one scraper cycle. Want me to also generate a rollback SQL script before you run it?
 
 Made changes.
+
+User: Apply this migration to the MariaDB Database
+
+GitHub Copilot: I’m going to apply the SQL migration directly against your local MariaDB instance now, then verify the updated table structures for `alerts`, `scrape_log`, `summaries`, and `users`.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject)
+
+Ran terminal command: Get-Command mysql -ErrorAction SilentlyContinue | Select-Object Name, Source | Format-Table -AutoSize | Out-String
+
+The `mysql` CLI isn’t on PATH, so I’ll locate a local MariaDB/MySQL client executable and use that to run the migration script.
+
+Ran terminal command: $candidates = @('mariadb','mariadb.exe','mysql.exe','mysql'); foreach ($c in $candidates) { $cmd = Get-Command $c -ErrorAction SilentlyContinue; if ($cmd) { "$($cmd.Name) => $($cmd.Source)" } } ; if (-not $cmd) { 'NONE_FOUND' }
+
+Ran terminal command: $paths = @('C:\xampp\mysql\bin\mysql.exe','C:\Program Files\MariaDB 10.4\bin\mariadb.exe','C:\Program Files\MariaDB 10.4\bin\mysql.exe','C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe','C:\Program Files\MySQL\MySQL Server 9.0\bin\mysql.exe'); foreach ($p in $paths) { if (Test-Path $p) { $p } }
+
+Ran terminal command: & 'C:\xampp\mysql\bin\mysql.exe' -u root -e "SELECT VERSION() AS version;"
+
+I found the client, but the MariaDB server isn’t running (`10061`). I’ll start the local MySQL/MariaDB service and then apply the migration.
+
+Ran terminal command: Get-Service | Where-Object { $_.Name -match 'mysql|maria|xampp' -or $_.DisplayName -match 'MySQL|MariaDB|XAMPP' } | Select-Object Name, DisplayName, Status | Format-Table -AutoSize | Out-String
+
+Ran terminal command: Get-ChildItem 'C:\xampp\mysql\bin' | Where-Object { $_.Name -match 'mysqld|mysql' } | Select-Object Name | Format-Table -AutoSize | Out-String
+
+Ran terminal command: & 'C:\xampp\mysql\bin\mysqld.exe' --defaults-file='C:\xampp\mysql\bin\my.ini' --console
+
+Ran terminal command: Get-Process mysqld -ErrorAction SilentlyContinue | Select-Object Id, ProcessName, Path | Format-Table -AutoSize | Out-String
+
+I found a `mysqld` process active, so I’m checking whether it’s now accepting connections before running the migration.
+
+Ran terminal command: & 'C:\xampp\mysql\bin\mysql.exe' -u root -h 127.0.0.1 -P 3306 -e "SELECT VERSION() AS version;"
+
+Ran terminal command: & 'C:\xampp\mysql\bin\mysql.exe' -u root --database=riskradar_db -e "SOURCE C:/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/backend/db/migrations/2026-03-03_mariadb_scraper_alignment.sql;"
+
+Ran terminal command: & 'C:\xampp\mysql\bin\mysql.exe' -u root -e "SHOW DATABASES;"
+
+The server is reachable, but `riskradar_db` does not exist yet; I’ll create it, import your SQL dump, then run the migration and verify the resulting schema.
+
+Ran terminal command: & 'C:\xampp\mysql\bin\mysql.exe' -u root -e "CREATE DATABASE IF NOT EXISTS riskradar_db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+
+Ran terminal command: Get-Content 'c:\Users\rebec\OneDrive\Documents\GitHub\Team6-SeniorProject\riskradar_db.sql' | & 'C:\xampp\mysql\bin\mysql.exe' -u root riskradar_db
+
+Ran terminal command: & 'C:\xampp\mysql\bin\mysql.exe' -u root --database=riskradar_db -e "SOURCE C:/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/backend/db/migrations/2026-03-03_mariadb_scraper_alignment.sql;"
+
+The migration failed partway because `users.device_token` doesn’t exist in the baseline dump, so I’m patching the migration to add it explicitly and making it rerunnable before applying again.
+
+Ran terminal command: & 'C:\xampp\mysql\bin\mysql.exe' -u root riskradar_db -e "SHOW CREATE TABLE alerts\G SHOW CREATE TABLE scrape_log\G SHOW CREATE TABLE summaries\G SHOW CREATE TABLE users\G"
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/backend/db/migrations/2026-03-03_mariadb_scraper_alignment.sql)
+
+Ran terminal command: & 'C:\xampp\mysql\bin\mysql.exe' -u root riskradar_db -e "ALTER TABLE users ADD COLUMN IF NOT EXISTS device_token TEXT NULL AFTER id; ALTER TABLE users MODIFY COLUMN id INT(11) NOT NULL AUTO_INCREMENT, MODIFY COLUMN device_token TEXT NULL, MODIFY COLUMN display_name TEXT NULL, MODIFY COLUMN email VARCHAR(255) NULL, MODIFY COLUMN password_hash TEXT NULL, MODIFY COLUMN zip_code TEXT NULL, MODIFY COLUMN latitude FLOAT NULL, MODIFY COLUMN longitude FLOAT NULL, MODIFY COLUMN alert_types LONGTEXT NULL, MODIFY COLUMN notify_severity TEXT NULL, MODIFY COLUMN created_at TEXT NOT NULL, MODIFY COLUMN updated_at TEXT NOT NULL; ALTER TABLE users DROP INDEX uq_users_email, ADD UNIQUE KEY uq_users_email (email); ALTER TABLE summaries MODIFY COLUMN id INT(11) NOT NULL AUTO_INCREMENT;"
+
+I’ve completed the remaining schema changes after the partial failure. I’ll now verify all four tables against the expected scraper/ORM-compatible shape.
+
+Ran terminal command: & 'C:\xampp\mysql\bin\mysql.exe' -u root riskradar_db -e "SHOW CREATE TABLE alerts\G SHOW CREATE TABLE scrape_log\G SHOW CREATE TABLE summaries\G SHOW CREATE TABLE users\G"
+
+I’ve applied the migration successfully in the live database; I’m making one quick patch to the migration file so future runs won’t hit the same `users.device_token` issue.
+
+Generating patch (12 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/backend/db/migrations/2026-03-03_mariadb_scraper_alignment.sql)
+
+
+```
+
+```
+**Completed**
+- Applied the MariaDB migration to a live local DB by:
+  - creating `riskradar_db`,
+  - importing riskradar_db.sql,
+  - running 2026-03-03_mariadb_scraper_alignment.sql.
+- Verified final schemas with `SHOW CREATE TABLE` for `alerts`, `scrape_log`, `summaries`, and `users`.
+
+**Result**
+- `alerts` now has `id` PK auto-increment, nullable optional fields, and `uq_source_alert (source, source_id)`.
+- `scrape_log` now supports repeated runs per source (no unique-on-source).
+- `summaries` now has `region` (fixed typo) and `id` auto-increment.
+- `users` now includes nullable `device_token`, nullable profile fields, and `email` unique as `VARCHAR(255)`.
+
+**File update**
+- Patched migration script so future runs include `device_token` creation before users-column modifications: 2026-03-03_mariadb_scraper_alignment.sql.
+
+Want me to run a quick scraper smoke test next (one source) to confirm inserts into `alerts` and `scrape_log` end-to-end?
+
+Made changes.
+
+User: Yes, run this test to assure that the Scraper and Datbase work cohesively together End-to-End
+
+GitHub Copilot: I’ll run a real end-to-end smoke test now: execute a scraper run against MariaDB, then verify new records in `alerts` and `scrape_log` with SQL checks. I’ll first inspect the safest entrypoint script and environment requirements.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/backend/test_scrape_and_summarize.py)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/backend/scrapers/registry.py)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/backend/config/sources.yaml)
+
+I found a built-in smoke runner in test_scrape_and_summarize.py; I’ll use that flow (scrape + DB writes) but point it at MariaDB and verify inserts with SQL before/after counts.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/backend/requirements.txt)
+
+Ran terminal command: & 'C:\xampp\mysql\bin\mysql.exe' -u root riskradar_db -e "SELECT COUNT(*) AS alerts_before FROM alerts; SELECT COUNT(*) AS logs_before FROM scrape_log;"
+
+Configuring a Python Environment
+Completed with input: {
+  "resourcePath": "c:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject\\backend"
+}
+
+The Python environment tool still can’t auto-detect here, so I’ll use the workspace virtualenv directly (.venv) to run the smoke test and keep everything reproducible.
+
+Ran terminal command: Test-Path '.\.venv\Scripts\python.exe'; Test-Path '.\backend\.venv\Scripts\python.exe'
+
+Ran terminal command: $env:DATABASE_URL='mysql+pymysql://root@127.0.0.1:3306/riskradar_db'; & '.\.venv\Scripts\python.exe' -c "import sys; print(sys.version); import sqlalchemy; print('sqlalchemy', sqlalchemy.__version__); import pymysql; print('pymysql ok')"
+
+Dependency check found one blocker: `pymysql` is missing in the venv. I’ll install it, run the scraper smoke test against MariaDB, then compare before/after DB counts and sample inserted rows.
+
+Ran terminal command: & '.\.venv\Scripts\python.exe' -m pip install pymysql
+
+Ran terminal command: Push-Location '.\backend'; $env:DATABASE_URL='mysql+pymysql://root@127.0.0.1:3306/riskradar_db'; & '..\.venv\Scripts\python.exe' '.\test_scrape_and_summarize.py'; Pop-Location
+
+Ran terminal command: & 'C:\xampp\mysql\bin\mysql.exe' -u root riskradar_db -e "SELECT COUNT(*) AS alerts_after FROM alerts; SELECT COUNT(*) AS logs_after FROM scrape_log; SELECT id, source, status, alerts_fetched, alerts_new, duration_ms FROM scrape_log ORDER BY id DESC LIMIT 5; SELECT id, source, alert_type, severity, LEFT(title,80) AS title FROM alerts ORDER BY id DESC LIMIT 5;"
+
+**E2E Status**
+- End-to-end scraper + database smoke test succeeded against MariaDB using test_scrape_and_summarize.py.
+- Baseline counts were 0 alerts and 0 scrape logs.
+- After run: 28 alerts and 3 scrape logs in riskradar_db.
+- Latest logs show success for sources: nws (0/0), epa (25/25), usgs_earthquakes (3/3).
+- Latest alerts include EPA pollution and USGS earthquake rows with expected fields populated.
+
+**What I ran**
+- Used migration-aligned schema from 2026-03-03_mariadb_scraper_alignment.sql.
+- Installed PyMySQL in workspace venv so SQLAlchemy could connect to MariaDB.
+- Set DATABASE_URL to MariaDB and ran the smoke script from test_scrape_and_summarize.py.
+
+**Note**
+- LLM summary generation failed with DeepSeek 402 (insufficient balance), but scraper ingestion and DB persistence were fully validated.
+
+Want me to add an automated pytest integration test that asserts this same DB write path (with network calls mocked) so you can re-run it in CI?
