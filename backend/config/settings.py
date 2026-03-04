@@ -7,6 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 class Settings(BaseSettings):
     # Database
+    DATABASE_URL: str = ""
     DB_PATH: str = str(BASE_DIR / "riskradar.db")
 
     # API Keys
