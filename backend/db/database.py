@@ -3,9 +3,13 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 
 from config.settings import settings
 
-DATABASE_URL = f"sqlite:///{settings.DB_PATH}"
+database_url = str(settings.DATABASE_URL).strip()
+DATABASE_URL = database_url or f"sqlite:///{str(settings.DB_PATH)}"
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+if DATABASE_URL.startswith("sqlite"):
+    engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+else:
+    engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
 
