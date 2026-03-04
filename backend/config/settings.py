@@ -16,8 +16,8 @@ class Settings(BaseSettings):
 
     # LLM
     LLM_API_KEY: str = ""
-    LLM_PROVIDER: str = "deepseek"
-    LLM_MODEL: str = "deepseek-chat"
+    LLM_PROVIDER: str = "openai"
+    LLM_MODEL: str = "gpt-5-mini"
 
     # App Config
     DEFAULT_ZIP_CODE: str = "90001"
@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     SOURCES_CONFIG_PATH: str = str(BASE_DIR / "config" / "sources.yaml")
 
     class Config:
-        env_file = str(BASE_DIR.parent / ".env")
+        env_file = str(BASE_DIR / ".env")
         env_file_encoding = "utf-8"
 
 

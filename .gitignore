@@ -1,0 +1,6 @@
+# Environment variables
+backend/.env
+
+# Temporary files
+backend/__pycache__/
+backend/riskradar.db
