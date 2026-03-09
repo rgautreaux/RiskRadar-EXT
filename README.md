@@ -98,3 +98,8 @@ See the full staged implementation plan here: [Project Stages](./docs/STAGES.md)
 | 2 | Environmental Risk Assessment & Alert Prioritization Extensions | Not Started | 2026-03-09 | Planned: personal risk scoring engine and smart alert ranking. |
 | 3 | Data Visualization & UX Extensions | Not Started | 2026-03-09 | Planned: interactive Plotly-based risk map for web/mobile surfaces. |
 | 4 | Predictive Analytics & AI-Driven Insights Extensions | Not Started | 2026-03-09 | Planned: 24-48h forecasting and RiskRadar assistant integration. |
+
+**Status Legend**
+- **Not Started**: Requirements are defined, but implementation has not begun.
+- **In Progress**: Implementation is actively underway and may be partially complete.
+- **Completed**: Implementation and verification are complete, with docs/tests updated as needed.

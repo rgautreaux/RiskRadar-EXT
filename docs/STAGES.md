@@ -8,6 +8,11 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 - Each stage includes implementation tasks, deliverables, and verification expectations.
 - Stage progress markers should be updated as work is completed.
 
+**Status Legend**
+- **Not Started**: Requirements are defined, but implementation has not begun.
+- **In Progress**: Implementation is actively underway and may be partially complete.
+- **Completed**: Implementation and verification are complete, with docs/tests updated as needed.
+
 ---
 
 ## Stage 1: Web-App Extension
@@ -57,7 +62,7 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 - Basic usability verification evidence (screenshots and/or walkthrough)
 
 ### Progress So Far
-🔄 **IN PROGRESS / TO BE UPDATED** - Update this section with concrete status once Stage 1 implementation and verification are complete.
+🔄 **In Progress** - Building a unique PHP web interface connected to existing backend APIs.
 
 ---
 
@@ -130,7 +135,7 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 - Documentation of model logic and tradeoffs
 
 ### Progress So Far
-🔄 **IN PROGRESS / TO BE UPDATED** - Replace with completion notes and measured validation results for both Step 1 and Step 2.
+⏳ **Not Started** - Planned: personal risk scoring engine and smart alert ranking.
 
 ---
 
@@ -178,7 +183,7 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 - Documentation of visualization design choices
 
 ### Progress So Far
-🔄 **IN PROGRESS / TO BE UPDATED** - Add tested behaviors, screenshots, and known limitations once implementation is complete.
+⏳ **Not Started** - Planned: interactive Plotly-based risk map for web/mobile surfaces.
 
 ---
 
@@ -250,7 +255,7 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 - Updated documentation for usage and interpretation
 
 ### Progress So Far
-🔄 **IN PROGRESS / TO BE UPDATED** - Replace with concrete implementation and validation notes after Stage 4 completion.
+⏳ **Not Started** - Planned: 24-48h forecasting and RiskRadar assistant integration.
 
 ---
 
@@ -265,7 +270,7 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 ## Suggested Ongoing Reporting Format
 
 For each stage, update:
-- **Progress So Far** status marker (`NOT STARTED`, `IN PROGRESS`, `COMPLETED`)
+- **Progress So Far** status marker (`Not Started`, `In Progress`, `Completed`)
 - Key implementation outcomes
 - Validation evidence (tests, screenshots, demo notes)
 - Open risks and next actions

@@ -657,3 +657,140 @@ If you want, I can also tailor the tone to sound more first-person (“I used…
 Made changes.
 
 ---
+
+## STAGES.md Construction Session
+
+This session involved using GitHub Copilot to construct a detailed STAGES.md file that outlines the implementation plan for the RiskRadar web-app extension and its subsequent features. The goal was to create a clear, organized roadmap that aligns with the project requirements and provides actionable steps for each stage of development.
+
+**Rebecca:** Update STAGES.md to include all the necessary project steps to complete the stages outlined in INSTRUCTIONS.md
+
+Format STAGES.md to match the formatting of EXAMPLE_STAGES.md to ensure that the contents of STAGES are well-organized, easy to follow, and sound professional
+
+**GitHub Copilot:** I’m going to review the current STAGES.md and align it to the stage structure in INSTRUCTIONS.md, then rewrite it in the same professional layout style used by EXAMPLE_STAGES.md.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/EXAMPLE_STAGES.md#1-1), lines 1 to 260
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/INSTRUCTIONS.md)
+
+I’ve gathered the structure from both files and will now rewrite STAGES.md end-to-end so it mirrors the style of EXAMPLE_STAGES.md while mapping directly to all four stages in INSTRUCTIONS.md.
+
+Generating patch (362 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
+
+
+```
+
+```
+Updated STAGES.md to fully align with the extension roadmap in INSTRUCTIONS.md, and reformatted it to match the professional structure used by EXAMPLE_STAGES.md.
+
+**What Changed**
+- Replaced the old climate-template content with a complete 4-stage RiskRadar plan (Web App, Risk Scoring/Prioritization, Interactive Risk Map, Predictive + AI Assistant).
+- Standardized formatting with consistent sections: Objective, Tasks, Verification Checklist, Deliverables, and Progress So Far.
+- Expanded each stage into actionable implementation steps, including integration, validation, security/privacy, and documentation expectations.
+- Added a final completion checklist and a reusable reporting format so stage updates stay organized and consistent over time.
+
+If you want, I can also update README.md to link this new stage plan and add a short “current stage status” table for quick tracking.
+
+Made changes.
+
+**Rebecca:** Yes.  Replace '''!!!''' in README with a link to STAGES.md and add a "current stage status" table for tracking
+
+**GitHub Copilot:** I’ll edit README.md to replace the placeholder with a clickable stages link and add a concise stage-status tracking table in that same section.
+
+Generating patch (17 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+
+
+```
+
+```
+Updated README.md as requested.
+
+- Replaced `!!!` with a link to STAGES.md
+- Added a **Current Stage Status** tracking table directly under the stages section with:
+  - Stage number and title
+  - Status
+  - Last updated date
+  - Short notes for each stage
+
+Want me to also add a small legend (e.g., `Not Started`, `In Progress`, `Completed`) and keep the status wording standardized across the repo?
+
+Made changes.
+
+**Rebecca:** Yes, add this legend so that statuses are easy to track across this repository.
+
+**GitHub Copilot:** I’ll add a short standardized status legend right below the stage table in README.md so tracking terms are consistent across the repo.
+
+Generating patch (12 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+
+
+```
+
+```
+Added the legend to README.md directly under the stage status table.
+
+- Standardized definitions now included for `Not Started`, `In Progress`, and `Completed`.
+- This makes status usage consistent and easier to track across project docs.
+
+If you want, I can also mirror this exact legend in STAGES.md so both documents stay synchronized.
+
+Made changes.
+
+**Rebecca:** Yes, Syncronize these documents
+
+**GitHub Copilot:** I’ll synchronize README.md and STAGES.md by adding the same status legend language to STAGES.md and ensuring both documents use matching status terms.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md#80-80), lines 80 to 106
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
+
+I found the mismatch: README.md uses `Not Started/In Progress/Completed`, while STAGES.md still uses mixed uppercase placeholders; I’m updating STAGES.md to use the exact same status vocabulary and values as the README table.
+
+Generating patch (37 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
+
+
+```
+
+```
+Synchronized successfully.
+
+- Added the same `Status Legend` definitions from README.md into STAGES.md.
+- Normalized all stage progress markers in STAGES.md to exactly: `Not Started`, `In Progress`, `Completed`.
+- Aligned per-stage current statuses in STAGES.md with the tracking table in README.md:
+  - Stage 1: `In Progress`
+  - Stages 2–4: `Not Started`
+
+If you want, I can do one more pass to add a single “source of truth” note in both files (e.g., “update status in README and mirror in STAGES”).
+
+Made changes.
+
+---
+
+## Follow-Up Reflection
+
+This follow-up reflection entry was added to REFLECTION.md to document the process of synchronizing README.md and STAGES.md after the initial construction of the STAGES.md file. It includes the same four components as the previous reflection, with a focus on the synchronization process and its importance for project tracking.
+
+**Rebecca:** Replace the '''[...]''' placeholder in REFLECTION.md with a reflection entry summarizing the '''## STAGES.md Construction Session''' entry of TRANSCRIPT.md
+
+After doing so, write a follow-up reflection regarding this request to continue consistient documenation of all AI Tool usage
+
+**GitHub Copilot:** I’m going to replace the placeholder in REFLECTION.md with a full reflection for the STAGES session, then add a second follow-up reflection for this current request so your AI-usage log stays continuous.
+
+I’ve confirmed the placeholder location and I’m now inserting two complete entries there: one for the STAGES construction session and one follow-up reflection for this exact request.
+
+Edited
+REFLECTION.md+46-1
+Updated REFLECTION.md by replacing the [...] placeholder with:
+
+a full reflection for the STAGES.md Construction Session
+a second follow-up reflection for this current request to maintain consistent AI-tool documentation
+Both new entries include all required four components:
+
+tool used
+components that benefited
+review/verification method
+what worked immediately vs needed iteration vs manual implementation
+If you want, I can also rename ## Reflection Update to a more specific title (for example, “Reflection Generation Test Session”) so every section title matches transcript session names exactly.
+
+---
+
