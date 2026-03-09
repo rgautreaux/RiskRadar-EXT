@@ -60,7 +60,7 @@ The goal of this project is to create a web-app extension of our RiskRadar mobil
 
 ---
 
-# CMPS 490 Senior Project Contents and Progress
+# CMPS 490 Senior Project Contents
 
 ## Project Content
 
@@ -83,4 +83,18 @@ As an extension of our RiskRadar mobile app, this respository contains code from
 
 ## Project Progress
 
+### Certification of Original Work
+The required Certification of Original Work is included in the [CERTIFICATION.md](./CERTIFICATION.md) file.
 
+### Stages and Steps
+
+See the full staged implementation plan here: [Project Stages](./docs/STAGES.md)
+
+### Current Stage Status
+
+| Stage | Title | Status | Last Updated | Notes |
+|---|---|---|---|---|
+| 1 | Web-App Extension | In Progress | 2026-03-09 | Building unique PHP web interface connected to existing backend APIs. |
+| 2 | Environmental Risk Assessment & Alert Prioritization Extensions | Not Started | 2026-03-09 | Planned: personal risk scoring engine and smart alert ranking. |
+| 3 | Data Visualization & UX Extensions | Not Started | 2026-03-09 | Planned: interactive Plotly-based risk map for web/mobile surfaces. |
+| 4 | Predictive Analytics & AI-Driven Insights Extensions | Not Started | 2026-03-09 | Planned: 24-48h forecasting and RiskRadar assistant integration. |
