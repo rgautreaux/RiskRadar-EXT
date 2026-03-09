@@ -1,1 +1,3 @@
-Front-end code
+# Frontend Code
+
+This directory contains frontend code.
