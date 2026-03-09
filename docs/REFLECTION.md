@@ -48,7 +48,7 @@ This session used **GitHub Copilot** to see how effective it would be in summari
 
 ### (4) What Worked, What Needed Iteration, What Required Manual Implementation
 - **Worked immediately:** Cohesive summarization of AI tool usage session from Transcript and reflection on the impacts this tool use for the project.
-- **Required multiple iterations / improvement:** Reviwewing the output for accuracy and completeness, and making edits to ensure it met the criteria outlined in the course syllabus for what is expected from a transcript reflection.
+- **Required multiple iterations / improvement:** Reviewing the output for accuracy and completeness and making edits to ensure it met the criteria outlined in the course syllabus for a transcript reflection.
 - **Required manual implementation:** Small Editing adjustments to reflect the required criteria and ensure the reflection was comprehensive and well-structured.
 
 

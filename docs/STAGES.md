@@ -224,7 +224,7 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 #### Tasks:
 1. **Define assistant scope and guardrails**
    - Focus on interpreting environmental conditions, alerts, and travel risk context.
-   - Restrict to informational guidance (non-medical, non-emergency replacement).
+   - Restrict to informational guidance (non-medical and not a replacement for emergency services).
    - Define safe fallback messaging when confidence is low.
 
 2. **Implement assistant backend integration**
@@ -255,7 +255,7 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 - Updated documentation for usage and interpretation
 
 ### Progress So Far
-⏳ **Not Started** - Planned: 24-48h forecasting and RiskRadar assistant integration.
+⏳ **Not Started** - Planned: 24-48 hour forecasting and RiskRadar AI Assistant integration.
 
 ---
 

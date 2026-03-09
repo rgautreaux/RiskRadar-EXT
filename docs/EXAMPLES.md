@@ -188,7 +188,7 @@ User actions expected in the map interface:
 - Click point/region markers for local risk detail
 - View real-time severity coloring and hover metadata
 
-### Example J: 24-48h Forecast and AI Assistant (Stage 4)
+### Example J: 24-48 Hour Forecast and AI Assistant (Stage 4)
 
 Planned user outcomes:
 

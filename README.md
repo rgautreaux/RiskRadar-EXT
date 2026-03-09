@@ -18,9 +18,9 @@ Our goal for the CMPS 357 final project is to build a unique web-app extension w
 **Web-App Extension of our RiskRadar Mobile App**
 Our initial idea was to create a web-app extension of our RiskRadar mobile app. This is because we thought a web extension would be a more straightforward extension of our mobile app, and would allow us to leverage the same backend we constructed and utilize the same data sources. 
 
-However, our professor suggested we go the Web Extension route *only* if we do **NOT** pivot to a Web-app in CMPS490. If we *do* create a web app extension, then it was reccomended that we implement an entirely new and unique frontend than that of the Mobile App so that we do not have to worry about relying on our CMPS490 frontend and have to wait for them to complete their frontend work before we can start our work for this project.  This ensures a level of independence between the two projects and allows us to work on our project without having to worry about the progress of the CMPS490 frontend.
+However, our professor suggested we go the web extension route *only* if we do **NOT** pivot to a web app in CMPS490. If we *do* create a web app extension, then it was recommended that we implement an entirely new and unique frontend from the mobile app so that we do not have to rely on the CMPS490 frontend or wait for that frontend work to be completed before starting this project. This ensures a level of independence between the two projects and allows us to progress without depending on CMPS490 frontend timelines.
 
-However, in case issues arise and we must pivot in CMPS490, we are discussing further extensions we can implement to further differenciate the two projects and ensure that we are not relying too heavily on the CMPS490 project for our work for this one.
+However, if issues arise and we must pivot in CMPS490, we are discussing additional extensions we can implement to further differentiate the two projects and ensure that we are not relying too heavily on CMPS490 for this project.
 
 ## Further Extensions (if we pivot to Web-App in CMPS490):
 
@@ -69,9 +69,9 @@ The goal of this project is to transform RiskRadar into a broader full-stack sys
 [RiskRadar Mobile App Repository](https://github.com/QuiHu/Team6Project.git)
 [RiskRadar README](./CMPS490_README.md)
 
-**RiskRadar** is a mobile app designed to help users identify and manage potential environmental conditions and risks they may encounter whilst traveling or their day-to-day activities. The app provides features such as real-time alerts, climate data statistics, and user-friendly 5-Minute Summaries.
+**RiskRadar** is a mobile app designed to help users identify and manage potential environmental conditions and risks they may encounter while traveling or in day-to-day activities. The app provides features such as real-time alerts, climate data statistics, and user-friendly 5-minute summaries.
 
-As an extension of our RiskRadar mobile app, this respository contains code from this mobile app to provide a foundation for our web-app extension.
+As an extension of our RiskRadar mobile app, this repository contains code from the mobile app to provide a foundation for our web-app extension.
 
 ### RiskRadar Web-App Extension
 
@@ -97,7 +97,7 @@ See the full staged implementation plan here: [Project Stages](./docs/STAGES.md)
 | 1 | Web-App Extension | In Progress | 2026-03-09 | Building unique PHP web interface connected to existing backend APIs. |
 | 2 | Environmental Risk Assessment and Alert Prioritization Extensions | Not Started | 2026-03-09 | Planned: personal risk scoring engine and smart alert ranking. |
 | 3 | Data Visualization and User Experience Extensions | Not Started | 2026-03-09 | Planned: interactive Plotly-based risk map for web/mobile surfaces. |
-| 4 | Predictive Analytics and AI-Driven Insights Extensions | Not Started | 2026-03-09 | Planned: 24-48h forecasting and RiskRadar AI Assistant integration. |
+| 4 | Predictive Analytics and AI-Driven Insights Extensions | Not Started | 2026-03-09 | Planned: 24-48 hour forecasting and RiskRadar AI Assistant integration. |
 
 **Status Legend**
 - **Not Started**: Requirements are defined, but implementation has not begun.
