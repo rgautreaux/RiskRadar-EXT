@@ -10,6 +10,43 @@ Our goal for the CMPS 357 Final Project is to build a unique web-app extension o
 
 ---
 
+# CMPS 357 Extension Project Proposal
+
+
+## Initial Plan:
+
+**Web-App Extension of our RiskRadar Mobile App**
+Our initial idea was to create a web-app extension of our RiskRadar mobile app. This is because we thought a web extension would be a more straightforward extension of our mobile app, and would allow us to leverage the same backend we constructed and utilize the same data sources. 
+
+However, our professor suggested we go the Web Extension route *only* if we do **NOT** pivot to a Web-app in CMPS490. If we *do* create a web app extension, then it was reccomended that we implement an entirely new and unique frontend than that of the Mobile App so that we do not have to worry about relying on our CMPS490 frontend and have to wait for them to complete their frontend work before we can start our work for this project.  This ensures a level of independence between the two projects and allows us to work on our project without having to worry about the progress of the CMPS490 frontend.
+
+However, in case issues arise and we must pivot in CMPS490, we are discussing further extensions we can implement to further differenciate the two projects and ensure that we are not relying too heavily on the CMPS490 project for our work for this one.
+
+## Further Extensions (if we pivot to Web-App in CMPS490):
+
+# Environmental Risk Assessment and Alert Prioritization Extensions
+
+**Personal Risk Scoring Engine (Best Overall Option)**: Create a personalized environmental risk score for each user based on location, health sensitivities, and environmental data
+
+**Smart Alert Prioritization System (Potential Extension of Personal Risk Scoring Engine)**:  Extend alerts into a priority ranking system by:
+- Risk Score
+- Distance from user
+- Severity
+- User sensitivity
+
+# Predictive Analytics and AI-Driven Insights Extensions
+**Predictive Environmental Risk (AI/Data Extension)**: Predict environmental risk 24–48 hours ahead by referencing the patterns from data obtained by scrapers
+
+**RiskRadar Assistant**- AI assistant or guide integrated into the application that helps users interpret environmental conditions, alerts, or travel risks
+
+
+# Data Visualization and User Experience Extensions
+**Interactive Risk Map (Great UI Extension)**- Add a map visualization to the mobile/web app , similar to PA2 as to make the data presented even more user-friendly and accessible
+
+**RiskRadar Assistant**- AI assistant or guide integrated into the application that helps users interpret environmental conditions, alerts, or travel risks
+
+---
+
 # CMPS 490 Senior Project Summary
 
 ## Project Purpose
