@@ -27,3 +27,34 @@ The session used **ChatGPT** to evaluate extension ideas for the RiskRadar proje
 - **Worked immediately:** High-level brainstorming and generation of several viable extension concepts; initial mapping to project requirements.
 - **Required multiple iterations / improvement:** Narrowing from several ideas to one best-fit extension and refining architecture/file-level scope to match the exact repository context.
 - **Required manual implementation:** Actual coding, database migration authoring/testing, endpoint integration, UI construction, and runtime verification (tests, debugging, and deployment checks) remained developer tasks.
+
+
+## Reflection Update
+
+### Session Summary
+This session used **GitHub Copilot** to see how effective it would be in summarizing the Transcript entries to create a cohesive reflection document. The tool was prompted to extract key information about the AI tool usage, project components that benefited, review/verification processes, and reflections on what worked versus what required iteration or manual implementation.
+
+### (1) Tool Used
+- **Tool name:** GitHub Copilot
+
+### (2) Components That Benefited
+- **Session Summarization:** Was able to read through the Transcript entries and extract relevant information to create a structured reflection document.
+- **Information Extraction:** Identified key points about the AI tool usage, project components that benefited, review/verification processes, and reflections on what worked versus what required iteration or manual implementation.
+- **Criteria Meeting:** Constructed its Reflection entry based on the criteria outlined in the course syllabus for what is expected from a transcript reflection
+  
+### (3) How Output Was Reviewed/Verified
+- The response was reviewed for accuracy and completeness by the students working on the project.
+- Suggested files and modules were checked for consistency to inform the formatting and contents.
+
+### (4) What Worked, What Needed Iteration, What Required Manual Implementation
+- **Worked immediately:** Cohesive summarization of AI tool usage session from Transcript and reflection on the impacts this tool use for the project.
+- **Required multiple iterations / improvement:** Reviwewing the output for accuracy and completeness, and making edits to ensure it met the criteria outlined in the course syllabus for what is expected from a transcript reflection.
+- **Required manual implementation:** Small Editing adjustments to reflect the required criteria and ensure the reflection was comprehensive and well-structured.
+
+
+---
+
+
+
+
+
