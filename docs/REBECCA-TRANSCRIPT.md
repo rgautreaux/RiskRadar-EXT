@@ -1151,4 +1151,212 @@ Included retention feature work, scheduler integration, migration/index work, te
 
 ---
 
-# 
+# GitHub Copilot Session 5 - TODO Tracker Creation
+
+User: Create a TODO.md file in /docs to track the remaining objectives and steps to take to reach the goals of this project
+
+GitHub Copilot: Creating a project-focused `TODO.md` in docs with prioritized remaining objectives and actionable next steps based on your current architecture, deliverables, and MVP scope. I’ll first confirm the file doesn’t already exist, then add it.
+
+Searched for files matching `**/docs/TODO.md`, no matches
+
+Created [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/TODO.md)
+
+Created a new project tracker at TODO.md.
+
+It includes:
+- Prioritized remaining objectives from MVP lock through final presentation
+- Actionable checkbox steps across scraping, DB, API, AI, security, frontend, testing, and docs
+- A milestone checklist plus suggested owner mapping by role
+- A weekly progress log template for ongoing tracking
+
+Want me to also add target dates and assign each item to specific team members from your authors list?
+
+Made changes.
+
+User: Yes. When constructing the target dates keep in mind that we hope to have most of our work complete by April 13th.
+
+GitHub Copilot: I’ll update TODO.md now by adding owner assignments and target dates that back-load buffer time so most work is done by April 13, with final polish tasks after that.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/TODO.md)
+
+I’ve gathered the current checklist and will now embed a dated execution timeline plus named owners so the core build is targeted to finish by April 13, with only final presentation polish afterward.
+
+Generating patch (124 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/TODO.md)
+
+
+```
+
+```
+Updated TODO.md with a dated execution plan and specific owner assignments.
+
+- Added a team assignment key mapped to each member and role.
+- Added a phased timeline from Mar 9 to Apr 20, explicitly targeting most implementation complete by Apr 13.
+- Added target completion dates and owners to each major objective section.
+- Replaced the milestone checklist with dated checkpoints (Mar 15, Mar 22, Mar 29, Apr 5, Apr 10, Apr 13, Apr 20).
+
+If you want, I can next convert this into a week-by-week sprint board format (Week 1–Week 6) in the same file for easier standup tracking.
+
+Made changes.
+
+User: YES. Convert this into a week-by-week SCRUM Sprint board format for easy tracking
+
+GitHub Copilot: I’m converting TODO.md into a sprint-by-sprint SCRUM board with weekly goals, owners, and checkable task columns so your team can run standups directly from this file.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/TODO.md)
+
+I have enough context and I’m now restructuring the file into 6 weekly sprints with per-sprint goals, owners, backlog items, and dedicated `To Do / In Progress / Done` sections for quick standup updates.
+
+Generating patch (352 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/TODO.md)
+
+
+```
+
+```
+Converted the tracker into a weekly SCRUM sprint board in TODO.md.
+
+- Reorganized into 6 weekly sprints with dates, sprint goals, and owners.
+- Added `To Do / In Progress / Done` sections under each sprint for standup-friendly updates.
+- Preserved your April 13 target by making Sprint 5 the implementation/docs freeze sprint.
+- Kept Sprint 6 as presentation polish only (Apr 14–Apr 20).
+- Added a reusable weekly standup template at the bottom.
+
+Want me to also add a simple status legend (`🔴 Blocked / 🟡 In Progress / 🟢 Done`) and priority tags (`P0/P1/P2`) to each task line?
+
+Made changes.
+
+User: Yes, apply this status legend to aid in tracking goal completion
+
+GitHub Copilot: I’ll apply the legend directly in the sprint board by adding a `Status Legend` section and updating task formatting so each line carries a visible status icon for quick weekly tracking.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/TODO.md)
+
+I’m now applying the legend throughout the board so status is visible at a glance in milestones, sprint tasks, and the standup template.
+
+Generating patch (193 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/TODO.md)
+
+
+```
+
+```
+Applied the status legend directly in TODO.md for easier completion tracking.
+
+- Added a clear `Status Legend` section (`🔴 Blocked`, `🟡 In Progress/Planned`, `🟢 Done`).
+- Updated all milestone checklist lines to include status icons.
+- Updated sprint task entries to default to `🟡` and added guided placeholders in `In Progress` and `Done`.
+- Updated the weekly standup template to use status icons for completed, in-progress, blockers, and next items.
+
+If you want, I can do one more cleanup pass to auto-convert any task marked `[x]` to `🟢` so the format stays consistent as you update it.
+
+Made changes.
+
+User: Yes, mark any tasks that have already been accomplished
+
+GitHub Copilot: I’ll quickly verify what is already demonstrably complete in the repo (endpoints, scrapers, migrations, tests, docs) and then update TODO.md by checking those items off with `🟢`.
+
+Search complete: Audit completed TODO items
+
+Searched for files matching `**/TODO.md`, 1 match
+
+Searched for files matching `**/README*`, 1 match
+
+Searched for files matching `**/sources.yaml`, 1 match
+
+Searched for files matching `**/*migration*`, no matches
+
+Searched for files matching `**/docs/**`, 12 matches
+
+Searched for files matching `**/backend/**/*.{py,md,yml,yaml,sql}`, 47 matches
+
+Searched for files matching `**/tests/**/*`, 20 matches
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/TODO.md)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/backend/api/alerts.py)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/backend/api/summaries.py)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/backend/api/users.py)
+
+I couldn’t get a useful aggregated search response, so I’m checking key files directly to avoid marking anything incorrectly.
+
+Searched for files matching `**/backend/api/*.py`, 5 matches
+
+Searched for files matching `**/backend/tests/test_api_*.py`, 3 matches
+
+Searched for files matching `**/backend/db/migrations/*.sql`, 2 matches
+
+Searched for files matching `**/backend/config/sources.yaml`, 1 match
+
+Searched for files matching `**/docs/{ARCHITECTURE.md,DATA_MODEL.md,PROJECT_DESCRIPTION.md}`, 3 matches
+
+Next I’m validating a few specific implementation signals (registered routes, scheduler, prompt file, scraper tests) so I only mark tasks that are objectively complete.
+
+Searched for regex `include_router|APIRouter|@router\.(get|post|put|delete)` (`**/backend/api/*.py`), 19 results
+
+Searched for files matching `**/backend/scrapers/*.py`, 10 matches
+
+Searched for files matching `**/backend/llm/prompts.py`, 1 match
+
+Searched for files matching `**/backend/scrapers/scheduler.py`, 1 match
+
+Searched for files matching `**/backend/tests/test_scrapers.py`, 1 match
+
+I found a few items with strong evidence in the repo, so I’m marking only those as completed and leaving anything ambiguous untouched to keep tracking accurate.
+
+Generating patch (25 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/TODO.md)
+
+
+```
+
+```
+Updated TODO.md and marked only tasks with clear repo evidence as completed.
+
+- Marked done in Sprint 2:
+  - Added repeatable DB setup/verification checklist (supported by README.md).
+- Marked done in Sprint 3:
+  - Required Alerts/Summaries/Users endpoints exist and are wired (see alerts.py, summaries.py, users.py, router.py).
+  - API schemas/tests are present (see schemas and test_api_alerts.py, test_api_summaries.py, test_api_users.py).
+  - Pagination/filter defaults are implemented in alerts.py.
+
+Want me to run the backend test suite next and then mark any additional QA items as completed based on actual test results?
+
+Made changes.
+
+User: Yes, run the test suite to confirm it runs cleanly and that TODO.md is up to date
+
+GitHub Copilot: I’m going to run the full backend pytest suite in your project environment, then I’ll update TODO.md to reflect the actual current test status.
+
+Configuring a Python Environment
+Completed with input: {
+  "resourcePath": "c:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject"
+}
+
+I’ll execute `pytest` from the backend folder using the configured interpreter so we can confirm whether the suite is currently clean.
+
+Ran terminal command: Set-Location backend; c:/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/.venv/Scripts/python.exe -m pytest -q
+
+The suite passed cleanly (`78 passed`), so I’m updating the QA sprint checklist item to completed with today’s verification result.
+
+Searched for regex `Sprint 5|Keep backend tests green` (`**/docs/TODO.md`), 2 results
+
+Generating patch (6 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/TODO.md)
+
+
+```
+
+```
+Test suite runs cleanly.
+
+- Ran from backend with configured venv Python: `python -m pytest -q`
+- Result: `78 passed in 0.94s` (no failures)
+
+Updated TODO.md to keep it current:
+- Marked Sprint 5 task as complete: “Keep backend tests green in tests (verified: 78 passed on Mar 9, 2026)”
+
+If you want, I can also mark the Apr 10 dry-run milestone as `🟡 In Progress` and add a short “latest verification” note block at the top for quick status checks.
+
+Made changes.
+
+---
+
+# GitHub Copilot Session 6 - 

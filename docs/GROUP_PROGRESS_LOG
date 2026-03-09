@@ -261,3 +261,98 @@ Copy/paste this block for each new work session:
 	- `RETENTION_ENABLED=true`
 	- `RETENTION_DRY_RUN=true`
 - Review `cleanup_runs`, then perform backup/restore validation before enabling real deletes.
+
+
+## Rebecca Gautreaux Log — 2026-03-09
+
+### Session Focus
+- Create a centralized TODO tracker for remaining project objectives.
+- Convert objectives into a week-by-week SCRUM structure with clear ownership and dates.
+- Improve tracking clarity using status indicators and evidence-based completion updates.
+- Verify backend health and keep tracker status aligned with actual test outcomes.
+
+### Major Developments Completed
+
+#### 1) Project TODO Tracker Created
+- Added `docs/TODO.md` as a structured planning and execution tracker.
+- Included project goals spanning MVP scope, scraping/data reliability, DB/API/AI work, security, integration, QA, and final presentation deliverables.
+- Why this was needed:
+	- Consolidates scattered action items into one operational board.
+	- Provides a single source of truth for team planning and progress reporting.
+
+#### 2) Dates + Owners Added With April 13 Delivery Target
+- Updated `docs/TODO.md` with target dates and role-based ownership across workstreams.
+- Built timeline so most implementation work lands by **Apr 13, 2026**, with Apr 14–Apr 20 reserved for presentation polish.
+- Why this was needed:
+	- Aligns planning to the project deadline and reduces schedule ambiguity.
+	- Clarifies accountability by mapping deliverables to team members/roles.
+
+#### 3) Converted TODO Into Weekly SCRUM Sprint Board
+- Reworked TODO content into 6 weekly sprints:
+	- Sprint 1: Scope lock
+	- Sprint 2: Data + DB reliability
+	- Sprint 3: API + AI quality
+	- Sprint 4: Security + frontend integration
+	- Sprint 5: QA + docs + demo readiness (targeting Apr 13 completion)
+	- Sprint 6: Final presentation polish
+- Added per-sprint sections: `To Do`, `In Progress`, `Done`, plus sprint goals and owners.
+- Added reusable standup template for weekly execution cadence.
+- Why this was needed:
+	- Enables lightweight sprint/standup workflow directly in repository docs.
+	- Improves day-to-day progress visibility and blocker tracking.
+
+#### 4) Status Legend Applied for Faster Tracking
+- Added explicit legend in `docs/TODO.md`:
+	- `🔴 Blocked`
+	- `🟡 In Progress / Planned`
+	- `🟢 Done`
+- Applied status icons to milestone lines, sprint task lines, and standup template entries.
+- Why this was needed:
+	- Makes progress state readable at a glance during team check-ins.
+	- Standardizes how task state is communicated across contributors.
+
+#### 5) Evidence-Based Completion Updates Applied
+- Reviewed repository artifacts before marking tasks complete (API routes, tests, migrations/docs, scheduler/prompts presence).
+- Marked completed only where direct evidence existed, including:
+	- DB setup/verification checklist documented in `README.md`.
+	- Alerts/Summaries/Users API endpoints implemented and routed.
+	- API schema/test coverage present for core route groups.
+	- Pagination/filter defaults implemented for alerts endpoint.
+- Why this was needed:
+	- Prevents over-reporting progress.
+	- Keeps sprint tracking auditable and trustworthy.
+
+#### 6) Full Backend Test Verification Executed and Reflected in TODO
+- Ran full backend test suite from `backend/` using project venv Python.
+- Result: `78 passed` in `0.94s`.
+- Updated TODO Sprint 5 QA item to complete with dated verification note.
+- Why this was needed:
+	- Confirms current backend cohesion before marking QA status.
+	- Ensures tracker state reflects actual executable system health.
+
+### Commands / Verification Used
+- Full backend suite:
+	- `python -m pytest -q`
+	- Result: `78 passed in 0.94s`
+- Repo evidence checks included file and pattern validation across:
+	- `backend/api/*.py`
+	- `backend/tests/test_api_*.py`
+	- `backend/db/migrations/*.sql`
+	- `backend/config/sources.yaml`
+	- `docs/ARCHITECTURE.md`, `docs/DATA_MODEL.md`, `docs/PROJECT_DESCRIPTION.md`
+
+### Decisions Made
+- Use a weekly SCRUM board format (vs objective-only checklist) for easier standup tracking.
+- Apply status legend globally to milestones, sprint tasks, and standup sections.
+- Mark tasks complete only with repository/test evidence; leave ambiguous items unmarked.
+- Treat Apr 13 as implementation/docs freeze target and Apr 14–Apr 20 as polish-only window.
+
+### Outcome
+- `docs/TODO.md` is now a sprint-operational board with owners, dates, status legend, and current completion state.
+- Progress tracking now reflects both planning intent and verified implementation reality.
+- Backend test status is explicitly captured and synchronized with sprint QA progress.
+
+### Next Steps
+- Continue moving active sprint tasks from `To Do` to `In Progress`/`Done` during weekly standups.
+- Re-run `pytest` at each sprint checkpoint and update corresponding QA/milestone lines.
+- Keep completion updates evidence-based (code/tests/docs) to maintain planning accuracy.
