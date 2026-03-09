@@ -1,51 +1,77 @@
-# INSTRUCTIONS for CMPS 357 Final Project Proposal
-
-
+# RiskRadar CMPS 357 Instructions
 
 ---
 
-# Project Proposal Stages and Steps Outline
+## Project Proposal Stages and Steps Outline
 
-## Stage 1:  Web-App Extension
-In this stage, we will create a *web-app extension* of our **RiskRadar mobile app**. This will involve developing a new frontend interface that is unique from the mobile app, while leveraging the same backend and data sources.
+This document defines the required staged extension work for the CMPS 357 RiskRadar final project.
 
-- Create a new web application that connects to the existing RiskRadar backend.
-- Design and implement a unique frontend interface for the web app using **PHP** scripts that provide access to the same data and features as the mobile app.
-- Ensure that the web app is fully functional and provides a seamless user experience.
+The extension should:
 
+- Build a distinct web-facing experience from the original mobile surface.
+- Reuse and extend the existing backend and data-ingestion foundation.
+- Add meaningful technical complexity beyond basic CRUD functionality.
+
+---
+
+## Stage 1: Web-App Extension
+
+In this stage, the team builds a **web-app extension** of the RiskRadar mobile app with a unique interface and shared backend integration.
+
+### Required Steps
+
+1. Create a web application that connects to the existing RiskRadar backend APIs.
+2. Design and implement a unique frontend interface using **PHP** scripts.
+3. Provide access to core data/features already available in RiskRadar.
+4. Ensure the web app is functional, usable, and consistent in user experience.
+
+---
 
 ## Stage 2: Environmental Risk Assessment and Alert Prioritization Extensions
 
-In this stage, we will implement further extensions that enhance the environmental risk assessment and alert prioritization features of the RiskRadar application.
+In this stage, the team adds intelligence layers that improve interpretation of environmental conditions for individual users.
 
 ### Step 1: Personal Risk Scoring Engine
-- Create a personalized environmental risk score for each user based on location, health sensitivities, and environmental data
-- Make sure that all user data is securely stored and handled in compliance with privacy standards.
-- Integrate the risk scoring engine into the existing backend and ensure that it can be accessed through the API for use in both the mobile and web applications.
-- Design a user interface in both the web application to display the personalized risk scores to users in an intuitive and informative way.
+
+1. Create a personalized environmental risk score based on:
+	- User location
+	- Health sensitivities
+	- Current environmental data
+2. Store and handle user data securely with privacy-aware design.
+3. Integrate risk scoring into backend services and API access.
+4. Add web/mobile UI views that present score and context clearly.
 
 ### Step 2: Smart Alert Prioritization System
-Extend alerts into a priority ranking system based on the Scoring Engine, considering factors such as:
-- Risk Score
+
+Extend alerts into a prioritized ranking pipeline using factors such as:
+
+- Risk score
 - Distance from user
 - Severity
 - User sensitivity
 
+---
 
 ## Stage 3: Data Visualization and User Experience Extensions
 
-
 ### Step 1: Interactive Risk Map (UI Extension)
-- Add a map visualization to the mobile/web app using Plotly
-- Make the map interactive, allowing users to zoom, pan, and click on specific locations to view detailed environmental risk information.
-- Ensure that the map is responsive and works well
-- Integrate the map with the existing backend to display real-time environmental data and risk assessments based on the user's location and other relevant factors.
+
+1. Add a map visualization to mobile/web surfaces using Plotly.
+2. Make the map interactive (zoom, pan, click for detailed risk data).
+3. Ensure responsive behavior across screen sizes.
+4. Integrate map rendering with live backend environmental/risk data.
+
+---
 
 ## Stage 4: Predictive Analytics and AI-Driven Insights Extensions
 
 ### Step 1: Predictive Environmental Risk (AI/Data Extension)
-- Predict environmental risk 24–48 hours ahead by referencing the patterns from data obtained by scrapers
-- Create visualizations to show predicted risks and trends over time, allowing users to make informed decisions about their activities and travel plans based on anticipated environmental conditions.
 
-### Step2: RiskRadar AI Assistant
-- AI assistant or guide integrated into the application that helps users interpret environmental conditions, alerts, or travel risks
+1. Predict environmental risk **24-48 hours** ahead using scraper-derived patterns.
+2. Create visualizations of predicted risk and trend behavior over time.
+3. Present forecast output in a way that supports user planning decisions.
+
+### Step 2: RiskRadar AI Assistant
+
+1. Integrate an AI assistant/guide into the application.
+2. Provide user-facing interpretation of environmental conditions, alerts, and travel risk context.

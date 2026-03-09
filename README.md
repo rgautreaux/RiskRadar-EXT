@@ -2,11 +2,11 @@
 
 Due Date: May 6, 2026, 12:55 CST
 
-This repository contains the code and documentation for Group 3's Final Project. The primary objective is to create a meaningful, effective extension of our CMPS 490 Senior project.
+This repository contains the code and documentation for Group 3's CMPS 357 final project. The primary objective is to build a meaningful extension of our CMPS 490 RiskRadar senior project with new web-facing capabilities and advanced decision-support features.
 
-Our Senior Project focuses on developing a mobile app called **RiskRadar** to help residents and travelers identify and manage potential environmental risks utilizing data analytics.
+Our senior project focuses on developing **RiskRadar**, an environmental risk awareness platform that helps residents and travelers identify and manage potential environmental risks using data analytics.
 
-Our goal for the CMPS 357 Final Project is to build a unique web-app extension of our mobile app that exhibits a new, unique frontend interface as well as new extended features like interactive maps and personalized risk assessments.
+Our goal for the CMPS 357 final project is to build a unique web-app extension with a distinct frontend interface while extending the platform with features such as personalized risk assessment, interactive mapping, and predictive/AI-supported insights.
 
 ---
 
@@ -37,17 +37,17 @@ However, in case issues arise and we must pivot in CMPS490, we are discussing fu
 ### Predictive Analytics and AI-Driven Insights Extensions
 **Predictive Environmental Risk (AI/Data Extension)**: Predict environmental risk 24–48 hours ahead by referencing the patterns from data obtained by scrapers
 
-**RiskRadar Assistant**- AI assistant or guide integrated into the application that helps users interpret environmental conditions, alerts, or travel risks
+**RiskRadar AI Assistant**- AI assistant or guide integrated into the application that helps users interpret environmental conditions, alerts, or travel risks
 
 
 ### Data Visualization and User Experience Extensions
 **Interactive Risk Map (Great UI Extension)**- Add a map visualization to the mobile/web app , similar to PA2 as to make the data presented even more user-friendly and accessible
 
-**RiskRadar Assistant**- AI assistant or guide integrated into the application that helps users interpret environmental conditions, alerts, or travel risks
+**RiskRadar AI Assistant**- AI assistant or guide integrated into the application that helps users interpret environmental conditions, alerts, or travel risks
 
 
 ## Project Purpose
-The goal of this project is to create a web-app extension of our RiskRadar mobile app that exhibits a new, unique frontend interface as well as new extended features like interactive maps and personalized risk assessments. This web-app will allow users to access the same data and features as the mobile app, but in a different format and with additional functionalities that enhance the user experience and provide more value to our users.
+The goal of this project is to transform RiskRadar into a broader full-stack system by introducing a web application experience that is distinct from the mobile app while reusing the existing backend and data-ingestion foundation. This extension improves how users interpret environmental conditions by combining real-time alerts, AI-generated summaries, staged personalization features, and planned interactive/predictive capabilities.
 
 ---
 
@@ -95,9 +95,9 @@ See the full staged implementation plan here: [Project Stages](./docs/STAGES.md)
 | Stage | Title | Status | Last Updated | Notes |
 |---|---|---|---|---|
 | 1 | Web-App Extension | In Progress | 2026-03-09 | Building unique PHP web interface connected to existing backend APIs. |
-| 2 | Environmental Risk Assessment & Alert Prioritization Extensions | Not Started | 2026-03-09 | Planned: personal risk scoring engine and smart alert ranking. |
-| 3 | Data Visualization & UX Extensions | Not Started | 2026-03-09 | Planned: interactive Plotly-based risk map for web/mobile surfaces. |
-| 4 | Predictive Analytics & AI-Driven Insights Extensions | Not Started | 2026-03-09 | Planned: 24-48h forecasting and RiskRadar assistant integration. |
+| 2 | Environmental Risk Assessment and Alert Prioritization Extensions | Not Started | 2026-03-09 | Planned: personal risk scoring engine and smart alert ranking. |
+| 3 | Data Visualization and User Experience Extensions | Not Started | 2026-03-09 | Planned: interactive Plotly-based risk map for web/mobile surfaces. |
+| 4 | Predictive Analytics and AI-Driven Insights Extensions | Not Started | 2026-03-09 | Planned: 24-48h forecasting and RiskRadar AI Assistant integration. |
 
 **Status Legend**
 - **Not Started**: Requirements are defined, but implementation has not begun.
