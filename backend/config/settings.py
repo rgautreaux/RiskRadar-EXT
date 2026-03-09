@@ -1,11 +1,15 @@
-import os
 from pathlib import Path
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=str(BASE_DIR.parent / ".env"),
+        env_file_encoding="utf-8",
+    )
+
     # Database
     DATABASE_URL: str = ""
     DB_PATH: str = str(BASE_DIR / "riskradar.db")
@@ -37,10 +41,5 @@ class Settings(BaseSettings):
     RETENTION_WEEKLY_HOUR_UTC: int = 4
     NWS_USER_AGENT: str = "RiskRadar/1.0 (school-project)"
     SOURCES_CONFIG_PATH: str = str(BASE_DIR / "config" / "sources.yaml")
-
-    class Config:
-        env_file = str(BASE_DIR.parent / ".env")
-        env_file_encoding = "utf-8"
-
 
 settings = Settings()
