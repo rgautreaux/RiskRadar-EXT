@@ -24,7 +24,7 @@ However, in case issues arise and we must pivot in CMPS490, we are discussing fu
 
 ## Further Extensions (if we pivot to Web-App in CMPS490):
 
-# Environmental Risk Assessment and Alert Prioritization Extensions
+### Environmental Risk Assessment and Alert Prioritization Extensions
 
 **Personal Risk Scoring Engine (Best Overall Option)**: Create a personalized environmental risk score for each user based on location, health sensitivities, and environmental data
 
@@ -34,16 +34,29 @@ However, in case issues arise and we must pivot in CMPS490, we are discussing fu
 - Severity
 - User sensitivity
 
-# Predictive Analytics and AI-Driven Insights Extensions
+### Predictive Analytics and AI-Driven Insights Extensions
 **Predictive Environmental Risk (AI/Data Extension)**: Predict environmental risk 24–48 hours ahead by referencing the patterns from data obtained by scrapers
 
 **RiskRadar Assistant**- AI assistant or guide integrated into the application that helps users interpret environmental conditions, alerts, or travel risks
 
 
-# Data Visualization and User Experience Extensions
+### Data Visualization and User Experience Extensions
 **Interactive Risk Map (Great UI Extension)**- Add a map visualization to the mobile/web app , similar to PA2 as to make the data presented even more user-friendly and accessible
 
 **RiskRadar Assistant**- AI assistant or guide integrated into the application that helps users interpret environmental conditions, alerts, or travel risks
+
+
+## Project Purpose
+The goal of this project is to create a web-app extension of our RiskRadar mobile app that exhibits a new, unique frontend interface as well as new extended features like interactive maps and personalized risk assessments. This web-app will allow users to access the same data and features as the mobile app, but in a different format and with additional functionalities that enhance the user experience and provide more value to our users.
+
+---
+
+## Team Members, Roles, Responsibilities, and Contributions
+
+| Max                           | (Contributions) |
+
+
+| Rebecca                           |  (Contributions) |
 
 ---
 
