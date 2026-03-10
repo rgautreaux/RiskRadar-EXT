@@ -1,5 +1,9 @@
 # Stage 1 Planning (Kickoff)
 
+**Context:** This document details the tactical execution plan for Stage 1 (Web-App Extension), which is a **REQUIRED** deliverable targeting completion by **Week of March 31, 2026** as part of the broader CMPS 357 project due April 29, 2026. See [STAGES.md](./STAGES.md) and [README.md](../README.md) for overall timeline and scope alignment (Stages 1-2 required; Stages 3-4 optional/stretch).
+
+---
+
 ## Stage 1: Web-App Extension (MVP Start Plan)
 
 ### Objective

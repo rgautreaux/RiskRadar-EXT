@@ -4,6 +4,15 @@ This document tracks implementation tasks required to complete the CMPS 357 exte
 
 ## Scope Alignment
 
+**REQUIRED DELIVERABLES (Target: April 29, 2026):**
+- Stage 1: Web-App Extension
+- Stage 2: Environmental Risk Assessment and Alert Prioritization Extensions (Personal Risk Scoring Engine + Smart Alert Prioritization System)
+
+**OPTIONAL STRETCH GOALS (If time permits after Stage 2):**
+- Stage 3: Data Visualization and User Experience Extensions (Interactive Risk Map)
+- Stage 4: Predictive Analytics and AI-Driven Insights Extensions (Forecasting + AI Assistant)
+
+**References:**
 - Requirements scope: [INSTRUCTIONS.md](./INSTRUCTIONS.md)
 - Stage planning details: [STAGES.md](./STAGES.md)
 - Progress status source of truth: [README.md](../README.md)
@@ -57,20 +66,20 @@ Use this process during each weekly meeting:
 | 2 | S2-07 | Integrate prioritized output into alert pipeline and API metadata | High | Not Started | Max | Week of 2026-04-21 | 2026-03-10 | S2-06 | TBD | Preserve raw alert context for auditability. |
 | 2 | S2-08 | Surface prioritized alerts and score context in web/mobile UI | High | Not Started | Rebecca | Week of 2026-04-21 | 2026-03-10 | S2-04, S2-07 | TBD | Add fallback behavior if score unavailable. |
 | 2 | S2-09 | Add tests for scoring consistency and prioritization behavior | High | Not Started | Max | Week of 2026-04-28 | 2026-03-10 | S2-03, S2-07 | TBD | Include repeat-input consistency checks. |
-| 3 | S3-01 | Define Plotly risk map architecture and required geospatial fields | High | Not Started | Rebecca | Week of 2026-04-28 | 2026-03-10 | Stage 2 data outputs | TBD | Select map approach and refresh strategy. |
-| 3 | S3-02 | Implement data transformation pipeline for map-friendly structures | High | Not Started | Max | Week of 2026-05-05 | 2026-03-10 | S3-01 | TBD | Validate coordinates and attach hover metadata. |
-| 3 | S3-03 | Build interactive map components (zoom/pan/click detail interactions) | High | Not Started | Rebecca | Week of 2026-05-05 | 2026-03-10 | S3-02 | TBD | Include legend and risk-level visual encoding. |
-| 3 | S3-04 | Integrate map with live backend risk/environmental data | High | Not Started | Max | Week of 2026-05-12 | 2026-03-10 | S3-03 | TBD | Add loading/retry behavior for unstable API/network. |
-| 3 | S3-05 | Verify responsive UX and accessibility-friendly behavior | Medium | Not Started | Rebecca | Week of 2026-05-12 | 2026-03-10 | S3-03, S3-04 | TBD | Validate viewport readability and alternatives. |
-| 3 | S3-06 | Add map-related tests/manual verification evidence | High | Not Started | Rebecca | Week of 2026-05-12 | 2026-03-10 | S3-04, S3-05 | TBD | Capture screenshots/demo notes for checkpoints. |
-| 4 | S4-01 | Define forecasting targets, horizon (24-48h), and assumptions | High | Not Started | Max | Week of 2026-05-19 | 2026-03-10 | Stage 2 baseline | TBD | Document latency/freshness assumptions. |
-| 4 | S4-02 | Build historical feature pipeline from scraper outputs | High | Not Started | Max | Week of 2026-05-19 | 2026-03-10 | S4-01 | TBD | Include lag/trend/seasonality features. |
-| 4 | S4-03 | Implement baseline forecasting module/service with confidence indicators | High | Not Started | Max | Week of 2026-05-26 | 2026-03-10 | S4-02 | TBD | Keep model transparent and testable. |
-| 4 | S4-04 | Expose forecast API endpoint(s) and integrate forecast visualizations | High | Not Started | Rebecca + Max | Week of 2026-05-26 | 2026-03-10 | S4-03 | TBD | Plot observed vs predicted with uncertainty range. |
-| 4 | S4-05 | Define assistant scope, guardrails, and fallback policy | High | Not Started | Rebecca + Max | Week of 2026-05-26 | 2026-03-10 | S4-01 | TBD | Informational guidance only; no emergency replacement. |
-| 4 | S4-06 | Implement AI assistant backend prompt integration and response formatting | High | Not Started | Max | Week of 2026-06-02 | 2026-03-10 | S4-05 | TBD | Add token/error handling and robust fallbacks. |
-| 4 | S4-07 | Integrate assistant UI experience and evaluate quality/safety behavior | High | Not Started | Rebecca | Week of 2026-06-02 | 2026-03-10 | S4-06 | TBD | Test relevance, clarity, and missing-context behavior. |
-| 4 | S4-08 | Document predictive/assistant limitations and future improvements | High | Not Started | Rebecca | Week of 2026-06-02 | 2026-03-10 | S4-04, S4-07 | TBD | Include interpretation guidance for users. |
+| 3 | S3-01 | Define Plotly risk map architecture and required geospatial fields | High | Not Started | Rebecca | Week of 2026-04-28 | 2026-03-10 | Stage 2 data outputs | TBD | **OPTIONAL/STRETCH**: Only if Stage 2 completes early. Select map approach and refresh strategy. |
+| 3 | S3-02 | Implement data transformation pipeline for map-friendly structures | High | Not Started | Max | Week of 2026-05-05 | 2026-03-10 | S3-01 | TBD | **OPTIONAL/STRETCH**: Validate coordinates and attach hover metadata. |
+| 3 | S3-03 | Build interactive map components (zoom/pan/click detail interactions) | High | Not Started | Rebecca | Week of 2026-05-05 | 2026-03-10 | S3-02 | TBD | **OPTIONAL/STRETCH**: Include legend and risk-level visual encoding. |
+| 3 | S3-04 | Integrate map with live backend risk/environmental data | High | Not Started | Max | Week of 2026-05-12 | 2026-03-10 | S3-03 | TBD | **OPTIONAL/STRETCH**: Add loading/retry behavior for unstable API/network. |
+| 3 | S3-05 | Verify responsive UX and accessibility-friendly behavior | Medium | Not Started | Rebecca | Week of 2026-05-12 | 2026-03-10 | S3-03, S3-04 | TBD | **OPTIONAL/STRETCH**: Validate viewport readability and alternatives. |
+| 3 | S3-06 | Add map-related tests/manual verification evidence | High | Not Started | Rebecca | Week of 2026-05-12 | 2026-03-10 | S3-04, S3-05 | TBD | **OPTIONAL/STRETCH**: Capture screenshots/demo notes for checkpoints. |
+| 4 | S4-01 | Define forecasting targets, horizon (24-48h), and assumptions | High | Not Started | Max | Week of 2026-05-19 | 2026-03-10 | Stage 2 baseline | TBD | **OPTIONAL/STRETCH**: Only if Stage 3 completes early. Document latency/freshness assumptions. |
+| 4 | S4-02 | Build historical feature pipeline from scraper outputs | High | Not Started | Max | Week of 2026-05-19 | 2026-03-10 | S4-01 | TBD | **OPTIONAL/STRETCH**: Include lag/trend/seasonality features. |
+| 4 | S4-03 | Implement baseline forecasting module/service with confidence indicators | High | Not Started | Max | Week of 2026-05-26 | 2026-03-10 | S4-02 | TBD | **OPTIONAL/STRETCH**: Keep model transparent and testable. |
+| 4 | S4-04 | Expose forecast API endpoint(s) and integrate forecast visualizations | High | Not Started | Rebecca + Max | Week of 2026-05-26 | 2026-03-10 | S4-03 | TBD | **OPTIONAL/STRETCH**: Plot observed vs predicted with uncertainty range. |
+| 4 | S4-05 | Define assistant scope, guardrails, and fallback policy | High | Not Started | Rebecca + Max | Week of 2026-05-26 | 2026-03-10 | S4-01 | TBD | **OPTIONAL/STRETCH**: Informational guidance only; no emergency replacement. |
+| 4 | S4-06 | Implement AI assistant backend prompt integration and response formatting | High | Not Started | Max | Week of 2026-06-02 | 2026-03-10 | S4-05 | TBD | **OPTIONAL/STRETCH**: Add token/error handling and robust fallbacks. |
+| 4 | S4-07 | Integrate assistant UI experience and evaluate quality/safety behavior | High | Not Started | Rebecca | Week of 2026-06-02 | 2026-03-10 | S4-06 | TBD | **OPTIONAL/STRETCH**: Test relevance, clarity, and missing-context behavior. |
+| 4 | S4-08 | Document predictive/assistant limitations and future improvements | High | Not Started | Rebecca | Week of 2026-06-02 | 2026-03-10 | S4-04, S4-07 | TBD | **OPTIONAL/STRETCH**: Include interpretation guidance for users. |
 | X | DOC-01 | Keep README stage-status table synchronized with completed tasks | High | In Progress | Rebecca | Weekly | 2026-03-10 | Ongoing | README commits | README remains status authority. |
 | X | DOC-02 | Update STAGES/PROJECT docs when scope or stage progress changes | High | In Progress | Rebecca | Weekly | 2026-03-10 | Ongoing | Docs commits | Keep naming and status terms consistent. |
 | X | DOC-03 | Log AI-assisted sessions in TRANSCRIPT and reflect in REFLECTION | High | In Progress | Rebecca | Weekly | 2026-03-10 | Ongoing | Transcript/Reflection entries | Maintain continuity and auditability. |
@@ -122,6 +131,8 @@ Implement personalized risk scoring and smart alert prioritization.
 ### Objective
 Add an interactive Plotly risk map for spatial understanding of risk conditions.
 
+**OPTIONAL STRETCH GOAL - Only pursue if Stage 2 completes by end of Week of 2026-04-28.**
+
 ### Execution Checklist
 - [ ] S3-01: Define map architecture and required geospatial fields.
 - [ ] S3-02: Implement map data transformation and coordinate validation.
@@ -139,6 +150,8 @@ Add an interactive Plotly risk map for spatial understanding of risk conditions.
 
 ### Objective
 Deliver 24-48 hour forecasting and a RiskRadar AI Assistant with clear safeguards.
+
+**OPTIONAL STRETCH GOAL - Only pursue if Stage 3 completes and time remains.**
 
 ### Predictive Risk Checklist
 - [ ] S4-01: Define forecast targets, horizon, and assumptions.

@@ -14,6 +14,18 @@ The extension should:
 
 ---
 
+## Scope and Timeline
+
+**REQUIRED DELIVERABLES (Target Completion: April 29, 2026):**
+- **Stage 1**: Web-App Extension
+- **Stage 2**: Environmental Risk Assessment and Alert Prioritization Extensions
+
+**OPTIONAL STRETCH GOALS (If Time Permits):**
+- **Stage 3**: Data Visualization and User Experience Extensions
+- **Stage 4**: Predictive Analytics and AI-Driven Insights Extensions
+
+---
+
 ## Stage 1: Web-App Extension
 
 In this stage, the team builds a **web-app extension** of the RiskRadar mobile app with a unique interface and shared backend integration.

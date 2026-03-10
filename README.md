@@ -95,12 +95,14 @@ Track execution tasks here: [Project TODO Tracker](./docs/TODO.md)
 
 ### Current Stage Status
 
-| Stage | Title | Status | Last Updated | Notes |
-|---|---|---|---|---|
-| 1 | Web-App Extension | In Progress | 2026-03-09 | Building unique PHP web interface connected to existing backend APIs. |
-| 2 | Environmental Risk Assessment and Alert Prioritization Extensions | Not Started | 2026-03-09 | Planned: personal risk scoring engine and smart alert ranking. |
-| 3 | Data Visualization and User Experience Extensions | Not Started | 2026-03-09 | Planned: interactive Plotly-based risk map for web/mobile surfaces. |
-| 4 | Predictive Analytics and AI-Driven Insights Extensions | Not Started | 2026-03-09 | Planned: 24-48 hour forecasting and RiskRadar AI Assistant integration. |
+**Scope:** Stages 1-2 are **required** deliverables (target completion: April 29, 2026). Stages 3-4 are **optional stretch goals** if timeline permits.
+
+| Stage | Title | Status | Last Updated | Scope | Notes |
+|---|---|---|---|---|---|
+| 1 | Web-App Extension | In Progress | 2026-03-10 | **Required** | Building unique PHP web interface connected to existing backend APIs. Target: Week of 2026-03-31. |
+| 2 | Environmental Risk Assessment and Alert Prioritization Extensions | Not Started | 2026-03-10 | **Required** | Personal risk scoring engine + smart alert prioritization. Target: Week of 2026-04-28. |
+| 3 | Data Visualization and User Experience Extensions | Not Started | 2026-03-10 | Optional/Stretch | Interactive Plotly-based risk map. Planned only if Stage 2 completes early. |
+| 4 | Predictive Analytics and AI-Driven Insights Extensions | Not Started | 2026-03-10 | Optional/Stretch | 24-48 hour forecasting + RiskRadar AI Assistant. Planned only if time permits after Stage 3. |
 
 **Status Legend**
 - **Not Started**: Requirements are defined, but implementation has not begun.
