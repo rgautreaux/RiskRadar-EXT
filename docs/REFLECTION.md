@@ -183,3 +183,55 @@ This follow-up command used **GitHub Copilot** to append reflection coverage for
 - **Worked immediately:** Appending a properly structured reflection entry and follow-up entry in one pass.
 - **Required multiple iterations / improvement:** Minor wording adjustments may still be needed to match preferred voice/style across older entries.
 - **Required manual implementation:** Final editorial review and any instructor-specific phrasing adjustments remain team responsibilities.
+
+---
+
+## Project Proposal Creation Session (Transcript)
+
+### Session Summary
+This session used **ChatGPT** to draft a full final-project proposal for the RiskRadar web-app extension using a detailed, rubric-based prompt. The generated output included a complete proposal structure (title/project info, overview, goals, key features, technical stack, architecture direction, timeline, stretch goals, and project-value framing) and emphasized how the web extension is differentiated from the mobile app through the Personalized Environmental Risk Scoring Engine and Smart Alert Prioritization System.
+
+### (1) Tool Used
+- **Tool name:** ChatGPT
+
+### (2) Components That Benefited
+- **Proposal drafting at full rubric scope:** Produced a comprehensive first draft aligned to all required proposal sections.
+- **Feature articulation:** Clarified the purpose, implementation approach, and complexity framing for risk scoring and alert prioritization.
+- **Scope layering:** Separated required functionality from optional stretch additions (predictive analytics, interactive map, AI assistant).
+- **Professional organization:** Provided sectioned, technical-audience formatting suitable for conversion into course submission materials.
+
+### (3) How Output Was Reviewed/Verified
+- The draft was reviewed against the assignment rubric to confirm each required section was present and clearly labeled.
+- Proposed features and architecture claims were checked against repository context and staged planning documents for feasibility.
+- Team-specific details (member names, repository metadata, and timeline realism) were validated and adjusted as needed for accuracy.
+- Language was reviewed to ensure the distinction between currently implemented work and planned extensions remained explicit.
+
+### (4) What Worked, What Needed Iteration, What Required Manual Implementation
+- **Worked immediately:** Rapid generation of a complete, well-structured proposal draft that matched rubric categories.
+- **Required multiple iterations / improvement:** Tightening scope and wording to ensure the 7-week timeline remained realistic and technically defensible.
+- **Required manual implementation:** Final tailoring of team/project facts, instructor-facing tone, and precise feasibility commitments remained manual responsibilities.
+
+---
+
+## Follow-Up Reflection: Transcript-Specific Reflection Request
+
+### Session Summary
+This follow-up request used **GitHub Copilot** to add a reflection entry that specifically captures the transcript’s `## Project Proposal Creation Session` and to include a second entry documenting this command itself. The goal was to maintain continuity and traceability between transcript records and reflection documentation.
+
+### (1) Tool Used
+- **Tool name:** GitHub Copilot
+
+### (2) Components That Benefited
+- **Documentation traceability:** Added explicit coverage for the transcript session that was previously not reflected as its own entry.
+- **Reflection completeness:** Preserved one-to-one continuity between major transcript sessions and reflection sections.
+- **Formatting consistency:** Kept the same four-part reflection template used across the rest of the document.
+
+### (3) How Output Was Reviewed/Verified
+- Section titles and summaries were cross-checked to ensure they map directly to the transcript’s `Project Proposal Creation Session` context.
+- The new content was reviewed for consistency with existing terminology and reflection style in this file.
+- The entry was validated to avoid duplication of prior sections by focusing on transcript-specific proposal drafting details.
+
+### (4) What Worked, What Needed Iteration, What Required Manual Implementation
+- **Worked immediately:** Integrating two new sections in the existing reflection pattern without disrupting document structure.
+- **Required multiple iterations / improvement:** Minor wording harmonization may still be needed to keep voice fully uniform across all historical entries.
+- **Required manual implementation:** Final instructor-preference edits and any additional cross-linking to transcript anchors remain manual tasks.

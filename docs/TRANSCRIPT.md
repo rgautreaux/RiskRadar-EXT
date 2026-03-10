@@ -55,7 +55,7 @@ The project must include meaningful technical complexity beyond basic CRUD (Crea
 
 My current idea for my Final Project is to create a meaningful extension of the content in the attached ZIP file. What kind of extension would be applied to this project that would be an achievable goal, fit the outlined requirements for a Final Project, and be useful to users of the Mobile App within the ZIP?
 
-**ChatGPT:** I looked through the ZIP and README. Your project RiskRadar is already a fairly solid system:
+****ChatGPT:**** I looked through the ZIP and README. Your project RiskRadar is already a fairly solid system:
 
 Mobile app concept for environmental risk awareness
 
@@ -329,7 +329,7 @@ Just tell me and I’ll break it down step-by-step.
 
 **Rebecca:** Which of these extension ideas would be the most effective and achievable to implement based on the RiskRadar Codebase?  Provide a System Architecture Diagram for the ideal extension that includes the files that will need to be added to the RiskRadar Repository.
 
-**ChatGPT:** After examining the repository structure, the most effective and achievable extension for your RiskRadar codebase is:
+****ChatGPT:**** After examining the repository structure, the most effective and achievable extension for your RiskRadar codebase is:
 
 Personalized Environmental Risk Scoring Engine
 This extension fits the project far better than the others because your codebase already contains the infrastructure needed:
@@ -820,7 +820,7 @@ If you want, I can next align PROJECT_DESCRIPTION.md wording with README.md so b
 
 Made changes.
 
-User: Update the attached documents so that they reflect the current state of the project
+**Rebecca:** Update the attached documents so that they reflect the current state of the project
 
 When inputnig this information, match the formatting present in their corresponding docs within /CMPS490_contents/CMPS490_docs
 
@@ -1235,7 +1235,7 @@ GPT-5.3-Codex • 0.9x
 
 ## Project Proposal Main Point Drafting Session
 
-User: Summarize the Project Premise, Objectives, and Goals into a PROJECT_PROPOSAL.md
+**Rebecca:** Summarize the Project Premise, Objectives, and Goals into a PROJECT_PROPOSAL.md
 
 GitHub Copilot: I’ll draft a concise `PROJECT_PROPOSAL.md` based on your existing README.md, PROJECT_DESCRIPTION.md, and stage documents, then add it to the repo root. I’m checking first whether that file already exists.
 
@@ -1258,6 +1258,8 @@ Made changes.
 
 ---
 
+## Reflection Entry Update Command
+
 Write a new reflection entry that encompasses this session, and a follow-up reflection regarding this command
 
 I’ll add two new sections to REFLECTION.md: one for the PROJECT_PROPOSAL.md creation session, and one follow-up reflection specifically for this latest command. I’m applying that update now.
@@ -1270,5 +1272,1869 @@ PROJECT_PROPOSAL.md Creation Session
 Follow-Up Reflection: Reflection Entry Update Command
 Both use your existing reflection format (Session Summary, Tool Used, Benefited Components, Review/Verification, and Worked vs Iteration vs Manual).
 Want me to also add a matching short entry to TRANSCRIPT.md so the reflection and transcript stay synchronized?
+
+---
+
+## Project Proposal Creation Session
+
+https://chatgpt.com/share/69b0315d-8724-8002-a602-de27293427b8
+
+**Rebecca:** Write a Final Project proposal for a Web-App extension of the RiskRadar Mobile App that will incorporate the mentioned Personalized Environmental Risk Scoring Engine Extension with a Smart Alert Prioritization System that ranks alerts based on the Engine's Risk Score, Distance from user, and Severity.  This Risk Scoring Engine and Smart Alert Prioritization will differentiate this web-app extension from the mobile-app that it is extending.
+
+Express that if time allows it, Team 3 will add the Predictive Environmental Risk (AI/Data Extension), the Interactive Risk Map (Great UI Extension), and an AI assistant (An AI Guide integrated into the application that helps users interpret environmental conditions, alerts, risk score, and travel risks).  These additions are to further contrast the web-app and mobile-app so that this project can stand alone as well.
+
+When describing these planned features, you need to: explain what each of these extensions is, the idea behind them, the implementation/architecture needed, their technical complexity, and examples.
+
+The Final Project Proposal for Team 3 (Rebecca Gautreaux and Max Compeaux) should meet the following rubric requirements:
+'''
+Proposal Document Structure
+Your proposal must include the following sections:
+
+1. Project Title and Project Information
+Provide a concise, descriptive name for your application or system. The title should communicate the main idea of the project and give the reader a quick sense of what the system does.
+
+At the beginning of your proposal, include the following project information:
+
+Project Title: A short, descriptive name for the project.
+Group Members: List the names of the two students working on the project.
+Repository URL: Provide the URL to the project repository created through GitHub Classroom.
+GitHub Classroom Assignment: https://classroom.github.com/a/oHRMfboi
+The repository for this project must be created using the GitHub Classroom assignment above. This assignment has been configured as a group assignment with a maximum team size of two students.
+
+To create your repository:
+
+One member of the group should open the GitHub Classroom assignment link above.
+Select the option to create a new team.
+Name the team using a clear project-related name.
+Accept the assignment to generate the team repository.
+The second group member should open the same assignment link and join the existing team.
+Once both students have joined the team, GitHub Classroom will create a single shared repository for the group. Both members will automatically have commit access and should contribute code, documentation, and commits throughout the project.
+
+After the repository is created, copy the repository URL and include it in the proposal document. The instructor will automatically have access to all repositories created through GitHub Classroom.
+
+2. Project Overview
+A high-level summary (1–2 well-developed paragraphs) that explains:
+
+What the application/system does
+Who it is for
+What problem it solves
+Why it is interesting or valuable
+This section should communicate the vision clearly and professionally.
+
+3. Project Goals
+List specific, measurable goals. These should describe what the completed system will be able to do. Goals should be concrete, not vague.
+
+Examples of goal types:
+
+Core functional capabilities
+User interactions
+Data handling or processing
+System integrations
+AI-assisted features (if applicable)
+Performance or scalability considerations
+4. Key Features
+Organize features into logical categories. For each category, describe core functionality, user-facing behaviors, and the technical components involved. Make clear what is required functionality versus stretch functionality.
+
+Examples of feature categories:
+
+Core System Features
+User Interface / Interaction
+Data Storage & Retrieval
+Sharing / Exporting / Collaboration
+AI-Assisted or Automated Components
+Administrative or Management Tools
+5. Technical Stack (Proposed)
+Specify your intended technologies. This might include some or all of the following:
+
+Frontend technology (if applicable)
+Backend framework or environment
+Database choice and justification
+Authentication approach (if needed)
+APIs or external services
+AI integration approach (if used)
+Hosting or deployment platform
+Briefly justify your selections. Explain why the stack fits your project goals.
+
+6. Architecture Overview
+Provide a short explanation of:
+
+How frontend and backend will interact
+How data will flow through the system
+How components are separated
+Any important design patterns you plan to use
+A simple architecture diagram is encouraged.
+
+7. Development Timeline
+Your development timeline should reflect the expected project window for this semester. Projects should span approximately the period from March 16 to May 1 (7 weeks).
+
+You should provide a week-by-week milestone plan covering this time frame. Each week should include major deliverables, technical milestones, and integration checkpoints.
+
+A project checkpoint will occur around April 8. By this point, you should have implemented a meaningful portion of the core functionality and be able to demonstrate tangible progress.
+
+The timeline must demonstrate realistic scope management and clear progress toward a functional final product.
+
+8. Stretch Goals
+List optional enhancements that you may implement if core functionality is completed early. These should add value without being essential to project viability.
+
+9. Why This Project Matters
+In 1–2 paragraphs, explain:
+
+What skills this project demonstrates
+What technical concepts it applies
+How it reflects modern development practices
+Why it is portfolio-worthy
+This section should reflect thoughtful professional positioning.
+
+Constraints & Expectations
+The project must be achievable within the semester.
+The proposal must reflect structured planning, not just an idea sketch.
+The proposal should demonstrate awareness of integration complexity.
+If AI tools are included, you must clearly describe how they will be used and evaluated critically.
+You are responsible for ensuring your scope is appropriate.
+Formatting Requirements
+2–4 pages
+Professional formatting
+Clear section headings
+No excessive white-space
+Written for a technical audience
+Evaluation Criteria
+Clarity of vision
+Technical depth and feasibility
+Architectural thinking
+Realistic scope planning
+Quality of writing and organization
+Alignment with course learning outcomes
+Important Notes
+The proposal is a planning document. You are expected to follow it unless changes are approved.
+Significant scope reductions after approval may affect your project grade.
+You may refine your idea after feedback, but core direction should remain stable.
+The use of AI tools to help brainstorm, organize, and draft sections of your proposal is strongly suggested. AI systems can be helpful for generating ideas, outlining features, or exploring possible technical stacks.
+However, you are responsible for carefully reviewing and evaluating any AI-generated content before including it in your proposal. Do not simply copy generated text without verifying that it accurately reflects your intended design and technical approach.
+AI tools may propose features, architectures, or integrations that are unrealistic for the available project timeline. When using AI assistance, make sure the final proposal reflects a scope that can realistically be completed within the 7-week development window.
+'''
+
+**ChatGPT:** Below is a complete, structured Final Project Proposal that satisfies the rubric requirements and clearly distinguishes the Web-App extension from the original RiskRadar mobile application.
+
+Final Project Proposal
+1. Project Title and Project Information
+
+Project Title:
+RiskRadar Web: Personalized Environmental Risk Intelligence Platform
+
+Group Members:
+Rebecca Gautreaux
+Max Compeaux
+
+Repository URL:
+(To be added after repository creation via GitHub Classroom)
+
+GitHub Classroom Assignment:
+https://classroom.github.com/a/oHRMfboi
+
+The repository will be created using the GitHub Classroom assignment above. One group member will create the team repository and invite the second member to join. Once both members have joined the team, a shared repository will be generated with commit access for both contributors.
+
+2. Project Overview
+
+RiskRadar Web is a web-based extension of the RiskRadar mobile application designed to provide users with deeper insight into environmental hazards that may impact their health and daily activities. While the original mobile application aggregates environmental alerts and generates summarized reports from sources such as weather alerts and air quality monitoring systems, the RiskRadar Web platform introduces advanced analytical features that interpret this data and present personalized environmental risk insights.
+
+The primary innovation of the web application is the addition of a Personalized Environmental Risk Scoring Engine combined with a Smart Alert Prioritization System. These systems analyze environmental data—including air quality, weather alerts, wildfire smoke, and pollution reports—and translate them into a personalized risk score for each user. Alerts are then dynamically ranked based on the user’s risk score, distance from the hazard, and severity of the event. This allows users to quickly understand which environmental threats are most relevant to them.
+
+This project is valuable because environmental hazard information is often difficult for individuals to interpret. Users may receive numerous alerts without clear context regarding their personal risk level. RiskRadar Web addresses this problem by transforming complex environmental data into actionable insights, helping individuals make safer decisions about outdoor activities, travel, and exposure to hazardous conditions.
+
+3. Project Goals
+
+The completed system will achieve the following goals:
+
+Develop a web-based dashboard that visualizes environmental hazard data collected by the RiskRadar backend.
+
+Implement a Personalized Environmental Risk Scoring Engine that calculates a dynamic risk score based on environmental conditions and user sensitivity preferences.
+
+Implement a Smart Alert Prioritization System that ranks environmental alerts based on risk score, geographic distance, and severity.
+
+Provide a user profile system where users can define environmental sensitivities (e.g., asthma, heat sensitivity, pollen sensitivity).
+
+Display ranked alerts and explanations that help users understand why certain alerts are prioritized.
+
+Integrate the web interface with the existing RiskRadar backend APIs and data ingestion pipeline.
+
+Provide clear data visualizations and summaries that make environmental risk easier to understand.
+
+Stretch goals include adding predictive environmental risk forecasting, an interactive geographic risk map, and an AI assistant capable of answering user questions about environmental hazards.
+
+4. Key Features
+Core System Features
+1. Personalized Environmental Risk Scoring Engine
+
+Idea
+
+The Personalized Environmental Risk Scoring Engine transforms raw environmental data into a user-specific risk score that reflects how dangerous current conditions may be for an individual.
+
+Instead of simply presenting environmental alerts, the system answers the question:
+
+“How risky are current environmental conditions for me?”
+
+The risk score will range from 0–100, representing overall environmental risk based on multiple contributing factors.
+
+Example Output
+
+User Location: Baton Rouge, LA
+Risk Score: 72 (High Risk)
+
+Contributing Factors:
+
+Air Quality Index: 145 (Unhealthy for Sensitive Groups)
+
+Heat Index: 103°F
+
+Wildfire Smoke: Moderate
+
+Pollen Level: High
+
+Recommendation:
+Limit prolonged outdoor activity and consider wearing respiratory protection if outdoors.
+
+Implementation / Architecture
+
+The system will aggregate environmental data collected by RiskRadar scrapers, including:
+
+Air quality data
+
+Weather alerts
+
+Heat index
+
+Pollution levels
+
+Wildfire smoke data
+
+These metrics will be combined using a weighted scoring algorithm:
+
+Risk Score =
+(AQI weight × AQI value) +
+(Heat weight × Heat index) +
+(Smoke weight × Smoke level) +
+(Pollen weight × Pollen level)
+
+User-specific health sensitivities will modify these weights.
+
+Technical Complexity
+
+This component introduces:
+
+algorithmic risk modeling
+
+multi-source data aggregation
+
+user-personalized analytics
+
+explainable risk scoring logic
+
+2. Smart Alert Prioritization System
+
+Idea
+
+Environmental alert systems often produce numerous warnings, many of which may not directly impact the user. The Smart Alert Prioritization System ranks alerts based on relevance and urgency.
+
+This system evaluates alerts using three key factors:
+
+Risk Score Contribution
+
+Distance from the user
+
+Severity of the alert
+
+This prioritization helps users focus on the alerts that matter most.
+
+Example Alert Ranking
+
+Ranked Alerts for **Rebecca:**
+
+Wildfire Smoke Alert – 5 miles away – Critical
+
+Air Quality Warning – Citywide – High
+
+Heat Advisory – Regional – Moderate
+
+Implementation / Architecture
+
+Alerts will be evaluated using a scoring formula:
+
+Alert Priority Score =
+(Risk Score Contribution) +
+(Severity Weight) +
+(Proximity Weight)
+
+The alert list returned by the API will be sorted based on this computed priority score.
+
+Technical Complexity
+
+This system introduces:
+
+geospatial distance calculations
+
+weighted ranking algorithms
+
+dynamic alert scoring
+
+personalized information filtering
+
+User Interface and Interaction
+Web Dashboard
+
+The web interface will include:
+
+personalized risk score display
+
+ranked environmental alerts
+
+explanation of contributing risk factors
+
+environmental data summaries
+
+The interface will focus on clarity and accessibility so users can quickly understand environmental risks.
+
+Data Storage and Processing
+
+The application will utilize the existing RiskRadar backend database while extending it with additional models for:
+
+user sensitivity profiles
+
+calculated risk scores
+
+alert prioritization metrics
+
+Environmental data will continue to be collected through existing scraper pipelines.
+
+5. Technical Stack (Proposed)
+Frontend
+
+React.js
+Tailwind CSS
+
+React is chosen because it allows efficient creation of dynamic interfaces and integrates easily with REST APIs.
+
+Backend
+
+Python with FastAPI
+
+FastAPI provides high-performance API development and integrates well with the existing RiskRadar backend infrastructure.
+
+Database
+
+PostgreSQL
+
+PostgreSQL supports structured relational data and geographic queries, making it suitable for storing alerts and calculating proximity.
+
+APIs and External Services
+
+Environmental data will be collected from sources such as:
+
+Air Quality monitoring systems
+
+Weather alert services
+
+Pollution monitoring agencies
+
+The existing RiskRadar scrapers already retrieve this data.
+
+AI Integration (Optional)
+
+If time allows, lightweight AI APIs will be used to power an environmental assistant capable of interpreting environmental data and answering user questions.
+
+6. Architecture Overview
+
+The system architecture extends the existing RiskRadar backend by introducing a risk analysis layer.
+
+Data Flow
+
+Environmental data is collected through scrapers.
+
+Data is stored in the database.
+
+The Risk Scoring Engine processes environmental metrics.
+
+The Smart Alert Prioritization System ranks alerts.
+
+The API sends processed results to the web dashboard.
+
+Architecture Diagram
+External Environmental APIs
+        │
+        ▼
+Data Scrapers
+        │
+        ▼
+Environmental Database
+        │
+        ▼
+Risk Scoring Engine
+        │
+        ▼
+Smart Alert Prioritization
+        │
+        ▼
+REST API Layer
+        │
+        ▼
+RiskRadar Web Dashboard
+
+This layered architecture separates:
+
+data collection
+
+risk analysis
+
+alert prioritization
+
+presentation
+
+This separation improves maintainability and scalability.
+
+7. Development Timeline
+
+The project timeline spans 7 weeks (March 16 – May 1).
+
+Week 1 (March 16 – March 22)
+
+Project setup
+
+create repository
+
+review RiskRadar mobile codebase
+
+design database schema for risk engine
+
+design API endpoints
+
+Week 2 (March 23 – March 29)
+
+Risk Engine Development
+
+implement environmental data aggregation
+
+implement risk score calculation algorithm
+
+begin backend integration
+
+Week 3 (March 30 – April 5)
+
+Smart Alert Prioritization
+
+implement alert ranking system
+
+integrate severity and proximity calculations
+
+build backend API endpoints
+
+Week 4 (April 6 – April 12) – Checkpoint
+
+Web Dashboard Development
+
+create React interface
+
+display risk score
+
+display prioritized alerts
+
+Demonstrable progress:
+
+functioning backend risk engine
+
+basic web dashboard displaying live data
+
+Week 5 (April 13 – April 19)
+
+User Personalization
+
+implement user sensitivity profiles
+
+integrate personalized weighting into risk calculations
+
+add explanatory risk summaries
+
+Week 6 (April 20 – April 26)
+
+UI Improvements and Testing
+
+refine web dashboard
+
+improve data visualizations
+
+perform system testing
+
+Week 7 (April 27 – May 1)
+
+Finalization
+
+documentation
+
+bug fixes
+
+deployment
+
+final project presentation
+
+8. Stretch Goals
+
+If core functionality is completed early, the following enhancements will be implemented.
+
+Predictive Environmental Risk (AI/Data Extension)
+
+Idea
+
+The Predictive Environmental Risk system forecasts environmental risk levels for the next 24–48 hours.
+
+Implementation
+
+Historical environmental data collected by scrapers will be used to build a lightweight forecasting model using time-series analysis.
+
+Potential inputs include:
+
+past air quality levels
+
+temperature
+
+wind speed
+
+pollution trends
+
+Example
+
+Tomorrow's Risk Forecast:
+
+Morning: Moderate
+Afternoon: High (predicted AQI spike)
+
+Technical Complexity
+
+This extension introduces:
+
+data modeling
+
+time-series forecasting
+
+predictive analytics
+
+Interactive Risk Map
+
+Idea
+
+The web application will include a map visualization that shows environmental risks geographically.
+
+Users will see:
+
+air quality zones
+
+wildfire smoke regions
+
+pollution alerts
+
+weather warnings
+
+Implementation
+
+The backend will generate GeoJSON datasets representing environmental data.
+
+The frontend will display these layers using mapping frameworks such as Leaflet or Mapbox.
+
+Example
+
+Users could zoom into their region and immediately see environmental hazards affecting nearby areas.
+
+Technical Complexity
+
+This feature involves:
+
+geospatial data handling
+
+map visualization
+
+spatial data aggregation
+
+AI Environmental Assistant
+
+Idea
+
+An AI assistant integrated into the platform will help users interpret environmental conditions.
+
+Users could ask questions such as:
+
+“Is it safe to run outside today?”
+
+“Why is my risk score high?”
+
+“What should I do during a wildfire smoke alert?”
+
+Implementation
+
+The assistant would use environmental data, alerts, and risk scores as context when generating responses.
+
+This could be implemented using an LLM API integrated with backend data queries.
+
+Example
+
+**Rebecca:** “Can I go jogging today?”
+
+AI Assistant:
+
+“Current AQI is 155, which is unhealthy for sensitive groups. Because your profile indicates asthma sensitivity, outdoor exercise is not recommended today.”
+
+Technical Complexity
+
+This feature involves:
+
+AI integration
+
+contextual data retrieval
+
+natural language interfaces
+
+9. Why This Project Matters
+
+This project demonstrates several important software engineering concepts including full-stack development, API design, data processing pipelines, and algorithmic decision systems. By extending an existing mobile application with an analytical web platform, the project showcases the ability to design scalable systems that transform raw data into meaningful insights.
+
+RiskRadar Web also reflects modern development practices including modular architecture, user-centered design, and integration of AI-assisted technologies. The project demonstrates the ability to combine environmental data sources, personalized analytics, and interactive interfaces to solve real-world problems.
+
+Because environmental hazards are becoming more frequent and complex, tools that help individuals interpret risk are increasingly valuable. RiskRadar Web illustrates how software systems can empower users to make safer decisions based on real-time environmental information, making it both technically meaningful and socially impactful.
+
+**Rebecca:** Do the contents of this document link below:
+https://docs.google.com/document/d/1R830wnrTrCUFJIYAspQxTcsFHzOUwOLpbfl-OdOXjkQ/edit?usp=sharing 
+
+Match the following rubric criteria:
+'''
+Proposal Document Structure
+Your proposal must include the following sections:
+
+1. Project Title and Project Information
+Provide a concise, descriptive name for your application or system. The title should communicate the main idea of the project and give the reader a quick sense of what the system does.
+
+At the beginning of your proposal, include the following project information:
+
+Project Title: A short, descriptive name for the project.
+Group Members: List the names of the two students working on the project.
+Repository URL: Provide the URL to the project repository created through GitHub Classroom.
+GitHub Classroom Assignment: https://classroom.github.com/a/oHRMfboi
+The repository for this project must be created using the GitHub Classroom assignment above. This assignment has been configured as a group assignment with a maximum team size of two students.
+
+To create your repository:
+
+One member of the group should open the GitHub Classroom assignment link above.
+Select the option to create a new team.
+Name the team using a clear project-related name.
+Accept the assignment to generate the team repository.
+The second group member should open the same assignment link and join the existing team.
+Once both students have joined the team, GitHub Classroom will create a single shared repository for the group. Both members will automatically have commit access and should contribute code, documentation, and commits throughout the project.
+
+After the repository is created, copy the repository URL and include it in the proposal document. The instructor will automatically have access to all repositories created through GitHub Classroom.
+
+2. Project Overview
+A high-level summary (1–2 well-developed paragraphs) that explains:
+
+What the application/system does
+Who it is for
+What problem it solves
+Why it is interesting or valuable
+This section should communicate the vision clearly and professionally.
+
+3. Project Goals
+List specific, measurable goals. These should describe what the completed system will be able to do. Goals should be concrete, not vague.
+
+Examples of goal types:
+
+Core functional capabilities
+User interactions
+Data handling or processing
+System integrations
+AI-assisted features (if applicable)
+Performance or scalability considerations
+4. Key Features
+Organize features into logical categories. For each category, describe core functionality, user-facing behaviors, and the technical components involved. Make clear what is required functionality versus stretch functionality.
+
+Examples of feature categories:
+
+Core System Features
+User Interface / Interaction
+Data Storage & Retrieval
+Sharing / Exporting / Collaboration
+AI-Assisted or Automated Components
+Administrative or Management Tools
+5. Technical Stack (Proposed)
+Specify your intended technologies. This might include some or all of the following:
+
+Frontend technology (if applicable)
+Backend framework or environment
+Database choice and justification
+Authentication approach (if needed)
+APIs or external services
+AI integration approach (if used)
+Hosting or deployment platform
+Briefly justify your selections. Explain why the stack fits your project goals.
+
+6. Architecture Overview
+Provide a short explanation of:
+
+How frontend and backend will interact
+How data will flow through the system
+How components are separated
+Any important design patterns you plan to use
+A simple architecture diagram is encouraged.
+
+7. Development Timeline
+Your development timeline should reflect the expected project window for this semester. Projects should span approximately the period from March 16 to May 1 (7 weeks).
+
+You should provide a week-by-week milestone plan covering this time frame. Each week should include major deliverables, technical milestones, and integration checkpoints.
+
+A project checkpoint will occur around April 8. By this point, you should have implemented a meaningful portion of the core functionality and be able to demonstrate tangible progress.
+
+The timeline must demonstrate realistic scope management and clear progress toward a functional final product.
+
+8. Stretch Goals
+List optional enhancements that you may implement if core functionality is completed early. These should add value without being essential to project viability.
+
+9. Why This Project Matters
+In 1–2 paragraphs, explain:
+
+What skills this project demonstrates
+What technical concepts it applies
+How it reflects modern development practices
+Why it is portfolio-worthy
+This section should reflect thoughtful professional positioning.
+
+Constraints & Expectations
+The project must be achievable within the semester.
+The proposal must reflect structured planning, not just an idea sketch.
+The proposal should demonstrate awareness of integration complexity.
+If AI tools are included, you must clearly describe how they will be used and evaluated critically.
+You are responsible for ensuring your scope is appropriate.
+Formatting Requirements
+2–4 pages
+Professional formatting
+Clear section headings
+No excessive white-space
+Written for a technical audience
+Evaluation Criteria
+Clarity of vision
+Technical depth and feasibility
+Architectural thinking
+Realistic scope planning
+Quality of writing and organization
+Alignment with course learning outcomes
+Important Notes
+The proposal is a planning document. You are expected to follow it unless changes are approved.
+Significant scope reductions after approval may affect your project grade.
+You may refine your idea after feedback, but core direction should remain stable.
+The use of AI tools to help brainstorm, organize, and draft sections of your proposal is strongly suggested. AI systems can be helpful for generating ideas, outlining features, or exploring possible technical stacks.
+However, you are responsible for carefully reviewing and evaluating any AI-generated content before including it in your proposal. Do not simply copy generated text without verifying that it accurately reflects your intended design and technical approach.
+AI tools may propose features, architectures, or integrations that are unrealistic for the available project timeline. When using AI assistance, make sure the final proposal reflects a scope that can realistically be completed within the 7-week development window.
+'''
+
+If not, how can this be rewritten to result in a well-written, professional, informative, and cohesive Project Proposal
+
+**ChatGPT:** I wasn’t able to access the contents of the Google Doc from that link because it requires permission to view. When a document isn’t publicly accessible, I can’t read or analyze it directly.
+
+So I can’t verify whether the contents match the rubric yet.
+
+What you can do
+
+Please do one of the following:
+
+Paste the text of the proposal here, or
+
+Change the document sharing setting to “Anyone with the link can view” and send the link again.
+
+Once I can see the contents, I will:
+
+✔ Evaluate it section-by-section against the rubric
+
+✔ Identify missing or weak areas
+
+✔ Suggest specific improvements
+
+✔ Provide a revised version if needed
+
+✔ Ensure it fits the 2–4 page professional proposal expectation
+
+I can also help refine it so it scores well on:
+
+clarity of vision
+
+technical depth
+
+architectural thinking
+
+realistic scope
+
+professional writing quality
+
+Just paste the document or update the sharing settings and I’ll go through it carefully.
+
+**Rebecca:** Below is the text of the proposal as is:
+
+CMPS 357 Team 3: Final Project Proposal
+
+1. Project Title & Information
+Project Title:
+RiskRadar Web: Personalized Environmental Risk Intelligence Platform
+Group Members:
+Rebecca Gautreaux
+Max Compeaux
+Repository URL:
+https://github.com/School-of-Computing-and-Informatics/cmps-357-sp26-final-project-cmps357-team-3.git 
+GitHub Classroom Assignment:
+GitHub Classroom
+
+2. Project Overview
+The idea behind our Final Project for this semester is to create a web-based extension of the RiskRadar mobile application we are building for our Senior Project in CMPS 490.  We thought that extending our Senior Project work for this project would be beneficial in ensuring we have a strong starting foundation, but further improve upon what already exists by creating new, innovative features.  RiskRadar is designed to provide users with deeper insight into environmental hazards that may impact their health, daily activities, and travel plans. While the original mobile application aggregates environmental alerts and generates summarized reports from sources such as weather alerts and air quality monitoring systems, we plan for the RiskRadar Web platform to analyze further and interpret this data to present personalized environmental risk insights.
+The primary innovation of the web application to differentiate it from its Senior Project Origins is the addition of a Personalized Environmental Risk Scoring Engine combined with a Smart Alert Prioritization System. These systems analyze environmental data—including air quality, weather alerts, wildfire smoke, and pollution reports—and translate them into a personalized risk score for each user based on their sensitivities. Alerts are then dynamically ranked based on the user’s risk score, distance from the hazard, and severity of the event. This allows users to quickly understand which environmental data and threats are most relevant to them.  This project is valuable because environmental hazard information can often be difficult for individuals to interpret. Users may receive numerous alerts without a clear context regarding their personal risk level. RiskRadar Web addresses this problem by transforming complex environmental data into actionable insights, helping individuals make safer decisions about outdoor activities, travel, and exposure to hazardous conditions.
+
+3. Project Goals
+The completed system will achieve the following goals:
+Develop a web-based dashboard that visualizes environmental hazard data collected by the RiskRadar backend.
+Implement a Personalized Environmental Risk Scoring Engine that calculates a dynamic risk score based on environmental conditions and user sensitivity preferences.
+Implement a Smart Alert Prioritization System that ranks environmental alerts based on risk score, geographic distance, and severity.
+Provide a user profile system where users can define environmental sensitivities (e.g., asthma, heat sensitivity, pollen sensitivity).
+Display ranked alerts and explanations that help users understand why certain alerts are prioritized.
+Integrate the web interface with the existing RiskRadar backend APIs and data ingestion pipeline.
+Provide clear data visualizations and summaries that make environmental risk easier to understand.
+Stretch goals include adding predictive environmental risk forecasting, an interactive geographic risk map, and an AI assistant capable of answering user questions about environmental hazards.
+
+4. Key Features
+Core System Features
+1. Personalized Environmental Risk Scoring Engine
+Idea
+The Personalized Environmental Risk Scoring Engine transforms raw environmental data into a user-specific risk score that reflects how dangerous current conditions may be for an individual.
+Instead of simply presenting environmental alerts, the system answers the question:
+“How risky are current environmental conditions for me?”
+The risk score will range from 0–100, representing overall environmental risk based on multiple contributing factors.
+Example Output
+User Location: Baton Rouge, LA
+Risk Score: 72 (High Risk)
+Contributing Factors:
+Air Quality Index: 145 (Unhealthy for Sensitive Groups)
+Heat Index: 103°F
+Wildfire Smoke: Moderate
+Pollen Level: High
+Recommendation:
+Limit prolonged outdoor activity and consider wearing respiratory protection if outdoors.
+Implementation / Architecture
+The system will aggregate environmental data collected by RiskRadar scrapers, including:
+Air quality data
+Weather alerts
+Heat index
+Pollution levels
+Wildfire smoke data
+These metrics will be combined using a weighted scoring algorithm:
+Risk Score =
+(AQI weight × AQI value) +
+(Heat weight × Heat index) +
+(Smoke weight × Smoke level) +
+(Pollen weight × Pollen level)
+User-specific health sensitivities will modify these weights.
+Technical Complexity
+This component introduces:
+algorithmic risk modeling
+multi-source data aggregation
+user-personalized analytics
+explainable risk scoring logic
+
+2. Smart Alert Prioritization System
+Idea
+Environmental alert systems often produce numerous warnings, many of which may not directly impact the user. The Smart Alert Prioritization System ranks alerts based on relevance and urgency.
+This system evaluates alerts using three key factors:
+Risk Score Contribution
+Distance from the user
+Severity of the alert
+This prioritization helps users focus on the alerts that matter most.
+Example Alert Ranking
+Ranked Alerts for **Rebecca:**
+Wildfire Smoke Alert – 5 miles away – Critical
+Air Quality Warning – Citywide – High
+Heat Advisory – Regional – Moderate
+Implementation / Architecture
+Alerts will be evaluated using a scoring formula:
+Alert Priority Score =
+(Risk Score Contribution) +
+(Severity Weight) +
+(Proximity Weight)
+The alert list returned by the API will be sorted based on this computed priority score.
+Technical Complexity
+This system introduces:
+geospatial distance calculations
+weighted ranking algorithms
+dynamic alert scoring
+personalized information filtering
+
+User Interface and Interaction
+Web Dashboard
+The web interface will include:
+personalized risk score display
+ranked environmental alerts
+explanation of contributing risk factors
+environmental data summaries
+The interface will focus on clarity and accessibility so users can quickly understand environmental risks.
+
+Data Storage and Processing
+The application will utilize the existing RiskRadar backend database while extending it with additional models for:
+user sensitivity profiles
+calculated risk scores
+alert prioritization metrics
+Environmental data will continue to be collected through existing scraper pipelines.
+
+5. Technical Stack (Proposed)
+Frontend
+React.js
+Tailwind CSS
+React is chosen because it allows efficient creation of dynamic interfaces and integrates easily with REST APIs.
+
+Backend
+Python with FastAPI
+FastAPI provides high-performance API development and integrates well with the existing RiskRadar backend infrastructure.
+
+Database
+PostgreSQL
+PostgreSQL supports structured relational data and geographic queries, making it suitable for storing alerts and calculating proximity.
+
+APIs and External Services
+Environmental data will be collected from sources such as:
+Air Quality monitoring systems
+Weather alert services
+Pollution monitoring agencies
+The existing RiskRadar scrapers already retrieve this data.
+
+AI Integration (Optional)
+If time allows, lightweight AI APIs will be used to power an environmental assistant capable of interpreting environmental data and answering user questions.
+
+6. Architecture Overview
+The system architecture extends the existing RiskRadar backend by introducing a risk analysis layer.
+Data Flow
+Environmental data is collected through scrapers.
+Data is stored in the database.
+The Risk Scoring Engine processes environmental metrics.
+The Smart Alert Prioritization System ranks alerts.
+The API sends processed results to the web dashboard.
+Architecture Diagram
+External Environmental APIs
+       │
+       ▼
+Data Scrapers
+       │
+       ▼
+Environmental Database
+       │
+       ▼
+Risk Scoring Engine
+       │
+       ▼
+Smart Alert Prioritization
+       │
+       ▼
+REST API Layer
+       │
+       ▼
+RiskRadar Web Dashboard
+This layered architecture separates:
+data collection
+risk analysis
+alert prioritization
+presentation
+This separation improves maintainability and scalability.
+
+7. Development Timeline
+The project timeline spans 7 weeks (March 16 – May 1).
+Week 1 (March 16 – March 22)
+Project setup
+create repository
+review RiskRadar mobile codebase
+design database schema for risk engine
+design API endpoints
+
+Week 2 (March 23 – March 29)
+Risk Engine Development
+implement environmental data aggregation
+implement risk score calculation algorithm
+begin backend integration
+
+Week 3 (March 30 – April 5)
+Smart Alert Prioritization
+implement alert ranking system
+integrate severity and proximity calculations
+build backend API endpoints
+
+Week 4 (April 6 – April 12) – Checkpoint
+Web Dashboard Development
+create React interface
+display risk score
+display prioritized alerts
+Demonstrable progress:
+functioning backend risk engine
+basic web dashboard displaying live data
+
+Week 5 (April 13 – April 19)
+User Personalization
+implement user sensitivity profiles
+integrate personalized weighting into risk calculations
+add explanatory risk summaries
+
+Week 6 (April 20 – April 26)
+UI Improvements and Testing
+refine web dashboard
+improve data visualizations
+perform system testing
+
+Week 7 (April 27 – May 1)
+Finalization
+documentation
+bug fixes
+deployment
+final project presentation
+
+8. Stretch Goals
+If core functionality is completed early, the following enhancements will be implemented.
+
+Predictive Environmental Risk (AI/Data Extension)
+Idea
+The Predictive Environmental Risk system forecasts environmental risk levels for the next 24–48 hours.
+Implementation
+Historical environmental data collected by scrapers will be used to build a lightweight forecasting model using time-series analysis.
+Potential inputs include:
+past air quality levels
+temperature
+wind speed
+pollution trends
+Example
+Tomorrow's Risk Forecast:
+Morning: Moderate
+Afternoon: High (predicted AQI spike)
+Technical Complexity
+This extension introduces:
+data modeling
+time-series forecasting
+predictive analytics
+
+Interactive Risk Map
+Idea
+The web application will include a map visualization that shows environmental risks geographically.
+Users will see:
+air quality zones
+wildfire smoke regions
+pollution alerts
+weather warnings
+Implementation
+The backend will generate GeoJSON datasets representing environmental data.
+The frontend will display these layers using mapping frameworks such as Leaflet or Mapbox.
+Example
+Users could zoom into their region and immediately see environmental hazards affecting nearby areas.
+Technical Complexity
+This feature involves:
+geospatial data handling
+map visualization
+spatial data aggregation
+
+AI Environmental Assistant
+Idea
+An AI assistant integrated into the platform will help users interpret environmental conditions.
+Users could ask questions such as:
+“Is it safe to run outside today?”
+“Why is my risk score high?”
+“What should I do during a wildfire smoke alert?”
+Implementation
+The assistant would use environmental data, alerts, and risk scores as context when generating responses.
+This could be implemented using an LLM API integrated with backend data queries.
+Example
+**Rebecca:** “Can I go jogging today?”
+AI Assistant:
+“Current AQI is 155, which is unhealthy for sensitive groups. Because your profile indicates asthma sensitivity, outdoor exercise is not recommended today.”
+Technical Complexity
+This feature involves:
+AI integration
+contextual data retrieval
+natural language interfaces
+
+9. Why This Project Matters
+This project demonstrates several important software engineering concepts including full-stack development, API design, data processing pipelines, and algorithmic decision systems. By extending an existing mobile application with an analytical web platform, the project showcases the ability to design scalable systems that transform raw data into meaningful insights.
+RiskRadar Web also reflects modern development practices including modular architecture, user-centered design, and integration of AI-assisted technologies. The project demonstrates the ability to combine environmental data sources, personalized analytics, and interactive interfaces to solve real-world problems.
+Because environmental hazards are becoming more frequent and complex, tools that help individuals interpret risk are increasingly valuable. RiskRadar Web illustrates how software systems can empower users to make safer decisions based on real-time environmental information, making it both technically meaningful and socially impactful.
+
+Written with assistance from ChatGPT
+
+**ChatGPT:** Your proposal is actually quite strong already. It clearly shows planning, technical thinking, and meaningful complexity. Overall, it mostly satisfies the rubric, but there are a few areas where instructors commonly deduct points:
+
+Formatting / professionalism issues
+
+Missing or incomplete details in Project Information
+
+Goals not written as clearly measurable outcomes
+
+Feature categories could be more clearly structured
+
+Technical stack justification could be slightly stronger
+
+Architecture explanation could mention frontend ↔ backend interaction more explicitly
+
+Some sections read slightly informal or repetitive
+
+Below is a clear evaluation against the rubric, followed by specific rewrite recommendations.
+
+Rubric Evaluation
+1. Project Title & Project Information
+
+Status: Mostly correct, but needs two small fixes
+
+What you did well:
+
+Clear title
+
+Group members listed
+
+Repository URL included
+
+What needs improvement:
+
+The assignment link should be the actual URL, not the text "GitHub Classroom".
+
+The instructions about creating the team repo should be included briefly (the rubric expects this explanation).
+
+Suggested fix:
+
+Replace:
+
+GitHub Classroom Assignment:
+GitHub Classroom
+
+with:
+
+GitHub Classroom Assignment:
+https://classroom.github.com/a/oHRMfboi
+
+Optional but recommended:
+Add a short sentence explaining the repository creation process.
+
+2. Project Overview
+
+Status: Meets rubric requirements
+
+You successfully explain:
+
+✔ what the system does
+✔ who it is for
+✔ the problem it solves
+✔ why it is valuable
+
+However, the first paragraph is a little wordy and references the course context too much.
+
+Example improvement:
+
+Current:
+
+The idea behind our Final Project for this semester is to create a web-based extension...
+
+Better:
+
+This project proposes the development of a web-based extension of the RiskRadar mobile application. RiskRadar is designed to help users interpret environmental hazards that may affect their health, daily activities, or travel plans. While the existing mobile application aggregates environmental alerts and generates summarized reports, the proposed web platform will provide deeper analysis and personalized risk insights.
+
+3. Project Goals
+
+Status: Good but could be clearer
+
+Goals should be specific system capabilities.
+
+Your goals are good, but they read slightly like feature descriptions rather than measurable outcomes.
+
+Example improvement:
+
+Instead of:
+
+Develop a web-based dashboard that visualizes environmental hazard data
+
+Write:
+
+Implement a web dashboard that displays environmental hazard data and personalized risk scores for authenticated users.
+
+Small wording changes like this make goals more concrete and measurable.
+
+4. Key Features
+
+Status: Very strong
+
+This section is actually one of the best parts of your proposal.
+
+You clearly describe:
+
+✔ the risk scoring engine
+✔ the prioritization system
+✔ example outputs
+✔ algorithm ideas
+✔ technical complexity
+
+However, the rubric asks that features be organized into clear categories.
+
+You already have categories, but formatting could improve.
+
+Suggested structure:
+
+4. Key Features
+
+4.1 Core System Features
+   - Risk Scoring Engine
+   - Smart Alert Prioritization
+
+4.2 User Interface Features
+   - Web Dashboard
+   - Data Visualizations
+
+4.3 Data Storage and Processing
+   - User sensitivity profiles
+   - Environmental data storage
+
+This improves readability.
+
+5. Technical Stack
+
+Status: Good but needs slightly more justification
+
+Currently you say things like:
+
+React is chosen because it allows efficient creation of dynamic interfaces.
+
+This is good but could be slightly stronger.
+
+Example improvement:
+
+React.js was selected for the frontend because it enables efficient development of dynamic single-page applications and integrates well with REST APIs. Its component-based architecture allows reusable interface components such as dashboards and alert displays.
+
+Same idea, just slightly more professional language.
+
+6. Architecture Overview
+
+Status: Good but slightly incomplete
+
+The rubric specifically asks you to explain:
+
+✔ frontend/backend interaction
+✔ data flow
+✔ component separation
+
+You already explain data flow very well.
+
+What you should add is how the frontend communicates with the backend.
+
+Add a short paragraph like this:
+
+The web frontend communicates with the backend using REST API endpoints implemented with FastAPI. These endpoints provide access to processed environmental data, user profiles, risk scores, and ranked alerts. The frontend requests this data asynchronously and updates the dashboard dynamically as new information becomes available.
+
+That fully satisfies the rubric.
+
+7. Development Timeline
+
+Status: Excellent
+
+This section is very strong.
+
+It includes:
+
+✔ weekly milestones
+✔ checkpoint around April 8
+✔ realistic progress stages
+
+Nothing major needs changing.
+
+8. Stretch Goals
+
+Status: Excellent
+
+You clearly describe:
+
+✔ predictive analytics
+✔ interactive map
+✔ AI assistant
+
+And you explain:
+
+✔ the idea
+✔ implementation
+✔ technical complexity
+
+This is exactly what instructors want.
+
+9. Why This Project Matters
+
+Status: Strong
+
+You successfully discuss:
+
+✔ skills demonstrated
+✔ technical concepts
+✔ real-world value
+
+One small improvement would be explicitly mentioning:
+
+full-stack development
+
+data engineering
+
+algorithm design
+
+These phrases strengthen the professional tone.
+
+Example addition:
+
+The project demonstrates full-stack development, data processing pipelines, algorithmic risk modeling, and API-based system integration.
+
+Overall Rubric Alignment
+Rubric Category	Status
+Project Title & Info	Minor fix needed
+Project Overview	Good
+Project Goals	Slight clarity improvement
+Key Features	Very strong
+Technical Stack	Good
+Architecture	Add frontend/backend explanation
+Timeline	Excellent
+Stretch Goals	Excellent
+Why It Matters	Strong
+
+Overall grade potential if submitted as-is: A- to A
+
+After small revisions: A
+
+5 Quick Improvements That Will Make This Proposal Much Stronger
+
+Replace “GitHub Classroom” text with the full URL.
+
+Slightly rewrite the first paragraph of the overview.
+
+Turn Project Goals into clearer capability statements.
+
+Add one paragraph explaining frontend ↔ backend communication.
+
+Format Key Features into numbered subsections.
+
+These are small edits but they dramatically improve professionalism.
+
+Final Assessment
+
+Your proposal already demonstrates:
+
+strong architectural thinking
+
+meaningful technical complexity
+
+realistic 7-week scope
+
+clear AI integration plan
+
+Most student proposals fail because they are too vague. Yours is specific and technically grounded, which professors typically reward.
+
+✅ If you'd like, I can also produce a polished “final submission version” of this proposal that:
+
+reads more professionally
+
+fits neatly in 2–4 pages
+
+aligns perfectly with the rubric
+
+improves formatting and clarity
+
+It would essentially be your proposal, but cleaned up to professor-level expectations.
+
+**Rebecca:** Yes, produce a polished version of the existing document that aligns perfectly with the requirements outlined in the rubric.
+
+**ChatGPT:** Below is a polished, professional version of your proposal that keeps your ideas intact but improves clarity, structure, tone, and alignment with the rubric. It is written so it should fit comfortably within a 2–4 page submission when placed in a document with normal formatting.
+
+CMPS 357 – Team 3 Final Project Proposal
+1. Project Title and Project Information
+
+Project Title:
+RiskRadar Web: Personalized Environmental Risk Intelligence Platform
+
+Group Members:
+Rebecca Gautreaux
+Max Compeaux
+
+Repository URL:
+https://github.com/School-of-Computing-and-Informatics/cmps-357-sp26-final-project-cmps357-team-3.git
+
+GitHub Classroom Assignment:
+https://classroom.github.com/a/oHRMfboi
+
+The project repository will be managed through the GitHub Classroom assignment listed above. One group member will create a new team through the assignment link and accept the assignment, which will automatically generate a shared repository for the group. The second member will then join the existing team through the same link. Once both members have joined, GitHub Classroom will create a shared repository with commit access for both contributors. All project code, documentation, and development progress will be maintained in this repository throughout the semester.
+
+2. Project Overview
+
+RiskRadar Web is a web-based analytical extension of the RiskRadar mobile application. The goal of the system is to help users better understand environmental hazards that may impact their health, daily activities, or travel plans. The existing RiskRadar mobile application aggregates environmental alerts and generates summarized reports from sources such as weather alerts, air quality monitoring systems, and pollution data services. While these alerts provide useful information, interpreting their personal relevance can be difficult for many users.
+
+The proposed web platform expands upon the existing system by introducing advanced data interpretation and personalized risk analysis features. Specifically, RiskRadar Web will incorporate a Personalized Environmental Risk Scoring Engine and a Smart Alert Prioritization System. These systems will analyze environmental data such as air quality levels, weather alerts, wildfire smoke data, and pollution reports, then compute a personalized environmental risk score based on each user’s health sensitivities and environmental preferences.
+
+Alerts will also be dynamically prioritized according to three primary factors: the user’s risk score, the geographic proximity of the hazard, and the severity of the alert. This allows users to quickly identify which environmental threats are most relevant to them. By transforming complex environmental data into personalized, actionable insights, RiskRadar Web helps users make safer decisions regarding outdoor activity, travel planning, and exposure to hazardous environmental conditions.
+
+3. Project Goals
+
+The completed system will provide the following capabilities:
+
+Implement a web-based dashboard that displays environmental hazard data collected by the existing RiskRadar backend system.
+
+Develop a Personalized Environmental Risk Scoring Engine that calculates a dynamic risk score based on real-time environmental conditions and user-defined sensitivity preferences.
+
+Implement a Smart Alert Prioritization System that ranks environmental alerts based on risk contribution, geographic proximity to the user, and severity level.
+
+Provide a user profile system that allows individuals to define environmental sensitivities such as asthma, pollen sensitivity, or heat sensitivity.
+
+Display prioritized alerts along with clear explanations describing why certain alerts are considered more important than others.
+
+Integrate the web application with the existing RiskRadar backend APIs and data ingestion pipelines.
+
+Provide clear visual summaries and explanations that help users interpret environmental conditions and understand their personal risk level.
+
+If time permits, additional advanced features will be implemented, including predictive environmental risk forecasting, an interactive geographic risk map, and an AI-based environmental assistant.
+
+4. Key Features
+4.1 Core System Features
+Personalized Environmental Risk Scoring Engine
+
+The Personalized Environmental Risk Scoring Engine converts raw environmental data into a user-specific environmental risk score that reflects the potential danger of current conditions for an individual.
+
+Instead of simply presenting environmental alerts, the system answers the question:
+
+“How risky are the current environmental conditions for me?”
+
+The system will compute a risk score ranging from 0 to 100, representing the overall environmental risk level based on several contributing environmental factors.
+
+Example output:
+
+User Location: Baton Rouge, LA
+Risk Score: 72 (High Risk)
+
+Contributing Factors:
+
+Air Quality Index: 145 (Unhealthy for Sensitive Groups)
+
+Heat Index: 103°F
+
+Wildfire Smoke: Moderate
+
+Pollen Level: High
+
+Recommendation:
+Limit prolonged outdoor activity and consider wearing respiratory protection when outdoors.
+
+Implementation Approach
+
+Environmental data collected by existing RiskRadar scrapers will be aggregated and analyzed. The risk score will be calculated using a weighted scoring model that combines multiple environmental metrics:
+
+Risk Score =
+(AQI Weight × AQI Value)
+
+(Heat Weight × Heat Index)
+
+(Smoke Weight × Smoke Level)
+
+(Pollen Weight × Pollen Level)
+
+User-defined health sensitivities will modify these weights to personalize the risk score.
+
+Technical Complexity
+
+This component introduces:
+
+algorithmic risk modeling
+
+multi-source environmental data aggregation
+
+personalized analytics based on user profiles
+
+explainable scoring logic that communicates risk factors to users
+
+Smart Alert Prioritization System
+
+Environmental monitoring systems frequently produce numerous alerts, many of which may not directly impact an individual user. The Smart Alert Prioritization System will rank alerts according to their relevance and urgency.
+
+Alerts will be evaluated based on three key factors:
+
+Contribution to the user’s environmental risk score
+
+Geographic distance between the user and the hazard
+
+Severity level of the alert
+
+Example ranked alert output:
+
+Wildfire Smoke Alert – 5 miles away – Critical
+
+Air Quality Warning – Citywide – High
+
+Heat Advisory – Regional – Moderate
+
+Implementation Approach
+
+Each alert will be assigned a priority score using a weighted ranking model:
+
+Alert Priority Score =
+(Risk Score Contribution)
+
+(Severity Weight)
+
+(Proximity Weight)
+
+Alerts returned by the system API will be automatically sorted based on this score before being displayed to the user.
+
+Technical Complexity
+
+This feature requires:
+
+geospatial distance calculations
+
+alert severity weighting
+
+dynamic ranking algorithms
+
+personalized filtering of environmental alerts
+
+4.2 User Interface and Interaction
+Web Dashboard
+
+The RiskRadar Web interface will present environmental insights through a centralized dashboard that includes:
+
+a personalized environmental risk score
+
+ranked environmental alerts
+
+explanations of contributing risk factors
+
+summarized environmental data trends
+
+The interface will be designed to prioritize clarity and usability so users can quickly interpret environmental conditions and understand potential risks.
+
+4.3 Data Storage and Processing
+
+The web application will integrate with the existing RiskRadar backend database while extending it with additional models for:
+
+user environmental sensitivity profiles
+
+calculated environmental risk scores
+
+alert prioritization metrics
+
+Environmental data will continue to be collected through existing automated scraper pipelines that retrieve information from external environmental data sources.
+
+5. Technical Stack (Proposed)
+Frontend
+
+React.js will be used to implement the web interface. React supports dynamic user interfaces and efficient rendering of dashboard components such as risk indicators, alert lists, and environmental summaries.
+
+Tailwind CSS will be used to streamline responsive UI design and ensure consistent visual styling across the platform.
+
+Backend
+
+The backend will be implemented using Python with FastAPI. FastAPI provides high-performance REST API capabilities and integrates well with the existing RiskRadar backend infrastructure.
+
+The backend will be responsible for:
+
+environmental data aggregation
+
+risk score calculations
+
+alert prioritization logic
+
+API endpoints used by the web dashboard
+
+Database
+
+The system will use PostgreSQL to store environmental data, user profiles, risk scores, and alert records. PostgreSQL provides strong relational data management and supports geographic queries necessary for proximity calculations.
+
+External APIs and Data Sources
+
+Environmental data will be collected from several external sources, including:
+
+air quality monitoring services
+
+weather alert systems
+
+environmental pollution monitoring agencies
+
+Existing RiskRadar scrapers already retrieve much of this data, which will be reused for the web platform.
+
+AI Integration (Optional)
+
+If time permits, lightweight AI APIs will be used to power an environmental assistant capable of answering user questions about environmental conditions and risk scores.
+
+6. Architecture Overview
+
+RiskRadar Web extends the existing RiskRadar system architecture by introducing an additional risk analysis layer between the environmental data storage layer and the application interface.
+
+System Interaction
+
+Environmental data is first collected through automated scraper processes that retrieve information from external environmental APIs. This data is stored in the system database and made available for analysis.
+
+The Risk Scoring Engine processes environmental metrics and generates personalized risk scores for users. The Smart Alert Prioritization System then evaluates and ranks environmental alerts based on their impact on the user’s calculated risk level.
+
+The web frontend communicates with the backend through REST API endpoints implemented with FastAPI. These endpoints provide access to processed environmental data, risk scores, user profiles, and ranked alerts. The frontend retrieves this information dynamically and updates the dashboard interface accordingly.
+
+System Architecture Diagram
+
+External Environmental APIs
+↓
+Data Scrapers
+↓
+Environmental Database
+↓
+Risk Scoring Engine
+↓
+Smart Alert Prioritization
+↓
+REST API Layer
+↓
+RiskRadar Web Dashboard
+
+This layered architecture separates responsibilities between data collection, risk analysis, alert prioritization, and user presentation, improving maintainability and scalability.
+
+7. Development Timeline
+
+The project development timeline spans approximately seven weeks (March 16 – May 1).
+
+Week 1 (March 16 – March 22)
+
+Project setup and planning
+
+Create project repository
+
+Review existing RiskRadar backend codebase
+
+Design database schema extensions
+
+Define API endpoints
+
+Week 2 (March 23 – March 29)
+
+Risk Engine development
+
+Implement environmental data aggregation
+
+Develop initial risk scoring algorithm
+
+Begin backend integration
+
+Week 3 (March 30 – April 5)
+
+Alert prioritization implementation
+
+Implement alert ranking algorithm
+
+Integrate severity and proximity calculations
+
+Develop backend API endpoints
+
+Week 4 (April 6 – April 12) – Project Checkpoint
+
+Web dashboard development
+
+Create initial React dashboard interface
+
+Display environmental risk score
+
+Display prioritized alerts
+
+Demonstrable progress at checkpoint:
+
+functioning backend risk scoring engine
+
+working web dashboard displaying environmental data
+
+Week 5 (April 13 – April 19)
+
+User personalization features
+
+implement user sensitivity profiles
+
+integrate personalization into risk calculations
+
+add explanatory risk summaries
+
+Week 6 (April 20 – April 26)
+
+User interface improvements and testing
+
+refine dashboard layout
+
+implement data visualizations
+
+perform system testing and debugging
+
+Week 7 (April 27 – May 1)
+
+Project finalization
+
+documentation
+
+bug fixes
+
+deployment preparation
+
+final presentation
+
+8. Stretch Goals
+
+If core functionality is completed ahead of schedule, several additional features will be explored.
+
+Predictive Environmental Risk (AI/Data Extension)
+
+This feature will forecast environmental risk levels for the next 24–48 hours using historical environmental data collected by the system.
+
+Potential model inputs include:
+
+past air quality levels
+
+temperature patterns
+
+wind speed
+
+pollution trends
+
+Example forecast:
+
+Tomorrow’s Environmental Risk Forecast
+
+Morning: Moderate Risk
+Afternoon: High Risk (predicted AQI spike)
+
+This feature introduces time-series analysis and predictive modeling capabilities.
+
+Interactive Risk Map
+
+An interactive geographic map will display environmental hazards visually across regions. Users will be able to view:
+
+air quality zones
+
+wildfire smoke coverage
+
+pollution alerts
+
+weather warnings
+
+The backend will generate GeoJSON datasets, which will be rendered on the frontend using mapping frameworks such as Leaflet or Mapbox.
+
+AI Environmental Assistant
+
+An integrated AI assistant will help users interpret environmental data and alerts. Users will be able to ask questions such as:
+
+“Is it safe to exercise outdoors today?”
+
+“Why is my environmental risk score high?”
+
+“What precautions should I take during a wildfire smoke alert?”
+
+The assistant will generate responses using environmental data, alerts, and risk scores as contextual input.
+
+9. Why This Project Matters
+
+This project demonstrates several important software engineering concepts including full-stack web development, API design, data processing pipelines, and algorithmic decision systems. By extending an existing mobile application with an analytical web platform, the project highlights the ability to design scalable systems that transform raw environmental data into meaningful insights.
+
+RiskRadar Web reflects modern development practices such as modular architecture, user-centered interface design, and the integration of AI-assisted technologies. The system combines environmental data aggregation, personalized analytics, and interactive visualization to address a real-world problem.
+
+As environmental hazards become increasingly frequent and complex, tools that help individuals interpret environmental risks are becoming more valuable. RiskRadar Web illustrates how software systems can empower users to make safer decisions using real-time environmental data, making the project both technically meaningful and practically relevant.
+
+Written with assistance from ChatGPT.
+
+I have applied these changes and have entered the polished version. Does this new version perfectly align with the rubric requirements?
+
+https://docs.google.com/document/d/1R830wnrTrCUFJIYAspQxTcsFHzOUwOLpbfl-OdOXjkQ/edit?usp=sharing
+
+I attempted to open and retrieve the contents of the document at your link, but the document is not publicly accessible, so I cannot view its text directly. When a Google Doc requires permission or login access, external tools cannot read its contents unless it is shared publicly.
+
+Because of that, I cannot verify whether the current version in the document perfectly aligns with the rubric.
+
+However, based on the polished version you pasted earlier (which looked very strong), I can tell you the following:
+
+If the document now contains exactly that polished version
+
+Then yes — it should align extremely well with the rubric requirements. The revised version satisfies every required section:
+
+Rubric Requirement	Present in Your Proposal
+Project Title & Project Information	✔ Included
+Group Members	✔ Included
+Repository URL	✔ Included
+GitHub Classroom Assignment link	✔ Included
+Project Overview (problem, audience, value)	✔ Clearly explained
+Project Goals (specific capabilities)	✔ Clearly listed
+Key Features organized by categories	✔ Core system, UI, data
+Technical Stack with justification	✔ Included
+Architecture explanation	✔ Includes data flow + API interaction
+Architecture Diagram	✔ Included
+Development Timeline (7 weeks + checkpoint)	✔ Included
+Stretch Goals	✔ Clearly defined
+Why This Project Matters	✔ Included
+Professional formatting and structure	✔ Strong
+Based on the rubric, your proposal demonstrates
+
+Architectural thinking
+
+Meaningful technical complexity
+
+Full-stack system design
+
+Realistic scope for 7 weeks
+
+Clear AI usage explanation
+
+Those are exactly the evaluation criteria listed in the rubric.
+
+One Small Detail to Double-Check
+
+Before submitting, make sure the GitHub Classroom section contains the actual link:
+
+https://classroom.github.com/a/oHRMfboi
+
+Some instructors deduct points if the exact link from the rubric isn't shown.
+
+Optional (but recommended) finishing touches
+
+These small formatting tweaks make proposals look more professional:
+
+Use numbered subsections:
+
+4.1 Core System Features
+
+4.2 User Interface
+
+4.3 Data Storage
+
+Use bold headings for feature names
+
+Add spacing between sections for readability.
+
+Honest Professor-Level Evaluation
+
+If the polished version you pasted earlier is what’s in the document, the proposal would likely score approximately:
+
+Category	Expected Score
+Clarity of Vision	Excellent
+Technical Depth	Excellent
+Architecture	Excellent
+Scope Realism	Excellent
+Writing Quality	Very Strong
+
+Overall: A / A-
+
+✅ Bottom line:
+Your proposal is already strong and aligned with the rubric. It clearly goes beyond a basic CRUD project and shows real architectural planning.
+
+If you'd like, I can also quickly show you one optional improvement professors really like: a slightly stronger architecture diagram with labeled components and APIs. That can push a proposal from A- to A+ with very little extra work.
+
+---
+
+## Reflection on the Proposal Process
+
+Write a new reflection entry that encompasses the Transcript's '''## Project Proposal Creation Session''', and a follow-up reflection regarding this command
+
+I’m going to append two new sections in REFLECTION.md: one explicitly tied to the transcript’s ## Project Proposal Creation Session, and one follow-up reflection for this current request. I’ll place them at the end using the same four-part format you’ve been using.
+
+I confirmed the current reflection file and I can see it doesn’t yet include a dedicated entry for the transcript’s larger ## Project Proposal Creation Session (the full rubric-driven proposal drafting with ChatGPT). I’m appending that now plus a follow-up section for this request.
+
+Edited
+REFLECTION.md+52-0
+Added two new sections to REFLECTION.md:
+
+Project Proposal Creation Session (Transcript)
+Follow-Up Reflection: Transcript-Specific Reflection Request
+These entries specifically cover the transcript’s rubric-driven Project Proposal Creation Session (ChatGPT proposal drafting) and then this exact follow-up command, both in your required four-part reflection format.
+Want me to add a matching short marker under TRANSCRIPT.md so both files stay perfectly synchronized?
 
 ---
