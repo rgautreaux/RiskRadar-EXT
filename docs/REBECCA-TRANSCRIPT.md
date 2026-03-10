@@ -1376,4 +1376,226 @@ If you want, I can also add a short “Session 6” stub right after this entry 
 
 ---
 
-# GitHub Copilot Session 6 - 
+# GitHub Copilot Session 6 - Testing Pytest and Database Cleanup
+
+User: Run End-to-End Testing to double-check and confirm that the changes from Merge pull request 14 is compatible with main
+
+- make sure all tests work without errors 
+
+- ensure the scheduled job is successful and effective
+
+GitHub Copilot: I’m going to validate this end-to-end in two phases: first run the backend test suite against your current branch, then run/verify the scheduler path to confirm the scheduled job executes successfully and does useful work. I’ll start by setting up the Python environment and then execute the tests.
+
+Created 4 todos
+
+Configuring a Python Environment
+Completed with input: {
+  "resourcePath": "c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject\\backend"
+}
+
+Creating a Virtual Environment
+Completed with input: {
+  "resourcePath": "c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject\\backend"
+}
+
+Starting: *Run full backend test suite* (2/4)
+
+Python is configured (system Python 3.13). Next I’m running the backend tests; if dependencies are missing I’ll install from requirements.txt and rerun.
+
+Ran terminal command: Set-Location "c:\Users\Rebecca\OneDrive\Documents\GitHub\Team6-SeniorProject\backend"; C:/Users/Rebecca/AppData/Local/Microsoft/WindowsApps/python3.13.exe -m pytest -q
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/Team6-SeniorProject/backend/requirements.txt)
+
+I found missing dependencies (`sqlalchemy` not installed), so I’m installing the backend requirements into the configured Python environment and then rerunning the suite.
+
+Installing packages anthropic>=0.39.0, apscheduler>=3.10.4, fastapi>=0.115.0, firecrawl-py>=1.5.0, httpx>=0.27.0, openai>=1.50.0, pydantic-settings>=2.5.0, pydantic>=2.10.0, pymysql>=1.1.0, pytest-mock>=3.11.0, pytest>=7.4.0, python-dotenv>=1.0.1, pyyaml>=6.0, sqlalchemy>=2.0.35, uvicorn[standard]>=0.32.0 in Python 3.13
+Completed with input: {
+  "resourcePath": "c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject\\backend",
+  "packageList": [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "sqlalchemy>=2.0.35",
+    "pymysql>=1.1.0",
+    "pydantic>=2.10.0",
+    "pydantic-settings>=2.5.0",
+    "apscheduler>=3.10.4",
+    "httpx>=0.27.0",
+    "firecrawl-py>=1.5.0",
+    "openai>=1.50.0",
+    "anthropic>=0.39.0",
+    "python-dotenv>=1.0.1",
+    "pyyaml>=6.0",
+    "pytest>=7.4.0",
+    "pytest-mock>=3.11.0"
+  ]
+}
+
+Ran terminal command: Set-Location "c:\Users\Rebecca\OneDrive\Documents\GitHub\Team6-SeniorProject\backend"; C:/Users/Rebecca/AppData/Local/Microsoft/WindowsApps/python3.13.exe -m pytest -q
+
+Fetching Python environment information
+Completed with input: {
+  "resourcePath": "c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject\\backend"
+}
+
+Fetching Python executable information for Python 3.13
+Completed with input: {
+  "resourcePath": "c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject\\backend"
+}
+
+Dependency metadata now shows `SQLAlchemy` is installed, so I’m checking why imports still fail by validating import resolution in the same terminal context before rerunning tests.
+
+Ran terminal command: Set-Location "c:\Users\Rebecca\OneDrive\Documents\GitHub\Team6-SeniorProject\backend"; C:/Users/Rebecca/AppData/Local/Microsoft/WindowsApps/python3.13.exe -c "import sys; print(sys.executable); import sqlalchemy; print(sqlalchemy.__version__)"
+
+Configuring a Python Environment
+Completed with input: {
+  "resourcePath": "c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject"
+}
+
+
+Completed with input: {
+  "resourcePath": "c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject"
+}
+
+Fetching Python environment information
+Completed with input: {
+  "resourcePath": "c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject"
+}
+
+I identified the issue: tests were using the Windows Store Python shim, not your project venv. I’ve switched to the project’s .venv-2 interpreter and will rerun the full backend suite with that interpreter now.
+
+Ran terminal command: Set-Location "c:\Users\Rebecca\OneDrive\Documents\GitHub\Team6-SeniorProject\backend"; c:/Users/Rebecca/OneDrive/Documents/GitHub/Team6-SeniorProject/.venv-2/Scripts/python.exe -m pytest -q
+
+Ran terminal command: Set-Location "c:\Users\Rebecca\OneDrive\Documents\GitHub\Team6-SeniorProject\backend"; c:/Users/Rebecca/OneDrive/Documents/GitHub/Team6-SeniorProject/.venv-2/Scripts/python.exe -m pytest -q -rA
+
+Response cleared due to content safety filters, retrying with modified prompt.I’m not getting terminal output back cleanly, so I’m rerunning tests in a background terminal and explicitly collecting the output to get a definitive pass/fail report.
+
+Ran terminal command: Set-Location "c:\Users\Rebecca\OneDrive\Documents\GitHub\Team6-SeniorProject\backend"; c:/Users/Rebecca/OneDrive/Documents/GitHub/Team6-SeniorProject/.venv-2/Scripts/python.exe -m pytest -q -rA
+
+Checked background terminal output
+
+Awaited terminal completion
+
+Ran terminal command: Set-Location "c:\Users\Rebecca\OneDrive\Documents\GitHub\Team6-SeniorProject\backend"; c:/Users/Rebecca/OneDrive/Documents/GitHub/Team6-SeniorProject/.venv-2/Scripts/python.exe -m pytest tests/test_registry.py -vv; Write-Output "EXIT:$LASTEXITCODE"
+
+I’m seeing pytest appear to hang in the terminal without emitting output, so I’m switching to an in-process test run via Python to capture reliable results and exit codes.
+
+Ran `pylanceRunCodeSnippet` 
+Completed with input: {
+  "workspaceRoot": "c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject",
+  "workingDirectory": "c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject\\backend",
+  "codeSnippet": "import pytest\nimport os\nos.chdir(r'c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject\\backend')\nret = pytest.main(['-q'])\nprint('PYTEST_EXIT', ret)\n",
+  "timeout": 600000
+}
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/Team6-SeniorProject/backend/scrapers/scheduler.py)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/Team6-SeniorProject/backend/main.py)
+
+Searched for regex `start_scheduler|retention_nightly|RETENTION_ENABLED|run_retention_cleanup` (`**/backend/tests/**`), 9 results
+
+Test execution is now confirmed through the project venv: the full backend suite reports `78 passed`. Next I’m checking branch-vs-main diff scope and the scheduler-specific coverage (`retention` and scheduler registration) to confirm PR #14 compatibility claims are grounded.
+
+Ran terminal command: git branch --show-current; git diff --name-only main...HEAD
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/Team6-SeniorProject/backend/tests/test_retention.py)
+
+Starting: *Execute scheduler job path* (3/4)
+
+Ran `pylanceRunCodeSnippet` 
+Completed with input: {
+  "workspaceRoot": "c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject",
+  "workingDirectory": "c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject\\backend",
+  "codeSnippet": "import pytest\nimport os\nos.chdir(r'c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject\\backend')\nret = pytest.main(['-q', 'tests/test_retention.py', '-vv'])\nprint('RETENTION_TEST_EXIT', ret)\n",
+  "timeout": 600000
+}
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/Team6-SeniorProject/backend/scrapers/registry.py)
+
+I’m adding one runtime smoke check now: starting the real scheduler in-process, confirming jobs register, then shutting it down cleanly. This complements the retention tests that verify both cleanup behavior and retention job wiring.
+
+Ran `pylanceRunCodeSnippet` 
+Completed with input: {
+  "workspaceRoot": "c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject",
+  "workingDirectory": "c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject\\backend",
+  "codeSnippet": "import os\nfrom scrapers.scheduler import start_scheduler\n\nos.chdir(r'c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject\\backend')\nscheduler = start_scheduler()\njob_ids = [job.id for job in scheduler.get_jobs()]\nprint('SCHEDULER_JOB_COUNT', len(job_ids))\nprint('SCHEDULER_JOB_IDS', job_ids)\nscheduler.shutdown(wait=False)\nprint('SCHEDULER_SHUTDOWN_OK')\n",
+  "timeout": 120000
+}
+
+Continue to iterate?
+[object Object]
+
+User: @agent Continue: "Continue to iterate?"
+
+GitHub Copilot: Ran `pylanceRunCodeSnippet` 
+Completed with input: {
+  "workspaceRoot": "c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject",
+  "workingDirectory": "c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject\\backend",
+  "codeSnippet": "from scrapers import scheduler as scheduler_module\n\nscheduler_module.settings.RETENTION_ENABLED = True\nscheduler_module.settings.RETENTION_NIGHTLY_HOUR_UTC = 2\nscheduler_module.settings.RETENTION_WEEKLY_DAY_UTC = 'sun'\nscheduler_module.settings.RETENTION_WEEKLY_HOUR_UTC = 4\n\nscheduler = scheduler_module.start_scheduler()\njob_ids = sorted(job.id for job in scheduler.get_jobs())\nprint('RETENTION_ENABLED_JOB_IDS', job_ids)\nprint('HAS_NIGHTLY', 'retention_nightly' in job_ids)\nprint('HAS_WEEKLY', 'retention_weekly' in job_ids)\nscheduler.shutdown(wait=False)\n",
+  "timeout": 120000
+}
+
+Completed: *Execute scheduler job path* (3/4)
+
+**Status**
+- End-to-end backend validation succeeded using project venv at `Team6-SeniorProject/.venv-2`.
+- Full test suite: `78 passed` in ~61s (`pytest` run from backend).
+- Scheduler runtime smoke check: started and shut down cleanly; active jobs registered successfully.
+- Retention scheduler verification: when retention is enabled, both `retention_nightly` and `retention_weekly` register correctly.
+
+**Evidence**
+- Retention + scheduler tests passed (`3 passed`): test_retention.py
+- Scheduler implementation validated: scheduler.py
+- App startup path using scheduler: main.py
+
+**Notes**
+- Current checked-out branch reports as `troubleshooting-and-testing-branch` (not `Rebecca-Gautreaux-Work-Branch`).
+- No test errors were found; based on this run, PR #14 changes are compatible with `main` from a backend test/scheduler perspective.
+
+Want me to run the FastAPI app startup smoke (`uvicorn`) next to confirm live startup/lifespan behavior too?
+
+User: Yes
+
+GitHub Copilot: I’m running a live startup smoke test now: launch the FastAPI app with `uvicorn`, hit the health/root endpoint, then shut it down cleanly to confirm lifespan and scheduler startup behavior in runtime.
+
+Ran terminal command: Set-Location "c:\Users\Rebecca\OneDrive\Documents\GitHub\Team6-SeniorProject\backend"; c:/Users/Rebecca/OneDrive/Documents/GitHub/Team6-SeniorProject/.venv-2/Scripts/python.exe -m uvicorn main:app --host 127.0.0.1 --port 8001
+
+Checked background terminal output
+
+The app is up and logs show scheduler startup plus a successful initial `NWSScraper.run`; next I’ll query the running API endpoint and then stop the server cleanly.
+
+Ran terminal command: Invoke-RestMethod -Uri "http://127.0.0.1:8001/" | ConvertTo-Json -Compress
+
+Killed terminal
+
+**Live Smoke Result**
+- `uvicorn` startup check passed on `http://127.0.0.1:8001`.
+- Root endpoint responded `200 OK` with `{"name":"RiskRadar API","version":"1.0.0","status":"running"}`.
+- Lifespan startup completed successfully (DB init + scheduler start).
+
+**Scheduled Job Verification**
+- Scheduler registered and started with 4 jobs: `nws`, `airnow`, `epa`, `api_usgs_earthquakes`.
+- Runtime execution confirmed: `NWSScraper.run` executed successfully right after startup.
+- This validates the scheduled job path is active and effective in a real app run.
+- `firms` scraper was skipped because `NASA_FIRMS_MAP_KEY` is not set (expected config-dependent behavior, not a failure).
+
+**Code Paths Confirmed**
+- Scheduler wiring: scheduler.py
+- App lifespan startup/shutdown: main.py
+- Retention/scheduler test coverage: test_retention.py
+
+Everything requested is now validated: tests pass without errors and scheduled job execution is successful.
+
+Update the empty Progress Log Entry with the details of this sesion and contents of Transcript Entry '''# GitHub Copilot Session 6 - Testing Pytest and Database Cleanup'''
+
+I’m going to fill the 2026-03-10 section in GROUP_PROGRESS_LOG with a complete Session 6 entry using the transcript details and the end-to-end verification we just ran (tests + live scheduler smoke). I’ll read the tail of the file for exact insertion point, then patch it in one pass.
+
+I’ve got the insertion point and I’m now writing a full structured log entry under 2026-03-10 that captures Session 6 scope, exact validation outcomes, issues encountered, and next steps.
+
+Updated the empty March 10 entry with a full Session 6 log in GROUP_PROGRESS_LOG.
+
+Added session focus, major developments, verification commands/results, issues/blockers, decisions, outcome, and next steps.
+Included the key outcomes from this session: 78 passed, retention/scheduler verification (3 passed), and live runtime scheduler/API smoke success.
+Captured the interpreter mismatch root cause and mitigation so future runs are repeatable and less error-prone.
+If you want, I can also add a short “Session 6 Summary” bullet block to REBECCA-TRANSCRIPT.md so both documents stay synchronized.
+
+---
