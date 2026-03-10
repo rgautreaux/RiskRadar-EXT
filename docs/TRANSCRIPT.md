@@ -3138,3 +3138,360 @@ These entries specifically cover the transcript’s rubric-driven Project Propos
 Want me to add a matching short marker under TRANSCRIPT.md so both files stay perfectly synchronized?
 
 ---
+
+## Stage 1 Planning and Setup
+
+User: Create a plan to begin Stage 1 of STAGES.md
+
+GitHub Copilot: I’ll quickly inspect the current Stage 1 context and relevant project files, then draft a concrete startup plan tailored to this repo’s existing backend and docs. I’m starting with a discovery pass to identify dependencies, gaps, and the best first implementation sequence.
+
+Stage1 discovery
+
+Searched for files matching `**/docs/**`, 11 matches
+
+Searched for files matching `**/backend/api/**`, 5 matches
+
+Searched for files matching `**/backend/config/**`, 5 matches
+
+Searched for files matching `**/backend/tests/**`, 12 matches
+
+Searched for files matching `**/README.md`, 3 matches
+
+Searched for files matching `**/*php*`, no matches
+
+Searched for files matching `**/frontend/**`, no matches
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md#1-1), lines 1 to 260
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/INSTRUCTIONS.md)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/main.py)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/api/router.py)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/api/alerts.py)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/api/summaries.py)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/api/users.py)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/schemas/alert.py)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/schemas/summary.py)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/schemas/user.py)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/db/models.py)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/config/settings.py)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/tests/test_api_alerts.py)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/tests/test_api_summaries.py)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/tests/test_api_users.py)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/tests/conftest.py)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/pytest.ini)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/requirements.txt)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/db/database.py)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/db/init_db.py)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/scrapers/scheduler.py)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/CMPS490_contents/CMPS490_frontend/RiskRadar)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/ARCHITECTURE.md)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/DATA_MODEL.md)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/EXAMPLES.md)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/config/sources.yaml)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/CMPS490_contents/CMPS490_frontend/RiskRadar/README.md)
+
+Searched for regex `Stage 1: Web-App Extension|Progress So Far|In Progress|Required Steps|PHP` (`**/docs/STAGES.md`), 17 results
+
+Searched for regex `Create a web application|PHP scripts|Stage 1: Web-App Extension` (`**/docs/INSTRUCTIONS.md`), 2 results
+
+Searched for regex `Current Stage Status|Web-App Extension|In Progress` (`**/README.md`), 9 results
+
+Searched for regex `@router.get|@router.post|@router.put|def list_alerts|def alert_stats|def get_alert|def list_summaries|def latest_summary|def generate_summary|def register_user|def update_preferences` (`**/backend/api/*.py`), 16 results
+
+Searched for regex `class AlertOut|class AlertStats|class SummaryOut|class UserCreate|class UserPrefsUpdate|class UserOut` (`**/backend/schemas/*.py`), 6 results
+
+Searched for regex `FastAPI\(|CORSMiddleware|allow_origins|include_router|prefix="/api/v1"|@app.get\("/"\)` (`**/backend/main.py|backend/api/router.py`), no results
+
+Searched for regex `class Settings|DATABASE_URL|DB_PATH|AIRNOW_API_KEY|NASA_FIRMS_MAP_KEY|FIRECRAWL_API_KEY|LLM_API_KEY|LLM_PROVIDER|LLM_MODEL|SCRAPE_INTERVAL_MINUTES|NWS_USER_AGENT|SOURCES_CONFIG_PATH|env_file` (`**/backend/config/settings.py`), 14 results
+
+Searched for regex `DATABASE_URL =|sqlite|get_db\(|create_engine` (`**/backend/db/database.py`), 8 results
+
+Searched for regex `pytest|testpaths|python_files|addopts` (`**/backend/pytest.ini`), 4 results
+
+Searched for regex `status_code == 404|Email already registered|resp.json\(\) == \[\]|resp.json\(\) is None` (`**/backend/tests/test_api_*.py`), 7 results
+
+Searched for regex `FastAPI\(|CORSMiddleware|allow_origins|include_router\(|@app.get\("/"\)|lifespan|start_scheduler|init_database` (`**/backend/main.py`), 13 results
+
+Searched for regex `APIRouter\(prefix="/api/v1"\)|include_router\(alerts_router\)|include_router\(summaries_router\)|include_router\(users_router\)` (`**/backend/api/router.py`), 4 results
+
+Searched for regex `start_scheduler|SCRAPE_INTERVAL_MINUTES|load_all_scrapers|scheduler.add_job` (`**/backend/scrapers/scheduler.py`), 5 results
+
+Searched for regex `in-memory SQLite|dependency_overrides|get_db|FastAPI\(title="RiskRadar API Test"\)|status":"running` (`**/backend/tests/conftest.py`), 8 results
+
+Searched for regex `web_sources: \[\]|usgs_earthquakes|interval_minutes|auth:|env_var` (`**/backend/config/sources.yaml`), 8 results
+
+Searched for regex `Expo app|npx expo start|app directory|file-based routing` (`**/CMPS490_contents/CMPS490_frontend/RiskRadar/README.md`), 3 results
+
+Searched for regex `backend-centered architecture|/api/v1|mobile app \+ web extension|Default DB|MariaDB|stage work in progress` (`**/docs/ARCHITECTURE.md`), 9 results
+
+Searched for regex `Unique constraint|alert_ids|alert_types|not fully normalized|password_hash|users` (`**/docs/DATA_MODEL.md`), 16 results
+
+Searched for regex `GET /api/v1/alerts\?limit=10|GET /api/v1/alerts/stats|POST /api/v1/summaries/generate|POST /api/v1/users/register|Current API Examples \(Implemented\)` (`**/docs/EXAMPLES.md`), 5 results
+
+Discovery is complete: Stage 1 requirements are documented, backend APIs are ready to consume, and the main gap is that the PHP web extension scaffold is not yet present. I need two scope decisions to make the kickoff plan precise and executable.
+
+Asked 3 questions (MVP pages, Web path, Dev mode)
+
+## Plan: Stage 1 Kickoff (PHP Web Extension)
+
+This DRAFT begins Stage 1 with an MVP that is small, testable, and aligned to your selections: a top-level frontend/ PHP app, dashboard-first scope, and existing backend runtime (scheduler enabled). The goal is to establish a working vertical slice quickly (PHP page → service wrapper → backend API), then expand to alerts/summaries pages and basic user preference flow. It reuses current FastAPI routes and schemas, avoids Stage 2+ features, and prioritizes reliable setup/docs so the team can iterate safely.
+
+**Steps**
+1. Baseline Stage 1 scope and acceptance criteria in STAGES.md and align status wording in README.md to “dashboard-first MVP”.
+2. Create Stage 1 web structure under frontend with minimal folders: `views`, `components`, `services`, `public`, `config`, plus entry pages (`index`, alerts, summaries, profile/preferences).
+3. Add environment template and config loader in frontend (API base URL + timeouts) mapped to backend mount in main.py and router prefix in router.py.
+4. Implement PHP API client wrappers for existing endpoints from alerts.py, summaries.py, and users.py, with standardized timeout/non-2xx/malformed-response handling.
+5. Build MVP dashboard page using alerts stats + latest summary, then add read-focused alerts/summaries pages; keep user flow minimal to register/preferences only.
+6. Add defensive rendering + input sanitization patterns (null/empty payloads, invalid query params), mirroring backend error semantics.
+7. Document local run flow (backend then PHP server), required env vars from settings.py, and expected API examples from EXAMPLES.md.
+8. Add lightweight validation checklist to Stage 1 docs (page load, API connectivity, graceful error states, responsive behavior).
+
+**Verification**
+- Start backend with current app lifecycle in main.py.
+- Manually verify dashboard loads alerts stats + latest summary from live API.
+- Simulate API failure/timeout and confirm user-facing fallback states on each MVP page.
+- Confirm Stage 1 checklist/status updates in STAGES.md and README.md.
+
+**Decisions**
+- Scope: dashboard-first MVP (then expand to alerts/summaries/profile basics).
+- Path: new top-level frontend.
+- Runtime: keep scheduler enabled during Stage 1 development.
+
+User: Update PLANNING_STAGES.md with this Stage 1 Plan and its steps
+
+GitHub Copilot: I’ll update PLANNING_STAGES.md now by inserting the Stage 1 kickoff plan and step-by-step checklist from the plan we just finalized. I’ll first check the file contents so I preserve any existing structure before patching.
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PLANNING_STAGES.md)
+
+I found the file is empty, so I’m adding a clean Stage 1 planning section with objective, scope decisions, implementation steps, and verification criteria so it’s ready to use immediately.
+
+Generating patch (91 lines) in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PLANNING_STAGES.md)
+
+
+```
+
+```
+Updated PLANNING_STAGES.md with the full Stage 1 kickoff plan and detailed steps.
+
+It now includes:
+- Stage 1 objective and confirmed scope decisions
+- 8-step implementation sequence
+- MVP boundary (included vs deferred)
+- kickoff deliverables
+- verification evidence checklist
+
+If you want, I can next sync this same wording into STAGES.md as a “Stage 1 Execution Plan” subsection so both planning docs stay aligned.
+
+Made changes.
+
+---
+
+## TODO Creation
+
+User: Create a TODO.md in `/docs` to track the tasks that must be executed to meet the goals of this project
+
+GitHub Copilot: I’ll quickly research the existing project docs and conventions first, then draft a concrete plan for a `docs/TODO.md` that fits your current stage structure and tracking style.
+
+Research TODO doc fit
+
+Searched for files matching `**/*copilot*.md`, no matches
+
+Searched for files matching `**/*INSTRUCTIONS*.md`, 2 matches
+
+Searched for regex `TODO|to do|status|stage|phase|progress|checklist|milestone|done|in progress|blocked` (`**/docs/**`), 200 results
+
+Searched for regex `TODO|to do|status|stage|phase|progress|checklist|milestone|done|in progress|blocked` (`**/README.md`), 14 results
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/INSTRUCTIONS.md)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PROJECT_DESCRIPTION.md)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/EXAMPLES.md)
+
+Searched for files matching `**/*.php`, no matches
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs)
+
+Searched for regex `risk score|risk_score|priorit|priority|ranking|forecast|predict|assistant|plotly|map|sensitivity` (`**/backend/**`), 41 results
+
+Searched for regex `Stage|Status Legend|Progress So Far|Verification Checklist|Deliverables|Tasks|Objective` (`**/docs/*.md`), 196 results
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/ARCHITECTURE.md)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/DATA_MODEL.md)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/DATA_SETS.md)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/PROJECT_PROPOSAL_DRAFT.md)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/AUTHORS.md)
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/CERTIFICATION.md)
+
+Searched for regex `Assignee|Owner|Due Date|Last Updated|Status Legend|Current Stage Status|source of truth` (`**/*.md`), 19 results
+
+I found a few decisions that affect how useful the tracker will be over the semester, so I’ll confirm them now and then produce a final draft plan you can hand off for implementation.
+
+Asked 3 questions (Granularity, SourceTruth, Stage1Stack)
+
+Thanks — I have enough to draft a concrete execution plan now, including your preference for mixed stage + feature-level tasks and keeping README as the status authority.## Plan: Create docs TODO tracker
+
+Draft plan: Add a new tracking document in docs/TODO.md that operationalizes the staged goals from INSTRUCTIONS.md and STAGES.md, while keeping status authority in README.md. The TODO file will be execution-focused (what to do, dependencies, evidence), with mixed granularity: stage-level checkpoints plus feature-level tasks. Because Stage 1 stack is undecided, wording will preserve the course requirement while allowing a pending decision marker. This avoids scope drift and gives you a single place for actionable work items without replacing your existing planning docs.
+
+**Steps**
+1. Define TODO document purpose and alignment section in docs/TODO.md that references INSTRUCTIONS.md and STAGES.md as scope sources, and README.md as status source of truth.
+2. Add a shared status legend in docs/TODO.md using exactly Not Started, In Progress, Completed to match README.md.
+3. Add a master tracker table in docs/TODO.md with fields: Stage, Task ID, Task, Status, Owner, Last Updated, Dependencies, Evidence, Notes.
+4. Add Stage 1 section in docs/TODO.md with stage-level checkpoint + feature-level tasks for web frontend architecture, backend API integration, core pages, validation/security basics, and setup docs; include a stack decision placeholder due to undecided PHP enforcement.
+5. Add Stage 2 section in docs/TODO.md split into two feature tracks: Personal Risk Scoring and Smart Alert Prioritization, each with backend model/schema/API, UI surfacing, and testing/evidence tasks.
+6. Add Stage 3 section in docs/TODO.md for Plotly interactive map tasks: data prep, component interactions, backend integration, responsiveness/accessibility checks, and verification artifacts.
+7. Add Stage 4 section in docs/TODO.md for forecast service + AI assistant tasks: data pipeline, forecasting baseline, API/schema, visualization, assistant guardrails/integration, and evaluation notes.
+8. Add cross-cutting execution tasks in docs/TODO.md for docs sync, transcript/reflection updates, and per-stage completion evidence collection.
+9. Update README.md minimally to link docs/TODO.md under project tracking and note that README remains the status authority.
+10. Do a consistency pass across README.md, STAGES.md, and docs/TODO.md to ensure stage names and status terms are identical.
+
+**Verification**
+- Confirm all Stage 1-4 requirements in INSTRUCTIONS.md map to at least one TODO item.
+- Confirm status legend in docs/TODO.md matches README.md exactly.
+- Confirm every task has status + evidence field to support completion auditing.
+- Confirm README includes a working link to docs/TODO.md.
+
+**Decisions**
+- Granularity: mixed (stage-level + feature-level) based on your preference.
+- Status authority: README.md is canonical.
+- Stage 1 stack: unresolved; TODO will include a pending decision marker while retaining requirement-aligned wording until finalized.
+
+
+
+User: Start implementation
+
+GitHub Copilot: I’m starting implementation now by creating `docs/TODO.md` with stage + feature-level execution tracking, then I’ll make a minimal README update to link it while keeping README as status authority.
+
+Created 4 todos
+
+I’ll quickly read the current README tracking block so the new link and wording fit existing formatting exactly.
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md#70-70), lines 70 to 106
+
+Starting: *Create docs TODO tracker* (2/4)
+
+I’ve confirmed the existing progress format; next I’m creating `docs/TODO.md` with a master tracker and stage-by-stage execution checklists mapped to your instruction stages.
+
+Generating patch (144 lines) in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
+
+
+```
+
+```
+
+
+Starting: *Link TODO in README* (3/4)
+
+TODO.md is in place with a full execution tracker and stage checklists. I’ll now add a concise link in README under the stages section and then run a quick consistency check.
+
+Generating patch (12 lines) in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+
+
+```
+
+```
+I’m doing a final consistency pass on the new section wording and status vocabulary across README and TODO so the tracker is aligned with your existing stage docs.
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md#86-86), lines 86 to 109
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md#1-1), lines 1 to 80
+
+Completed: *Link TODO in README* (3/4)
+
+**Implemented**
+- Created a new execution tracker at TODO.md with mixed granularity (stage-level + feature-level tasks).
+- Added a master task table with tracking fields: Stage, Task ID, Task, Status, Owner, Last Updated, Dependencies, Evidence, Notes.
+- Included Stage 1–4 checklists and verification evidence sections mapped to INSTRUCTIONS.md.
+- Reused the exact status vocabulary (Not Started, In Progress, Completed) to stay consistent with existing docs.
+
+**README Update**
+- Added a link to the new tracker in the progress section at README.md.
+- Added a note that README remains the source of truth for stage status at README.md.
+
+Want me to prefill owners and target dates in TODO.md next so it can be used immediately for weekly check-ins?
+
+Made changes.
+
+User: Yes, make this document useful in tracking progress for weekly check-ins
+
+GitHub Copilot: I’ll upgrade TODO.md into a weekly operations tracker by adding target dates, weekly check-in fields, and a simple update workflow so you can use it directly in meetings.
+
+Created 4 todos
+
+I’m reading the full current tracker now so the additions fit your existing layout without disrupting what you already entered.
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
+
+I’m adding practical meeting-oriented fields now (target week, check-in notes, blockers, next actions) and a reusable weekly update template so this becomes check-in ready.
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/AUTHORS.md)
+
+Generating patch (115 lines) in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
+
+
+```
+
+```
+
+
+Starting: *Verify readability for meetings* (4/4)
+
+I’ve applied the weekly-tracking improvements and prefilled owners/target weeks; I’ll do one quick readback check to ensure formatting is clean for meeting use.
+
+Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md#1-1), lines 1 to 120
+
+Completed: *Verify readability for meetings* (4/4)
+
+Updated — TODO.md is now set up for weekly check-ins, not just static task listing.
+
+**What Changed**
+- Added a weekly meeting process and reusable update flow in TODO.md.
+- Added a check-in snapshot template for each week in TODO.md.
+- Added a rolling Weekly Check-In Log with the first entry prefilled in TODO.md.
+- Upgraded the master table with `Priority` and `Target Week` fields, and prefilled owners + schedule targets in TODO.md.
+- Updated reporting hygiene to enforce weekly status/date/evidence updates in TODO.md.
+
+**Result**
+- You can now run each weekly check-in by updating one tracker table and one log row, then syncing stage status in README.md.
+
+Want me to also add a short “Weekly Agenda” section to README.md that points teammates directly to the exact TODO sections they should update each meeting?
+
+Made changes.

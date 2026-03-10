@@ -54,6 +54,58 @@ This session used **GitHub Copilot** to see how effective it would be in summari
 
 ---
 
+## TODO.md Weekly Check-In Tracker Session
+
+### Session Summary
+This session used **GitHub Copilot** to create and then strengthen `docs/TODO.md` as an execution-focused tracker for the CMPS 357 project stages. The work moved from a basic task list to a weekly operations document by adding a check-in workflow, a weekly snapshot template, a weekly log, and actionable tracking fields (priority, owner, target week, dependencies, evidence, and notes), plus synchronization guidance with `README.md`.
+
+### (1) Tool Used
+- **Tool name:** GitHub Copilot
+
+### (2) Components That Benefited
+- **Execution tracking clarity:** Created `docs/TODO.md` with stage-aligned tasks mapped to `docs/INSTRUCTIONS.md` and `docs/STAGES.md`.
+- **Weekly check-in readiness:** Added a repeatable meeting workflow, weekly snapshot template, and a running weekly check-in log.
+- **Accountability and scheduling:** Prefilled owners and target weeks to support practical week-by-week planning.
+- **Cross-document consistency:** Added tracker linkage and status-source clarification in `README.md`, keeping progress reporting consistent.
+
+### (3) How Output Was Reviewed/Verified
+- The tracker content was checked to ensure each required stage area (1-4) had corresponding execution tasks and verification items.
+- Status vocabulary was validated against existing project standards (`Not Started`, `In Progress`, `Completed`) for consistency.
+- The new `README.md` reference to `docs/TODO.md` was verified to ensure the document is discoverable from the main progress section.
+- A post-edit readback confirmed formatting and readability for weekly meeting use.
+
+### (4) What Worked, What Needed Iteration, What Required Manual Implementation
+- **Worked immediately:** Generating a structured stage/task matrix and linking it into the project progress documentation.
+- **Required multiple iterations / improvement:** The tracker needed a second pass to become meeting-usable (adding weekly templates/logging, ownership, target weeks, and clearer update rules).
+- **Required manual implementation:** Final decisions on real weekly priorities, owner adjustments, blocker resolution, and evidence updates remain ongoing team responsibilities.
+
+---
+
+## Follow-Up Reflection: TODO/Check-In Documentation Command
+
+### Session Summary
+This follow-up command used **GitHub Copilot** to explicitly document the newly completed TODO/check-in work in `docs/REFLECTION.md`, preserving continuity between implementation activity and AI-usage reflection records.
+
+### (1) Tool Used
+- **Tool name:** GitHub Copilot
+
+### (2) Components That Benefited
+- **Reflection continuity:** Added dedicated reflection coverage for the TODO tracker and weekly check-in enhancement session.
+- **Audit trail quality:** Preserved one-to-one traceability between actionable documentation changes and reflection entries.
+- **Template consistency:** Maintained the same four-component reflection format used throughout this file.
+
+### (3) How Output Was Reviewed/Verified
+- New section structure was checked against existing headings and formatting conventions in `docs/REFLECTION.md`.
+- Session details were validated against recent documentation edits (`docs/TODO.md` and `README.md`) for factual consistency.
+- Wording was reviewed to clearly distinguish the implementation session from this follow-up reflection command.
+
+### (4) What Worked, What Needed Iteration, What Required Manual Implementation
+- **Worked immediately:** Appending two formatted entries in the established reflection pattern.
+- **Required multiple iterations / improvement:** Minor wording harmonization may still be needed over time as additional reflection entries are appended.
+- **Required manual implementation:** Final editorial review for instructor preference, tone consistency, and future cross-references remains a manual team task.
+
+---
+
 ## STAGES.md Construction Session
 
 ### Session Summary
@@ -235,3 +287,58 @@ This follow-up request used **GitHub Copilot** to add a reflection entry that sp
 - **Worked immediately:** Integrating two new sections in the existing reflection pattern without disrupting document structure.
 - **Required multiple iterations / improvement:** Minor wording harmonization may still be needed to keep voice fully uniform across all historical entries.
 - **Required manual implementation:** Final instructor-preference edits and any additional cross-linking to transcript anchors remain manual tasks.
+
+---
+
+## Stage 1 Planning and PLANNING_STAGES.md Update Session
+
+### Session Summary
+This session used **GitHub Copilot** to create a practical Stage 1 startup plan and then apply that plan directly to `docs/PLANNING_STAGES.md`. The work included repository-aware discovery, confirmation of MVP scope decisions (dashboard-first, top-level `frontend` path, and current backend runtime mode), and conversion of those decisions into a concrete implementation checklist with verification criteria.
+
+### (1) Tool Used
+- **Tool name:** GitHub Copilot
+
+### (2) Components That Benefited
+- **Stage kickoff planning:** Produced a clear Stage 1 execution sequence with objective, scope, steps, and MVP boundaries.
+- **Documentation readiness:** Populated `docs/PLANNING_STAGES.md` from empty to a complete planning artifact.
+- **Scope control:** Explicitly separated Stage 1 MVP items from deferred Stage 2-4 features.
+- **Implementation clarity:** Added actionable checkpoints (API wrappers, page scope, config setup, validation/security basics, verification evidence).
+
+### (3) How Output Was Reviewed/Verified
+- The plan was reviewed against existing project documents (`docs/STAGES.md`, `docs/INSTRUCTIONS.md`, and `README.md`) to ensure alignment.
+- Proposed Stage 1 actions were checked against the current backend API surface to confirm feasibility for immediate implementation.
+- The final `docs/PLANNING_STAGES.md` entry was verified to include objective, decisions, step list, deliverables, and verification checklist in the expected documentation style.
+
+### (4) What Worked, What Needed Iteration, What Required Manual Implementation
+- **Worked immediately:** Discovery-to-plan conversion and direct insertion into `docs/PLANNING_STAGES.md` with complete structure.
+- **Required multiple iterations / improvement:** Scope confirmation (MVP page selection, path placement, and runtime preference) required clarification before finalizing details.
+- **Required manual implementation:** Actual coding for the Stage 1 frontend scaffold, PHP service wrappers, UI pages, and runtime testing remains manual team work.
+
+---
+
+## Follow-Up Reflection: Stage 1 Reflection Entry Command
+
+### Session Summary
+This follow-up command used **GitHub Copilot** to add reflection coverage for the Stage 1 planning/update session and to document this command itself so reflection records remain continuous and audit-ready.
+
+### (1) Tool Used
+- **Tool name:** GitHub Copilot
+
+### (2) Components That Benefited
+- **Reflection continuity:** Ensured the Stage 1 planning session is explicitly represented in `docs/REFLECTION.md`.
+- **Traceability:** Preserved clear linkage between planning actions and reflection documentation.
+- **Template consistency:** Maintained the standardized four-component reflection format used throughout the file.
+
+### (3) How Output Was Reviewed/Verified
+- New sections were checked for heading/order consistency with existing entries in `docs/REFLECTION.md`.
+- Content was validated against the immediately preceding Stage 1 planning and `docs/PLANNING_STAGES.md` update actions.
+- Wording was reviewed to avoid overlap with prior entries while preserving factual continuity.
+
+### (4) What Worked, What Needed Iteration, What Required Manual Implementation
+- **Worked immediately:** Appending two structured sections in the existing reflection pattern.
+- **Required multiple iterations / improvement:** Minor future harmonization may still be needed as additional sessions are appended.
+- **Required manual implementation:** Final editorial decisions on voice/tone and any instructor-specific phrasing remain manual responsibilities.
+
+---
+
+

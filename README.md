@@ -89,6 +89,9 @@ The required Certification of Original Work is included in the [CERTIFICATION.md
 ### Stages and Steps
 
 See the full staged implementation plan here: [Project Stages](./docs/STAGES.md)
+Track execution tasks here: [Project TODO Tracker](./docs/TODO.md)
+
+`README.md` remains the source of truth for current stage status values.
 
 ### Current Stage Status
 
