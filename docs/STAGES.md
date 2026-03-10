@@ -26,12 +26,13 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
    - Define URL/environment configuration for local and deployed usage.
 
 2. **Create web-app project structure**
-   - Add a dedicated web-app directory (for example, `web/` or `frontend/web/`).
+   - Add a dedicated web-app directory named `/frontend` with organized subdirectories for views, components, services, and assets.
    - Organize views, reusable PHP components, API client helpers, and assets.
    - Add `.env.example` (or config template) for API base URL and environment settings.
 
 3. **Implement backend connectivity from PHP**
-   - Create PHP service wrappers for backend endpoints.
+   - Create PHP service wrappers forexixting backend endpoints (alerts, summaries, user data).
+   - Handle authentication (if needed) and include necessary headers.
    - Implement robust HTTP error handling (timeouts, non-2xx, malformed responses).
    - Normalize response objects for use by presentation templates.
 
