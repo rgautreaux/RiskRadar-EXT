@@ -75,7 +75,7 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 - Basic usability verification evidence (screenshots and/or walkthrough)
 
 ### Progress So Far
-🔄 **In Progress** - Building a unique PHP web interface connected to existing backend APIs.
+🔄 **In Progress** - Stage 1 now clearly targets `frontend/web/` for the PHP web interface, while the existing Expo mobile app remains under `frontend/mobile/` and both clients continue to share the backend APIs.
 
 ---
 

@@ -75,9 +75,28 @@ As an extension of our RiskRadar mobile app, this repository contains code from 
 
 ### RiskRadar Web-App Extension
 
-- `CMPS490_contents/CMPS490_frontend/RiskRadar/` contains the existing Expo/React Native mobile frontend (`RiskRadar`).
-- `frontend/web/` is the designated location for the new CMPS 357 PHP web-app extension (to be created in Stage 1).
-- Both frontends connect to the same backend API service in `backend/`.
+The frontend workspace is now explicitly split so the mobile and web clients can evolve independently while both are intended to use the same backend API service in `backend/`.
+
+**Frontend surfaces:**
+- `frontend/mobile/` — existing Expo/React Native mobile frontend workspace
+- `frontend/mobile/RiskRadar/` — current RiskRadar mobile application files
+- `frontend/web/` — designated CMPS 357 PHP web-app extension workspace
+
+**Web frontend scaffold:**
+- `frontend/web/views/` — page templates and routed screens
+- `frontend/web/components/` — reusable PHP/UI fragments
+- `frontend/web/services/` — backend API wrappers and response helpers
+- `frontend/web/public/` — public-facing assets and entry files
+- `frontend/web/config/` — environment and runtime configuration templates
+
+**Mobile frontend note:**
+- The existing Expo mobile app remains under `frontend/mobile/RiskRadar/`.
+- Mobile setup instructions are in [`frontend/mobile/RiskRadar/README.md`](./frontend/mobile/RiskRadar/README.md).
+
+**Web frontend note:**
+- Stage 1 web-app development should be placed in `frontend/web/`.
+- Web scaffold details are in [`frontend/web/README.md`](./frontend/web/README.md).
+- Frontend workspace guidance is in [`frontend/README.md`](./frontend/README.md).
 
 ### Additional Features and Extensions
 
@@ -103,7 +122,7 @@ Track execution tasks here: [Project TODO Tracker](./docs/TODO.md)
 
 | Stage | Title | Status | Last Updated | Scope | Notes |
 |---|---|---|---|---|---|
-| 1 | Web-App Extension | In Progress | 2026-03-10 | **Required** | Building unique PHP web interface in `frontend/web/` connected to existing backend APIs. Target: Week of 2026-03-31. |
+| 1 | Web-App Extension | In Progress | 2026-03-11 | **Required** | Stage 1 work now clearly targets `frontend/web/`; the existing mobile client remains under `frontend/mobile/` while the PHP web interface is built against the shared backend APIs. Target: Week of 2026-03-31. |
 | 2 | Environmental Risk Assessment and Alert Prioritization Extensions | Not Started | 2026-03-10 | **Required** | Personal risk scoring engine + smart alert prioritization. Target: Week of 2026-04-28. |
 | 3 | Data Visualization and User Experience Extensions | Not Started | 2026-03-10 | Optional/Stretch | Interactive Plotly-based risk map. Planned only if Stage 2 completes early. |
 | 4 | Predictive Analytics and AI-Driven Insights Extensions | Not Started | 2026-03-10 | Optional/Stretch | 24-48 hour forecasting + RiskRadar AI Assistant. Planned only if time permits after Stage 3. |
