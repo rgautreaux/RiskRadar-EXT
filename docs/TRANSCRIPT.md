@@ -3985,3 +3985,183 @@ Your future `fetch/pull/push` flow should now be stable with the cleanup and pru
 
 
 ---
+
+User: How much progress is left to complete for Stage 1?
+
+GitHub Copilot: You’re asking for remaining Stage 1 work, so I’ll quickly verify current status from TODO.md and README.md and then calculate a clear “what’s left” summary.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+
+Stage 1 is still at the very beginning.
+
+Based on TODO.md and README.md:
+
+- `S1-00` is `In Progress` (stack decision).
+- `S1-01` through `S1-06` are `Not Started`.
+- In the Stage 1 checklist, `0/7` execution items are checked off.
+- In Stage 1 verification evidence, `0/3` items are checked off.
+- README.md marks Stage 1 overall as `In Progress`, but no Stage 1 task is marked `Completed` yet.
+
+So practically, you have almost all Stage 1 work left.  
+A simple estimate is:
+- `6` tasks fully remaining
+- `1` task partially remaining (`S1-00`)
+- `3` verification items still remaining
+
+If you want, I can turn this into a week-by-week “what to finish next” plan from now to the Week of `2026-03-31` target.
+
+User: Is the /frontend directory for the mobile-app or web-app extension
+
+GitHub Copilot: I’ll quickly check the existing frontend docs to confirm whether that path currently refers to the mobile app or the planned web extension, then give you a direct answer.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/RiskRadar/README.md)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/README.md)
+
+Right now, frontend is effectively the **mobile-app frontend area**.
+
+Why:
+- README.md is an Expo app (`npx expo start`), which is your React Native/mobile stack.
+- README.md is generic and does not yet define a separate PHP web app.
+
+So in your current repo state, frontend is hosting mobile frontend content, while your Stage 1 plan says the **web-app extension should be placed under top-level frontend**. Practically, that means you should either:
+1. add a dedicated web subfolder (for example `frontend/web-php/`) to avoid conflict, or
+2. clearly split `frontend/mobile/` and `frontend/web/` and update docs accordingly.
+
+User: To resolve this issue, implement the following changes:
+
+- Clearly split the current `/frontend` directory into `frontend/mobile/` and `frontend/web/` so that the two frontends are seperate (yet working from the same backend)
+
+- Update all documents accordingly once this is made, so that the developments for creating a new, unique Web-App front-end for the Project are designated the corresponding `frontend/web/`  directory
+
+GitHub Copilot: I’m going to restructure the directories first, then I’ll sweep docs for any frontend path references and update them to web or mobile where appropriate.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend)
+
+Searched for regex `frontend/RiskRadar|/frontend|frontend\\RiskRadar|frontend\\` (`**/*.{md,txt,yml,yaml,json}`), 21 results
+
+I found mobile and web already present, so next I’ll verify their contents and then update the docs that still mention the old single frontend layout.
+
+Searched for files matching `**/frontend/**`, 39 matches
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/README.md)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web)
+
+I confirmed the split exists physically (mobile populated, web empty). I’ll now update all planning/status docs so Stage 1 work clearly targets web and mobile remains under mobile.
+
+Searched for regex ``frontend/|`/frontend|/frontend`|frontend\\`` (`**/*.md`), 24 results
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md#1-1), lines 1 to 180
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PLANNING_STAGES.md)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
+
+Searched for regex `frontend|Expo|PHP web|web app` (`**/README.md`), 60 results
+
+Next I’m applying doc edits plus a `frontend/web/README.md` so the split is explicit in both project planning and directory-level guidance.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md#70-70), lines 70 to 111
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/REFLECTION.md#150-150), lines 150 to 210
+
+Generating patch (13 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/README.md)
+
+
+```
+
+```
+
+
+Generating patch (30 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PLANNING_STAGES.md)
+
+
+```
+
+```
+I’ve updated the core Stage 1 planning doc and frontend root README; next I’m aligning STAGES.md, TODO.md, and README.md so every active planning/status document uses the same web target.
+
+Generating patch (9 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
+
+
+```
+
+```
+
+
+Generating patch (6 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
+
+
+```
+
+```
+
+
+Generating patch (14 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+
+
+```
+
+```
+
+
+Generating patch (8 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/REFLECTION.md)
+
+
+```
+
+```
+
+
+Created [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/README.md)
+
+I’ve finished the edits and added README.md; I’ll run a quick verification search to ensure no active planning docs still point to the old unsplit path.
+
+Read changed files in the active git repository
+
+Searched for regex `` frontend/RiskRadar|/frontend/views|/frontend/components|/frontend/services|/frontend/public|/frontend/config|top-level `/frontend` `` (`**/*.md`), 6 results
+
+Searched for text `/frontend` (`**/*.md`), 13 results
+
+Searched for text `frontend` (`**/docs/INSTRUCTIONS.md`), 1 result
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/mobile)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web)
+
+Implemented. The frontend is now clearly designated as split, and docs now consistently point Stage 1 web work to web.
+
+**What I changed**
+1. Confirmed split structure exists and is valid:
+- RiskRadar for the existing Expo mobile app
+- web for the new PHP web extension
+
+2. Updated documentation to reflect the split and Stage 1 target path:
+- PLANNING_STAGES.md
+- STAGES.md
+- TODO.md
+- README.md
+- README.md
+- REFLECTION.md
+
+3. Added a dedicated web frontend readme:
+- README.md
+
+**Key doc alignment updates**
+- Stage 1 web location now explicitly references web.
+- Mobile frontend is explicitly preserved under mobile.
+- Stage status/readme notes now reference the web implementation path.
+- Frontend root readme now documents both frontend surfaces and shared backend usage.
+
+**Notes**
+- Historical references in TRANSCRIPT.md were left unchanged because they are archival session logs.
+- No backend code was changed; this is directory designation/documentation alignment work only.
+
+If you want, I can do one more pass to add a short “Run Mobile vs Run Web” section in README.md so onboarding is immediate.
+
+Made changes.
