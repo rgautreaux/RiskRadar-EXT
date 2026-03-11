@@ -5,5 +5,3 @@
 /httpRequests/
 # Django PowerTools cache (generated)
 /djangoPowerTools/
-# Machine-local datasource configuration (contains local file paths)
-/dataSources.local.xml

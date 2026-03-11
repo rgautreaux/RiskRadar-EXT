@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 from typing import Optional
 
 
@@ -18,7 +18,8 @@ class AlertOut(BaseModel):
     fetched_at: str
     created_at: str
 
-    model_config = ConfigDict(from_attributes=True)
+    class Config:
+        from_attributes = True
 
 
 class AlertStats(BaseModel):

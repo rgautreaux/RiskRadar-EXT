@@ -1,5 +1,6 @@
+import os
 from pathlib import Path
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -27,10 +28,9 @@ class Settings(BaseSettings):
     NWS_USER_AGENT: str = "RiskRadar/1.0 (school-project)"
     SOURCES_CONFIG_PATH: str = str(BASE_DIR / "config" / "sources.yaml")
 
-    model_config = SettingsConfigDict(
-        env_file=str(BASE_DIR.parent / ".env"),
-        env_file_encoding="utf-8",
-    )
+    class Config:
+        env_file = str(BASE_DIR.parent / ".env")
+        env_file_encoding = "utf-8"
 
 
 settings = Settings()
