@@ -75,8 +75,8 @@ As an extension of our RiskRadar mobile app, this repository contains code from 
 
 ### RiskRadar Web-App Extension
 
-- `frontend/mobile/` contains the existing Expo/React Native mobile frontend (`RiskRadar`).
-- `frontend/web/` is the designated location for the new CMPS 357 PHP web-app extension.
+- `CMPS490_contents/CMPS490_frontend/RiskRadar/` contains the existing Expo/React Native mobile frontend (`RiskRadar`).
+- `frontend/web/` is the designated location for the new CMPS 357 PHP web-app extension (to be created in Stage 1).
 - Both frontends connect to the same backend API service in `backend/`.
 
 ### Additional Features and Extensions
