@@ -75,6 +75,22 @@ As an extension of our RiskRadar mobile app, this repository contains code from 
 
 ### RiskRadar Web-App Extension
 
+This repository includes the initialized Expo frontend for the RiskRadar Web-App Extension, located at [`frontend/RiskRadar/`](./frontend/RiskRadar/).
+
+**Frontend Stack:** [Expo](https://expo.dev) with React Native, bootstrapped via `create-expo-app`.
+
+**Directory structure:**
+- `frontend/RiskRadar/app/` — File-based routing entry points (tabs layout, index, explore, modal screens)
+- `frontend/RiskRadar/assets/images/` — App icons and splash screen assets
+- `frontend/RiskRadar/components/` — Shared UI components (e.g., external link, haptic tab)
+- `frontend/RiskRadar/constants/` — App-wide constants
+- `frontend/RiskRadar/hooks/` — Custom React hooks
+- `frontend/RiskRadar/scripts/` — Utility scripts
+
+> **Note:** This frontend was scaffolded as a standalone project independent of the CMPS 490 mobile app frontend, as recommended by the project guidelines. It is intentionally distinct so that this project can progress without depending on CMPS 490 frontend timelines.
+
+See [`frontend/RiskRadar/README.md`](./frontend/RiskRadar/README.md) for setup and development instructions.
+
 ### Additional Features and Extensions
 
 
