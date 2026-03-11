@@ -345,13 +345,21 @@ backend/
 ## Quick Start
 
 ### 1. Install dependencies
-
+**For Mac**:
 ```bash
 cd backend
 python3 -m venv ../.venv
 source ../.venv/bin/activate      # Linux/Mac
 # ..\.venv\Scripts\activate       # Windows
 
+pip install -r requirements.txt
+```
+
+**For Windows (Powershell)**:
+```bash
+cd backend
+python -m venv ../.venv
+source ../.venv/Scripts/Activate.ps1
 pip install -r requirements.txt
 ```
 
