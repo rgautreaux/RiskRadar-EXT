@@ -173,7 +173,7 @@ This session used **GitHub Copilot** to complete a documentation continuity pass
 - **Cross-file wording alignment:** `README.md` and `docs/PROJECT_DESCRIPTION.md` were aligned for stage naming, assistant naming, and project-scope language.
 - **Grammar and readability cleanup:** Grammar passes were completed for `README.md`, top-level docs in `docs/`, and frontend readmes:
 	- `frontend/README.md`
-	- `frontend/RiskRadar/README.md`
+	- `frontend/mobile/RiskRadar/README.md`
 
 ### (3) How Output Was Reviewed/Verified
 - The updates were verified against implemented backend code and configuration (models, scrapers, scheduler, API routes, schemas, settings, and migration notes) to ensure documentation reflected actual runtime behavior rather than planned-only features.
