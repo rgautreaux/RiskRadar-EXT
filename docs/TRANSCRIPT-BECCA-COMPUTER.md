@@ -3986,99 +3986,182 @@ Your future `fetch/pull/push` flow should now be stable with the cleanup and pru
 
 ---
 
-User: There appear to be redundant directories:
-- `CMPS490_contents/CMPS490_frontend` 
-- `/frontend/mobile`
+User: How much progress is left to complete for Stage 1?
 
-Delete `CMPS490_contents/CMPS490_frontend` so there are no redundant directories
+GitHub Copilot: You’re asking for remaining Stage 1 work, so I’ll quickly verify current status from TODO.md and README.md and then calculate a clear “what’s left” summary.
 
-GitHub Copilot: I’ll remove the redundant CMPS490_frontend directory and then quickly verify it’s gone while leaving mobile untouched.
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/CMPS490_contents)
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend)
+Stage 1 is still at the very beginning.
 
-I confirmed both paths exist. Next I’m deleting CMPS490_frontend and then listing CMPS490_contents again to verify removal.
+Based on TODO.md and README.md:
 
-Ran terminal command: $target = "c:\Users\Rebecca\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\CMPS490_contents\CMPS490_frontend"; if (Test-Path $target) { Remove-Item -LiteralPath $target -Recurse -Force }; Get-ChildItem -LiteralPath "c:\Users\Rebecca\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\CMPS490_contents" | Select-Object -ExpandProperty Name
+- `S1-00` is `In Progress` (stack decision).
+- `S1-01` through `S1-06` are `Not Started`.
+- In the Stage 1 checklist, `0/7` execution items are checked off.
+- In Stage 1 verification evidence, `0/3` items are checked off.
+- README.md marks Stage 1 overall as `In Progress`, but no Stage 1 task is marked `Completed` yet.
 
-Removed the redundant directory successfully.
+So practically, you have almost all Stage 1 work left.  
+A simple estimate is:
+- `6` tasks fully remaining
+- `1` task partially remaining (`S1-00`)
+- `3` verification items still remaining
 
-- Deleted CMPS490_contents/CMPS490_frontend.
-- Verified CMPS490_contents now contains only CMPS490_docs, CMPS490_SecurityDocs, and CMPS490_README.md.
-- Left mobile unchanged.
+If you want, I can turn this into a week-by-week “what to finish next” plan from now to the Week of `2026-03-31` target.
 
-Want me to also check git status and stage this deletion for you?
+User: Is the /frontend directory for the mobile-app or web-app extension
 
-User: Yes,
-- Check git status
-- Check that the /mobile and /web directories connect to the backend
-- Stage and commit the deletion
+GitHub Copilot: I’ll quickly check the existing frontend docs to confirm whether that path currently refers to the mobile app or the planned web extension, then give you a direct answer.
 
-GitHub Copilot: I’ll do this in three passes: capture current git status, inspect mobile and web for backend API wiring, then stage and commit the deletion. I’m starting with status and directory inspection now.
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/RiskRadar/README.md)
 
-Created 3 todos
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/README.md)
 
-I’m gathering status and frontend context in parallel so I can quickly confirm exactly what changed and what backend connections exist.
+Right now, frontend is effectively the **mobile-app frontend area**.
 
-Read changed files in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3)
+Why:
+- README.md is an Expo app (`npx expo start`), which is your React Native/mobile stack.
+- README.md is generic and does not yet define a separate PHP web app.
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/mobile)
+So in your current repo state, frontend is hosting mobile frontend content, while your Stage 1 plan says the **web-app extension should be placed under top-level frontend**. Practically, that means you should either:
+1. add a dedicated web subfolder (for example `frontend/web-php/`) to avoid conflict, or
+2. clearly split `frontend/mobile/` and `frontend/web/` and update docs accordingly.
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web)
+User: To resolve this issue, implement the following changes:
 
-Status shows the deletion is tracked, mobile contains `RiskRadar`, and web is currently empty. I’ll now scan the mobile app for API base URLs and connection code.
+- Clearly split the current `/frontend` directory into `frontend/mobile/` and `frontend/web/` so that the two frontends are seperate (yet working from the same backend)
 
-Searched for regex `http://|https://|localhost|127\.0\.0\.1|/api|API_URL|BASE_URL|fetch\(|axios` (`**/frontend/mobile/**`), 20 results
+- Update all documents accordingly once this is made, so that the developments for creating a new, unique Web-App front-end for the Project are designated the corresponding `frontend/web/`  directory
 
-Searched for files matching `**/frontend/mobile/RiskRadar/**/*.{ts,tsx,js,json,env,md}`, 20 matches
+GitHub Copilot: I’m going to restructure the directories first, then I’ll sweep docs for any frontend path references and update them to web or mobile where appropriate.
 
-I found no obvious API wiring hits yet in mobile code (mostly docs and lockfile links), so I’m broadening the search to all frontend files for concrete backend endpoints or API client code.
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend)
 
-Searched for regex `localhost:8000|127\.0\.0\.1:8000|/api/|API_BASE|BASE_URL|backend|FastAPI|fetch\(|axios\.` (`**/frontend/**`), no results
+Searched for regex `frontend/RiskRadar|/frontend|frontend\\RiskRadar|frontend\\` (`**/*.{md,txt,yml,yaml,json}`), 21 results
 
-Searched for files matching `**/frontend/**/*.{py,ts,tsx,js,jsx,json,md,yaml,yml,env}`, 20 matches
+I found mobile and web already present, so next I’ll verify their contents and then update the docs that still mention the old single frontend layout.
 
-Starting: *Verify mobile/web backend wiring* (2/3)
+Searched for files matching `**/frontend/**`, 39 matches
 
-I’ve confirmed the deletion is the only current change; I’m doing one deeper scan including ignored files so we can be confident about whether `mobile`/`web` actually connect to the backend.
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/README.md)
 
-Searched for regex `localhost:8000|127\.0\.0\.1:8000|/api/|API_BASE|BASE_URL|backend|FastAPI|fetch\(|axios\.` (`**/frontend/**`), no results
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web)
 
-The deeper scan found no backend URL/API calls in `frontend/**`, so these frontend folders currently do not appear wired to the backend. I’ll now stage the deleted directory and create the commit.
+I confirmed the split exists physically (mobile populated, web empty). I’ll now update all planning/status docs so Stage 1 work clearly targets web and mobile remains under mobile.
 
-Ran `git_add_or_commit` 
-Completed with input: {
-  "action": "add",
-  "directory": "c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3",
-  "files": [
-    "CMPS490_contents/CMPS490_frontend"
-  ]
-}
+Searched for regex ``frontend/|`/frontend|/frontend`|frontend\\`` (`**/*.md`), 24 results
 
-Ran `git_add_or_commit` 
-Completed with input: {
-  "action": "commit",
-  "directory": "c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3",
-  "message": "Remove redundant CMPS490_frontend directory"
-}
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md#1-1), lines 1 to 180
 
-Commit is in. I’m doing one final status check to confirm the working tree is clean after the commit.
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PLANNING_STAGES.md)
 
-Read changed files in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3)
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
 
-Completed: *Verify mobile/web backend wiring* (2/3)
+Searched for regex `frontend|Expo|PHP web|web app` (`**/README.md`), 60 results
 
-**Completed**
-- Git status checked and confirmed clean after commit.
-- mobile and web backend connectivity check completed:
-  - web is empty.
-  - No backend/API wiring found in `frontend/**` (no `fetch`, `axios`, `/api`, `localhost:8000`, `BASE_URL`, etc.).
-- Deletion staged and committed.
+Next I’m applying doc edits plus a `frontend/web/README.md` so the split is explicit in both project planning and directory-level guidance.
 
-**Commit**
-- Commit: `d93c86f`
-- Message: `Remove redundant CMPS490_frontend directory`
-- Result: removed `CMPS490_contents/CMPS490_frontend` (39 files deleted, 13879 deletions)
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md#70-70), lines 70 to 111
 
-Want me to push this branch to remote now?
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/REFLECTION.md#150-150), lines 150 to 210
+
+Generating patch (13 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/README.md)
+
+
+```
+
+```
+
+
+Generating patch (30 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PLANNING_STAGES.md)
+
+
+```
+
+```
+I’ve updated the core Stage 1 planning doc and frontend root README; next I’m aligning STAGES.md, TODO.md, and README.md so every active planning/status document uses the same web target.
+
+Generating patch (9 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
+
+
+```
+
+```
+
+
+Generating patch (6 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
+
+
+```
+
+```
+
+
+Generating patch (14 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+
+
+```
+
+```
+
+
+Generating patch (8 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/REFLECTION.md)
+
+
+```
+
+```
+
+
+Created [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/README.md)
+
+I’ve finished the edits and added README.md; I’ll run a quick verification search to ensure no active planning docs still point to the old unsplit path.
+
+Read changed files in the active git repository
+
+Searched for regex `` frontend/RiskRadar|/frontend/views|/frontend/components|/frontend/services|/frontend/public|/frontend/config|top-level `/frontend` `` (`**/*.md`), 6 results
+
+Searched for text `/frontend` (`**/*.md`), 13 results
+
+Searched for text `frontend` (`**/docs/INSTRUCTIONS.md`), 1 result
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/mobile)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web)
+
+Implemented. The frontend is now clearly designated as split, and docs now consistently point Stage 1 web work to web.
+
+**What I changed**
+1. Confirmed split structure exists and is valid:
+- RiskRadar for the existing Expo mobile app
+- web for the new PHP web extension
+
+2. Updated documentation to reflect the split and Stage 1 target path:
+- PLANNING_STAGES.md
+- STAGES.md
+- TODO.md
+- README.md
+- README.md
+- REFLECTION.md
+
+3. Added a dedicated web frontend readme:
+- README.md
+
+**Key doc alignment updates**
+- Stage 1 web location now explicitly references web.
+- Mobile frontend is explicitly preserved under mobile.
+- Stage status/readme notes now reference the web implementation path.
+- Frontend root readme now documents both frontend surfaces and shared backend usage.
+
+**Notes**
+- Historical references in TRANSCRIPT.md were left unchanged because they are archival session logs.
+- No backend code was changed; this is directory designation/documentation alignment work only.
+
+If you want, I can do one more pass to add a short “Run Mobile vs Run Web” section in README.md so onboarding is immediate.
+
+Made changes.
