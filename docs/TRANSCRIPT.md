@@ -639,7 +639,7 @@ improved, and what required manual implementation
 
 **GitHub Copilot:** I’m going to add a concise reflection summary directly to REFLECTION.md using the transcript details, and I’ll structure it to explicitly cover all four required components.
 
-Generating patch (27 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/REFLECTION.md)
+Generating patch (27 lines) in [](docs/REFLECTION.md)
 
 
 ```
@@ -668,15 +668,15 @@ Format STAGES.md to match the formatting of EXAMPLE_STAGES.md to ensure that the
 
 **GitHub Copilot:** I’m going to review the current STAGES.md and align it to the stage structure in INSTRUCTIONS.md, then rewrite it in the same professional layout style used by EXAMPLE_STAGES.md.
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
+Read [](docs/STAGES.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/EXAMPLE_STAGES.md#1-1), lines 1 to 260
+Read [](EXAMPLE_STAGES.md#1-1), lines 1 to 260
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/INSTRUCTIONS.md)
+Read [](docs/INSTRUCTIONS.md)
 
 I’ve gathered the structure from both files and will now rewrite STAGES.md end-to-end so it mirrors the style of EXAMPLE_STAGES.md while mapping directly to all four stages in INSTRUCTIONS.md.
 
-Generating patch (362 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
+Generating patch (362 lines) in [](docs/STAGES.md)
 
 
 ```
@@ -698,7 +698,7 @@ Made changes.
 
 **GitHub Copilot:** I’ll edit README.md to replace the placeholder with a clickable stages link and add a concise stage-status tracking table in that same section.
 
-Generating patch (17 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+Generating patch (17 lines) in [](README.md)
 
 
 ```
@@ -721,7 +721,7 @@ Made changes.
 
 **GitHub Copilot:** I’ll add a short standardized status legend right below the stage table in README.md so tracking terms are consistent across the repo.
 
-Generating patch (12 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+Generating patch (12 lines) in [](README.md)
 
 
 ```
@@ -740,13 +740,13 @@ Made changes.
 
 **GitHub Copilot:** I’ll synchronize README.md and STAGES.md by adding the same status legend language to STAGES.md and ensuring both documents use matching status terms.
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md#80-80), lines 80 to 106
+Read [](README.md#80-80), lines 80 to 106
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
+Read [](docs/STAGES.md)
 
 I found the mismatch: README.md uses `Not Started/In Progress/Completed`, while STAGES.md still uses mixed uppercase placeholders; I’m updating STAGES.md to use the exact same status vocabulary and values as the README table.
 
-Generating patch (37 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
+Generating patch (37 lines) in [](docs/STAGES.md)
 
 
 ```
@@ -802,7 +802,7 @@ This session focused on filling out empty docs and synchronizing content across 
 
 **GitHub Copilot:** I’m updating PROJECT_DESCRIPTION.md now with a complete, in-depth project description that aligns with your README and staged plan, including purpose, architecture, goals, and expected outcomes. After the edit, I’ll summarize exactly what was added.
 
-Generating patch (92 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PROJECT_DESCRIPTION.md)
+Generating patch (92 lines) in [](docs/PROJECT_DESCRIPTION.md)
 
 
 ```
@@ -830,67 +830,67 @@ Created 5 todos
 
 I’m gathering the exact section structure from the CMPS490 reference docs first so the rewritten files match their formatting precisely.
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/CMPS490_contents/CMPS490_docs/ARCHITECTURE.md)
+Read [](CMPS490_contents/CMPS490_docs/ARCHITECTURE.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/CMPS490_contents/CMPS490_docs/DATA_MODEL.md)
+Read [](CMPS490_contents/CMPS490_docs/DATA_MODEL.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/CMPS490_contents/CMPS490_docs/DATA_SETS.md)
+Read [](CMPS490_contents/CMPS490_docs/DATA_SETS.md)
 
 Next I’m extracting the actual implemented backend models, scrapers, and data source configuration so these docs describe the current system accurately rather than planned-only features.
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/db/models.py)
+Read [](backend/db/models.py)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/config/sources.yaml)
+Read [](backend/config/sources.yaml)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/scrapers/registry.py)
+Read [](backend/scrapers/registry.py)
 
 I found the implemented schema and source registry; now I’ll confirm the runtime architecture (API startup, scheduler, summarization flow) so ARCHITECTURE.md reflects what is actually running today.
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/main.py)
+Read [](backend/main.py)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/scrapers/scheduler.py)
+Read [](backend/scrapers/scheduler.py)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/llm/summarizer.py)
+Read [](backend/llm/summarizer.py)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/api/router.py)
+Read [](backend/api/router.py)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/config/settings.py)
+Read [](backend/config/settings.py)
 
 I confirmed the core runtime flow; I’ll do one more quick pass on DB initialization and migrations so the data model and architecture docs accurately note the SQLite↔MariaDB alignment state.
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/db/database.py)
+Read [](backend/db/database.py)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/db/init_db.py)
+Read [](backend/db/init_db.py)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/db/migrations/MIGRATION_NOTES.md)
+Read [](backend/db/migrations/MIGRATION_NOTES.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/riskradar_db.sql#1-1), lines 1 to 320
+Read [](riskradar_db.sql#1-1), lines 1 to 320
 
 I have enough to write accurate content; I’ll quickly confirm the live API surface so the architecture and dataset docs can name exactly what clients consume right now.
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/api/alerts.py)
+Read [](backend/api/alerts.py)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/api/summaries.py)
+Read [](backend/api/summaries.py)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/api/users.py)
+Read [](backend/api/users.py)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/schemas/alert.py)
+Read [](backend/schemas/alert.py)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/schemas/summary.py)
+Read [](backend/schemas/summary.py)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/schemas/user.py)
+Read [](backend/schemas/user.py)
 
 I’m now drafting the three docs in the same markdown style as CMPS490, and I’ll base DATA_SETS.md on the actual scraper source endpoints (NWS, AirNow, EPA, FIRMS, USGS) found in code.
 
 Searched for regex `https?://|alert_type|source\s*=\s*|name\s*=\s*` (`**/backend/scrapers/*.py`), 46 results
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/scrapers/base_scraper.py)
+Read [](backend/scrapers/base_scraper.py)
 
 Starting: *Draft three updated docs* (3/5)
 
 I’m now writing the three documents with the CMPS490-style structure (title, overview, sectioned headings, tables/diagrams) while updating the content to match the currently implemented backend and configured data sources.
 
-Generating patch (99 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/ARCHITECTURE.md)
+Generating patch (99 lines) in [](docs/ARCHITECTURE.md)
 
 
 ```
@@ -898,7 +898,7 @@ Generating patch (99 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/Gi
 ```
 
 
-Generating patch (156 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/DATA_MODEL.md)
+Generating patch (156 lines) in [](docs/DATA_MODEL.md)
 
 
 ```
@@ -906,7 +906,7 @@ Generating patch (156 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/G
 ```
 
 
-Generating patch (121 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/DATA_SETS.md)
+Generating patch (121 lines) in [](docs/DATA_SETS.md)
 
 
 ```
@@ -916,11 +916,11 @@ The three docs are now fully populated and styled to mirror the CMPS490 format; 
 
 Completed: *Draft three updated docs* (3/5)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/ARCHITECTURE.md#1-1), lines 1 to 80
+Read [](docs/ARCHITECTURE.md#1-1), lines 1 to 80
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/DATA_MODEL.md#1-1), lines 1 to 60
+Read [](docs/DATA_MODEL.md#1-1), lines 1 to 60
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/DATA_SETS.md#1-1), lines 1 to 70
+Read [](docs/DATA_SETS.md#1-1), lines 1 to 70
 
 Updated the three attached docs to reflect the current implemented system and matched the CMPS490 documentation style (title + horizontal rule + structured sections, tables, and architecture/data flow breakdowns).
 
@@ -949,25 +949,25 @@ Created 5 todos
 
 I’m checking the current content of those four documents first so edits stay minimal and consistent with the style already used in your updated docs set.
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/EXAMPLES.md)
+Read [](docs/EXAMPLES.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/INSTRUCTIONS.md)
+Read [](docs/INSTRUCTIONS.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+Read [](README.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PROJECT_DESCRIPTION.md)
+Read [](docs/PROJECT_DESCRIPTION.md)
 
 I found `EXAMPLES.md` is empty and INSTRUCTIONS.md is using older inconsistent formatting, so next I’ll mirror the structure from the CMPS490 versions of those same docs and then update content to your current CMPS 357 state.
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/CMPS490_contents/CMPS490_docs/EXAMPLES.md)
+Read [](CMPS490_contents/CMPS490_docs/EXAMPLES.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/CMPS490_contents/CMPS490_docs/INSTRUCTIONS.md)
+Read [](CMPS490_contents/CMPS490_docs/INSTRUCTIONS.md)
 
 Starting: *Rewrite EXAMPLES in house style* (2/5)
 
 I’m editing EXAMPLES.md and INSTRUCTIONS.md now into the same professional, sectioned style used across your updated docs, with content tied to the actual current implementation and planned stages.
 
-Generating patch (202 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/EXAMPLES.md)
+Generating patch (202 lines) in [](docs/EXAMPLES.md)
 
 
 ```
@@ -975,7 +975,7 @@ Generating patch (202 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/G
 ```
 
 
-Generating patch (133 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/INSTRUCTIONS.md)
+Generating patch (133 lines) in [](docs/INSTRUCTIONS.md)
 
 
 ```
@@ -985,7 +985,7 @@ I’ve completed the EXAMPLES/INSTRUCTIONS pass; next I’m making targeted word
 
 Starting: *Align README and PROJECT_DESCRIPTION* (4/5)
 
-Generating patch (22 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+Generating patch (22 lines) in [](README.md)
 
 
 ```
@@ -993,7 +993,7 @@ Generating patch (22 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/Gi
 ```
 
 
-Generating patch (10 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PROJECT_DESCRIPTION.md)
+Generating patch (10 lines) in [](docs/PROJECT_DESCRIPTION.md)
 
 
 ```
@@ -1001,21 +1001,21 @@ Generating patch (10 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/Gi
 ```
 I’m running a quick verification read of the updated sections to confirm consistent stage naming and shared project language across all requested files.
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/EXAMPLES.md#1-1), lines 1 to 60
+Read [](docs/EXAMPLES.md#1-1), lines 1 to 60
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/INSTRUCTIONS.md)
+Read [](docs/INSTRUCTIONS.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md#1-1), lines 1 to 50
+Read [](README.md#1-1), lines 1 to 50
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md#105-105), lines 105 to 106
+Read [](README.md#105-105), lines 105 to 106
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PROJECT_DESCRIPTION.md#28-28), lines 28 to 70
+Read [](docs/PROJECT_DESCRIPTION.md#28-28), lines 28 to 70
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md#80-80), lines 80 to 106
+Read [](README.md#80-80), lines 80 to 106
 
 I’m making one final wording pass in README.md to match PROJECT_DESCRIPTION.md terminology exactly (stage names and assistant naming) for full alignment.
 
-Generating patch (12 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+Generating patch (12 lines) in [](README.md)
 
 
 ```
@@ -1025,7 +1025,7 @@ Generating patch (12 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/Gi
 
 Searched for regex `RiskRadar Assistant|& Alert Prioritization|Data Visualization & UX|Step2` (`**/README.md|docs/PROJECT_DESCRIPTION.md|docs/INSTRUCTIONS.md|docs/EXAMPLES.md`), no results
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md#90-90), lines 90 to 103
+Read [](README.md#90-90), lines 90 to 103
 
 Completed: *Align README and PROJECT_DESCRIPTION* (4/5)
 
@@ -1062,39 +1062,39 @@ Made changes.
 
 Searched for files matching `**/*.md`, 20 matches
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3)
+Read [](.)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs)
+Read [](docs)
 
 I identified the target set (README.md + all files in docs); next I’m scanning for obvious typos and then I’ll patch only the lines that need grammatical cleanup.
 
 Searched for regex `reccomended|differenciate|respository|whilst|Syncronize|consistient|web-app|24-48|Step2|aligned|applicaiton|teh|enviroment` (`**/README.md|docs/*.md`), no results
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+Read [](README.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/AUTHORS.md)
+Read [](docs/AUTHORS.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/CERTIFICATION.md)
+Read [](docs/CERTIFICATION.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/ARCHITECTURE.md)
+Read [](docs/ARCHITECTURE.md)
 
 I found several concrete grammar/spelling issues already (mostly in README.md and one line in CERTIFICATION.md), and now I’m scanning the remaining `docs/*.md` files before applying one consolidated patch.
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/DATA_MODEL.md)
+Read [](docs/DATA_MODEL.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/DATA_SETS.md)
+Read [](docs/DATA_SETS.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/EXAMPLES.md)
+Read [](docs/EXAMPLES.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/INSTRUCTIONS.md)
+Read [](docs/INSTRUCTIONS.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PROJECT_DESCRIPTION.md)
+Read [](docs/PROJECT_DESCRIPTION.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
+Read [](docs/STAGES.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/REFLECTION.md)
+Read [](docs/REFLECTION.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TRANSCRIPT.md#1-1), lines 1 to 260
+Read [](docs/TRANSCRIPT.md#1-1), lines 1 to 260
 
 Searched for regex `reccomended|differenciate|respository|Reviwewing|consistient|Syncronize|whilst|Step2|24-48h|non-emergency replacement` (`**/README.md`), 5 results
 
@@ -1102,7 +1102,7 @@ Searched for regex `reccomended|differenciate|respository|Reviwewing|consistient
 
 I’ve completed the scan and found grammar issues in README.md, CERTIFICATION.md, REFLECTION.md, and a few wording spots in STAGES.md/EXAMPLES.md; I’ll patch those now while leaving quoted transcript text unchanged for accuracy.
 
-Generating patch (18 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+Generating patch (18 lines) in [](README.md)
 
 
 ```
@@ -1110,7 +1110,7 @@ Generating patch (18 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/Gi
 ```
 
 
-Generating patch (16 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/CERTIFICATION.md)
+Generating patch (16 lines) in [](docs/CERTIFICATION.md)
 
 
 ```
@@ -1118,7 +1118,7 @@ Generating patch (16 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/Gi
 ```
 
 
-Generating patch (6 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/REFLECTION.md)
+Generating patch (6 lines) in [](docs/REFLECTION.md)
 
 
 ```
@@ -1126,7 +1126,7 @@ Generating patch (6 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/Git
 ```
 
 
-Generating patch (9 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
+Generating patch (9 lines) in [](docs/STAGES.md)
 
 
 ```
@@ -1134,7 +1134,7 @@ Generating patch (9 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/Git
 ```
 
 
-Generating patch (9 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/EXAMPLES.md)
+Generating patch (9 lines) in [](docs/EXAMPLES.md)
 
 
 ```
@@ -1174,13 +1174,13 @@ Made changes.
 
 **GitHub Copilot:** I’ll grammar-clean both frontend README files now and apply only wording/clarity fixes, keeping all technical meaning unchanged.
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/README.md)
+Read [](frontend/README.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/RiskRadar/README.md)
+Read [](frontend/RiskRadar/README.md)
 
 I found one minimal placeholder README and one mostly clean Expo README; I’m applying a light grammar polish to both (title case, punctuation, and one sentence flow fix).
 
-Generating patch (8 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/README.md)
+Generating patch (8 lines) in [](frontend/README.md)
 
 
 ```
@@ -1188,7 +1188,7 @@ Generating patch (8 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/Git
 ```
 
 
-Generating patch (6 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/RiskRadar/README.md)
+Generating patch (6 lines) in [](frontend/RiskRadar/README.md)
 
 
 ```
@@ -1243,7 +1243,7 @@ Searched for files matching `**/PROJECT_PROPOSAL.md`, no matches
 
 I found no existing `PROJECT_PROPOSAL.md`, so I’m creating a new one at the repository root with a clean summary of the project premise, objectives, and goals.
 
-Created [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/PROJECT_PROPOSAL.md)
+Created [](PROJECT_PROPOSAL.md)
 
 Created PROJECT_PROPOSAL.md with a structured summary of:
 - Project Premise
@@ -3161,61 +3161,61 @@ Searched for files matching `**/*php*`, no matches
 
 Searched for files matching `**/frontend/**`, no matches
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md#1-1), lines 1 to 260
+Read [](docs/STAGES.md#1-1), lines 1 to 260
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/INSTRUCTIONS.md)
+Read [](docs/INSTRUCTIONS.md)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+Read [](README.md)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/main.py)
+Read [](backend/main.py)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/api/router.py)
+Read [](backend/api/router.py)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/api/alerts.py)
+Read [](backend/api/alerts.py)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/api/summaries.py)
+Read [](backend/api/summaries.py)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/api/users.py)
+Read [](backend/api/users.py)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/schemas/alert.py)
+Read [](backend/schemas/alert.py)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/schemas/summary.py)
+Read [](backend/schemas/summary.py)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/schemas/user.py)
+Read [](backend/schemas/user.py)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/db/models.py)
+Read [](backend/db/models.py)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/config/settings.py)
+Read [](backend/config/settings.py)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/tests/test_api_alerts.py)
+Read [](backend/tests/test_api_alerts.py)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/tests/test_api_summaries.py)
+Read [](backend/tests/test_api_summaries.py)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/tests/test_api_users.py)
+Read [](backend/tests/test_api_users.py)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/tests/conftest.py)
+Read [](backend/tests/conftest.py)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/pytest.ini)
+Read [](backend/pytest.ini)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/requirements.txt)
+Read [](backend/requirements.txt)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/db/database.py)
+Read [](backend/db/database.py)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/db/init_db.py)
+Read [](backend/db/init_db.py)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/scrapers/scheduler.py)
+Read [](backend/scrapers/scheduler.py)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/CMPS490_contents/CMPS490_frontend/RiskRadar)
+Read [](CMPS490_contents/CMPS490_frontend/RiskRadar)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/ARCHITECTURE.md)
+Read [](docs/ARCHITECTURE.md)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/DATA_MODEL.md)
+Read [](docs/DATA_MODEL.md)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/EXAMPLES.md)
+Read [](docs/EXAMPLES.md)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/config/sources.yaml)
+Read [](backend/config/sources.yaml)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/CMPS490_contents/CMPS490_frontend/RiskRadar/README.md)
+Read [](CMPS490_contents/CMPS490_frontend/RiskRadar/README.md)
 
 Searched for regex `Stage 1: Web-App Extension|Progress So Far|In Progress|Required Steps|PHP` (`**/docs/STAGES.md`), 17 results
 
@@ -3288,11 +3288,11 @@ User: Update PLANNING_STAGES.md with this Stage 1 Plan and its steps
 
 GitHub Copilot: I’ll update PLANNING_STAGES.md now by inserting the Stage 1 kickoff plan and step-by-step checklist from the plan we just finalized. I’ll first check the file contents so I preserve any existing structure before patching.
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PLANNING_STAGES.md)
+Read [](docs/PLANNING_STAGES.md)
 
 I found the file is empty, so I’m adding a clean Stage 1 planning section with objective, scope decisions, implementation steps, and verification criteria so it’s ready to use immediately.
 
-Generating patch (91 lines) in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PLANNING_STAGES.md)
+Generating patch (91 lines) in [](docs/PLANNING_STAGES.md)
 
 
 ```
@@ -3329,37 +3329,37 @@ Searched for regex `TODO|to do|status|stage|phase|progress|checklist|milestone|d
 
 Searched for regex `TODO|to do|status|stage|phase|progress|checklist|milestone|done|in progress|blocked` (`**/README.md`), 14 results
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+Read [](README.md)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/INSTRUCTIONS.md)
+Read [](docs/INSTRUCTIONS.md)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
+Read [](docs/STAGES.md)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PROJECT_DESCRIPTION.md)
+Read [](docs/PROJECT_DESCRIPTION.md)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/EXAMPLES.md)
+Read [](docs/EXAMPLES.md)
 
 Searched for files matching `**/*.php`, no matches
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend)
+Read [](backend)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs)
+Read [](docs)
 
 Searched for regex `risk score|risk_score|priorit|priority|ranking|forecast|predict|assistant|plotly|map|sensitivity` (`**/backend/**`), 41 results
 
 Searched for regex `Stage|Status Legend|Progress So Far|Verification Checklist|Deliverables|Tasks|Objective` (`**/docs/*.md`), 196 results
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/ARCHITECTURE.md)
+Read [](docs/ARCHITECTURE.md)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/DATA_MODEL.md)
+Read [](docs/DATA_MODEL.md)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/DATA_SETS.md)
+Read [](docs/DATA_SETS.md)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/PROJECT_PROPOSAL_DRAFT.md)
+Read [](PROJECT_PROPOSAL_DRAFT.md)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/AUTHORS.md)
+Read [](docs/AUTHORS.md)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/CERTIFICATION.md)
+Read [](docs/CERTIFICATION.md)
 
 Searched for regex `Assignee|Owner|Due Date|Last Updated|Status Legend|Current Stage Status|source of truth` (`**/*.md`), 19 results
 
@@ -3404,13 +3404,13 @@ Created 4 todos
 
 I’ll quickly read the current README tracking block so the new link and wording fit existing formatting exactly.
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md#70-70), lines 70 to 106
+Read [](README.md#70-70), lines 70 to 106
 
 Starting: *Create docs TODO tracker* (2/4)
 
 I’ve confirmed the existing progress format; next I’m creating `docs/TODO.md` with a master tracker and stage-by-stage execution checklists mapped to your instruction stages.
 
-Generating patch (144 lines) in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
+Generating patch (144 lines) in [](docs/TODO.md)
 
 
 ```
@@ -3422,7 +3422,7 @@ Starting: *Link TODO in README* (3/4)
 
 TODO.md is in place with a full execution tracker and stage checklists. I’ll now add a concise link in README under the stages section and then run a quick consistency check.
 
-Generating patch (12 lines) in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+Generating patch (12 lines) in [](README.md)
 
 
 ```
@@ -3430,9 +3430,9 @@ Generating patch (12 lines) in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/
 ```
 I’m doing a final consistency pass on the new section wording and status vocabulary across README and TODO so the tracker is aligned with your existing stage docs.
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md#86-86), lines 86 to 109
+Read [](README.md#86-86), lines 86 to 109
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md#1-1), lines 1 to 80
+Read [](docs/TODO.md#1-1), lines 1 to 80
 
 Completed: *Link TODO in README* (3/4)
 
@@ -3458,13 +3458,13 @@ Created 4 todos
 
 I’m reading the full current tracker now so the additions fit your existing layout without disrupting what you already entered.
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
+Read [](docs/TODO.md)
 
 I’m adding practical meeting-oriented fields now (target week, check-in notes, blockers, next actions) and a reusable weekly update template so this becomes check-in ready.
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/AUTHORS.md)
+Read [](docs/AUTHORS.md)
 
-Generating patch (115 lines) in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
+Generating patch (115 lines) in [](docs/TODO.md)
 
 
 ```
@@ -3476,7 +3476,7 @@ Starting: *Verify readability for meetings* (4/4)
 
 I’ve applied the weekly-tracking improvements and prefilled owners/target weeks; I’ll do one quick readback check to ensure formatting is clean for meeting use.
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md#1-1), lines 1 to 120
+Read [](docs/TODO.md#1-1), lines 1 to 120
 
 Completed: *Verify readability for meetings* (4/4)
 
@@ -3570,11 +3570,11 @@ I've reviewed the top-level and progress-tracking documentation against the Proj
 
 User: Update PROJECT_PROPOSAL.md (Section 5) to reflect PHP frontend requirement
 
-GitHub Copilot: Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/PROJECT_PROPOSAL.md#1-1), lines 1 to 150
+GitHub Copilot: Read [](PROJECT_PROPOSAL.md#1-1), lines 1 to 150
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/PROJECT_PROPOSAL.md#90-90), lines 90 to 140
+Read [](PROJECT_PROPOSAL.md#90-90), lines 90 to 140
 
-Replacing 5 lines with 7 lines in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/PROJECT_PROPOSAL.md)
+Replacing 5 lines with 7 lines in [](PROJECT_PROPOSAL.md)
 
 
 ```
@@ -3590,17 +3590,17 @@ Of the planned extensions, the web-app is first priority followed by the Persona
 
 Make it so all top level documentation is in agreement
 
-GitHub Copilot: Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md#1-1), lines 1 to 250
+GitHub Copilot: Read [](docs/STAGES.md#1-1), lines 1 to 250
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/PROJECT_PROPOSAL.md#30-30), lines 30 to 50
+Read [](PROJECT_PROPOSAL.md#30-30), lines 30 to 50
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md#1-1), lines 1 to 100
+Read [](docs/TODO.md#1-1), lines 1 to 100
 
 I'll analyze the timeline and adjust it to meet your April 29 target (one week before May 6) with priorities: Web-app → Risk Scoring → Alert Prioritization. Let me review and update all relevant documentation.  
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md#90-90), lines 90 to 105
+Read [](README.md#90-90), lines 90 to 105
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/INSTRUCTIONS.md)
+Read [](docs/INSTRUCTIONS.md)
 
 Now I'll update all documentation to align with the April 29 deadline and prioritized scope: 
 
@@ -3608,7 +3608,7 @@ Using "Multi-Replace String in Files"
 
 Using "Multi-Replace String in Files"
 
-Replacing 8 lines with 10 lines in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+Replacing 8 lines with 10 lines in [](README.md)
 
 
 ```
@@ -3616,7 +3616,7 @@ Replacing 8 lines with 10 lines in [](file:///c%3A/Users/Rebecca/OneDrive/Docume
 ```
 
 
-Replacing 10 lines with 15 lines in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/PROJECT_PROPOSAL.md)
+Replacing 10 lines with 15 lines in [](PROJECT_PROPOSAL.md)
 
 
 ```
@@ -3624,17 +3624,9 @@ Replacing 10 lines with 15 lines in [](file:///c%3A/Users/Rebecca/OneDrive/Docum
 ```
 
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md#1-1), lines 1 to 80
+Read [](docs/STAGES.md#1-1), lines 1 to 80
 
-Replacing 11 lines with 23 lines in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
-
-
-```
-
-```
-
-
-Replacing 3 lines with 3 lines in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
+Replacing 11 lines with 23 lines in [](docs/STAGES.md)
 
 
 ```
@@ -3642,9 +3634,7 @@ Replacing 3 lines with 3 lines in [](file:///c%3A/Users/Rebecca/OneDrive/Documen
 ```
 
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md#70-70), lines 70 to 130
-
-Replacing 3 lines with 3 lines in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
+Replacing 3 lines with 3 lines in [](docs/STAGES.md)
 
 
 ```
@@ -3652,19 +3642,9 @@ Replacing 3 lines with 3 lines in [](file:///c%3A/Users/Rebecca/OneDrive/Documen
 ```
 
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md#150-150), lines 150 to 190
+Read [](docs/STAGES.md#70-70), lines 70 to 130
 
-Replacing 3 lines with 3 lines in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
-
-
-```
-
-```
-
-
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md#200-200), lines 200 to 220
-
-Replacing 3 lines with 3 lines in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
+Replacing 3 lines with 3 lines in [](docs/STAGES.md)
 
 
 ```
@@ -3672,19 +3652,9 @@ Replacing 3 lines with 3 lines in [](file:///c%3A/Users/Rebecca/OneDrive/Documen
 ```
 
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md#1-1), lines 1 to 60
+Read [](docs/STAGES.md#150-150), lines 150 to 190
 
-Replacing 9 lines with 18 lines in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
-
-
-```
-
-```
-
-
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md#60-60), lines 60 to 100
-
-Replacing 14 lines with 14 lines in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
+Replacing 3 lines with 3 lines in [](docs/STAGES.md)
 
 
 ```
@@ -3692,9 +3662,9 @@ Replacing 14 lines with 14 lines in [](file:///c%3A/Users/Rebecca/OneDrive/Docum
 ```
 
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md#110-110), lines 110 to 174
+Read [](docs/STAGES.md#200-200), lines 200 to 220
 
-Replacing 39 lines with 43 lines in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
+Replacing 3 lines with 3 lines in [](docs/STAGES.md)
 
 
 ```
@@ -3702,9 +3672,39 @@ Replacing 39 lines with 43 lines in [](file:///c%3A/Users/Rebecca/OneDrive/Docum
 ```
 
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/INSTRUCTIONS.md)
+Read [](docs/TODO.md#1-1), lines 1 to 60
 
-Replacing 17 lines with 29 lines in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/INSTRUCTIONS.md)
+Replacing 9 lines with 18 lines in [](docs/TODO.md)
+
+
+```
+
+```
+
+
+Read [](docs/TODO.md#60-60), lines 60 to 100
+
+Replacing 14 lines with 14 lines in [](docs/TODO.md)
+
+
+```
+
+```
+
+
+Read [](docs/TODO.md#110-110), lines 110 to 174
+
+Replacing 39 lines with 43 lines in [](docs/TODO.md)
+
+
+```
+
+```
+
+
+Read [](docs/INSTRUCTIONS.md)
+
+Replacing 17 lines with 29 lines in [](docs/INSTRUCTIONS.md)
 
 
 ```
@@ -3804,15 +3804,15 @@ All core agreements are in place:
 
 User: Check TODO and PLANNING_STAGES to make sure they reflect the changes made so that going forward all top-level and planning documents are in agreement and there is no confusion moving forward
 
-GitHub Copilot: Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md#1-1), lines 1 to 50
+GitHub Copilot: Read [](docs/TODO.md#1-1), lines 1 to 50
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PLANNING_STAGES.md)
+Read [](docs/PLANNING_STAGES.md)
 
 Good news: TODO.md already reflects all the changes correctly. I found one document that needs updating:
 
 **PLANNING_STAGES.md** lacks explicit connection to the April 29 deadline and required/optional scope distinction. Let me add that alignment: 
 
-Replacing 3 lines with 7 lines in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PLANNING_STAGES.md)
+Replacing 3 lines with 7 lines in [](docs/PLANNING_STAGES.md)
 
 
 ```
@@ -3994,13 +3994,13 @@ Delete `CMPS490_contents/CMPS490_frontend` so there are no redundant directories
 
 GitHub Copilot: I’ll remove the redundant CMPS490_frontend directory and then quickly verify it’s gone while leaving mobile untouched.
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/CMPS490_contents)
+Read [](CMPS490_contents)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend)
+Read [](frontend)
 
 I confirmed both paths exist. Next I’m deleting CMPS490_frontend and then listing CMPS490_contents again to verify removal.
 
-Ran terminal command: $target = "c:\Users\Rebecca\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\CMPS490_contents\CMPS490_frontend"; if (Test-Path $target) { Remove-Item -LiteralPath $target -Recurse -Force }; Get-ChildItem -LiteralPath "c:\Users\Rebecca\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\CMPS490_contents" | Select-Object -ExpandProperty Name
+Ran terminal command: $target = "./CMPS490_contents/CMPS490_frontend"; if (Test-Path $target) { Remove-Item -LiteralPath $target -Recurse -Force }; Get-ChildItem -LiteralPath "./CMPS490_contents" | Select-Object -ExpandProperty Name
 
 Removed the redundant directory successfully.
 
@@ -4021,11 +4021,11 @@ Created 3 todos
 
 I’m gathering status and frontend context in parallel so I can quickly confirm exactly what changed and what backend connections exist.
 
-Read changed files in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3)
+Read changed files in [](.)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/mobile)
+Read [](frontend/mobile)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web)
+Read [](frontend/web)
 
 Status shows the deletion is tracked, mobile contains `RiskRadar`, and web is currently empty. I’ll now scan the mobile app for API base URLs and connection code.
 
@@ -4050,7 +4050,7 @@ The deeper scan found no backend URL/API calls in `frontend/**`, so these fronte
 Ran `git_add_or_commit` 
 Completed with input: {
   "action": "add",
-  "directory": "c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3",
+  "directory": ".",
   "files": [
     "CMPS490_contents/CMPS490_frontend"
   ]
@@ -4059,13 +4059,13 @@ Completed with input: {
 Ran `git_add_or_commit` 
 Completed with input: {
   "action": "commit",
-  "directory": "c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3",
+  "directory": ".",
   "message": "Remove redundant CMPS490_frontend directory"
 }
 
 Commit is in. I’m doing one final status check to confirm the working tree is clean after the commit.
 
-Read changed files in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3)
+Read changed files in [](.)
 
 Completed: *Verify mobile/web backend wiring* (2/3)
 
@@ -4090,9 +4090,9 @@ User: How much progress is left to complete for Stage 1?
 
 GitHub Copilot: You’re asking for remaining Stage 1 work, so I’ll quickly verify current status from TODO.md and README.md and then calculate a clear “what’s left” summary.
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
+Read [](docs/TODO.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+Read [](README.md)
 
 Stage 1 is still at the very beginning.
 
@@ -4116,9 +4116,9 @@ User: Is the /frontend directory for the mobile-app or web-app extension
 
 GitHub Copilot: I’ll quickly check the existing frontend docs to confirm whether that path currently refers to the mobile app or the planned web extension, then give you a direct answer.
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/RiskRadar/README.md)
+Read [](frontend/RiskRadar/README.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/README.md)
+Read [](frontend/README.md)
 
 Right now, frontend is effectively the **mobile-app frontend area**.
 
@@ -4138,7 +4138,7 @@ User: To resolve this issue, implement the following changes:
 
 GitHub Copilot: I’m going to restructure the directories first, then I’ll sweep docs for any frontend path references and update them to web or mobile where appropriate.
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend)
+Read [](frontend)
 
 Searched for regex `frontend/RiskRadar|/frontend|frontend\\RiskRadar|frontend\\` (`**/*.{md,txt,yml,yaml,json}`), 21 results
 
@@ -4146,29 +4146,29 @@ I found mobile and web already present, so next I’ll verify their contents and
 
 Searched for files matching `**/frontend/**`, 39 matches
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/README.md)
+Read [](frontend/README.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web)
+Read [](frontend/web)
 
 I confirmed the split exists physically (mobile populated, web empty). I’ll now update all planning/status docs so Stage 1 work clearly targets web and mobile remains under mobile.
 
 Searched for regex ``frontend/|`/frontend|/frontend`|frontend\\`` (`**/*.md`), 24 results
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md#1-1), lines 1 to 180
+Read [](docs/STAGES.md#1-1), lines 1 to 180
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PLANNING_STAGES.md)
+Read [](docs/PLANNING_STAGES.md)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
+Read [](docs/TODO.md)
 
 Searched for regex `frontend|Expo|PHP web|web app` (`**/README.md`), 60 results
 
 Next I’m applying doc edits plus a `frontend/web/README.md` so the split is explicit in both project planning and directory-level guidance.
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md#70-70), lines 70 to 111
+Read [](README.md#70-70), lines 70 to 111
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/REFLECTION.md#150-150), lines 150 to 210
+Read [](docs/REFLECTION.md#150-150), lines 150 to 210
 
-Generating patch (13 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/README.md)
+Generating patch (13 lines) in [](frontend/README.md)
 
 
 ```
@@ -4176,7 +4176,7 @@ Generating patch (13 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/Gi
 ```
 
 
-Generating patch (30 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PLANNING_STAGES.md)
+Generating patch (30 lines) in [](docs/PLANNING_STAGES.md)
 
 
 ```
@@ -4184,7 +4184,7 @@ Generating patch (30 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/Gi
 ```
 I’ve updated the core Stage 1 planning doc and frontend root README; next I’m aligning STAGES.md, TODO.md, and README.md so every active planning/status document uses the same web target.
 
-Generating patch (9 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
+Generating patch (9 lines) in [](docs/STAGES.md)
 
 
 ```
@@ -4192,7 +4192,7 @@ Generating patch (9 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/Git
 ```
 
 
-Generating patch (6 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
+Generating patch (6 lines) in [](docs/TODO.md)
 
 
 ```
@@ -4200,7 +4200,7 @@ Generating patch (6 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/Git
 ```
 
 
-Generating patch (14 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+Generating patch (14 lines) in [](README.md)
 
 
 ```
@@ -4208,7 +4208,7 @@ Generating patch (14 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/Gi
 ```
 
 
-Generating patch (8 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/REFLECTION.md)
+Generating patch (8 lines) in [](docs/REFLECTION.md)
 
 
 ```
@@ -4216,7 +4216,7 @@ Generating patch (8 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/Git
 ```
 
 
-Created [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/README.md)
+Created [](frontend/web/README.md)
 
 I’ve finished the edits and added README.md; I’ll run a quick verification search to ensure no active planning docs still point to the old unsplit path.
 
@@ -4228,11 +4228,11 @@ Searched for text `/frontend` (`**/*.md`), 13 results
 
 Searched for text `frontend` (`**/docs/INSTRUCTIONS.md`), 1 result
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend)
+Read [](frontend)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/mobile)
+Read [](frontend/mobile)
 
-Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web)
+Read [](frontend/web)
 
 Implemented. The frontend is now clearly designated as split, and docs now consistently point Stage 1 web work to web.
 
@@ -4276,7 +4276,7 @@ User: Check that the following changes have been implemented successfully:
 
 - Update all documents accordingly once this is made, so that the developments for creating a new, unique Web-App front-end for the Project are designated the corresponding `frontend/web/`  directory
 
-GitHub Copilot: Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend)
+GitHub Copilot: Read [](frontend)
 
 Searched for regex ``frontend/RiskRadar|/frontend/views|/frontend/components|/frontend/services|/frontend/public|/frontend/config|top-level `/frontend`|top-level /frontend`` (`**/*.md`), 34 results
 
@@ -4284,15 +4284,15 @@ Searched for regex `frontend/mobile|frontend/web` (`**/*.md`), 34 results
 
 Searched for files matching `**/frontend/**`, 28 matches
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md#70-70), lines 70 to 130
+Read [](README.md#70-70), lines 70 to 130
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PLANNING_STAGES.md)
+Read [](docs/PLANNING_STAGES.md)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md#45-45), lines 45 to 75
+Read [](docs/TODO.md#45-45), lines 45 to 75
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md#30-30), lines 30 to 55
+Read [](docs/STAGES.md#30-30), lines 30 to 55
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/mobile)
+Read [](frontend/mobile)
 
 Searched for text `frontend/RiskRadar` (`**/README.md`), 11 results
 
@@ -4300,9 +4300,9 @@ Searched for text `frontend/RiskRadar` (`**/docs/*.md`), 17 results
 
 Searched for text `frontend/web/` (`**/README.md`), 3 results
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/REFLECTION.md#220-220), lines 220 to 235
+Read [](docs/REFLECTION.md#220-220), lines 220 to 235
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TRANSCRIPT-BECCA-COMPUTER.md#4033-4033), lines 4033 to 4040
+Read [](docs/TRANSCRIPT-BECCA-COMPUTER.md#4033-4033), lines 4033 to 4040
 
 Searched for regex `frontend/RiskRadar|frontend/mobile|frontend/web` (`**/PROJECT_PROPOSAL.md`), no results
 
@@ -4339,47 +4339,47 @@ User: Implement these fixes.  Restructure the directories, then sweep docs for a
 
 GitHub Copilot: Created 4 todos
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend)
+Read [](frontend)
 
 Searched for regex `frontend/RiskRadar|frontend/mobile|frontend/web|CMPS490_contents/CMPS490_frontend` (`**/*.md`), 69 results
 
 Searched for files matching `**/frontend/**`, 28 matches
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/mobile/RiskRadar/README-BECCA-COMPUTER.md)
+Read [](frontend/mobile/RiskRadar/README-BECCA-COMPUTER.md)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+Read [](README.md)
 
-Created [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/views)
+Created [](frontend/web/views)
 
-Created [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/components)
+Created [](frontend/web/components)
 
-Created [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/services)
+Created [](frontend/web/services)
 
-Created [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public)
+Created [](frontend/web/public)
 
-Created [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/config)
+Created [](frontend/web/config)
 
-Created [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/README.md)
+Created [](frontend/README.md)
 
-Created [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/mobile/README.md)
+Created [](frontend/mobile/README.md)
 
-Created [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/mobile/RiskRadar/README.md)
+Created [](frontend/mobile/RiskRadar/README.md)
 
-Created [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/README.md)
+Created [](frontend/web/README.md)
 
-Created [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/.gitkeep)
+Created [](frontend/web/.gitkeep)
 
-Created [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/views/.gitkeep)
+Created [](frontend/web/views/.gitkeep)
 
-Created [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/components/.gitkeep)
+Created [](frontend/web/components/.gitkeep)
 
-Created [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/services/.gitkeep)
+Created [](frontend/web/services/.gitkeep)
 
-Created [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public/.gitkeep)
+Created [](frontend/web/public/.gitkeep)
 
-Created [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/config/.gitkeep)
+Created [](frontend/web/config/.gitkeep)
 
-Generating patch (51 lines) in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+Generating patch (51 lines) in [](README.md)
 
 
 ```
@@ -4387,7 +4387,7 @@ Generating patch (51 lines) in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/
 ```
 
 
-Generating patch (16 lines) in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/REFLECTION.md)
+Generating patch (16 lines) in [](docs/REFLECTION.md)
 
 
 ```
@@ -4399,9 +4399,9 @@ Searched for regex `frontend/RiskRadar|CMPS490_contents/CMPS490_frontend/RiskRad
 
 Searched for regex `frontend/RiskRadar|CMPS490_contents/CMPS490_frontend/RiskRadar` (`**/docs/*.md`), 16 results
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web)
+Read [](frontend/web)
 
-Generating patch (9 lines) in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/REFLECTION.md)
+Generating patch (9 lines) in [](docs/REFLECTION.md)
 
 
 ```
@@ -4419,21 +4419,21 @@ Searched for regex `frontend/RiskRadar|CMPS490_contents/CMPS490_frontend` (`**/d
 
 Searched for regex `frontend/RiskRadar|CMPS490_contents/CMPS490_frontend` (`**/docs/TODO.md`), no results
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/README.md)
+Read [](frontend/README.md)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/README.md)
+Read [](frontend/web/README.md)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/mobile/RiskRadar/README.md)
+Read [](frontend/mobile/RiskRadar/README.md)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md#72-72), lines 72 to 102
+Read [](README.md#72-72), lines 72 to 102
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/REFLECTION.md#224-224), lines 224 to 235
+Read [](docs/REFLECTION.md#224-224), lines 224 to 235
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend)
+Read [](frontend)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/mobile)
+Read [](frontend/mobile)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web)
+Read [](frontend/web)
 
 Completed: *Inspect frontend layout* (1/4)
 
@@ -4474,13 +4474,13 @@ User: Double check to make sure all planning/status docs are updated so the Proj
 
 GitHub Copilot: Created 3 todos
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md#1-1), lines 1 to 90
+Read [](docs/STAGES.md#1-1), lines 1 to 90
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PLANNING_STAGES.md)
+Read [](docs/PLANNING_STAGES.md)
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md#1-1), lines 1 to 90
+Read [](docs/TODO.md#1-1), lines 1 to 90
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md#72-72), lines 72 to 130
+Read [](README.md#72-72), lines 72 to 130
 
 Searched for regex `frontend/RiskRadar|frontend/mobile/RiskRadar|frontend/mobile|frontend/web|CMPS490_contents/CMPS490_frontend` (`**/{README.md,docs/STAGES.md,docs/PLANNING_STAGES.md,docs/TODO.md,docs/INSTRUCTIONS.md,docs/PROJECT_DESCRIPTION.md,PROJECT_PROPOSAL.md}`), 33 results
 
@@ -4488,9 +4488,9 @@ Searched for regex `stack decision|frontend stack|not finalized|Confirm Stage 1 
 
 Searched for regex `frontend/web/|frontend/mobile/` (`**/docs/TODO.md`), 2 results
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md#90-90), lines 90 to 170
+Read [](docs/TODO.md#90-90), lines 90 to 170
 
-Generating patch (39 lines) in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md), [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md), [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
+Generating patch (39 lines) in [](docs/TODO.md), [](README.md), [](docs/STAGES.md)
 
 
 ```
@@ -4508,11 +4508,11 @@ Generating patch (39 lines) in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/
 
 Searched for regex `stack decision|not finalized|Confirm Stage 1 stack direction|frontend/mobile/|frontend/web/` (`**/{README.md,docs/STAGES.md,docs/PLANNING_STAGES.md,docs/TODO.md}`), 43 results
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md#40-40), lines 40 to 105
+Read [](docs/TODO.md#40-40), lines 40 to 105
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md#118-118), lines 118 to 128
+Read [](README.md#118-118), lines 118 to 128
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md#60-60), lines 60 to 80
+Read [](docs/STAGES.md#60-60), lines 60 to 80
 
 Completed: *Audit planning docs* (1/3)
 
@@ -4561,33 +4561,33 @@ Created 5 todos
 
 I’m gathering the exact filenames and then running a content comparison so I can make a safe merge decision before deleting anything.
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs)
+Read [](docs)
 
-Read changed files in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3)
+Read changed files in [](.)
 
 I found both transcript files present; next I’m running a direct file diff to identify whether `TRANSCRIPT-BECCA-COMPUTER.md` contains unique entries not already in `TRANSCRIPT.md`.
 
 Ran terminal command: (Get-Item docs\TRANSCRIPT.md).Length; (Get-Item docs\TRANSCRIPT-BECCA-COMPUTER.md).Length; git diff --no-index -- docs/TRANSCRIPT.md docs/TRANSCRIPT-BECCA-COMPUTER.md | Out-String
 
-Read [](file:///c%3A/Users/Rebecca/AppData/Roaming/Code/User/workspaceStorage/b758cbb3e9c176de33909301a33b54d7/GitHub.copilot-chat/chat-session-resources/da8e7209-cde7-408d-831c-d95c73999c0d/call_l0VcDMU6x5crGI5qv4GsdKMn__vscode-1773262605657/content.txt#1-1), lines 1 to 400
+Read []([redacted-local-cache-path]), lines 1 to 400
 
 The diff shows `TRANSCRIPT-BECCA-COMPUTER.md` is larger with additional tail content; I’m now verifying whether `TRANSCRIPT.md` is a prefix so I can safely append only the missing unique block.
 
 Ran terminal command: $a = Get-Content docs\TRANSCRIPT.md; $b = Get-Content docs\TRANSCRIPT-BECCA-COMPUTER.md; "A_lines=$($a.Count)"; "B_lines=$($b.Count)"; $min=[Math]::Min($a.Count,$b.Count); $idx=-1; for($i=0;$i -lt $min;$i++){ if($a[$i] -cne $b[$i]){ $idx=$i; break } }; if($idx -eq -1){ "first_diff=None_in_overlap" } else { "first_diff_line=$($idx+1)"; "A:"; $a[$idx]; "B:"; $b[$idx] }; if($idx -eq -1 -and $a.Count -le $b.Count){ "A_is_prefix_of_B=True" } else { "A_is_prefix_of_B=False" }
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TRANSCRIPT.md#3968-3968), lines 3968 to 4055
+Read [](docs/TRANSCRIPT.md#3968-3968), lines 3968 to 4055
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TRANSCRIPT-BECCA-COMPUTER.md#3968-3968), lines 3968 to 4055
+Read [](docs/TRANSCRIPT-BECCA-COMPUTER.md#3968-3968), lines 3968 to 4055
 
 Searched for regex `` There appear to be redundant directories|How much progress is left to complete for Stage 1\?|Delete `CMPS490_contents/CMPS490_frontend` `` (`**/docs/TRANSCRIPT*.md`), 3 results
 
 I confirmed each transcript has unique sections after the same point, so I’ll preserve both by appending the unique tail from TRANSCRIPT-BECCA-COMPUTER.md into TRANSCRIPT.md, then remove the duplicate file.
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TRANSCRIPT-BECCA-COMPUTER.md#3989-3989), lines 3989 to 4450
+Read [](docs/TRANSCRIPT-BECCA-COMPUTER.md#3989-3989), lines 3989 to 4450
 
-Read [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TRANSCRIPT.md#4045-4045), lines 4045 to 4084
+Read [](docs/TRANSCRIPT.md#4045-4045), lines 4045 to 4084
 
-Generating patch (470 lines) in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TRANSCRIPT.md)
+Generating patch (470 lines) in [](docs/TRANSCRIPT.md)
 
 
 ```
@@ -4595,7 +4595,7 @@ Generating patch (470 lines) in [](file:///c%3A/Users/Rebecca/OneDrive/Documents
 ```
 
 
-Generating patch (3 lines) in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TRANSCRIPT-BECCA-COMPUTER.md)
+Generating patch (3 lines) in [](docs/TRANSCRIPT-BECCA-COMPUTER.md)
 
 I’ve merged and removed the extra transcript file; now I’m scanning the full repository for other likely duplicates (machine-suffixed names, copy variants, and duplicate proposal/transcript files).
 
@@ -4609,9 +4609,9 @@ Searched for files matching `**/TRANSCRIPT*`, 2 matches
 
 Starting: *Summarize duplicates and actions* (5/5)
 
-Read changed files in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3)
+Read changed files in [](.)
 
-Read changed files in [](file:///c%3A/Users/Rebecca/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3)
+Read changed files in [](.)
 
 I’ve finished the merge/delete operation and duplicate scan; I’m running one final `git status` check to confirm the repository reflects exactly these changes.
 
@@ -4686,19 +4686,19 @@ I confirmed the rename/delete set is ready; next I’m staging everything and cr
 Ran `git_add_or_commit` 
 Completed with input: {
   "action": "add",
-  "directory": "c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3"
+  "directory": "."
 }
 
 Ran `git_add_or_commit` 
 Completed with input: {
   "action": "commit",
-  "directory": "c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3",
+  "directory": ".",
   "message": "Normalize mobile frontend filenames by removing -BECCA-COMPUTER suffixes"
 }
 
 Ran `git_push` 
 Completed with input: {
-  "directory": "c:\\Users\\Rebecca\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3"
+  "directory": "."
 }
 
 The commit and push commands completed; I’m doing a quick final verification of branch status and latest commit on remote-tracking state.
