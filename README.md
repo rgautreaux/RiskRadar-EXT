@@ -90,6 +90,9 @@ This repository includes the initialized Expo frontend for the RiskRadar Web-App
 > **Note:** This frontend was scaffolded as a standalone project independent of the CMPS 490 mobile app frontend, as recommended by the project guidelines. It is intentionally distinct so that this project can progress without depending on CMPS 490 frontend timelines.
 
 See [`frontend/RiskRadar/README.md`](./frontend/RiskRadar/README.md) for setup and development instructions.
+- `frontend/mobile/` contains the existing Expo/React Native mobile frontend (`RiskRadar`).
+- `frontend/web/` is the designated location for the new CMPS 357 PHP web-app extension.
+- Both frontends connect to the same backend API service in `backend/`.
 
 ### Additional Features and Extensions
 
@@ -115,7 +118,7 @@ Track execution tasks here: [Project TODO Tracker](./docs/TODO.md)
 
 | Stage | Title | Status | Last Updated | Scope | Notes |
 |---|---|---|---|---|---|
-| 1 | Web-App Extension | In Progress | 2026-03-10 | **Required** | Building unique PHP web interface connected to existing backend APIs. Target: Week of 2026-03-31. |
+| 1 | Web-App Extension | In Progress | 2026-03-10 | **Required** | Building unique PHP web interface in `frontend/web/` connected to existing backend APIs. Target: Week of 2026-03-31. |
 | 2 | Environmental Risk Assessment and Alert Prioritization Extensions | Not Started | 2026-03-10 | **Required** | Personal risk scoring engine + smart alert prioritization. Target: Week of 2026-04-28. |
 | 3 | Data Visualization and User Experience Extensions | Not Started | 2026-03-10 | Optional/Stretch | Interactive Plotly-based risk map. Planned only if Stage 2 completes early. |
 | 4 | Predictive Analytics and AI-Driven Insights Extensions | Not Started | 2026-03-10 | Optional/Stretch | 24-48 hour forecasting + RiskRadar AI Assistant. Planned only if time permits after Stage 3. |

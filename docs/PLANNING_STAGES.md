@@ -11,7 +11,7 @@ Begin Stage 1 with a small, functional PHP web-app vertical slice that connects 
 
 ### Scope Decisions (Confirmed)
 - **MVP page scope**: Dashboard first (`alerts` summary + latest `summary`)
-- **Web app location**: Top-level `/frontend` directory
+- **Web app location**: `frontend/web/` (with mobile app retained in `frontend/mobile/`)
 - **Backend runtime during development**: Current startup as-is (scheduler enabled)
 
 ### Stage 1 Kickoff Steps
@@ -20,13 +20,13 @@ Begin Stage 1 with a small, functional PHP web-app vertical slice that connects 
 	- Align Stage 1 wording and checklist between `docs/STAGES.md` and `README.md` for dashboard-first MVP.
 	- Keep status language consistent with current progress tracking.
 
-2. **Create PHP web-app structure in `/frontend`**
+2. **Create PHP web-app structure in `/frontend/web`**
 	- Add initial directories:
-	  - `/frontend/views`
-	  - `/frontend/components`
-	  - `/frontend/services`
-	  - `/frontend/public`
-	  - `/frontend/config`
+	  - `/frontend/web/views`
+	  - `/frontend/web/components`
+	  - `/frontend/web/services`
+	  - `/frontend/web/public`
+	  - `/frontend/web/config`
 	- Add initial pages:
 	  - `index.php` (dashboard)
 	  - alerts page
@@ -81,7 +81,7 @@ Begin Stage 1 with a small, functional PHP web-app vertical slice that connects 
   - Predictive analytics and AI assistant enhancements
 
 ### Stage 1 Deliverables (Kickoff Phase)
-- `/frontend` scaffold with initial PHP pages/components/services
+- `/frontend/web` scaffold with initial PHP pages/components/services
 - API integration layer for alerts/summaries/users
 - Environment/config template for frontend
 - Updated setup notes and verification checklist
