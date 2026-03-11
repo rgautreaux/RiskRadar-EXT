@@ -174,7 +174,9 @@ This session used **GitHub Copilot** to complete a documentation continuity pass
 - **Grammar and readability cleanup:** Grammar passes were completed for `README.md`, top-level docs in `docs/`, and frontend readmes (located at `CMPS490_contents/CMPS490_frontend/` at the time of the session; moved to `frontend/` during the Web-App Frontend Initialization commit):
 	- `frontend/README.md` (formerly `CMPS490_contents/CMPS490_frontend/README.md`)
 	- `frontend/RiskRadar/README.md` (formerly `CMPS490_contents/CMPS490_frontend/RiskRadar/README.md`)
-
+- **Grammar and readability cleanup:** Grammar passes were completed for `README.md`, top-level docs in `docs/`, and frontend readmes:
+	- `frontend/README.md`
+	- `frontend/mobile/RiskRadar/README.md`
 ### (3) How Output Was Reviewed/Verified
 - The updates were verified against implemented backend code and configuration (models, scrapers, scheduler, API routes, schemas, settings, and migration notes) to ensure documentation reflected actual runtime behavior rather than planned-only features.
 - Terminology and stage names were cross-checked between `README.md`, `docs/INSTRUCTIONS.md`, `docs/STAGES.md`, and `docs/PROJECT_DESCRIPTION.md` to confirm consistency.
