@@ -75,26 +75,28 @@ As an extension of our RiskRadar mobile app, this repository contains code from 
 
 ### RiskRadar Web-App Extension
 
-This repository includes the initialized Expo frontend for the RiskRadar Web-App Extension, located at [`frontend/RiskRadar/`](./frontend/RiskRadar/).
+The frontend workspace is now explicitly split so the mobile and web clients can evolve independently while still using the same backend API service in `backend/`.
 
-**Frontend Stack:** [Expo](https://expo.dev) with React Native, bootstrapped via `create-expo-app`.
+**Frontend surfaces:**
+- `frontend/mobile/` — existing Expo/React Native mobile frontend workspace
+- `frontend/mobile/RiskRadar/` — current RiskRadar mobile application files
+- `frontend/web/` — designated CMPS 357 PHP web-app extension workspace
 
-**Directory structure:**
-- `frontend/RiskRadar/app/` — File-based routing entry points (tabs layout, index, explore, modal screens)
-- `frontend/RiskRadar/assets/images/` — App icons and splash screen assets
-- `frontend/RiskRadar/components/` — Shared UI components (e.g., external link, haptic tab)
-- `frontend/RiskRadar/constants/` — App-wide constants
-- `frontend/RiskRadar/hooks/` — Custom React hooks
-- `frontend/RiskRadar/scripts/` — Utility scripts
+**Web frontend scaffold:**
+- `frontend/web/views/` — page templates and routed screens
+- `frontend/web/components/` — reusable PHP/UI fragments
+- `frontend/web/services/` — backend API wrappers and response helpers
+- `frontend/web/public/` — public-facing assets and entry files
+- `frontend/web/config/` — environment and runtime configuration templates
 
-> **Note:** This frontend was scaffolded as a standalone project independent of the CMPS 490 mobile app frontend, as recommended by the project guidelines. It is intentionally distinct so that this project can progress without depending on CMPS 490 frontend timelines.
+**Mobile frontend note:**
+- The existing Expo mobile app remains under `frontend/mobile/RiskRadar/`.
+- Mobile setup instructions are in [`frontend/mobile/RiskRadar/README.md`](./frontend/mobile/RiskRadar/README.md).
 
-See [`frontend/RiskRadar/README.md`](./frontend/RiskRadar/README.md) for setup and development instructions.
-- `frontend/mobile/` contains the existing Expo/React Native mobile frontend (`RiskRadar`).
-- `frontend/web/` is the designated location for the new CMPS 357 PHP web-app extension.
-- `CMPS490_contents/CMPS490_frontend/RiskRadar/` contains the existing Expo/React Native mobile frontend (`RiskRadar`).
-- `frontend/web/` is the designated location for the new CMPS 357 PHP web-app extension (to be created in Stage 1).
-- Both frontends connect to the same backend API service in `backend/`.
+**Web frontend note:**
+- Stage 1 web-app development should be placed in `frontend/web/`.
+- Web scaffold details are in [`frontend/web/README.md`](./frontend/web/README.md).
+- Frontend workspace guidance is in [`frontend/README.md`](./frontend/README.md).
 
 ### Additional Features and Extensions
 
