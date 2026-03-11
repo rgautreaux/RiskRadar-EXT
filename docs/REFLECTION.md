@@ -373,10 +373,7 @@ This session used **GitHub Copilot** to complete a documentation continuity pass
 	- `docs/DATA_SETS.md`
 - **Planning-document consistency:** `docs/EXAMPLES.md` and `docs/INSTRUCTIONS.md` were reformatted and normalized to match the style and terminology used across the docs set.
 - **Cross-file wording alignment:** `README.md` and `docs/PROJECT_DESCRIPTION.md` were aligned for stage naming, assistant naming, and project-scope language.
-- **Grammar and readability cleanup:** Grammar passes were completed for `README.md`, top-level docs in `docs/`, and frontend readmes after the workspace was split into `frontend/mobile/` and `frontend/web/`:
-	- `frontend/README.md`
-	- `frontend/mobile/RiskRadar/README.md`
-- **Grammar and readability cleanup:** Grammar passes were completed for `README.md`, top-level docs in `docs/`, and frontend readmes:
+- **Grammar and readability cleanup:** Grammar passes were completed for `README.md`, top-level docs in `docs/`, and frontend readmes across the `frontend/mobile/` and `frontend/web/` workspace split:
 	- `frontend/README.md`
 	- `frontend/mobile/README.md`
 	- `frontend/mobile/RiskRadar/README.md`
