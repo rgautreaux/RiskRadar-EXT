@@ -44,15 +44,15 @@ Use this process during each weekly meeting:
 
 | Week Of | Completed Tasks | In Progress Tasks | Blockers | Decisions Needed | Evidence Added | Next Week Focus |
 |---|---|---|---|---|---|---|
-| 2026-03-10 | TODO tracker baseline created | S1-00, DOC-01, DOC-02, DOC-03 | Stage 1 frontend stack not finalized | Confirm Stage 1 stack direction | `docs/TODO.md`, `README.md` link update | Close S1-00 and begin S1-01/S1-02 |
+| 2026-03-10 | TODO tracker baseline created; frontend split confirmed (`frontend/mobile/` + `frontend/web/`) | S1-02, DOC-01, DOC-02, DOC-03 | Environment config template for web app not added yet | Confirm next Stage 1 implementation slice after scaffold | `docs/TODO.md`, `README.md`, `frontend/README.md`, `frontend/mobile/README.md`, `frontend/web/README.md` | Continue S1-02 and begin S1-01/S1-03 |
 
 ## Master Task Tracker
 
 | Stage | Task ID | Task | Priority | Status | Owner | Target Week | Last Updated | Dependencies | Evidence | Notes |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | S1-00 | Confirm Stage 1 frontend stack decision (PHP requirement vs approved alternative) | High | In Progress | Rebecca | Week of 2026-03-10 | 2026-03-10 | Instructor/team decision | Meeting notes (TBD) | Keep wording aligned with `INSTRUCTIONS.md` until finalized. |
+| 1 | S1-00 | Confirm Stage 1 frontend stack decision and target directories | High | Completed | Rebecca | Week of 2026-03-10 | 2026-03-11 | Team planning alignment | `README.md`, `docs/STAGES.md`, `docs/PLANNING_STAGES.md`, `frontend/README.md` | Confirmed PHP web-app work targets `frontend/web/` and the existing mobile client remains in `frontend/mobile/`. |
 | 1 | S1-01 | Define web extension architecture and backend API integration flow | High | Not Started | Rebecca | Week of 2026-03-17 | 2026-03-10 | S1-00 | TBD | Include alerts, summaries, and users endpoints. |
-| 1 | S1-02 | Create frontend project structure and environment config template | High | Not Started | Rebecca | Week of 2026-03-17 | 2026-03-10 | S1-00 | TBD | Place web-app structure in `frontend/web/` (views/components/services/assets) and preserve mobile app in `frontend/mobile/`. |
+| 1 | S1-02 | Create frontend project structure and environment config template | High | In Progress | Rebecca | Week of 2026-03-17 | 2026-03-11 | S1-00 | `frontend/README.md`, `frontend/mobile/README.md`, `frontend/web/README.md` | Web scaffold now exists in `frontend/web/`; environment config template is still pending. |
 | 1 | S1-03 | Implement backend connectivity wrappers with error handling and response normalization | High | Not Started | Max | Week of 2026-03-24 | 2026-03-10 | S1-01, S1-02 | TBD | Handle timeout, non-2xx, malformed responses. |
 | 1 | S1-04 | Build web UI screens for dashboard, alerts, summaries, and user profile/preferences | High | Not Started | Rebecca | Week of 2026-03-24 | 2026-03-10 | S1-03 | TBD | Ensure UI is distinct from mobile app experience. |
 | 1 | S1-05 | Add input validation, sanitization, and defensive rendering for missing API fields | Medium | Not Started | Max | Week of 2026-03-31 | 2026-03-10 | S1-03, S1-04 | TBD | Avoid exposing secrets in source/client payloads. |
@@ -90,7 +90,7 @@ Use this process during each weekly meeting:
 Build a distinct web-facing extension connected to existing backend APIs.
 
 ### Execution Checklist
-- [ ] S1-00: Finalize frontend stack decision and document decision rationale.
+- [x] S1-00: Finalize frontend stack decision and document decision rationale.
 - [ ] S1-01: Document architecture and backend route usage.
 - [ ] S1-02: Create frontend directory structure and environment config template.
 - [ ] S1-03: Build API service wrappers with standardized error handling.
