@@ -8,6 +8,18 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 - Each stage includes implementation tasks, deliverables, and verification expectations.
 - Stage progress markers should be updated as work is completed.
 
+## Scope and Timeline
+
+**Required Deliverables (Target: April 29, 2026):**
+- **Stage 1**: Web-App Extension (Priority 1)
+- **Stage 2**: Environmental Risk Assessment and Alert Prioritization Extensions (Priority 2)
+  - Step 1: Personal Risk Scoring Engine
+  - Step 2: Smart Alert Prioritization System
+
+**Optional Stretch Goals (If Time Permits):**
+- **Stage 3**: Data Visualization and User Experience Extensions (contingent on Stage 2 completion)
+- **Stage 4**: Predictive Analytics and AI-Driven Insights Extensions (contingent on Stage 3 completion)
+
 **Status Legend**
 - **Not Started**: Requirements are defined, but implementation has not begun.
 - **In Progress**: Implementation is actively underway and may be partially complete.
@@ -17,7 +29,7 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 
 ## Stage 1: Web-App Extension
 
-**Objective**: Build a web-application extension of RiskRadar that uses the existing backend and data sources while providing a unique frontend experience.
+**Objective**: Build a web-application extension of RiskRadar that uses the existing backend and data sources while providing a unique frontend experience. *(REQUIRED - Target Completion: Week of March 31, 2026)*
 
 ### Tasks:
 1. **Define the web extension architecture**
@@ -26,12 +38,13 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
    - Define URL/environment configuration for local and deployed usage.
 
 2. **Create web-app project structure**
-   - Add a dedicated web-app directory (for example, `web/` or `frontend/web/`).
+   - Keep the existing Expo mobile app under `frontend/mobile/` and build the dedicated PHP web app under `frontend/web/` with organized subdirectories for views, components, services, and assets.
    - Organize views, reusable PHP components, API client helpers, and assets.
    - Add `.env.example` (or config template) for API base URL and environment settings.
 
 3. **Implement backend connectivity from PHP**
-   - Create PHP service wrappers for backend endpoints.
+   - Create PHP service wrappers for existing backend endpoints (alerts, summaries, user data).
+   - Handle authentication (if needed) and include necessary headers.
    - Implement robust HTTP error handling (timeouts, non-2xx, malformed responses).
    - Normalize response objects for use by presentation templates.
 
@@ -68,7 +81,7 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 
 ## Stage 2: Environmental Risk Assessment and Alert Prioritization Extensions
 
-**Objective**: Extend backend intelligence by introducing personalized risk scoring and smart alert prioritization for both mobile and web clients.
+**Objective**: Extend backend intelligence by introducing personalized risk scoring and smart alert prioritization for both mobile and web clients. *(REQUIRED - Target Completion: Week of April 28, 2026)*
 
 ### Step 1: Personal Risk Scoring Engine
 
@@ -141,7 +154,7 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 
 ## Stage 3: Data Visualization and User Experience Extensions
 
-**Objective**: Add an interactive risk map experience that helps users explore and understand environmental risk conditions spatially.
+**Objective**: Add an interactive risk map experience that helps users explore and understand environmental risk conditions spatially. *(OPTIONAL STRETCH GOAL - Only if Stage 2 completes early)*
 
 ### Step 1: Interactive Risk Map (UI Extension)
 
@@ -189,7 +202,7 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 
 ## Stage 4: Predictive Analytics and AI-Driven Insights Extensions
 
-**Objective**: Extend RiskRadar with short-horizon risk forecasting and an AI assistant that helps users interpret conditions, alerts, and travel implications.
+**Objective**: Extend RiskRadar with short-horizon risk forecasting and an AI assistant that helps users interpret conditions, alerts, and travel implications. *(OPTIONAL STRETCH GOAL - Only if Stage 3 completes early)*
 
 ### Step 1: Predictive Environmental Risk (AI/Data Extension)
 
@@ -224,7 +237,7 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 #### Tasks:
 1. **Define assistant scope and guardrails**
    - Focus on interpreting environmental conditions, alerts, and travel risk context.
-   - Restrict to informational guidance (non-medical, non-emergency replacement).
+   - Restrict to informational guidance (non-medical and not a replacement for emergency services).
    - Define safe fallback messaging when confidence is low.
 
 2. **Implement assistant backend integration**
@@ -255,7 +268,7 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 - Updated documentation for usage and interpretation
 
 ### Progress So Far
-⏳ **Not Started** - Planned: 24-48h forecasting and RiskRadar assistant integration.
+⏳ **Not Started** - Planned: 24-48 hour forecasting and RiskRadar AI Assistant integration.
 
 ---
 

@@ -2,11 +2,11 @@
 
 Due Date: May 6, 2026, 12:55 CST
 
-This repository contains the code and documentation for Group 3's Final Project. The primary objective is to create a meaningful, effective extension of our CMPS 490 Senior project.
+This repository contains the code and documentation for Group 3's CMPS 357 final project. The primary objective is to build a meaningful extension of our CMPS 490 RiskRadar senior project with new web-facing capabilities and advanced decision-support features.
 
-Our Senior Project focuses on developing a mobile app called **RiskRadar** to help residents and travelers identify and manage potential environmental risks utilizing data analytics.
+Our senior project focuses on developing **RiskRadar**, an environmental risk awareness platform that helps residents and travelers identify and manage potential environmental risks using data analytics.
 
-Our goal for the CMPS 357 Final Project is to build a unique web-app extension of our mobile app that exhibits a new, unique frontend interface as well as new extended features like interactive maps and personalized risk assessments.
+Our goal for the CMPS 357 final project is to build a unique web-app extension with a distinct frontend interface while extending the platform with features such as personalized risk assessment, interactive mapping, and predictive/AI-supported insights.
 
 ---
 
@@ -18,9 +18,9 @@ Our goal for the CMPS 357 Final Project is to build a unique web-app extension o
 **Web-App Extension of our RiskRadar Mobile App**
 Our initial idea was to create a web-app extension of our RiskRadar mobile app. This is because we thought a web extension would be a more straightforward extension of our mobile app, and would allow us to leverage the same backend we constructed and utilize the same data sources. 
 
-However, our professor suggested we go the Web Extension route *only* if we do **NOT** pivot to a Web-app in CMPS490. If we *do* create a web app extension, then it was reccomended that we implement an entirely new and unique frontend than that of the Mobile App so that we do not have to worry about relying on our CMPS490 frontend and have to wait for them to complete their frontend work before we can start our work for this project.  This ensures a level of independence between the two projects and allows us to work on our project without having to worry about the progress of the CMPS490 frontend.
+However, our professor suggested we go the web extension route *only* if we do **NOT** pivot to a web app in CMPS490. If we *do* create a web app extension, then it was recommended that we implement an entirely new and unique frontend from the mobile app so that we do not have to rely on the CMPS490 frontend or wait for that frontend work to be completed before starting this project. This ensures a level of independence between the two projects and allows us to progress without depending on CMPS490 frontend timelines.
 
-However, in case issues arise and we must pivot in CMPS490, we are discussing further extensions we can implement to further differenciate the two projects and ensure that we are not relying too heavily on the CMPS490 project for our work for this one.
+However, if issues arise and we must pivot in CMPS490, we are discussing additional extensions we can implement to further differentiate the two projects and ensure that we are not relying too heavily on CMPS490 for this project.
 
 ## Further Extensions (if we pivot to Web-App in CMPS490):
 
@@ -37,17 +37,17 @@ However, in case issues arise and we must pivot in CMPS490, we are discussing fu
 ### Predictive Analytics and AI-Driven Insights Extensions
 **Predictive Environmental Risk (AI/Data Extension)**: Predict environmental risk 24–48 hours ahead by referencing the patterns from data obtained by scrapers
 
-**RiskRadar Assistant**- AI assistant or guide integrated into the application that helps users interpret environmental conditions, alerts, or travel risks
+**RiskRadar AI Assistant**- AI assistant or guide integrated into the application that helps users interpret environmental conditions, alerts, or travel risks
 
 
 ### Data Visualization and User Experience Extensions
 **Interactive Risk Map (Great UI Extension)**- Add a map visualization to the mobile/web app , similar to PA2 as to make the data presented even more user-friendly and accessible
 
-**RiskRadar Assistant**- AI assistant or guide integrated into the application that helps users interpret environmental conditions, alerts, or travel risks
+**RiskRadar AI Assistant**- AI assistant or guide integrated into the application that helps users interpret environmental conditions, alerts, or travel risks
 
 
 ## Project Purpose
-The goal of this project is to create a web-app extension of our RiskRadar mobile app that exhibits a new, unique frontend interface as well as new extended features like interactive maps and personalized risk assessments. This web-app will allow users to access the same data and features as the mobile app, but in a different format and with additional functionalities that enhance the user experience and provide more value to our users.
+The goal of this project is to transform RiskRadar into a broader full-stack system by introducing a web application experience that is distinct from the mobile app while reusing the existing backend and data-ingestion foundation. This extension improves how users interpret environmental conditions by combining real-time alerts, AI-generated summaries, staged personalization features, and planned interactive/predictive capabilities.
 
 ---
 
@@ -69,11 +69,15 @@ The goal of this project is to create a web-app extension of our RiskRadar mobil
 [RiskRadar Mobile App Repository](https://github.com/QuiHu/Team6Project.git)
 [RiskRadar README](./CMPS490_README.md)
 
-**RiskRadar** is a mobile app designed to help users identify and manage potential environmental conditions and risks they may encounter whilst traveling or their day-to-day activities. The app provides features such as real-time alerts, climate data statistics, and user-friendly 5-Minute Summaries.
+**RiskRadar** is a mobile app designed to help users identify and manage potential environmental conditions and risks they may encounter while traveling or in day-to-day activities. The app provides features such as real-time alerts, climate data statistics, and user-friendly 5-minute summaries.
 
-As an extension of our RiskRadar mobile app, this respository contains code from this mobile app to provide a foundation for our web-app extension.
+As an extension of our RiskRadar mobile app, this repository contains code from the mobile app to provide a foundation for our web-app extension.
 
 ### RiskRadar Web-App Extension
+
+- `CMPS490_contents/CMPS490_frontend/RiskRadar/` contains the existing Expo/React Native mobile frontend (`RiskRadar`).
+- `frontend/web/` is the designated location for the new CMPS 357 PHP web-app extension (to be created in Stage 1).
+- Both frontends connect to the same backend API service in `backend/`.
 
 ### Additional Features and Extensions
 
@@ -89,15 +93,20 @@ The required Certification of Original Work is included in the [CERTIFICATION.md
 ### Stages and Steps
 
 See the full staged implementation plan here: [Project Stages](./docs/STAGES.md)
+Track execution tasks here: [Project TODO Tracker](./docs/TODO.md)
+
+`README.md` remains the source of truth for current stage status values.
 
 ### Current Stage Status
 
-| Stage | Title | Status | Last Updated | Notes |
-|---|---|---|---|---|
-| 1 | Web-App Extension | In Progress | 2026-03-09 | Building unique PHP web interface connected to existing backend APIs. |
-| 2 | Environmental Risk Assessment & Alert Prioritization Extensions | Not Started | 2026-03-09 | Planned: personal risk scoring engine and smart alert ranking. |
-| 3 | Data Visualization & UX Extensions | Not Started | 2026-03-09 | Planned: interactive Plotly-based risk map for web/mobile surfaces. |
-| 4 | Predictive Analytics & AI-Driven Insights Extensions | Not Started | 2026-03-09 | Planned: 24-48h forecasting and RiskRadar assistant integration. |
+**Scope:** Stages 1-2 are **required** deliverables (target completion: April 29, 2026). Stages 3-4 are **optional stretch goals** if timeline permits.
+
+| Stage | Title | Status | Last Updated | Scope | Notes |
+|---|---|---|---|---|---|
+| 1 | Web-App Extension | In Progress | 2026-03-10 | **Required** | Building unique PHP web interface in `frontend/web/` connected to existing backend APIs. Target: Week of 2026-03-31. |
+| 2 | Environmental Risk Assessment and Alert Prioritization Extensions | Not Started | 2026-03-10 | **Required** | Personal risk scoring engine + smart alert prioritization. Target: Week of 2026-04-28. |
+| 3 | Data Visualization and User Experience Extensions | Not Started | 2026-03-10 | Optional/Stretch | Interactive Plotly-based risk map. Planned only if Stage 2 completes early. |
+| 4 | Predictive Analytics and AI-Driven Insights Extensions | Not Started | 2026-03-10 | Optional/Stretch | 24-48 hour forecasting + RiskRadar AI Assistant. Planned only if time permits after Stage 3. |
 
 **Status Legend**
 - **Not Started**: Requirements are defined, but implementation has not begun.
