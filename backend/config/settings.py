@@ -22,6 +22,12 @@ class Settings(BaseSettings):
     LLM_MODEL: str = ""
     LLM_MAX_TOKENS: int = 2048
 
+    # JWT Authentication
+    # IMPORTANT: Change JWT_SECRET_KEY in your .env file before production!
+    JWT_SECRET_KEY: str = "CHANGE-ME-set-a-real-secret-in-dotenv"
+    JWT_ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60  # token lifetime in minutes
+
     # App Config
     DEFAULT_ZIP_CODE: str = "90001"
     DEFAULT_LAT: float = 34.0522
