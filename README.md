@@ -75,7 +75,7 @@ As an extension of our RiskRadar mobile app, this repository contains code from 
 
 ### RiskRadar Web-App Extension
 
-The frontend workspace is now explicitly split so the mobile and web clients can evolve independently while still using the same backend API service in `backend/`.
+The frontend workspace is now explicitly split so the mobile and web clients can evolve independently while both are intended to use the same backend API service in `backend/`.
 
 **Frontend surfaces:**
 - `frontend/mobile/` — existing Expo/React Native mobile frontend workspace
