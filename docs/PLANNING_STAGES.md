@@ -92,6 +92,7 @@ Begin Stage 1 with a small, functional PHP web-app vertical slice that connects 
 ### Stage 1 Deliverables (Kickoff Phase)
 - `/frontend/web` scaffold with initial PHP pages/components/services
 - API integration layer for alerts/summaries/users
+- Stage 1 endpoint contract matrix in `docs/API_STAGE1_CONTRACT.md`
 - Environment/config template for frontend
 - Updated setup notes and verification checklist
 
