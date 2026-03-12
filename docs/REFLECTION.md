@@ -625,4 +625,57 @@ This session used **GitHub Copilot** to refine Stage 1 implementation planning a
 
 ---
 
+## Stage 1 Web Frontend Implementation and Verification Session
+
+### Session Summary
+This session used **GitHub Copilot** to build and verify the Stage 1 PHP web extension. The work moved from an empty `frontend/web/` directory to a fully scaffolded, live-verified MVP: environment setup (PHP via WinGet, Python packages), creation of 17 PHP files covering config, API client, shared layout/helpers, and four public pages (dashboard, alerts, summaries, profile), followed by an end-to-end live verification pass against the running FastAPI backend. Two implementation bugs discovered during verification were fixed inline before task statuses were updated.
+
+### (1) Tool Used
+- **Tool name:** GitHub Copilot
+
+### (2) Components That Benefited
+- **MVP implementation:** Built the complete Stage 1 PHP web scaffold including `config/app.php`, `services/api_client.php`, security/validation/presentation helpers, `components/layout.php`, view templates, and four public-facing entry pages.
+- **Runtime environment setup:** Installed PHP 8.3 via WinGet and installed all backend Python dependencies directly into the workspace interpreter so both servers could run locally.
+- **Live end-to-end verification:** Ran the FastAPI backend and PHP frontend against each other on alternate local ports, probed all four pages with `Invoke-WebRequest`, and programmatically tested the registration and preference-update POST flows.
+- **Bug remediation:** Identified and fixed two defects surfaced during the live pass — raw epoch-millisecond timestamps on earthquake alerts, and a profile validator allowlist that excluded backend-produced alert types such as `pollution` and `earthquake`.
+- **Stage 1 tracker tightening:** Updated `docs/TODO.md` and `frontend/web/README.md` to reflect verified task completions and document the one remaining open item (responsive viewport QA).
+
+### (3) How Output Was Reviewed/Verified
+- Backend routes and schemas (`backend/api/*.py`, `backend/schemas/*.py`) were read before writing any PHP wrappers to ensure field names and response shapes matched.
+- All PHP files were checked through VS Code diagnostics — no problems found.
+- Live HTTP verification runs were executed: API health at `/api/v1/alerts/stats` returned 58 alerts; dashboard, alerts, summaries, and profile pages all responded with expected HTML; error/fallback paths were confirmed when the backend was unavailable.
+- Registration and preference-update flows were tested with real POST requests in a PowerShell session, confirming CSRF token extraction, user creation, and stored alert-type rendering.
+- Task statuses in `TODO.md` were updated only after successful live verification responses were confirmed, not before.
+
+### (4) What Worked, What Needed Iteration, What Required Manual Implementation
+- **Worked immediately:** Generating the full 17-file PHP web scaffold in one pass; PHP and Python package installation via system package managers; detecting and reading backend API contracts to align PHP wrappers.
+- **Required multiple iterations / improvement:** Backend server launch required multiple attempts due to PATH ambiguity and a blocked port 8000 on the local machine — an alternate port (8001 / 8081) workflow was adopted; the profile validator needed a post-testing correction after live runs exposed the missing alert-type coverage.
+- **Required manual implementation:** Responsive viewport QA (360px, 768px, 1280px screenshots) for S1-04 completion, adding PHP to the system PATH to avoid the full-path invocation in future sessions, and resolving the port 8000 conflict on the developer machine all remain manual follow-up items.
+
+---
+
+## Follow-Up Reflection: Stage 1 Implementation Reflection Entry Command
+
+### Session Summary
+This follow-up command used **GitHub Copilot** to append a formal reflection entry for the Stage 1 implementation and live-verification session, maintaining the continuous documentation of all AI tool usage in `docs/REFLECTION.md`.
+
+### (1) Tool Used
+- **Tool name:** GitHub Copilot
+
+### (2) Components That Benefited
+- **Reflection continuity:** Added explicit coverage for the Stage 1 PHP web extension build-and-verify session.
+- **Audit trail quality:** Preserved traceable linkage between the first real implementation milestone and the project's AI-usage reflection record.
+- **Template consistency:** Maintained the same four-component reflection structure used throughout this file.
+
+### (3) How Output Was Reviewed/Verified
+- New sections were checked against the Stage 1 implementation transcript segment for factual alignment (files created, verification steps, bugs found and fixed, tracker changes).
+- Section structure and heading style were validated against existing reflection entries for consistency.
+- Terminology was reviewed to match language used in `docs/TODO.md`, `frontend/web/README.md`, and prior Stage 1 planning documentation.
+
+### (4) What Worked, What Needed Iteration, What Required Manual Implementation
+- **Worked immediately:** Producing a complete reflection entry in the established four-component format directly from the transcript session details.
+- **Required multiple iterations / improvement:** Minor wording harmonization may be needed over time as additional implementation sessions are added.
+- **Required manual implementation:** Final editorial review for tone, completeness, and instructor-facing phrasing remains a manual team responsibility.
+
+---
 
