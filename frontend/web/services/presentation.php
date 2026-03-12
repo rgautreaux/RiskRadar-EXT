@@ -11,6 +11,15 @@ function rr_format_datetime(?string $value): string
         return 'Unavailable';
     }
 
+    if (is_numeric($value)) {
+        $numericValue = (float) $value;
+        if ($numericValue > 1000000000000) {
+            $numericValue /= 1000;
+        }
+
+        return date('M j, Y g:i A', (int) $numericValue);
+    }
+
     $timestamp = strtotime($value);
     if ($timestamp === false) {
         return $value;

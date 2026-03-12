@@ -2,7 +2,7 @@
 
 function rr_allowed_alert_types(): array
 {
-    return ['air_quality', 'weather', 'water', 'wildfire', 'heat', 'flood', 'storm', 'other'];
+    return ['air_quality', 'earthquake', 'flood', 'heat', 'other', 'pollution', 'storm', 'water', 'weather', 'wildfire'];
 }
 
 function rr_allowed_severities(): array
