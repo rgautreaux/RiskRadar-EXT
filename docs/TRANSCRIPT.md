@@ -5039,3 +5039,462 @@ Made changes.
 
 ---
 
+User: Begin Stage 1 Implementation to create a  Web-App Extension that works from the existing backend
+
+GitHub Copilot: I’m starting Stage 1 as an actual implementation pass, not just planning. First I’m checking the existing web scaffold and backend API shape so I can wire a PHP MVP against the current backend without guessing.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web)
+
+Read memory
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/api/alerts.py)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/api/summaries.py)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/api/users.py)
+
+The backend routes match the Stage 1 contract closely, and the web app folder is mostly empty. Next I’m checking what already exists under the web frontend and the project docs so I can add a minimal but usable PHP implementation without fighting the current structure.
+
+Searched for files matching `**/frontend/web/**/*`, 7 matches
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/README.md)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/api/router.py)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/main.py)
+
+There’s no existing PHP implementation yet, just the intended folders. I have enough context to build the Stage 1 MVP slice now: config template, API client layer, shared page components, dashboard plus scaffolded alerts/summaries/profile pages, and run docs.
+
+Created 7 todos
+
+I’m checking the exact response models and current workspace state before I write files, so the PHP normalization layer matches the backend fields and I don’t trample unrelated work.
+
+Read changed files in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/schemas/summary.py)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/schemas/alert.py)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/schemas/user.py)
+
+I have the file plan. I’m creating the PHP web skeleton now with a real API client, shared layout/helpers, and the first four public pages so Stage 1 exists as runnable code rather than just docs.
+
+Created [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public/assets)
+
+Generating patch (1438 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/config/app.php), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/config/config.local.example.php), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/services/security.php), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/services/presentation.php), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/services/validators.php), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/services/api_client.php), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/services/bootstrap.php), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/components/layout.php), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/views/dashboard.php), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/views/alerts.php), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/views/summaries.php), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/views/profile.php), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public/index.php), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public/alerts.php), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public/summaries.php), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public/profile.php), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public/assets/app.css)
+
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+The Stage 1 code scaffold is in place. I’m validating it now with PHP linting and editor diagnostics before I touch the docs, because the next useful step is to clean up any syntax or wiring issues while the change set is still contained.
+
+Checked , no problems found
+
+Ran terminal command: php -v
+
+I found one behavior issue in the profile page flow: success messages were being stored as flash state without redirecting, so they wouldn’t actually surface immediately. I’m fixing that and then I’m updating the web README and Stage 1 tracker to reflect the code that now exists.
+
+Generating patch (127 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public/profile.php), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/README.md), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
+
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+The implementation and docs are aligned now. I’m doing one last pass on workspace diagnostics and collecting the changed-file set so I can close this with a precise status and the remaining blocker, which is PHP not being installed on this machine.
+
+Checked [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public/profile.php), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/services/api_client.php), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/components/layout.php), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/README.md), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md), no problems found
+
+Read changed files in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3)
+
+Created memory file stage1-web-frontend.md
+
+Completed: *Design PHP MVP structure* (2/7)
+
+Stage 1 now has a concrete PHP web implementation in place under web. The MVP includes a desktop-oriented dashboard in index.php, filtered alerts and summaries pages in alerts.php and summaries.php, and a profile page with registration and preference-update scaffolding in profile.php. Shared API/error-handling logic is in api_client.php, with CSRF, validation, and shared layout helpers in services and layout.php. Styling for the web-specific UI is in app.css.
+
+I also added runtime configuration support in app.php and config.local.example.php, then updated Stage 1 docs in README.md and tracking status in TODO.md. The PHP pages are clean in editor diagnostics. I could not run the PHP server or perform CLI linting because PHP is not installed on this machine’s PATH.
+
+Natural next steps:
+1. Install PHP locally, then run the web app against the backend and do the Stage 1 manual verification pass.
+2. Capture screenshots and success/failure-state evidence for the dashboard, alerts, summaries, and profile flows.
+3. After runtime validation, tighten the TODO tracker again by moving S1-03 and S1-04 from In Progress toward Completed.
+
+Made changes.
+
+User: Follow these steps:
+
+Natural next steps:
+
+- Check if PHP is installed locally, and if it is not then install it
+- Run the web app against the backend and do the Stage 1 manual verification pass
+- If this is successful, tighten the TODO tracker again by moving S1-03 and S1-04 from In Progress toward Completed.
+
+GitHub Copilot: I’m checking local tooling first so I can either use PHP immediately or install it with the least invasive path, then I’ll run the backend and web app together for the Stage 1 verification pass.
+
+Ran terminal command: Get-Command php | Format-List *
+
+Ran terminal command: Get-Command winget | Format-List *
+
+Ran terminal command: Get-Command choco | Format-List *
+
+Ran terminal command: Get-Command scoop | Format-List *
+
+PHP is not on PATH, but both `winget` and Chocolatey are available. I’m checking the exact package IDs and then I’ll install PHP with a non-interactive command so we can run the web frontend locally.
+
+Ran terminal command: winget search php | Out-String
+
+Ran terminal command: choco search php | Select-Object -First 30 | Out-String
+
+I found package-manager options; now I’m reading the winget search output to choose the cleanest PHP package ID before installing.
+
+Read [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/efc527fbc52ea141903e763507674dc7/GitHub.copilot-chat/chat-session-resources/cf33be2a-5578-4f89-a3c4-684458757bd4/call_xYVXVqXHEfv4nlUxf1i2PDTy__vscode-1773333310516/content.txt)
+
+I found a direct PHP package in winget. I’m installing PHP 8.4 with accepted agreements so the local server and lint steps can run without extra prompts.
+
+Ran terminal command: winget install --id PHP.PHP.8.4 --accept-package-agreements --accept-source-agreements
+
+The 8.4 winget manifest is broken upstream with a 404. I’m switching to a working package candidate instead of stopping at the installer failure.
+
+Ran terminal command: winget install --id PHP.PHP.8.3 --accept-package-agreements --accept-source-agreements
+
+Ran terminal command: choco search ^php$ --exact | Out-String
+
+The fallback install started and reached extraction, but the command did not complete cleanly in the shared terminal. I’m verifying whether PHP actually landed before retrying anything.
+
+Ran terminal command: Get-Command php | Format-List *
+
+Ran terminal command: winget list --id PHP.PHP.8.3 | Out-String
+
+PHP is installed according to winget, but the current shell has not picked up the executable path yet. I’m locating the actual install directory and then I’ll invoke PHP directly from there.
+
+Ran terminal command: Get-ChildItem "$env:LOCALAPPDATA\Microsoft\WinGet\Packages" -Directory | Where-Object { $_.Name -like 'PHP.PHP.8.3*' } | Select-Object FullName | Format-List
+
+Ran terminal command: Get-ChildItem "$env:LOCALAPPDATA\Microsoft\WinGet\Links" | Select-Object Name,FullName | Format-Table -AutoSize | Out-String
+
+I found the package directory. Next I’m checking inside it for the actual executable and related files so I can use PHP without depending on PATH propagation.
+
+Ran terminal command: Get-ChildItem "$env:LOCALAPPDATA\Microsoft\WinGet\Packages\PHP.PHP.8.3_Microsoft.Winget.Source_8wekyb3d8bbwe" -Recurse -Filter php.exe | Select-Object FullName | Format-List
+
+PHP is usable by direct path now. I’m switching to backend setup next so I can run FastAPI and then serve the PHP app against it for the actual verification pass.
+
+Configuring a Python Environment
+Completed with input: {
+  "resourcePath": "c:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\backend"
+}
+
+Creating a Virtual Environment
+Completed with input: {
+  "resourcePath": "c:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\backend"
+}
+
+I’ve got the Python interpreter for this workspace. Before starting the backend, I’m checking whether the required backend packages are already available so we can avoid a failing server launch.
+
+Fetching Python environment information
+Completed with input: {
+  "resourcePath": "c:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\backend"
+}
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/requirements.txt)
+
+The Python side has the required packages. I’m checking the backend database/settings startup path before launching it, because Stage 1 verification is only meaningful if the existing API can actually boot in this workspace.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/config/settings.py)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/db/database.py)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/db/init_db.py)
+
+The backend defaults to local SQLite, which is good for this pass. I’m checking the scheduler startup path now, because that is the most likely thing to derail a clean local API launch.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/scrapers/scheduler.py)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/scrapers/registry.py)
+
+The backend looks runnable on local SQLite, so I’m starting both servers now: FastAPI on port 8000 and the PHP web app on port 8080 using the direct PHP executable path I located.
+
+Ran terminal command: Push-Location backend; C:/Users/rebec/AppData/Local/Python/pythoncore-3.14-64/python.exe -m uvicorn main:app --host 127.0.0.1 --port 8000
+
+Ran terminal command: & "$env:LOCALAPPDATA\Microsoft\WinGet\Packages\PHP.PHP.8.3_Microsoft.Winget.Source_8wekyb3d8bbwe\php.exe" -S 127.0.0.1:8080 -t frontend/web/public
+
+The FastAPI start failed because the terminal interpreter does not currently have `uvicorn`, despite the environment metadata showing it. I’m fixing the actual runtime environment now so the backend can boot reliably.
+
+Installing packages anthropic, apscheduler, fastapi, firecrawl-py, httpx, openai, pydantic, pydantic-settings, pymysql, python-dotenv, pyyaml, sqlalchemy, uvicorn[standard] in Python 3.14.3
+Completed with input: {
+  "packageList": [
+    "uvicorn[standard]",
+    "fastapi",
+    "sqlalchemy",
+    "pymysql",
+    "pydantic",
+    "pydantic-settings",
+    "apscheduler",
+    "httpx",
+    "firecrawl-py",
+    "openai",
+    "anthropic",
+    "python-dotenv",
+    "pyyaml"
+  ],
+  "resourcePath": "c:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\backend"
+}
+
+The backend dependencies are installed into the active workspace interpreter now. I’m restarting the API server, then I’ll probe both the API and the PHP pages directly.
+
+Ran terminal command: Push-Location backend; C:/Users/rebec/AppData/Local/Python/pythoncore-3.14-64/python.exe -m uvicorn main:app --host 127.0.0.1 --port 8000
+
+Checked background terminal output
+
+The package installation succeeded through the workspace environment tooling, but the explicit Python path I used is still not seeing `uvicorn`. I’m pulling the exact executable details from the configured environment instead of assuming the command prefix is enough.
+
+Fetching Python executable information for Python 3.14.3
+Completed with input: {
+  "resourcePath": "c:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\backend"
+}
+
+I’m checking the interpreter directly now to see where `pip` installed packages and why `uvicorn` is still invisible to `python -m`.
+
+Ran terminal command: C:/Users/rebec/AppData/Local/Python/pythoncore-3.14-64/python.exe -m pip --version
+
+Ran terminal command: C:/Users/rebec/AppData/Local/Python/pythoncore-3.14-64/python.exe -m pip show uvicorn
+
+Ran terminal command: C:/Users/rebec/AppData/Local/Python/pythoncore-3.14-64/python.exe -c "import sys; print(sys.executable); import site; print(site.getusersitepackages()); print(site.getsitepackages())"
+
+The environment tool reported success, but the configured interpreter still does not have `uvicorn`. I’m installing the actual backend requirements directly into this interpreter so we can proceed instead of trusting the stale package metadata.
+
+Ran terminal command: C:/Users/rebec/AppData/Local/Python/pythoncore-3.14-64/python.exe -m pip install -r backend/requirements.txt
+
+I’ve pushed the requirements into the real interpreter now. I’m reading the install output to confirm there were no blockers before restarting the API.
+
+Read [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/efc527fbc52ea141903e763507674dc7/GitHub.copilot-chat/chat-session-resources/cf33be2a-5578-4f89-a3c4-684458757bd4/call_1DdfoTClZE5rysxjSen86Xok__vscode-1773333310544/content.txt#1-1), lines 1 to 260
+
+Read [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/efc527fbc52ea141903e763507674dc7/GitHub.copilot-chat/chat-session-resources/cf33be2a-5578-4f89-a3c4-684458757bd4/call_1DdfoTClZE5rysxjSen86Xok__vscode-1773333310544/content.txt#261-261), lines 261 to 288
+
+The runtime interpreter is fixed now. I’m restarting the backend and then I’ll hit the API and the web pages to confirm the Stage 1 slice actually works end to end.
+
+Ran terminal command: Push-Location backend; C:/Users/rebec/AppData/Local/Python/pythoncore-3.14-64/python.exe -m uvicorn main:app --host 127.0.0.1 --port 8000
+
+Ran terminal command: C:/Users/rebec/AppData/Local/Python/pythoncore-3.14-64/python.exe -m uvicorn --version
+
+The backend process is up enough to stop erroring, so I’m checking both long-running terminals and then probing the API and rendered pages.
+
+Checked background terminal output
+
+Checked background terminal output
+
+Ran terminal command: Invoke-WebRequest -Uri http://127.0.0.1:8000/ -UseBasicParsing | Select-Object StatusCode,Content | Format-List
+
+Ran terminal command: Invoke-WebRequest -Uri http://127.0.0.1:8080/index.php -UseBasicParsing | Select-Object StatusCode,Content | Format-List
+
+The PHP server is working, but the first uvicorn launch did not stay resident. I’m detaching the backend as a real process now so the frontend can hit live API responses instead of only the fallback path.
+
+Ran terminal command: Push-Location backend; $stdout = Join-Path (Get-Location) 'uvicorn.stdout.log'; $stderr = Join-Path (Get-Location) 'uvicorn.stderr.log'; $process = Start-Process -FilePath 'C:/Users/rebec/AppData/Local/Python/pythoncore-3.14-64/python.exe' -ArgumentList '-m','uvicorn','main:app','--host','127.0.0.1','--port','8000' -WorkingDirectory (Get-Location) -RedirectStandardOutput $stdout -RedirectStandardError $stderr -PassThru; $process.Id
+
+The backend is now detached with PID 456. I’m probing the API and the PHP pages again to confirm success-state rendering, not just failure fallbacks.
+
+Ran terminal command: Invoke-WebRequest -Uri http://127.0.0.1:8000/ -UseBasicParsing | Select-Object StatusCode,Content | Format-List
+
+Ran terminal command: Invoke-WebRequest -Uri http://127.0.0.1:8000/api/v1/alerts/stats -UseBasicParsing | Select-Object StatusCode,Content | Format-List
+
+Ran terminal command: Invoke-WebRequest -Uri http://127.0.0.1:8080/index.php -UseBasicParsing | Select-Object StatusCode,Content | Format-List
+
+Ran terminal command: Invoke-WebRequest -Uri http://127.0.0.1:8080/alerts.php -UseBasicParsing | Select-Object StatusCode,Content | Format-List
+
+The frontend is serving correctly and the fallback path is proven, but the backend is still crashing on startup. I’m reading the uvicorn logs now to isolate the actual backend failure before I decide whether S1-03 and S1-04 can be promoted.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/uvicorn.stdout.log)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/uvicorn.stderr.log)
+
+The backend itself is fine; port 8000 is the problem on this machine. I’m moving the verification run to alternate local ports instead of forcing a conflict with whatever already owns 8000.
+
+Ran terminal command: Push-Location backend; $stdout = Join-Path (Get-Location) 'uvicorn-8001.stdout.log'; $stderr = Join-Path (Get-Location) 'uvicorn-8001.stderr.log'; $process = Start-Process -FilePath 'C:/Users/rebec/AppData/Local/Python/pythoncore-3.14-64/python.exe' -ArgumentList '-m','uvicorn','main:app','--host','127.0.0.1','--port','8001' -WorkingDirectory (Get-Location) -RedirectStandardOutput $stdout -RedirectStandardError $stderr -PassThru; $process.Id
+
+Ran terminal command: $env:RISKRADAR_API_BASE_URL='http://127.0.0.1:8001'; & "$env:LOCALAPPDATA\Microsoft\WinGet\Packages\PHP.PHP.8.3_Microsoft.Winget.Source_8wekyb3d8bbwe\php.exe" -S 127.0.0.1:8081 -t frontend/web/public
+
+I’ve got alternate-port processes starting. I’m verifying the 8001 API and 8081 frontend pair now, which is the only path that matters for the live success-state check.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/uvicorn-8001.stderr.log)
+
+Ran terminal command: Invoke-WebRequest -Uri http://127.0.0.1:8001/ -UseBasicParsing | Select-Object StatusCode,Content | Format-List
+
+Ran terminal command: Invoke-WebRequest -Uri http://127.0.0.1:8001/api/v1/alerts/stats -UseBasicParsing | Select-Object StatusCode,Content | Format-List
+
+Ran terminal command: Invoke-WebRequest -Uri http://127.0.0.1:8081/index.php -UseBasicParsing | Select-Object StatusCode,Content | Format-List
+
+The alternate-port setup worked: the backend is live and returning alert data. I’m reading the rendered dashboard HTML now and then I’ll hit the other Stage 1 pages to complete the verification pass before touching the tracker.
+
+Read [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/efc527fbc52ea141903e763507674dc7/GitHub.copilot-chat/chat-session-resources/cf33be2a-5578-4f89-a3c4-684458757bd4/call_f2DFxQhWE8Q8kL9uRGX3Dx26__vscode-1773333310565/content.txt)
+
+Ran terminal command: Invoke-WebRequest -Uri http://127.0.0.1:8081/alerts.php -UseBasicParsing | Select-Object StatusCode,Content | Format-List
+
+Ran terminal command: Invoke-WebRequest -Uri http://127.0.0.1:8081/summaries.php -UseBasicParsing | Select-Object StatusCode,Content | Format-List
+
+Ran terminal command: Invoke-WebRequest -Uri http://127.0.0.1:8081/profile.php -UseBasicParsing | Select-Object StatusCode,Content | Format-List
+
+The read-focused pages are responding on the live backend path. I’m doing one more pass through the profile write flow so the registration and preference-update wrappers are verified before I tighten the Stage 1 task statuses.
+
+Read [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/efc527fbc52ea141903e763507674dc7/GitHub.copilot-chat/chat-session-resources/cf33be2a-5578-4f89-a3c4-684458757bd4/call_X0Tp2DpTqMmMQZqRaalZnfZr__vscode-1773333310567/content.txt#1-1), lines 1 to 220
+
+Read [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/efc527fbc52ea141903e763507674dc7/GitHub.copilot-chat/chat-session-resources/cf33be2a-5578-4f89-a3c4-684458757bd4/call_sg0R7AH9rPwunXqPbdOUIxPE__vscode-1773333310569/content.txt)
+
+Ran terminal command: $session = New-Object Microsoft.PowerShell.Commands.WebRequestSession; $profileResponse = Invoke-WebRequest -Uri http://127.0.0.1:8081/profile.php -WebSession $session -UseBasicParsing; $token = [regex]::Match($profileResponse.Content, 'name="csrf_token" value="([^"]+)"').Groups[1].Value; $email = 'stage1-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() + '@example.com'; $registerResponse = Invoke-WebRequest -Uri http://127.0.0.1:8081/profile.php -Method Post -WebSession $session -Body @{ csrf_token = $token; action = 'register'; display_name = 'Stage1 Tester'; email = $email; password = 'Stage1Pass123'; zip_code = '90001' } -UseBasicParsing; $createdId = [regex]::Match($registerResponse.Content, 'Created user ID: <strong>(\d+)</strong>').Groups[1].Value; [PSCustomObject]@{ Email = $email; UserId = $createdId; Success = ($registerResponse.Content -match 'User registration succeeded') } | Format-List
+
+Ran terminal command: $session = New-Object Microsoft.PowerShell.Commands.WebRequestSession; $profileResponse = Invoke-WebRequest -Uri http://127.0.0.1:8081/profile.php -WebSession $session -UseBasicParsing; $token = [regex]::Match($profileResponse.Content, 'name="csrf_token" value="([^"]+)"').Groups[1].Value; $email = 'prefs-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() + '@example.com'; $registerResponse = Invoke-WebRequest -Uri http://127.0.0.1:8081/profile.php -Method Post -WebSession $session -Body @{ csrf_token = $token; action = 'register'; display_name = 'Prefs Tester'; email = $email; password = 'Stage1Pass123'; zip_code = '90001' } -UseBasicParsing; $createdId = [regex]::Match($registerResponse.Content, 'Created user ID: <strong>(\d+)</strong>').Groups[1].Value; $prefsResponse = Invoke-WebRequest -Uri http://127.0.0.1:8081/profile.php -Method Post -WebSession $session -Body @{ csrf_token = $token; action = 'preferences'; user_id = $createdId; zip_code = '90002'; notify_severity = 'moderate'; device_token = 'web-stage1-token'; 'alert_types[]' = @('weather','pollution') } -UseBasicParsing; [PSCustomObject]@{ UserId = $createdId; PreferencesSaved = ($prefsResponse.Content -match 'Preferences updated successfully'); StoredTypesVisible = ($prefsResponse.Content -match 'weather, pollution') } | Format-List
+
+The live verification surfaced two real implementation gaps: the profile allowlist excluded backend alert types like `pollution` and `earthquake`, and earthquake event timestamps were rendering as raw epoch milliseconds. I’m fixing both now before I update the tracker.
+
+Generating patch (30 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/services/presentation.php), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/services/validators.php)
+
+
+```
+
+```
+
+```
+
+```
+The fixes are in. I’m re-running the affected live checks now so the tracker update is based on the corrected behavior, not the earlier bug.
+
+Checked [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/services/presentation.php), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/services/validators.php), no problems found
+
+Ran terminal command: Invoke-WebRequest -Uri http://127.0.0.1:8081/alerts.php -UseBasicParsing | Select-Object StatusCode,Content | Format-List
+
+Ran terminal command: $session = New-Object Microsoft.PowerShell.Commands.WebRequestSession; $profileResponse = Invoke-WebRequest -Uri http://127.0.0.1:8081/profile.php -WebSession $session -UseBasicParsing; $token = [regex]::Match($profileResponse.Content, 'name="csrf_token" value="([^"]+)"').Groups[1].Value; $email = 'prefs2-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() + '@example.com'; $registerResponse = Invoke-WebRequest -Uri http://127.0.0.1:8081/profile.php -Method Post -WebSession $session -Body @{ csrf_token = $token; action = 'register'; display_name = 'Prefs Tester 2'; email = $email; password = 'Stage1Pass123'; zip_code = '90001' } -UseBasicParsing; $createdId = [regex]::Match($registerResponse.Content, 'Created user ID: <strong>(\d+)</strong>').Groups[1].Value; $prefsResponse = Invoke-WebRequest -Uri http://127.0.0.1:8081/profile.php -Method Post -WebSession $session -Body @{ csrf_token = $token; action = 'preferences'; user_id = $createdId; zip_code = '90002'; notify_severity = 'moderate'; device_token = 'web-stage1-token'; 'alert_types[]' = @('weather','pollution','earthquake') } -UseBasicParsing; [PSCustomObject]@{ UserId = $createdId; PreferencesSaved = ($prefsResponse.Content -match 'Preferences updated successfully'); WeatherVisible = ($prefsResponse.Content -match 'weather'); PollutionVisible = ($prefsResponse.Content -match 'pollution'); EarthquakeVisible = ($prefsResponse.Content -match 'earthquake') } | Format-List
+
+The preference flow now accepts the same alert families the backend is actually producing. I’m checking the alerts HTML one last time to confirm the timestamp rendering fix before I mark the task statuses up.
+
+Read [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/efc527fbc52ea141903e763507674dc7/GitHub.copilot-chat/chat-session-resources/cf33be2a-5578-4f89-a3c4-684458757bd4/call_IomaqKRz2wHJ6w6ejN7rAZuz__vscode-1773333310576/content.txt#90-90), lines 90 to 170
+
+Ran terminal command: Invoke-WebRequest -Uri 'http://127.0.0.1:8081/alerts.php?source=usgs_earthquakes&limit=3' -UseBasicParsing | Select-Object StatusCode,Content | Format-List
+
+I’m reading the filtered earthquake response specifically, since that was the case that previously exposed the raw epoch-millisecond bug.
+
+Read [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/efc527fbc52ea141903e763507674dc7/GitHub.copilot-chat/chat-session-resources/cf33be2a-5578-4f89-a3c4-684458757bd4/call_AxthTswVEjEcALPxNvjU2rGw__vscode-1773333310579/content.txt#100-100), lines 100 to 190
+
+The code paths are verified now: live dashboard and alerts rendering on a working backend, summary empty-state handling, and registration/preferences POST flows. I’m tightening the Stage 1 tracker with that evidence and documenting the one remaining gap, which is viewport-specific manual QA evidence.
+
+Generating patch (28 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/README.md), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
+
+
+```
+
+```
+
+```
+
+```
+I’ve tightened the task rows. I’m updating the Stage 1 verification checklist as well so the evidence section reflects what was actually exercised today and what still remains open.
+
+Generating patch (12 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
+
+
+```
+
+```
+The verification pass is complete, so I’m cleaning up the temporary local servers rather than leaving background processes and ports occupied.
+
+Killed terminal
+
+Killed terminal
+
+Ran terminal command: Stop-Process -Id 21400 -Force
+
+PHP is installed locally now via WinGet, the Stage 1 web app was run against the existing backend, and the tracker has been tightened. I verified the PHP frontend on live backend data using an alternate local backend port because port 8000 is blocked on this machine. The main implementation/docs updates are in presentation.php, validators.php, README.md, and TODO.md.
+
+The verification pass covered:
+1. Live backend health on port 8001, including alerts stats returning 58 alerts.
+2. Live dashboard rendering in index.php with alert totals, severity/type rollups, and top alerts.
+3. Live alerts rendering in alerts.php, including a fix for raw epoch-millisecond event timestamps.
+4. Summary empty-state handling in summaries.php.
+5. Registration and preference-update POST flows in profile.php, including a fix so allowed profile alert types now match backend data such as `pollution` and `earthquake`.
+
+Tracker status is now tighter:
+1. S1-03 is marked Completed in TODO.md.
+2. S1-04 remains In Progress in TODO.md, but only because responsive manual QA evidence at 360px, 768px, and 1280px is still missing.
+3. Stage 1 verification checklist items for local run, routed pages, and fallback behavior are now checked in TODO.md.
+
+One important side effect: the live profile verification created local SQLite test users with IDs 1, 2, and 3 in the backend database. I also cleaned up the temporary PHP and backend processes after verification, so nothing is still running.
+
+Natural next steps:
+1. Capture the required viewport screenshots and demo notes, then move S1-04 to Completed.
+2. Decide whether to free port 8000 locally or standardize the documented local override workflow for alternate backend ports.
+3. Add the installed PHP location to PATH so future local runs do not need the full executable path.
+
+Made changes.
+
+---

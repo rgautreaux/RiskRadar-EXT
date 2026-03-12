@@ -34,6 +34,8 @@ Default local backend target:
 - Base URL: `http://127.0.0.1:8000`
 - API prefix: `/api/v1`
 
+If port `8000` is unavailable on your machine, point the PHP app at another backend port by setting `RISKRADAR_API_BASE_URL` or by creating `config/config.local.php`.
+
 ## Run Locally
 
 Start the backend first from `backend/` using the existing FastAPI workflow for this repository.
@@ -59,4 +61,4 @@ Then open:
 
 ## Current Limitation
 
-This workspace currently does not have the PHP CLI available on `PATH`, so local runtime validation from the editor has not been completed yet. Editor diagnostics for the added PHP files are clean.
+PHP was installed locally during Stage 1 verification, but the executable is not yet on the user `PATH`. The app can still be served by invoking the installed binary directly from the WinGet package directory.
