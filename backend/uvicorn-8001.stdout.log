@@ -1,0 +1,15 @@
+Database ready: sqlite:///C:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\backend\riskradar.db
+INFO:     127.0.0.1:57466 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57466 - "GET /api/v1/alerts/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57485 - "GET /api/v1/alerts/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57486 - "GET /api/v1/alerts?limit=5&offset=0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57487 - "GET /api/v1/summaries/latest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57525 - "GET /api/v1/alerts?limit=20&offset=0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53494 - "GET /api/v1/summaries?limit=10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53587 - "POST /api/v1/users/register HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53596 - "POST /api/v1/users/register HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53598 - "PUT /api/v1/users/2/preferences HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52508 - "GET /api/v1/alerts?limit=20&offset=0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62871 - "POST /api/v1/users/register HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62873 - "PUT /api/v1/users/3/preferences HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64262 - "GET /api/v1/alerts?source=usgs_earthquakes&limit=3&offset=0 HTTP/1.1" 200 OK
