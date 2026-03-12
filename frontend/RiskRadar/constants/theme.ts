@@ -68,6 +68,8 @@ const lightColors = {
 
 export const Colors = {
   light: lightColors,
+  // TODO: Replace with a dedicated dark palette in a future phase.
+  // dark intentionally mirrors lightColors for Phase 1 (light mode only).
   dark: lightColors,
 };
 
