@@ -4741,3 +4741,301 @@ what worked vs needed iteration vs manual implementation
 If you want, I can also run a quick consistency pass to normalize section-title style (some currently use “Follow-Up Reflection: …” while others now use direct session names).
 
 ---
+
+User: Are there any aspects of the STAGE 1 Plan that:
+
+- Need to be further fleshed out for clean implementation (if so, then how?)
+- Do not reflect how to most effectively fulfill Stage 1's Goal of creating a unique web-app frontend (if not, how can it be updated to suit the project's needs?)
+
+GitHub Copilot: Reviewing STAGES.md now to assess Stage 1 for implementation readiness and whether it truly drives a distinct web frontend; next I’ll return a focused gap analysis with concrete wording updates you can apply.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md#1-1), lines 1 to 260
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PLANNING_STAGES.md)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
+
+Read memory
+
+I’ve identified the main Stage 1 sections; next I’m pulling exact line numbers so I can point to precise spots and propose targeted edits rather than general advice.
+
+Ran terminal command: $p='c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\docs\STAGES.md'; $i=0; Get-Content -Path $p | ForEach-Object { $i++; '{0,4}: {1}' -f $i, $_ }
+
+Ran terminal command: $p='c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\docs\PLANNING_STAGES.md'; $i=0; Get-Content -Path $p | ForEach-Object { $i++; '{0,4}: {1}' -f $i, $_ }
+
+Read [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/efc527fbc52ea141903e763507674dc7/GitHub.copilot-chat/chat-session-resources/3a69d9d5-4f39-4795-90a8-dacdcdab3b7c/call_foR9HufYixXFJvfM1xCl2nUm__vscode-1773333310423/content.txt#1-1), lines 1 to 320
+
+Yes. Stage 1 is directionally solid, but a few parts should be sharpened so implementation is clean and the “unique web-app frontend” goal is actually measurable.
+
+**What Needs More Detail (And How)**
+1. **Scope guardrails are too broad in STAGES.md**
+- Current wording in `docs/STAGES.md:51` to `docs/STAGES.md:54` implies building all core pages, while your kickoff doc is explicitly dashboard-first MVP in `docs/PLANNING_STAGES.md:13` and `docs/PLANNING_STAGES.md:50`.
+- Update: explicitly split Stage 1 into:
+  - `MVP required`: dashboard + nav + error states
+  - `scaffold only`: alerts/summaries/profile placeholders
+  - `deferred`: full CRUD/profile completion
+- Why: avoids scope creep before March 31.
+
+2. **“Unique frontend experience” is not operationalized**
+- `docs/STAGES.md:32` and `docs/STAGES.md:69` say “unique/distinct” but no criteria define what counts.
+- Update: add a short “Web Distinctness Criteria” section with 3-5 required differences from mobile, for example:
+  - Information density (table/cards + trends) optimized for desktop
+  - Persistent multi-panel layout (sidebar + content)
+  - Comparative widgets (e.g., “top risks now” vs “latest summary”)
+  - Keyboard navigability and desktop-first interactions
+- Why: makes reviews objective instead of subjective.
+
+3. **API integration task needs endpoint contract detail**
+- `docs/STAGES.md:35` to `docs/STAGES.md:49` is good but high-level.
+- Update: add a mini endpoint matrix under Stage 1:
+  - Route, method, query/body fields, expected response shape, fallback behavior.
+- Why: reduces rework in wrapper/service layer (`S1-03`) and template rendering.
+
+4. **Verification checklist is too coarse**
+- `docs/STAGES.md:66` to `docs/STAGES.md:69` doesn’t define pass/fail or evidence quality.
+- Update: convert to measurable checks:
+  - `Home page loads <2s on local dev`
+  - `Timeout produces user-visible retry message`
+  - `Malformed JSON path renders safe fallback card`
+  - `Responsive checks at 360px, 768px, 1280px`
+- Why: easier signoff and cleaner weekly reporting.
+
+5. **Security/reliability needs concrete controls**
+- `docs/STAGES.md:56` to `docs/STAGES.md:59` mentions sanitization, but not mechanism.
+- Update: specify minimum controls:
+  - Output escaping in templates
+  - CSRF token for preference form
+  - Input allowlists for query params
+  - Request timeout + retry/backoff policy
+- Why: transforms “intent” into implementable requirements.
+
+## Does Anything Undermine the Stage 1 Goal?
+Not fundamentally, but one risk is **blended scope**: STAGES.md reads like full-page delivery while PLANNING_STAGES.md is MVP-first. That mismatch can dilute focus and make the web experience less intentionally unique.
+
+**Best update to suit project needs**
+1. Keep Stage 1 explicitly **dashboard-vertical-slice first**.
+2. Add a **distinctness rubric** (what makes web different from mobile).
+3. Add **endpoint contracts + error-state behavior** in-doc.
+4. Make verification **measurable and evidence-based**.
+
+If you want, I can directly patch STAGES.md with these exact additions so it stays aligned with PLANNING_STAGES.md and TODO.md.
+
+User: Yes, run a patch so all documentation agrees and reflects the goals of this project
+
+GitHub Copilot: Applying a documentation sync pass now: I’ll update STAGES.md first, then align PLANNING_STAGES.md, TODO.md, and README.md so Stage 1 scope, uniqueness criteria, and verification expectations all match.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md#1-1), lines 1 to 220
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PLANNING_STAGES.md)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
+
+I found the sync points and am now patching four docs (`STAGES`, `PLANNING_STAGES`, `TODO`, `README`) to enforce MVP boundaries, define “unique web frontend” criteria, and add measurable verification targets.
+
+Generating patch (70 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
+
+
+```
+
+```
+
+
+Generating patch (40 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PLANNING_STAGES.md)
+
+
+```
+
+```
+
+
+Generating patch (30 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
+
+
+```
+
+```
+The first three docs are now aligned on scope and acceptance criteria; I’m making the final README update so the status/source-of-truth summary matches the same Stage 1 boundaries.
+
+Generating patch (8 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+
+
+```
+
+```
+
+
+Read changed files in the active git repository
+
+Ran terminal command: git -C "c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3" diff -- docs/STAGES.md docs/PLANNING_STAGES.md docs/TODO.md README.md
+
+Read [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/efc527fbc52ea141903e763507674dc7/GitHub.copilot-chat/chat-session-resources/3a69d9d5-4f39-4795-90a8-dacdcdab3b7c/call_PFPWz0kJ4dWWYJ46fgd6AT23__vscode-1773333310444/content.txt#1-1), lines 1 to 260
+
+Ran terminal command: $p='c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\docs\STAGES.md'; $i=0; Get-Content $p | ForEach-Object { $i++; if($i -ge 30 -and $i -le 120){ '{0,4}: {1}' -f $i, $_ }}
+
+Ran terminal command: $p='c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\docs\PLANNING_STAGES.md'; $i=0; Get-Content $p | ForEach-Object { $i++; if($i -ge 35 -and $i -le 95){ '{0,4}: {1}' -f $i, $_ }}
+
+Ran terminal command: $p='c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\docs\TODO.md'; $i=0; Get-Content $p | ForEach-Object { $i++; if(($i -ge 48 -and $i -le 75) -or ($i -ge 90 -and $i -le 116)){ '{0,4}: {1}' -f $i, $_ }}
+
+Ran terminal command: $p='c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\README.md'; $i=0; Get-Content $p | ForEach-Object { $i++; if($i -ge 118 -and $i -le 136){ '{0,4}: {1}' -f $i, $_ }}
+
+Patched and aligned the Stage 1 documentation across all key planning/status docs so they now consistently reflect a clean, MVP-first implementation path and a measurable “unique web frontend” goal.
+
+**What I updated**
+
+1. `docs/STAGES.md:34`
+- Tightened Stage 1 tasks to require endpoint contract details (`method`, params, response shape, fallback behavior).
+- Clarified config expectations (`API base`, `/api/v1`, timeout settings).
+- Added explicit security controls (allowlists, output escaping, CSRF).
+- Added new sections:
+  - `Stage 1 Implementation Boundary (MVP First)` at `docs/STAGES.md:67`
+  - `Web Distinctness Criteria (Stage 1 Definition of Done)` at `docs/STAGES.md:78`
+- Upgraded verification to measurable checks (error modes + responsive breakpoints) at `docs/STAGES.md:84`.
+
+2. `docs/PLANNING_STAGES.md:40`
+- Added endpoint contract documentation requirement to API wrapper step.
+- Added explicit web-specific comparative UI expectation.
+- Added output escaping + CSRF to security essentials.
+- Made verification criteria concrete for timeout/non-2xx/malformed payloads and viewport checks.
+- Added `Web Distinctness Criteria (Stage 1)` at `docs/PLANNING_STAGES.md:74`.
+
+3. `docs/TODO.md:54`
+- Updated `S1-01` note to include endpoint contract detail deliverables.
+- Updated `S1-04` note to enforce dashboard-first MVP + distinctness verification.
+- Refined Stage 1 checklist wording to match MVP boundary and security controls at `docs/TODO.md:92`.
+- Expanded Stage 1 verification evidence items with measurable/error-path/distinctness checks at `docs/TODO.md:101`.
+
+4. `README.md:125`
+- Updated Stage 1 status row note and date to reflect the same MVP-first scope, API/error-handling expectations, and distinctness verification language used in docs.
+
+No code behavior was changed; this was a documentation alignment patch only.
+
+Natural next steps:
+1. I can now patch STAGES.md “Progress So Far” text to explicitly mention the new MVP/distinctness criteria (it still has older wording).  
+2. I can draft the Stage 1 endpoint contract table in STAGES.md or a new `docs/API_STAGE1_CONTRACT.md` so `S1-01` can move from “Not Started” to “In Progress.”
+
+Made changes.
+
+User: Yes, implement these steps you mentioned so that the plan for Stage 1 implementation is clean and refined
+
+GitHub Copilot: Refining Stage 1 now by implementing both follow-ups: I’ll update `Progress So Far` language in STAGES.md and add a concrete Stage 1 endpoint contract section sourced from the actual backend routes so `S1-01` has actionable detail.
+
+Search complete: Locate Stage 1 API routes
+
+Searched for files matching `**/backend/api/**`, 5 matches
+
+Searched for files matching `**/backend/main.py`, 1 match
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/api/router.py)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/main.py)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/api/alerts.py)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/api/summaries.py)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/backend/api/users.py)
+
+I’ve pulled the exact backend routes and schemas; next I’m patching docs with a concrete API contract artifact (`docs/API_STAGE1_CONTRACT.md`), linking it in Stage 1, and updating progress tracking so `S1-01` reflects real implementation movement.
+
+Generating patch (33 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
+
+
+```
+
+```
+
+
+Generating patch (90 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/API_STAGE1_CONTRACT.md)
+
+
+```
+
+```
+
+
+Generating patch (10 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/PLANNING_STAGES.md)
+
+
+```
+
+```
+
+
+Generating patch (6 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md)
+
+
+```
+
+```
+Core refinements are in place and linked; I’m doing a quick verification diff and then I’ll summarize exactly what changed and where to continue next (likely `S1-03` wrapper implementation details).
+
+Read changed files in the active git repository
+
+Ran terminal command: git -C "c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3" diff -- docs/STAGES.md docs/API_STAGE1_CONTRACT.md docs/PLANNING_STAGES.md docs/TODO.md
+
+Ran terminal command: $p='c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\docs\STAGES.md'; $i=0; Get-Content $p | ForEach-Object { $i++; if($i -ge 34 -and $i -le 120){ '{0,4}: {1}' -f $i, $_ }}
+
+Ran terminal command: $p='c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\docs\API_STAGE1_CONTRACT.md'; $i=0; Get-Content $p | ForEach-Object { $i++; if($i -le 170){ '{0,4}: {1}' -f $i, $_ }}
+
+Generating patch (10 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md)
+
+
+```
+
+```
+
+
+Generating patch (6 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/README.md)
+
+
+```
+
+```
+
+
+Read changed files in the active git repository
+
+Ran terminal command: git -C "c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3" diff -- README.md docs/STAGES.md docs/PLANNING_STAGES.md docs/TODO.md docs/API_STAGE1_CONTRACT.md
+
+Ran terminal command: git -C "c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3" status --short
+
+Searched for text `API_STAGE1_CONTRACT.md` (`**/docs/PLANNING_STAGES.md`), 1 result
+
+Searched for text `S1-01 | Define web extension architecture and backend API integration flow | High | In Progress` (`**/docs/TODO.md`), 1 result
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs)
+
+Implemented. Stage 1 planning is now cleaner, implementation-ready, and aligned around an explicit MVP boundary plus concrete API contracts.
+
+**What was refined**
+
+1. STAGES.md
+- Added contract-maintenance requirement under S1 architecture task: `docs/STAGES.md:35`
+- Added a Stage 1 API contract snapshot table (routes, methods, inputs, response model, fallback behavior): `docs/STAGES.md:85`
+- Updated Stage 1 progress text to reflect refined MVP + contract readiness: `docs/STAGES.md:112`
+- Added API contract artifact to Stage 1 deliverables: `docs/STAGES.md:106`
+
+2. New implementation artifact created
+- Added `docs/API_STAGE1_CONTRACT.md:1` with:
+  - Endpoint matrix for alerts/summaries/users
+  - Error/fallback expectations for PHP wrappers
+  - Schema snapshots (`AlertOut`, `AlertStats`, `SummaryOut`, `UserCreate`, `UserPrefsUpdate`, `UserOut`)
+  - Source references to backend route/schema files
+
+3. PLANNING_STAGES.md
+- Stage 1 deliverables now explicitly include the contract matrix artifact: `docs/PLANNING_STAGES.md:95`
+
+4. TODO.md
+- Updated `S1-01` from `Not Started` to `In Progress`, with evidence link to contract doc and updated timestamp: `docs/TODO.md:54`
+
+5. README.md
+- Stage 1 status note now references the contract artifact directly for consistency: `README.md:125`
+
+This gives you a clear, traceable Stage 1 execution path: scoped MVP, measurable distinctness, and route-level integration requirements the team can implement against immediately.
+
+Made changes.
+
+---
+

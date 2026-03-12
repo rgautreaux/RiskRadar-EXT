@@ -106,6 +106,7 @@ Reference: `docs/API_STAGE1_CONTRACT.md`
 **Deliverables**:
 - Web app extension codebase (PHP frontend)
 - API integration layer in PHP
+- Stage 1 endpoint contract matrix (`docs/API_STAGE1_CONTRACT.md`)
 - Setup and run documentation
 - Basic usability verification evidence (screenshots and/or walkthrough)
 
