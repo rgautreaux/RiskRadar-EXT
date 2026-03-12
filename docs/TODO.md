@@ -31,8 +31,8 @@ Week-by-week sprint board for tracking delivery to the goal of having most imple
 
 ## Current Verification Snapshot (Mar 12, 2026)
 
-- Backend pytest run (local venv): **78 collected, 52 passed, 26 errors**
-- Current blocker for full green test run: missing `passlib` module in active environment
+- Backend pytest run (local venv): **78 collected, 78 passed, 0 failed, 0 errors**
+- Dependency and compatibility fixes applied: installed backend requirements, pinned `bcrypt==4.0.1`, and aligned user API tests with JWT+bcrypt behavior
 - Newly documented in `README.md` this week:
   - full backend test suite explanation and run guide
   - scheduled data cleanup (retention) architecture + operations notes
@@ -137,7 +137,7 @@ Week-by-week sprint board for tracking delivery to the goal of having most imple
 **Owners:** All
 
 ### To Do
-- [ ] 🟡 Keep backend tests green in `backend/tests/` (Mar 12 status: 52 passed, 26 errors due to missing `passlib` in local environment)
+- [x] 🟢 Keep backend tests green in `backend/tests/` (verified Mar 12: 78 collected, 78 passed)
 - [ ] 🟡 Add tests for uncovered critical paths
 - [ ] 🟡 Add regression checklist for scraper + DB + summary flow
 - [x] 🟢 Validate scheduler startup/shutdown behavior baseline (`backend/tests/test_retention.py` verifies retention job registration and scheduler start)
