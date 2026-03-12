@@ -2343,3 +2343,470 @@ Validation:
 - Ran a final pattern scan and confirmed no remaining unbolded occurrences of those label formats.
 
 ---
+
+User: Implement Step 1 of the Implementation Checklist, as outlined by this plan.  Make sure to remove the white backgrounds from the png files used
+
+GitHub Copilot: I’m implementing the asset import step in the mobile app first: I’ll verify the available wireframe files, inspect the existing Expo asset structure, and then copy/process the PNGs so the app gets the expected icon directories with white backgrounds removed.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/wireframe_icons)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/assets)
+
+Read memory
+
+The source asset set is complete, including the notification window/text files that appear later in the plan. Next I’m checking the current mobile image assets and preparing an automated PNG cleanup pass so the copied icons have transparent backgrounds instead of white boxes.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/assets/images)
+
+Configuring a Python Environment
+Completed with input: {
+  "resourcePath": "c:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject"
+}
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/package.json)
+
+I’ve got the workspace Python environment configured. I’m now verifying whether image processing support is already available so I can batch-convert the white backgrounds to transparency instead of doing a brittle manual copy.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app.json)
+
+Ran `pylanceRunCodeSnippet` 
+Completed with input: {
+  "workspaceRoot": "file:///c:/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject",
+  "workingDirectory": "c:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject",
+  "timeout": 10000,
+  "codeSnippet": "import importlib.util\nprint(importlib.util.find_spec('PIL') is not None)"
+}
+
+The cleanup needs to be a little careful: I’m removing only white pixels connected to the outer edge of each asset so interior white details, if any, stay intact. I’m testing that approach on the source PNGs before I batch-copy them into the mobile app.
+
+Created [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/assets/icons/branding)
+
+Created [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/assets/icons/navigation)
+
+Created [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/assets/icons/hazards)
+
+Created [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/assets/images/wireframes)
+
+Ran terminal command: Add-Type -AssemblyName System.Drawing; $img = [System.Drawing.Bitmap]::FromFile('c:\Users\rebec\OneDrive\Documents\GitHub\Team6-SeniorProject\wireframe_icons\RiskRadar_ALERT_Logo.png'); Write-Output (("{0},{1},{2},{3}" -f $img.GetPixel(0,0).A, $img.GetPixel(0,0).R, $img.GetPixel(0,0).G, $img.GetPixel(0,0).B)); $img.Dispose()
+
+The image-processing approach works with the built-in Windows/.NET APIs, so I don’t need to add a new dependency just to clean the assets. I’m applying the full batch copy now and then I’ll verify the target tree and a few processed files.
+
+Created 3 todos
+
+Ran terminal command: Add-Type -AssemblyName System.Drawing
+$sourceRoot = 'c:\Users\rebec\OneDrive\Documents\GitHub\Team6-SeniorProject\wireframe_icons'
+$targetRoot = 'c:\Users\rebec\OneDrive\Documents\GitHub\Team6-SeniorProject\frontend\RiskRadar\assets'
+
+function Test-NearWhite([System.Drawing.Color]$color) {
+    return $color.A -gt 0 -and $color.R -ge 245 -and $color.G -ge 245 -and $color.B -ge 245
+}
+
+function Copy-TransparentPng([string]$sourcePath, [string]$destinationPath) {
+    $sourceBitmap = [System.Drawing.Bitmap]::FromFile($sourcePath)
+    try {
+        $bitmap = New-Object System.Drawing.Bitmap($sourceBitmap.Width, $sourceBitmap.Height, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
+        $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+        try {
+            $graphics.DrawImage($sourceBitmap, 0, 0, $sourceBitmap.Width, $sourceBitmap.Height)
+        }
+        finally {
+            $graphics.Dispose()
+        }
+
+        $width = $bitmap.Width
+        $height = $bitmap.Height
+        $visited = New-Object 'bool[]' ($width * $height)
+        $queue = New-Object 'System.Collections.Generic.Queue[System.Drawing.Point]'
+        $toClear = New-Object 'System.Collections.Generic.List[System.Drawing.Point]'
+
+        function Add-Pixel([int]$x, [int]$y) {
+            if ($x -lt 0 -or $x -ge $width -or $y -lt 0 -or $y -ge $height) {
+                return
+            }
+
+            $index = ($y * $width) + $x
+            if ($visited[$index]) {
+                return
+            }
+            $visited[$index] = $true
+
+            $pixel = $bitmap.GetPixel($x, $y)
+            if (Test-NearWhite $pixel) {
+                $point = [System.Drawing.Point]::new($x, $y)
+                $queue.Enqueue($point)
+                $toClear.Add($point) | Out-Null
+            }
+        }
+
+        for ($x = 0; $x -lt $width; $x++) {
+            Add-Pixel $x 0
+            Add-Pixel $x ($height - 1)
+        }
+        for ($y = 1; $y -lt ($height - 1); $y++) {
+            Add-Pixel 0 $y
+            Add-Pixel ($width - 1) $y
+        }
+
+        while ($queue.Count -gt 0) {
+            $point = $queue.Dequeue()
+            Add-Pixel ($point.X - 1) $point.Y
+            Add-Pixel ($point.X + 1) $point.Y
+            Add-Pixel $point.X ($point.Y - 1)
+            Add-Pixel $point.X ($point.Y + 1)
+        }
+
+        foreach ($point in $toClear) {
+            $bitmap.SetPixel($point.X, $point.Y, [System.Drawing.Color]::FromArgb(0, 255, 255, 255))
+        }
+
+        $bitmap.Save($destinationPath, [System.Drawing.Imaging.ImageFormat]::Png)
+        $bitmap.Dispose()
+    }
+    finally {
+        $sourceBitmap.Dispose()
+    }
+}
+
+$assetGroups = @{
+    'icons\\branding' = @(
+        'RiskRadar_ALERT_Logo.png',
+        'RiskRadar_STND_Logo.png',
+        'RiskRadar_ALERT_Text.png',
+        'RiskRadar_STND_Text.png',
+        'RiskRadar_DataHeader_Format.png'
+    )
+    'icons\\navigation' = @(
+        'RiskRadar_ALERT_HomeBttn.png',
+        'RiskRadar_STND_HomeBttn.png',
+        'RiskRadar_ALERT_NotifIcon.png',
+        'RiskRadar_STND_NotifIcon.png',
+        'RiskRadar_ALERT_NotifWindow.png',
+        'RiskRadar_STND_NotifWIndow.png',
+        'RiskRadar_Local_Icon.png',
+        'RiskRadar_DEST_Global_Icon.png',
+        'RiskRadar_GEN_Global_Icon.png'
+    )
+    'icons\\hazards' = @(
+        'RiskRadar_Weather_Icon.png',
+        'RiskRadar_AirQuality_Icon.png',
+        'RiskRadar_Pollen_Icon.png',
+        'RiskRadar_Pollution_Icon.png',
+        'RiskRadar_LocalEQ_Icon.png',
+        'RiskRadar_GlobalEQ_Icon.png',
+        'RiskRadar_LocalFlood_Icon.png',
+        'RiskRadar_GlobalFlood_Icon.png',
+        'RiskRadar_LocalWindEvent_Icon.png',
+        'RiskRadar_GlobalWindEvent_Icon.png',
+        'RiskRadar_LocalFIre_Icon.png',
+        'RiskRadar_GlobalFire_Icon.png'
+    )
+}
+
+foreach ($group in $assetGroups.GetEnumerator()) {
+    $destinationDirectory = Join-Path $targetRoot $group.Key
+    foreach ($fileName in $group.Value) {
+        $sourcePath = Join-Path $sourceRoot $fileName
+        $destinationPath = Join-Path $destinationDirectory $fileName
+        Copy-TransparentPng $sourcePath $destinationPath
+    }
+}
+
+Copy-Item (Join-Path $sourceRoot 'RiskRadar_MobileApp_Wireframe.png') (Join-Path $targetRoot 'images\\wireframes\\RiskRadar_MobileApp_Wireframe.png') -Force
+Write-Output 'Asset import complete.'
+
+The batch import ran, but I want to verify the resulting files before I treat it as finished. I’m checking the copied directories and sampling processed images to confirm the background pixels are now transparent at the edges.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/assets/icons/branding)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/assets/icons/navigation)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/assets/icons/hazards)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/assets/images/wireframes)
+
+Ran terminal command: $ErrorActionPreference = 'Stop'; Add-Type -AssemblyName System.Drawing; $source = 'c:\Users\rebec\OneDrive\Documents\GitHub\Team6-SeniorProject\wireframe_icons\RiskRadar_ALERT_HomeBttn.png'; $dest = 'c:\Users\rebec\OneDrive\Documents\GitHub\Team6-SeniorProject\frontend\RiskRadar\assets\icons\navigation\RiskRadar_ALERT_HomeBttn.png'; $src = [System.Drawing.Bitmap]::FromFile($source); try { $bmp = New-Object System.Drawing.Bitmap($src.Width, $src.Height, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb); $g = [System.Drawing.Graphics]::FromImage($bmp); try { $g.DrawImage($src, 0, 0, $src.Width, $src.Height) } finally { $g.Dispose() }; $bmp.Save($dest, [System.Drawing.Imaging.ImageFormat]::Png); $bmp.Dispose(); Write-Output 'saved' } finally { $src.Dispose() }
+
+The terminal batch hit PowerShell multiline friction, so I’m switching to a more reliable path: install the image library into the existing workspace venv and do the copy/cleanup in one Python pass. That keeps the asset transform deterministic instead of wrestling with the shell parser.
+
+Installing Pillow in .venv (3.14.3)
+Completed with input: {
+  "packageList": [
+    "Pillow"
+  ],
+  "resourcePath": "c:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject"
+}
+
+Ran `pylanceRunCodeSnippet` 
+Completed with input: {
+  "workspaceRoot": "file:///c:/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject",
+  "workingDirectory": "c:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject",
+  "timeout": 120000,
+  "codeSnippet": "from collections import deque\nfrom pathlib import Path\nfrom PIL import Image\n\nworkspace = Path(r'c:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject')\nsource_root = workspace / 'wireframe_icons'\ntarget_root = workspace / 'frontend' / 'RiskRadar' / 'assets'\n\nasset_groups = {\n    target_root / 'icons' / 'branding': [\n        'RiskRadar_ALERT_Logo.png',\n        'RiskRadar_STND_Logo.png',\n        'RiskRadar_ALERT_Text.png',\n        'RiskRadar_STND_Text.png',\n        'RiskRadar_DataHeader_Format.png',\n    ],\n    target_root / 'icons' / 'navigation': [\n        'RiskRadar_ALERT_HomeBttn.png',\n        'RiskRadar_STND_HomeBttn.png',\n        'RiskRadar_ALERT_NotifIcon.png',\n        'RiskRadar_STND_NotifIcon.png',\n        'RiskRadar_ALERT_NotifWindow.png',\n        'RiskRadar_STND_NotifWIndow.png',\n        'RiskRadar_Local_Icon.png',\n        'RiskRadar_DEST_Global_Icon.png',\n        'RiskRadar_GEN_Global_Icon.png',\n    ],\n    target_root / 'icons' / 'hazards': [\n        'RiskRadar_Weather_Icon.png',\n        'RiskRadar_AirQuality_Icon.png',\n        'RiskRadar_Pollen_Icon.png',\n        'RiskRadar_Pollution_Icon.png',\n        'RiskRadar_LocalEQ_Icon.png',\n        'RiskRadar_GlobalEQ_Icon.png',\n        'RiskRadar_LocalFlood_Icon.png',\n        'RiskRadar_GlobalFlood_Icon.png',\n        'RiskRadar_LocalWindEvent_Icon.png',\n        'RiskRadar_GlobalWindEvent_Icon.png',\n        'RiskRadar_LocalFIre_Icon.png',\n        'RiskRadar_GlobalFire_Icon.png',\n    ],\n}\n\nWHITE_THRESHOLD = 245\n\ndef is_near_white(pixel: tuple[int, int, int, int]) -> bool:\n    r, g, b, a = pixel\n    return a > 0 and r >= WHITE_THRESHOLD and g >= WHITE_THRESHOLD and b >= WHITE_THRESHOLD\n\n\ndef remove_edge_white_background(source_path: Path, destination_path: Path) -> None:\n    with Image.open(source_path).convert('RGBA') as image:\n        pixels = image.load()\n        width, height = image.size\n        visited: set[tuple[int, int]] = set()\n        queue: deque[tuple[int, int]] = deque()\n\n        def try_add(x: int, y: int) -> None:\n            if not (0 <= x < width and 0 <= y < height):\n                return\n            point = (x, y)\n            if point in visited:\n                return\n            visited.add(point)\n            if is_near_white(pixels[x, y]):\n                queue.append(point)\n\n        for x in range(width):\n            try_add(x, 0)\n            try_add(x, height - 1)\n        for y in range(1, height - 1):\n            try_add(0, y)\n            try_add(width - 1, y)\n\n        to_clear: list[tuple[int, int]] = []\n        while queue:\n            x, y = queue.popleft()\n            to_clear.append((x, y))\n            try_add(x - 1, y)\n            try_add(x + 1, y)\n            try_add(x, y - 1)\n            try_add(x, y + 1)\n\n        for x, y in to_clear:\n            pixels[x, y] = (255, 255, 255, 0)\n\n        image.save(destination_path)\n\nfor directory, file_names in asset_groups.items():\n    directory.mkdir(parents=True, exist_ok=True)\n    for file_name in file_names:\n        remove_edge_white_background(source_root / file_name, directory / file_name)\n\nwireframe_directory = target_root / 'images' / 'wireframes'\nwireframe_directory.mkdir(parents=True, exist_ok=True)\nwith Image.open(source_root / 'RiskRadar_MobileApp_Wireframe.png') as wireframe:\n    wireframe.save(wireframe_directory / 'RiskRadar_MobileApp_Wireframe.png')\n\nprint('Imported', sum(len(files) for files in asset_groups.values()), 'cleaned UI PNGs and 1 wireframe reference image.')"
+}
+
+The import is complete. I’m doing a final verification pass on the directory layout and checking a few copied icons directly to confirm the edge background alpha is actually transparent, not just copied over.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/assets/icons/branding)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/assets/icons/navigation)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/assets/icons/hazards)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/assets/images/wireframes)
+
+Ran `pylanceRunCodeSnippet` 
+Completed with input: {
+  "workspaceRoot": "file:///c:/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject",
+  "workingDirectory": "c:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject",
+  "timeout": 30000,
+  "codeSnippet": "from pathlib import Path\nfrom PIL import Image\n\npaths = [\n    Path(r'c:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject\\frontend\\RiskRadar\\assets\\icons\\branding\\RiskRadar_ALERT_Logo.png'),\n    Path(r'c:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject\\frontend\\RiskRadar\\assets\\icons\\navigation\\RiskRadar_ALERT_HomeBttn.png'),\n    Path(r'c:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject\\frontend\\RiskRadar\\assets\\icons\\hazards\\RiskRadar_Weather_Icon.png'),\n    Path(r'c:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject\\frontend\\RiskRadar\\assets\\images\\wireframes\\RiskRadar_MobileApp_Wireframe.png'),\n]\n\nfor path in paths:\n    with Image.open(path).convert('RGBA') as image:\n        alpha = image.getpixel((0, 0))[3]\n        print(path.name, alpha)\n"
+}
+
+The copied assets look correct: UI PNG corners are transparent, while the wireframe reference stayed unchanged. I’m checking the changed-file set once so I can report exactly what landed and whether anything unexpected was touched.
+
+Read changed files in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject)
+
+Completed: *Copy and clean PNG assets* (2/3)
+
+Step 1 is implemented in the Expo app asset tree.
+
+I created the new asset buckets and imported the wireframe set into:
+RiskRadar_ALERT_Logo.png
+RiskRadar_ALERT_HomeBttn.png
+RiskRadar_Weather_Icon.png
+RiskRadar_MobileApp_Wireframe.png
+
+For the UI PNGs, I removed white backgrounds by making only edge-connected near-white pixels transparent. That avoids stripping interior white details if an icon uses them. I left the wireframe reference image unchanged on purpose. I also verified the result on representative assets: the copied branding, navigation, and hazard icons now have transparent corner pixels, while the wireframe image remains opaque.
+
+One implementation note: I installed Pillow into the workspace Python venv to run the one-time image cleanup, but I did not change project source files or add a runtime dependency to the mobile app.
+
+Natural next steps:
+1. Implement Step 2 in theme.ts
+2. Update the shared text/view primitives in themed-text.tsx and themed-view.tsx
+
+User: Update the plan with completed progress, then implement Stage 2
+
+GitHub Copilot: I’m updating the styling plan to reflect the asset import work, then I’m checking the current mobile theme implementation so I can apply the next planned foundation change without guessing at existing Expo assumptions.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/UI_UX_STYLING_PLAN.md#1-1), lines 1 to 320
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/components/themed-view.tsx)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/constants/theme.ts)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/components/themed-text.tsx)
+
+The current theme layer is still the Expo starter version, including dark-mode keys and starter comments. I’m reading the theme hook and shell consumers now so the token rewrite stays compatible with the existing app instead of forcing extra churn.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/hooks/use-theme-color.ts)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app/_layout.tsx)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app/%28tabs%29/_layout.tsx)
+
+I’ve narrowed the next implementation target to the theme token layer. I’m reading the rest of the plan so I can mark the right checklist items complete, then I’ll patch the plan doc and replace the starter theme with the branded token set while preserving compatibility with the existing hooks.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/UI_UX_STYLING_PLAN.md#321-321), lines 321 to 404
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/hooks/use-color-scheme.ts)
+
+I have enough context to patch safely. I’m checking where the current theme exports are consumed so I can keep the token names the app already expects and avoid introducing breakage ahead of the next shell and component passes.
+
+Searched for regex `Colors\.|Fonts\b|spacing\b|radius\b|typography\b` (`**/frontend/RiskRadar/**/*.{ts,tsx}`), 8 results
+
+Searched for files matching `**/frontend/RiskRadar/constants/*.ts`, 1 match
+
+I’m patching two things now: the plan document to mark the completed asset work and this theme pass, and the mobile theme file to replace the Expo starter palette with the RiskRadar token set while keeping current imports working.
+
+Generating patch (235 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/UI_UX_STYLING_PLAN.md), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/constants/theme.ts)
+
+
+```
+
+```
+
+```
+
+```
+The theme token rewrite is in place. I’m running a quick type/error pass now because React Native style token objects can be finicky about literal types, and I want to catch that before moving on.
+
+Checked [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/constants/theme.ts), no problems found
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/constants/theme.ts)
+
+The token file is clean at the editor/type level. I’m doing one last diff check so I can summarize exactly what changed in the plan and the mobile theme layer, and flag the next dependency in the styling sequence clearly.
+
+Read changed files in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject)
+
+I updated UI_UX_STYLING_PLAN.md to mark the completed asset-import work and the theme-token work as done. That includes the Step 1 checklist, the Step 2 checklist, and the corresponding completed items under Phase 1.
+
+I implemented the second checklist item in theme.ts. The Expo starter palette and comments are gone, replaced with a centralized RiskRadar token layer: brand colors, semantic surface/border/status colors, spacing, radius, typography, and reusable card shadow tokens. I kept the existing Colors and Fonts exports compatible with the current app so the next shell/component passes can build on this without extra cleanup, and I pinned both light and dark color lookups to the same branded palette for the phase-1 light-mode requirement.
+
+I validated theme.ts with editor diagnostics and it has no current errors. I did not run the app or full lint yet.
+
+If you meant Phase 2: Shell rather than the second checklist item, the next files to update are _layout.tsx, frontend/RiskRadar/app/(tabs)/_layout.tsx/_layout.tsx), and app.json.
+
+Made changes.
+
+User: Complete the following steps:
+
+- Run the full lint to make sure this implementation did not cause any errors
+- Run the full suite to verify everything is running smoothly
+- Run the app to see how these changes have shaped te front-end 
+- Update _layout.tsx, frontend/RiskRadar/app/(tabs)/_layout.tsx/_layout.tsx), and app.json to be sure all aspects of the project are in lock-step
+
+GitHub Copilot: I’m validating the current mobile implementation first with lint and test runs, then I’ll patch the app shell files so the navigation theme, tab bar, and app metadata all use the new RiskRadar tokens consistently.
+
+Read memory riskradar-testing-notes.md
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app/_layout.tsx)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app/%28tabs%29/_layout.tsx)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app.json)
+
+I’ve got the current shell files and app metadata. Next I’m reading the small supporting components that affect the tab bar, then I’ll patch the shell layer and run lint, backend tests, and the Expo app startup against the updated state rather than validating an incomplete shell.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/components/haptic-tab.tsx)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/components/ui/icon-symbol.tsx)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app/%28tabs%29/explore.tsx)
+
+I’m patching the shell layer now: custom navigation theme in the root layout, branded tab-bar styling with the imported Home assets, app metadata and splash colors in app.json, and a plan update so the completed shell work is reflected in the document.
+
+Generating patch (237 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app/_layout.tsx), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app/%28tabs%29/_layout.tsx), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app.json), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/UI_UX_STYLING_PLAN.md)
+
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+The shell updates are in. I’m checking these files for editor/type issues before I run the full validation sequence, because Expo layout files tend to surface small typing problems that are faster to fix before lint and app startup.
+
+Checked [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app/_layout.tsx), [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app/%28tabs%29/_layout.tsx), no problems found
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app/%28tabs%29/_layout.tsx)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app/_layout.tsx)
+
+I’ve confirmed the patched shell files are type-clean. Next I’m running the actual validation sequence: frontend dependency install if needed, full mobile lint, and the backend pytest suite in the project venv.
+
+Fetching Python executable information for .venv (3.14.3)
+Completed with input: {
+  "resourcePath": "c:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\Team6-SeniorProject"
+}
+
+Ran terminal command: Set-Location 'frontend/RiskRadar'; npm install
+
+PowerShell execution policy blocks npm.ps1 here, so I’m switching to npm.cmd and continuing. I’ll run mobile lint with npm.cmd and the Python test suite in parallel to get a full validation readout faster.
+
+Ran terminal command: Set-Location 'c:/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar'; npm.cmd install; npm.cmd run lint
+
+Ran terminal command: Set-Location 'c:/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/backend'; c:/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/.venv/Scripts/python.exe -m pytest
+
+The validations are good so far: the backend suite is fully green, and the frontend lint run returned without reporting Expo lint errors. I’m starting the app in web mode now so I can confirm the updated shell actually boots and expose a local preview URL.
+
+Ran terminal command: Set-Location 'c:/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar'; npx.cmd expo start --web --non-interactive
+
+The app process is up, with only non-blocking Expo/React Native warnings. I’m pulling the live terminal output now to confirm the local web URL and whether the bundler compiled the current shell successfully.
+
+Checked background terminal output
+
+The web build compiled and is serving at localhost, so the updated shell is at least booting cleanly. I’m opening the local preview URL in the integrated browser now so the frontend can be inspected directly from the workspace.
+
+Opened browser page at http://localhost:8081
+
+I caught one runtime warning caused by the new Home tab image: I’m removing the deprecated style-based resizeMode and then re-running frontend lint so the final validation state reflects the patched shell, not the warned one.
+
+Generating patch (21 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app/%28tabs%29/_layout.tsx)
+
+
+```
+
+```
+
+
+Checked [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app/%28tabs%29/_layout.tsx), no problems found
+
+Ran terminal command: Set-Location 'c:/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar'; npm.cmd run lint
+
+The shell files remain error-free, and the rerun of Expo lint completed without reporting lint failures. I’m pulling the running Expo server logs one more time to confirm the updated tab layout recompiles cleanly after the resizeMode fix.
+
+Checked background terminal output
+
+I have the live Metro output on disk now. I’m reading the latest portion to verify the post-patch compile state and separate any remaining framework warnings from actual app issues.
+
+Read [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/a191c22b0a0d3674b76693daa1d20a14/GitHub.copilot-chat/chat-session-resources/ac0986e6-b07b-4f10-8d21-278c5780263c/call_smo9UbxhPAgxnKeqQkvFvZzo__vscode-1773333252776/content.txt)
+
+The app still recompiles cleanly, but the remaining resizeMode warning is coming from somewhere else in the mobile codebase, not the updated tab icon. I’m locating that usage now so I can tell you whether it’s part of this shell change or an existing screen/component issue.
+
+Searched for regex `resizeMode\s*:\s*|resizeMode=` (`**/frontend/RiskRadar/**/*.{ts,tsx}`), 2 results
+
+Searched for text `pointerEvents` (`**/frontend/RiskRadar/**/*.{ts,tsx}`), no results
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/components/ui/icon-symbol.ios.tsx)
+
+I want a clean startup signal, not one mixed with the earlier dev-server logs. I’m restarting Expo once with a fresh process so I can confirm the current warning set on the updated code rather than relying on stale hot-reload output.
+
+Killed terminal
+
+Ran terminal command: Set-Location 'c:/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar'; $env:CI='1'; npx.cmd expo start --web
+
+The fresh Expo restart narrowed the runtime state down to one remaining warning, and it’s the pointerEvents deprecation rather than a shell/theme regression. I’m pulling the current server output once for the final URL and compile confirmation.
+
+Checked background terminal output
+
+The shell is now aligned with the new RiskRadar token system, and the plan was updated to reflect that in UI_UX_STYLING_PLAN.md. I updated _layout.tsx with a branded navigation theme and status bar treatment, frontend/RiskRadar/app/(tabs)/_layout.tsx/_layout.tsx) with the restyled tab bar, Home PNG tab icons, and the `Alerts` tab label, and app.json with light-mode shell branding, splash/background color updates, and aligned app metadata.
+
+Validation results are clean on the important paths. `npm.cmd run lint` completed without lint errors in the mobile app, and the backend pytest suite passed fully: 78 tests passed. I also ran the Expo app in web mode successfully; it compiled and is serving at `http://localhost:8081`, and I opened that local preview in the integrated browser.
+
+The only remaining runtime signal is a non-blocking web warning: `props.pointerEvents is deprecated. Use style.pointerEvents`. That came back on a fresh Expo restart and does not prevent bundling or startup. `npm install` also reported 1 high-severity vulnerability in the frontend dependency tree, but it did not block install, lint, or app startup.
+
+Natural next steps:
+1. Continue Phase 1/3 UI work in themed-text.tsx, themed-view.tsx, and the main tab screens.
+2. If you want a warning-clean web runtime, I can trace and eliminate the remaining `pointerEvents` warning next.
+
+Made changes.
+
+User: Update the Group Progress log with all the developments made in this session
+
+GitHub Copilot: I’m adding a new dated session entry to GROUP_PROGRESS_LOG that captures the UI implementation work, shell updates, validation runs, and runtime observations from this session so the record stays complete and evidence-based.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/GROUP_PROGRESS_LOG#700-700), lines 700 to 717
+
+Generating patch (121 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/GROUP_PROGRESS_LOG)
+
+
+```
+
+```
+Updated with a full new session entry in GROUP_PROGRESS_LOG capturing:
+
+- Asset import + PNG white-background transparency cleanup
+- Theme token rebuild in theme.ts
+- Shell alignment updates in:
+  - _layout.tsx
+  - _layout.tsx
+  - app.json
+- Checklist/progress sync in UI_UX_STYLING_PLAN.md
+- Validation evidence:
+  - Frontend lint run
+  - Backend full suite (`78 passed`)
+  - Expo web startup at `http://localhost:8081`
+- Issues/decisions/outcome/next steps for continuation
+
+If you want, I can also add a short “Quick Minimal Version” entry under this for weekly standup snapshots.
+
+Made changes.
