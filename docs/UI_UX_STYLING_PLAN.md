@@ -70,6 +70,40 @@ Recommended organization:
 
 This avoids path issues and keeps the mobile app self-contained.
 
+## Asset Mapping Table
+
+Use the following table as the default source-of-truth mapping when moving assets into the mobile app and wiring them into screens/components.
+
+| Wireframe Asset File | Intended App Location | UI Purpose |
+| --- | --- | --- |
+| `RiskRadar_MobileApp_Wireframe.png` | `assets/images/wireframes/` | Design reference only; not rendered in the production UI. |
+| `RiskRadar_ALERT_Logo.png` | `components/brand-header.tsx` or `app/(tabs)/index.tsx` header | Alert-state logo treatment for high-risk or warning-focused header states. |
+| `RiskRadar_STND_Logo.png` | `components/brand-header.tsx` or `app/(tabs)/index.tsx` header | Default RiskRadar logo treatment for the primary home header. |
+| `RiskRadar_ALERT_HomeBttn.png` | `app/(tabs)/_layout.tsx` | Active or alert-state home tab icon. |
+| `RiskRadar_STND_HomeBttn.png` | `app/(tabs)/_layout.tsx` | Default or inactive home tab icon. |
+| `RiskRadar_ALERT_NotifIcon.png` | `components/brand-header.tsx` or notification action button | Alert-state notification icon for urgent notification states. |
+| `RiskRadar_STND_NotifIcon.png` | `components/brand-header.tsx` or notification action button | Default notification icon in the top header/action area. |
+| `RiskRadar_ALERT_NotifWindow.png` | `app/modal.tsx` or future notifications screen | Alert-state notification panel or notification modal visual. |
+| `RiskRadar_STND_NotifWIndow.png` | `app/modal.tsx` or future notifications screen | Standard notification panel or modal visual. |
+| `RiskRadar_ALERT_Text.png` | `components/brand-header.tsx` or alert banner | Alert-state branded text lockup when showing warning emphasis. |
+| `RiskRadar_STND_Text.png` | `components/brand-header.tsx` | Standard branded text lockup for the main app header. |
+| `RiskRadar_DataHeader_Format.png` | `components/section-header.tsx` or top summary block | Visual reference for structured data-header layout in cards or summary sections. |
+| `RiskRadar_Weather_Icon.png` | `components/risk-card.tsx` on home screen | Weather summary card icon. |
+| `RiskRadar_AirQuality_Icon.png` | `components/risk-card.tsx` on home screen | Air quality summary card icon. |
+| `RiskRadar_Pollen_Icon.png` | `components/risk-card.tsx` on home screen | Pollen summary card icon. |
+| `RiskRadar_Pollution_Icon.png` | `components/risk-card.tsx` on home screen | Pollution or contaminants summary card icon. |
+| `RiskRadar_Local_Icon.png` | `app/(tabs)/index.tsx` location/context header | Local conditions indicator in the dashboard header or summary strip. |
+| `RiskRadar_DEST_Global_Icon.png` | `app/(tabs)/explore.tsx` or hazard scope toggle | Global destination or global-scope indicator if used in browsing/explore views. |
+| `RiskRadar_GEN_Global_Icon.png` | `app/(tabs)/explore.tsx` or hazard scope toggle | Generic global-scope icon for explore/filter context. |
+| `RiskRadar_LocalEQ_Icon.png` | `components/hazard-chip.tsx` or local alerts section | Local earthquake hazard icon. |
+| `RiskRadar_GlobalEQ_Icon.png` | `components/hazard-chip.tsx` or explore/global alerts section | Global earthquake hazard icon. |
+| `RiskRadar_LocalFlood_Icon.png` | `components/hazard-chip.tsx` or local alerts section | Local flood hazard icon. |
+| `RiskRadar_GlobalFlood_Icon.png` | `components/hazard-chip.tsx` or explore/global alerts section | Global flood hazard icon. |
+| `RiskRadar_LocalWindEvent_Icon.png` | `components/hazard-chip.tsx` or local alerts section | Local wind-event hazard icon. |
+| `RiskRadar_GlobalWindEvent_Icon.png` | `components/hazard-chip.tsx` or explore/global alerts section | Global wind-event hazard icon. |
+| `RiskRadar_LocalFIre_Icon.png` | `components/hazard-chip.tsx` or local alerts section | Local fire hazard icon. |
+| `RiskRadar_GlobalFire_Icon.png` | `components/hazard-chip.tsx` or explore/global alerts section | Global fire hazard icon. |
+
 ## Styling Direction
 
 The wireframe should drive a visual system with these characteristics:
