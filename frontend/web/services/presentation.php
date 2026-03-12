@@ -12,12 +12,14 @@ function rr_format_datetime(?string $value): string
     }
 
     if (is_numeric($value)) {
-        $numericValue = (float) $value;
-        if ($numericValue > 1000000000000) {
-            $numericValue /= 1000;
+        $timestamp = (int) $value;
+        // Values above 9_999_999_999 exceed the maximum 10-digit second-precision
+        // Unix timestamp (year ~2286), so they must be millisecond-precision.
+        if ($timestamp > 9999999999) {
+            $timestamp = intdiv($timestamp, 1000);
         }
 
-        return date('M j, Y g:i A', (int) $numericValue);
+        return date('M j, Y g:i A', $timestamp);
     }
 
     $timestamp = strtotime($value);

@@ -48,6 +48,10 @@ function rr_http_request(array $config, string $method, string $path, array $que
 
     if ($body !== null) {
         $payload = json_encode($body);
+        if ($payload === false) {
+            return rr_fallback_result(null, 'Failed to encode request body as JSON.');
+        }
+
         $headers[] = 'Content-Type: application/json';
     }
 
