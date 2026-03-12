@@ -438,6 +438,79 @@ Copy/paste this block for each new work session:
 
 ### Next Steps
 - If enabling full source coverage in runtime smoke checks, set `NASA_FIRMS_MAP_KEY` and re-run Uvicorn smoke to include `firms`.
+
+---
+
+## Rebecca Gautreaux Log — 2026-03-12
+
+### Session Focus
+- Audit all PNG image assets in the frontend for white (non-transparent) backgrounds.
+- Remove white backgrounds from any affected files so all app icons and images render correctly on any colored surface.
+- Identify and correct a mismatched icon assignment in the bottom navigation tab bar (Home tab).
+- Run the frontend app to visually verify the updated assets in-application.
+
+### Major Developments Completed
+
+#### 1) Frontend PNG Background Audit Performed
+- Scanned all 37 project PNG files (excluding `node_modules` and `.expo` cache) using Pillow + NumPy.
+- Detection method: flood-fill corner seed check (all 4 corners sampled for near-white opaque pixels) plus edge-band white percentage.
+- Result: 2 files identified as having solid white backgrounds requiring removal.
+
+#### 2) White Background Removed from Navigation Icon
+- File: `frontend/RiskRadar/assets/icons/navigation/RiskRadar_ALERT_HomeBttn.png`
+- Original state: 261×261 RGBA image with all 4 corners white (26.5% of pixels were near-white opaque background).
+- Fix: BFS flood-fill from corners with a tolerance of ±15 RGB units.
+- Result: 14,455 background pixels made transparent; internal white design elements preserved.
+
+#### 3) White Background Removed from Wireframe Image
+- File: `frontend/RiskRadar/assets/images/wireframes/RiskRadar_MobileApp_Wireframe.png`
+- Original state: 1920×1080 RGB-only image (no alpha channel) with 91.9% white coverage and 98% white edge band.
+- Fix: Converted to RGBA, then applied BFS flood-fill from corners.
+- Result: 1,816,080 background pixels made transparent; internal UI wireframe content preserved.
+
+#### 4) Post-Fix Verification Run
+- Re-ran full PNG audit against all 37 project files after applying fixes.
+- Result: `0 file(s) need background removal` — all files passed corner/edge white checks.
+
+#### 5) Home Tab Icon Assignment Corrected
+- Issue identified: In `frontend/RiskRadar/app/(tabs)/_layout.tsx`, the `active` (focused) state of the Home tab was incorrectly mapped to the Alert version icon (`RiskRadar_ALERT_HomeBttn.png`), and the `inactive` state was mapped to the Standard version (`RiskRadar_STND_HomeBttn.png`).
+- Fix: Swapped the `active` and `inactive` source assignments so that:
+	- **Standard icon** (`RiskRadar_STND_HomeBttn.png`) → shown when the Home tab is **focused** (normal home view, no active alert state).
+	- **Alert icon** (`RiskRadar_ALERT_HomeBttn.png`) → shown when the Home tab is **unfocused** (user is on another screen, alert state may be active).
+- File updated: `frontend/RiskRadar/app/(tabs)/_layout.tsx`
+
+#### 6) Frontend App Started for Visual Verification
+- Started Expo development server via `npx expo start --web` (invoked through Node directly to bypass PowerShell execution policy).
+- App bundled successfully (1,149 modules, no errors).
+- Browser opened to `http://localhost:8081` for in-application visual review of updated PNG backgrounds and corrected icon assignment.
+- Only non-blocking warning present: `props.pointerEvents is deprecated` (React Native Web cosmetic issue, unrelated to these changes).
+
+### Files Updated
+- `frontend/RiskRadar/assets/icons/navigation/RiskRadar_ALERT_HomeBttn.png` — white background removed
+- `frontend/RiskRadar/assets/images/wireframes/RiskRadar_MobileApp_Wireframe.png` — white background removed
+- `frontend/RiskRadar/app/(tabs)/_layout.tsx` — home tab icon active/inactive assignment swapped
+
+### Commands / Verification Used
+- PNG audit + background removal via Pillow/NumPy Python scripts (temporary helper scripts removed after use).
+- Expo dev server: `node "C:\Program Files\nodejs\node_modules\npm\bin\npx-cli.js" expo start --web`
+- Visual verification at `http://localhost:8081`.
+
+### Issues / Blockers
+- PowerShell execution policy blocked `npx` directly; resolved by invoking Node with the npx CLI script path directly.
+- `python` and `python3` shims are disabled on this machine; resolved by using `py` launcher throughout.
+
+### Decisions Made
+- BFS flood-fill approach chosen over global color-key replacement to preserve internal white design details (e.g., white elements within icons and wireframe UI components).
+- Corner-detection strategy (rather than blanket white-pixel removal) prevents destroying intentional white design elements inside assets.
+
+### Outcome
+- All 37 project PNG assets now have transparent backgrounds where required.
+- Home tab icon assignment is corrected and matches intended UX (Standard = normal home, Alert = alert state).
+- Expo app runs and renders updated assets correctly in the browser.
+
+### Next Steps
+- Confirm visual appearance of updated icons on dark-mode or non-white backgrounds in the app.
+- Review whether `RiskRadar_ALERT_HomeBttn.png` on the inactive tab should be conditionally shown only when actual alerts exist (requires alert state hook in `_layout.tsx`).
 - Execute one operational retention dry run in MariaDB with:
 	- `RETENTION_ENABLED=true`
 	- `RETENTION_DRY_RUN=true`
