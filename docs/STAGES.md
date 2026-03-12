@@ -34,39 +34,59 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 ### Tasks:
 1. **Define the web extension architecture**
    - Document how the PHP web app communicates with backend API routes.
-   - Identify reusable backend endpoints (alerts, summaries, users).
+   - Identify reusable backend endpoints (alerts, summaries, users) and document method, params, response shape, and fallback behavior.
    - Define URL/environment configuration for local and deployed usage.
 
 2. **Create web-app project structure**
    - Keep the existing Expo mobile app under `frontend/mobile/` and build the dedicated PHP web app under `frontend/web/` with organized subdirectories for views, components, services, and assets.
    - Organize views, reusable PHP components, API client helpers, and assets.
-   - Add `.env.example` (or config template) for API base URL and environment settings.
+   - Add `.env.example` (or config template) for API base URL, API prefix (`/api/v1`), and timeout settings.
 
 3. **Implement backend connectivity from PHP**
    - Create PHP service wrappers for existing backend endpoints (alerts, summaries, user data).
    - Handle authentication (if needed) and include necessary headers.
-   - Implement robust HTTP error handling (timeouts, non-2xx, malformed responses).
+   - Implement robust HTTP error handling (timeouts, non-2xx, malformed responses) with user-safe fallback messages.
    - Normalize response objects for use by presentation templates.
 
 4. **Design and implement unique web UI screens**
-   - Build a web homepage/dashboard distinct from the mobile experience.
-   - Add core feature pages for alerts, summaries, and user profile/preferences.
+   - Build a web homepage/dashboard distinct from the mobile experience as the Stage 1 MVP vertical slice.
+   - Add scaffolded core pages for alerts, summaries, and user profile/preferences (placeholder-ready if full implementation is deferred).
    - Ensure consistent navigation and responsive layout behavior.
 
 5. **Add security and reliability essentials**
-   - Validate and sanitize all user inputs in forms and query parameters.
+   - Validate and sanitize all user inputs in forms and query parameters using allowlists where possible.
+   - Escape rendered output in PHP templates and use CSRF protection for form submissions.
    - Avoid exposing secrets in source code or client-side payloads.
-   - Add defensive rendering for missing/null API fields.
+   - Add defensive rendering for missing/null API fields and retry-safe timeout handling.
 
 6. **Document setup and usage**
    - Add run instructions for local PHP server and backend startup.
    - Document required environment variables and expected API availability.
    - Include screenshots or sample flows in docs.
 
+### Stage 1 Implementation Boundary (MVP First)
+- **In Scope for Stage 1 completion**:
+  - Dashboard vertical slice in `frontend/web/` with alerts summary/stats and latest summary.
+  - Working API wrapper layer for alerts, summaries, and user preference/register pathways.
+  - Navigation plus scaffolded alerts/summaries/profile pages.
+  - Setup/run documentation and Stage 1 verification evidence.
+- **Out of Scope for Stage 1 (deferred to later stages or follow-on iteration)**:
+  - Personalized risk scoring logic and smart alert ranking.
+  - Interactive risk map.
+  - Predictive analytics and AI assistant enhancements.
+
+### Web Distinctness Criteria (Stage 1 Definition of Done)
+- Dashboard uses desktop-oriented information density (multi-card stats + latest summary context in one view).
+- Navigation and layout patterns are web-native and not a direct mirror of the mobile screen flow.
+- At least one comparative/overview element is included (for example: "top alerts now" with latest summary snapshot).
+- Keyboard-friendly navigation and responsive behavior are verified on common viewport sizes.
+
 ### Verification Checklist:
-- Web app loads successfully and connects to backend APIs.
-- Core pages render and handle API errors gracefully.
-- UI is responsive and functionally distinct from mobile app interface.
+- Web app loads successfully and connects to backend APIs from local config template values.
+- Dashboard renders live data and shows safe fallback UI for timeout, non-2xx, and malformed/empty payload paths.
+- Stage 1 MVP pages (dashboard + scaffolded alerts/summaries/profile) route correctly.
+- UI is responsive and functionally distinct from mobile interface at 360px, 768px, and 1280px viewports.
+- Verification evidence includes screenshots/walkthrough notes for success and failure states.
 
 **Deliverables**:
 - Web app extension codebase (PHP frontend)
