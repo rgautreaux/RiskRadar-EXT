@@ -35,6 +35,7 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 1. **Define the web extension architecture**
    - Document how the PHP web app communicates with backend API routes.
    - Identify reusable backend endpoints (alerts, summaries, users) and document method, params, response shape, and fallback behavior.
+   - Maintain the Stage 1 API contract matrix in `docs/API_STAGE1_CONTRACT.md`.
    - Define URL/environment configuration for local and deployed usage.
 
 2. **Create web-app project structure**
@@ -81,6 +82,20 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 - At least one comparative/overview element is included (for example: "top alerts now" with latest summary snapshot).
 - Keyboard-friendly navigation and responsive behavior are verified on common viewport sizes.
 
+### Stage 1 API Contract Snapshot
+Reference: `docs/API_STAGE1_CONTRACT.md`
+
+| Route | Method | Request Inputs | Response Model | Fallback Behavior |
+|---|---|---|---|---|
+| `/api/v1/alerts` | GET | Query: `alert_type?`, `severity?`, `source?`, `limit<=200`, `offset` | `list[AlertOut]` | Treat non-2xx/timeout/malformed payload as empty list with user-safe message. |
+| `/api/v1/alerts/stats` | GET | None | `AlertStats` | Render zero-state stats card if request fails. |
+| `/api/v1/alerts/{alert_id}` | GET | Path: `alert_id:int` | `AlertOut` | Handle `404` as not-found state; do not crash page rendering. |
+| `/api/v1/summaries` | GET | Query: `summary_type?`, `limit?` | `list[SummaryOut]` | Render empty summaries state on failure/empty payload. |
+| `/api/v1/summaries/latest` | GET | None | `SummaryOut | null` | Render "no summary available" panel when null/error. |
+| `/api/v1/summaries/generate` | POST | None | `SummaryOut` | Handle `404` as "no alerts to summarize"; keep dashboard usable. |
+| `/api/v1/users/register` | POST | JSON `UserCreate` | `UserOut` | Handle `400` duplicate email with inline validation message. |
+| `/api/v1/users/{user_id}/preferences` | PUT | Path: `user_id:int`, JSON `UserPrefsUpdate` | `UserOut` | Handle `404` user-not-found with non-blocking UI error state. |
+
 ### Verification Checklist:
 - Web app loads successfully and connects to backend APIs from local config template values.
 - Dashboard renders live data and shows safe fallback UI for timeout, non-2xx, and malformed/empty payload paths.
@@ -95,7 +110,7 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 - Basic usability verification evidence (screenshots and/or walkthrough)
 
 ### Progress So Far
-🔄 **In Progress** - Stage 1 now clearly targets `frontend/web/` for the PHP web interface, while the existing Expo mobile app remains under `frontend/mobile/` and both clients continue to share the backend APIs.
+**In Progress** - Stage 1 now has an explicit dashboard-first MVP boundary, measurable web-distinctness criteria, and a documented endpoint contract in `docs/API_STAGE1_CONTRACT.md` to guide `S1-01` and `S1-03` implementation.
 
 ---
 
