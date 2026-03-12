@@ -183,10 +183,10 @@ Purpose:
 
 Checklist:
 
-- [ ] Replace the default React Navigation theme with a custom RiskRadar navigation theme.
-- [ ] Align background colors with the new token system.
-- [ ] Set status bar styling to match the new screen header treatment.
-- [ ] Keep layout minimal and push colors into `theme.ts`.
+- [x] Replace the default React Navigation theme with a custom RiskRadar navigation theme.
+- [x] Align background colors with the new token system.
+- [x] Set status bar styling to match the new screen header treatment.
+- [x] Keep layout minimal and push colors into `theme.ts`.
 
 ### 4. `frontend/RiskRadar/app/(tabs)/_layout.tsx`
 
@@ -196,11 +196,11 @@ Purpose:
 
 Checklist:
 
-- [ ] Restyle the tab bar background, height, padding, and active state.
-- [ ] Replace generic icons with `RiskRadar_STND_HomeBttn.png` and `RiskRadar_ALERT_HomeBttn.png` for the Home tab.
-- [ ] Rename `Explore` to `Alerts` unless the team rejects that information model.
-- [ ] Use a temporary vector icon only for the non-home tab if no wireframe asset fits.
-- [ ] Ensure the selected tab is visually obvious and consistent with the wireframe.
+- [x] Restyle the tab bar background, height, padding, and active state.
+- [x] Replace generic icons with `RiskRadar_STND_HomeBttn.png` and `RiskRadar_ALERT_HomeBttn.png` for the Home tab.
+- [x] Rename `Explore` to `Alerts` unless the team rejects that information model.
+- [x] Use a temporary vector icon only for the non-home tab if no wireframe asset fits.
+- [x] Ensure the selected tab is visually obvious and consistent with the wireframe.
 
 ### 5. `frontend/RiskRadar/app/(tabs)/index.tsx`
 
@@ -322,9 +322,9 @@ Purpose:
 
 Checklist:
 
-- [ ] Update splash/background colors to match the new brand palette.
-- [ ] Confirm icon and splash assets are consistent with the wireframe branding direction.
-- [ ] Ensure metadata still reflects the RiskRadar app correctly.
+- [x] Update splash/background colors to match the new brand palette.
+- [x] Confirm icon and splash assets are consistent with the wireframe branding direction.
+- [x] Ensure metadata still reflects the RiskRadar app correctly.
 
 ## Suggested Implementation Order
 
@@ -337,9 +337,9 @@ Checklist:
 
 ### Phase 2: Shell
 
-- [ ] Restyle `app/_layout.tsx`.
-- [ ] Restyle `app/(tabs)/_layout.tsx`.
-- [ ] Update `app.json` shell branding.
+- [x] Restyle `app/_layout.tsx`.
+- [x] Restyle `app/(tabs)/_layout.tsx`.
+- [x] Update `app.json` shell branding.
 
 ### Phase 3: Screens
 
