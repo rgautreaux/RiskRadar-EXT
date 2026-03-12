@@ -122,7 +122,7 @@ Track execution tasks here: [Project TODO Tracker](./docs/TODO.md)
 
 | Stage | Title | Status | Last Updated | Scope | Notes |
 |---|---|---|---|---|---|
-| 1 | Web-App Extension | In Progress | 2026-03-11 | **Required** | Stage 1 work now clearly targets `frontend/web/`; the existing mobile client remains under `frontend/mobile/` while the PHP web interface is built against the shared backend APIs. Target: Week of 2026-03-31. |
+| 1 | Web-App Extension | In Progress | 2026-03-12 | **Required** | Stage 1 work targets a dashboard-first MVP in `frontend/web/` (with scaffolded alerts/summaries/profile pages), explicit API contract/error-handling expectations (see `docs/API_STAGE1_CONTRACT.md`), and measurable web-distinctness verification versus the mobile client. Target: Week of 2026-03-31. |
 | 2 | Environmental Risk Assessment and Alert Prioritization Extensions | Not Started | 2026-03-10 | **Required** | Personal risk scoring engine + smart alert prioritization. Target: Week of 2026-04-28. |
 | 3 | Data Visualization and User Experience Extensions | Not Started | 2026-03-10 | Optional/Stretch | Interactive Plotly-based risk map. Planned only if Stage 2 completes early. |
 | 4 | Predictive Analytics and AI-Driven Insights Extensions | Not Started | 2026-03-10 | Optional/Stretch | 24-48 hour forecasting + RiskRadar AI Assistant. Planned only if time permits after Stage 3. |

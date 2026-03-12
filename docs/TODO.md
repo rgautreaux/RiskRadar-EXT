@@ -51,10 +51,10 @@ Use this process during each weekly meeting:
 | Stage | Task ID | Task | Priority | Status | Owner | Target Week | Last Updated | Dependencies | Evidence | Notes |
 |---|---|---|---|---|---|---|---|---|---|---|
 | 1 | S1-00 | Confirm Stage 1 frontend stack decision and target directories | High | Completed | Rebecca | Week of 2026-03-10 | 2026-03-11 | Team planning alignment | `README.md`, `docs/STAGES.md`, `docs/PLANNING_STAGES.md`, `frontend/README.md` | Confirmed PHP web-app work targets `frontend/web/` and the existing mobile client remains in `frontend/mobile/`. |
-| 1 | S1-01 | Define web extension architecture and backend API integration flow | High | Not Started | Rebecca | Week of 2026-03-17 | 2026-03-10 | S1-00 | TBD | Include alerts, summaries, and users endpoints. |
+| 1 | S1-01 | Define web extension architecture and backend API integration flow | High | In Progress | Rebecca | Week of 2026-03-17 | 2026-03-12 | S1-00 | `docs/API_STAGE1_CONTRACT.md` | Include alerts, summaries, and users endpoint contract details (method, params, response shape, fallback behavior). |
 | 1 | S1-02 | Create frontend project structure and environment config template | High | In Progress | Rebecca | Week of 2026-03-17 | 2026-03-11 | S1-00 | `frontend/README.md`, `frontend/mobile/README.md`, `frontend/web/README.md` | Web scaffold now exists in `frontend/web/`; environment config template is still pending. |
 | 1 | S1-03 | Implement backend connectivity wrappers with error handling and response normalization | High | Not Started | Max | Week of 2026-03-24 | 2026-03-10 | S1-01, S1-02 | TBD | Handle timeout, non-2xx, malformed responses. |
-| 1 | S1-04 | Build web UI screens for dashboard, alerts, summaries, and user profile/preferences | High | Not Started | Rebecca | Week of 2026-03-24 | 2026-03-10 | S1-03 | TBD | Ensure UI is distinct from mobile app experience. |
+| 1 | S1-04 | Build web UI screens for dashboard, alerts, summaries, and user profile/preferences | High | Not Started | Rebecca | Week of 2026-03-24 | 2026-03-10 | S1-03 | TBD | Deliver dashboard-first MVP plus scaffolded pages; verify web-specific layout distinctness criteria. |
 | 1 | S1-05 | Add input validation, sanitization, and defensive rendering for missing API fields | Medium | Not Started | Max | Week of 2026-03-31 | 2026-03-10 | S1-03, S1-04 | TBD | Avoid exposing secrets in source/client payloads. |
 | 1 | S1-06 | Document setup and usage for backend + web app local run | High | Not Started | Rebecca | Week of 2026-03-31 | 2026-03-10 | S1-02, S1-04 | TBD | Include required env vars and sample flow/screenshots. |
 | 2 | S2-01 | Define personal risk scoring model inputs, formula, and weighting rationale | High | Not Started | Max | Week of 2026-04-07 | 2026-03-10 | Stage 1 baseline | TBD | Use interpretable scale and document tradeoffs. |
@@ -91,17 +91,19 @@ Build a distinct web-facing extension connected to existing backend APIs.
 
 ### Execution Checklist
 - [x] S1-00: Finalize frontend stack decision and document decision rationale.
-- [ ] S1-01: Document architecture and backend route usage.
+- [ ] S1-01: Document architecture and backend route usage with endpoint contract details.
 - [ ] S1-02: Create frontend directory structure and environment config template.
 - [ ] S1-03: Build API service wrappers with standardized error handling.
-- [ ] S1-04: Implement dashboard, alerts, summaries, and user screens.
-- [ ] S1-05: Add security/reliability controls (validation/sanitization/defensive rendering).
+- [ ] S1-04: Implement dashboard-first MVP and scaffold alerts/summaries/user screens.
+- [ ] S1-05: Add security/reliability controls (validation/sanitization/output escaping/CSRF/defensive rendering).
 - [ ] S1-06: Add setup, run, and usage documentation.
 
 ### Verification Evidence
 - [ ] Web app runs locally and connects to backend endpoints.
-- [ ] Core pages render expected data with graceful error states.
-- [ ] Responsive behavior validated with screenshots and/or demo notes.
+- [ ] Dashboard and scaffolded pages route correctly and render expected data.
+- [ ] API timeout, non-2xx, and malformed/empty payload behavior is captured in notes/screenshots.
+- [ ] Responsive behavior validated at 360px, 768px, and 1280px with screenshots and/or demo notes.
+- [ ] Evidence demonstrates web UI distinctness from mobile flow/layout.
 
 ## Stage 2 TODOs: Risk Assessment and Alert Prioritization
 
