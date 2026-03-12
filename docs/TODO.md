@@ -45,6 +45,7 @@ Use this process during each weekly meeting:
 | Week Of | Completed Tasks | In Progress Tasks | Blockers | Decisions Needed | Evidence Added | Next Week Focus |
 |---|---|---|---|---|---|---|
 | 2026-03-10 | TODO tracker baseline created; frontend split confirmed (`frontend/mobile/` + `frontend/web/`) | S1-02, DOC-01, DOC-02, DOC-03 | Environment config template for web app not added yet | Confirm next Stage 1 implementation slice after scaffold | `docs/TODO.md`, `README.md`, `frontend/README.md`, `frontend/mobile/README.md`, `frontend/web/README.md` | Continue S1-02 and begin S1-01/S1-03 |
+| 2026-03-12 | Stage 1 PHP MVP scaffold added with dashboard, alerts, summaries, and profile pages; config template and API wrapper layer implemented | S1-03, S1-04, S1-06 | PHP CLI not installed on workspace `PATH`, so runtime lint/server verification is blocked locally | Decide whether to install PHP locally now or validate on a teammate machine with PHP available | `frontend/web/public/index.php`, `frontend/web/public/alerts.php`, `frontend/web/public/summaries.php`, `frontend/web/public/profile.php`, `frontend/web/services/api_client.php`, `frontend/web/README.md` | Run end-to-end verification once PHP is available |
 
 ## Master Task Tracker
 
@@ -52,11 +53,11 @@ Use this process during each weekly meeting:
 |---|---|---|---|---|---|---|---|---|---|---|
 | 1 | S1-00 | Confirm Stage 1 frontend stack decision and target directories | High | Completed | Rebecca | Week of 2026-03-10 | 2026-03-11 | Team planning alignment | `README.md`, `docs/STAGES.md`, `docs/PLANNING_STAGES.md`, `frontend/README.md` | Confirmed PHP web-app work targets `frontend/web/` and the existing mobile client remains in `frontend/mobile/`. |
 | 1 | S1-01 | Define web extension architecture and backend API integration flow | High | In Progress | Rebecca | Week of 2026-03-17 | 2026-03-12 | S1-00 | `docs/API_STAGE1_CONTRACT.md` | Include alerts, summaries, and users endpoint contract details (method, params, response shape, fallback behavior). |
-| 1 | S1-02 | Create frontend project structure and environment config template | High | In Progress | Rebecca | Week of 2026-03-17 | 2026-03-11 | S1-00 | `frontend/README.md`, `frontend/mobile/README.md`, `frontend/web/README.md` | Web scaffold now exists in `frontend/web/`; environment config template is still pending. |
-| 1 | S1-03 | Implement backend connectivity wrappers with error handling and response normalization | High | Not Started | Max | Week of 2026-03-24 | 2026-03-10 | S1-01, S1-02 | TBD | Handle timeout, non-2xx, malformed responses. |
-| 1 | S1-04 | Build web UI screens for dashboard, alerts, summaries, and user profile/preferences | High | Not Started | Rebecca | Week of 2026-03-24 | 2026-03-10 | S1-03 | TBD | Deliver dashboard-first MVP plus scaffolded pages; verify web-specific layout distinctness criteria. |
+| 1 | S1-02 | Create frontend project structure and environment config template | High | Completed | Rebecca | Week of 2026-03-17 | 2026-03-12 | S1-00 | `frontend/web/config/app.php`, `frontend/web/config/config.local.example.php`, `frontend/web/README.md` | PHP web scaffold now includes local override config template and documented runtime settings. |
+| 1 | S1-03 | Implement backend connectivity wrappers with error handling and response normalization | High | In Progress | Max | Week of 2026-03-24 | 2026-03-12 | S1-01, S1-02 | `frontend/web/services/api_client.php` | Wrappers now cover alerts, summaries, and user register/preferences paths with safe fallback behavior; end-to-end runtime verification remains pending until PHP is available locally. |
+| 1 | S1-04 | Build web UI screens for dashboard, alerts, summaries, and user profile/preferences | High | In Progress | Rebecca | Week of 2026-03-24 | 2026-03-12 | S1-03 | `frontend/web/public/index.php`, `frontend/web/public/alerts.php`, `frontend/web/public/summaries.php`, `frontend/web/public/profile.php`, `frontend/web/public/assets/app.css` | Dashboard-first MVP and scaffolded core pages are now in place; responsive/runtime verification still needs PHP-backed manual QA. |
 | 1 | S1-05 | Add input validation, sanitization, and defensive rendering for missing API fields | Medium | Not Started | Max | Week of 2026-03-31 | 2026-03-10 | S1-03, S1-04 | TBD | Avoid exposing secrets in source/client payloads. |
-| 1 | S1-06 | Document setup and usage for backend + web app local run | High | Not Started | Rebecca | Week of 2026-03-31 | 2026-03-10 | S1-02, S1-04 | TBD | Include required env vars and sample flow/screenshots. |
+| 1 | S1-06 | Document setup and usage for backend + web app local run | High | In Progress | Rebecca | Week of 2026-03-31 | 2026-03-12 | S1-02, S1-04 | `frontend/web/README.md` | Startup/config notes are added; screenshots and full walkthrough evidence still need capture after runtime validation. |
 | 2 | S2-01 | Define personal risk scoring model inputs, formula, and weighting rationale | High | Not Started | Max | Week of 2026-04-07 | 2026-03-10 | Stage 1 baseline | TBD | Use interpretable scale and document tradeoffs. |
 | 2 | S2-02 | Extend data model/schemas for user sensitivity and risk score output fields | High | Not Started | Rebecca | Week of 2026-04-07 | 2026-03-10 | S2-01 | TBD | Preserve backward compatibility. |
 | 2 | S2-03 | Implement backend risk scoring service and factor transparency output | High | Not Started | Max | Week of 2026-04-14 | 2026-03-10 | S2-02 | TBD | Return component breakdown for explainability. |
@@ -92,7 +93,7 @@ Build a distinct web-facing extension connected to existing backend APIs.
 ### Execution Checklist
 - [x] S1-00: Finalize frontend stack decision and document decision rationale.
 - [ ] S1-01: Document architecture and backend route usage with endpoint contract details.
-- [ ] S1-02: Create frontend directory structure and environment config template.
+- [x] S1-02: Create frontend directory structure and environment config template.
 - [ ] S1-03: Build API service wrappers with standardized error handling.
 - [ ] S1-04: Implement dashboard-first MVP and scaffold alerts/summaries/user screens.
 - [ ] S1-05: Add security/reliability controls (validation/sanitization/output escaping/CSRF/defensive rendering).

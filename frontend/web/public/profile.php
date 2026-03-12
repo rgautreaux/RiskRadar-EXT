@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$registerErrors) {
             $registerResult = rr_register_user($config, $registerForm);
             if ($registerResult['ok']) {
-                rr_set_flash('success', 'User registration succeeded.');
+                $flash = ['type' => 'success', 'message' => 'User registration succeeded.'];
             }
         }
     }
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ];
             $preferencesResult = rr_update_preferences($config, $userId, $preferencesPayload);
             if ($preferencesResult['ok']) {
-                rr_set_flash('success', 'Preferences updated successfully.');
+                $flash = ['type' => 'success', 'message' => 'Preferences updated successfully.'];
                 $preferencesForm['alert_types'] = rr_parse_alert_types($preferencesResult['data']['alert_types']);
             }
         }
