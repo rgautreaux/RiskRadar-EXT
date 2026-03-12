@@ -481,13 +481,37 @@ See existing scrapers (nws, airnow, epa) for examples.
 
 ## Running Tests
 
+### Verified current status (after dependency + test fixes)
+
+- Backend test suite is currently green: **78 collected, 78 passed**.
+- Authentication test/runtime compatibility fix applied: `bcrypt==4.0.1` is pinned in `backend/requirements.txt` for `passlib` compatibility.
+
+### Install dependencies
+
+From the project root:
+
 ```bash
 cd backend
 source ../.venv/bin/activate
 pip install -r requirements.txt
+```
 
-# Run all tests
+On Windows PowerShell:
+
+```powershell
+cd backend
+..\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+```
+
+### Run pytest
+
+```bash
+# Run all tests (verbose)
 python -m pytest -v
+
+# Run all tests (quiet)
+python -m pytest -q
 
 # Run specific test file
 python -m pytest tests/test_api_alerts.py -v
@@ -496,7 +520,40 @@ python -m pytest tests/test_api_alerts.py -v
 python -m pytest tests/test_retention.py::test_retention_archives_and_deletes_in_batches -v
 ```
 
+### Full verification command (checks)
+
+```bash
+python -m pytest -q --tb=short
+```
+
+Expected successful result:
+
+`78 passed`
+
 Tests use an in-memory SQLite database and mock all external calls. No API keys needed.
+
+### CI/Local Pre-Push Checklist
+
+Run this checklist before opening a PR or pushing to the shared branch:
+
+1. Sync and activate environment.
+2. Install/update dependencies from `backend/requirements.txt`.
+3. Run the full backend test suite.
+4. Only push when suite is green.
+
+Standard command flow (PowerShell from repo root):
+
+```powershell
+cd backend
+..\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python -m pytest -q --tb=short
+```
+
+Success gate:
+
+- Output ends with all tests passing (currently `78 passed`).
+- No `FAILED` or `ERROR` entries in pytest summary.
 
 ### What the pytest suite covers (and why)
 
@@ -563,6 +620,10 @@ What common failures usually mean:
 
 - `ModuleNotFoundError: passlib`
   - Authentication dependency is missing in environment; run `pip install -r backend/requirements.txt`.
+
+- `ValueError` from bcrypt/passlib during user tests
+  - Ensure the pinned version is installed: `bcrypt==4.0.1`.
+  - Re-run: `python -m pip install -r backend/requirements.txt`.
 
 - assertion failures on alert counts
   - Dedup key conflict or schema mismatch (`alerts` not aligned with model fields).

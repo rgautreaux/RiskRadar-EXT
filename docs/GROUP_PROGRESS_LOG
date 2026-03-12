@@ -552,3 +552,101 @@ The final `git reset --hard origin/main` was used not as a "panic undo" but as a
 **Key Lesson:**
 For work branches in team projects, periodic syncs (weekly or bi-weekly) prevent larger conflicts later. A small investment in branch hygiene (20 seconds via fetch + merge/reset) prevents hours of troubleshooting when branches drift too far apart. The 24-commit gap here was mild; teams can easily accumulate 100+ commit gaps over months without attention.
 
+---
+
+## Rebecca Gautreaux Log — 2026-03-12
+
+### Session Focus
+- Update project documentation so test/pytest execution reflects current fixes and expected results.
+- Resolve failing dependency/runtime issues so the backend test suite is fully green.
+- Synchronize `docs/TODO.md` with verified project status.
+
+### Major Developments Completed
+
+#### 1) README Test Documentation Expanded and Corrected
+- Updated `README.md` with a complete test map and execution guidance:
+	- What each pytest module validates and why it exists.
+	- Exact commands for full suite, subset, and single-test execution.
+	- Troubleshooting notes for environment/dependency failures.
+	- Added a pre-push checklist and expected success gate.
+- Why this was needed:
+	- Removes ambiguity for teammates running verification locally.
+	- Keeps documentation aligned with real project behavior.
+
+#### 2) Dependency + Test Failures Resolved to Green
+- Installed backend requirements in active venv and fixed failures causing `52 passed, 26 errors` state.
+- Applied fixes for:
+	- Missing `passlib` dependency path.
+	- `passlib`/`bcrypt` compatibility by pinning `bcrypt==4.0.1` in `backend/requirements.txt`.
+	- Pydantic schema config conflict in `backend/schemas/user.py`.
+	- User API tests to match JWT-protected routes and bcrypt verification behavior in `backend/tests/test_api_users.py`.
+- Why this was needed:
+	- Restores reliable CI/local validation.
+	- Prevents false regressions from environment drift.
+
+#### 3) TODO Status Updated from Verified Results
+- Updated `docs/TODO.md` to reflect current validated state after fixes.
+- Added fresh verification snapshot and marked backend test-health items completed using actual pytest output.
+- Why this was needed:
+	- Keeps sprint tracking evidence-based and current.
+
+### Commands / Verification Used
+- Dependency install:
+	- `python -m pip install -r requirements.txt`
+- Full backend suite re-run:
+	- `python -m pytest -q`
+	- Result: `78 passed, 0 failed, 0 errors`
+
+### Issues / Blockers
+- Initial run produced `52 passed, 26 errors` due dependency/runtime mismatch.
+- Root causes identified and resolved in same session (dependency pin + schema/test alignment).
+
+### Outcome
+- Backend suite returned to fully green.
+- README testing instructions now match fixed execution path and expected outputs.
+- TODO board status now reflects verified project completion state.
+
+### Next Steps
+- Keep README test section and TODO verification counts updated after each major change.
+- Re-run full suite before merges using the documented pre-push checklist.
+
+---
+
+## Rebecca Gautreaux Log — 2026-03-12
+
+### Session Focus
+- Define an execution-ready UI/UX implementation plan for RiskRadar mobile branding.
+- Map wireframe assets to concrete app locations for faster implementation.
+- Reduce ambiguity in styling decisions to improve implementation speed and consistency.
+
+### Major Developments Completed
+
+#### 1) Frontend Feasibility and Entry Points Assessed
+- Reviewed current Expo Router structure and styling entry points under `frontend/RiskRadar/`.
+- Confirmed wireframe assets exist in `/wireframe_icons` and can be mapped into app usage.
+- Why this was needed:
+	- Ensures the plan matches current code structure and avoids rework.
+
+#### 2) UI/UX Styling Plan Document Created
+- Created `docs/UI_UX_STYLING_PLAN.md` with file-by-file implementation checklist.
+- Included phased rollout sequence, design token direction, runtime efficiency guidance, and verification criteria.
+- Why this was needed:
+	- Converts a broad UI/UX backlog item into an actionable implementation plan.
+
+#### 3) Asset Mapping Table Added and Tightened
+- Added a compact asset mapping table linking wireframe icon files to intended UI locations.
+- Refined the plan for precision:
+	- Locked first-pass defaults.
+	- Converted intended usage to exact target asset paths and first consumer files.
+	- Reduced optionality to make execution faster.
+- Why this was needed:
+	- Helps implementation move directly from plan to code with minimal interpretation.
+
+### Outcome
+- A concrete, reusable UI/UX execution document is now available for the assigned frontend branding task.
+- Wireframe-to-component mapping is explicit and ready for implementation sprint work.
+
+### Next Steps
+- Execute the first styling pass in the order defined by `docs/UI_UX_STYLING_PLAN.md`.
+- Validate each styled screen against wireframe visual parity and mobile runtime stability.
+
