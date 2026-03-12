@@ -12,7 +12,13 @@ const homeTabIcon = {
 };
 
 function HomeTabIcon({ focused }: { focused: boolean }) {
-  return <Image source={focused ? homeTabIcon.active : homeTabIcon.inactive} style={styles.homeIcon} />;
+  return (
+    <Image
+      source={focused ? homeTabIcon.active : homeTabIcon.inactive}
+      style={styles.homeIcon}
+      resizeMode="contain"
+    />
+  );
 }
 
 export default function TabLayout() {
@@ -77,6 +83,5 @@ const styles = StyleSheet.create({
   homeIcon: {
     width: 30,
     height: 30,
-    resizeMode: 'contain',
   },
 });
