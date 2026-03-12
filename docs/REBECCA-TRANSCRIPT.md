@@ -2146,3 +2146,200 @@ Made changes.
 
 
 ---
+
+User: Implement the following:
+
+- Check that all entries in this transcript are unique, and delete any duplicate entries
+- Check Group Progress Log and update it with any missing transcript summary entries (be sure the entries from this transcript are listed as 'Rebecca Gautreaux Log')
+
+GitHub Copilot: I’m going to audit REBECCA-TRANSCRIPT.md for repeated blocks and then update GROUP_PROGRESS_LOG with any missing session summaries under `Rebecca Gautreaux Log` entries. I’ll start by scanning both files for duplicate markers and timeline gaps.
+
+Searched for regex `# GitHub Copilot Session|User:|\*\*User:\*\*` (`**/docs/REBECCA-TRANSCRIPT.md`), 52 results
+
+Searched for text `## Rebecca Gautreaux Log` (`**/docs/GROUP_PROGRESS_LOG`), 5 results
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/REBECCA-TRANSCRIPT.md#1-1), lines 1 to 260
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/GROUP_PROGRESS_LOG#1-1), lines 1 to 320
+
+I found clear structure markers: transcript has Sessions `1` through `6`, and the progress log currently has entries for `2026-03-03`, two `2026-03-09` logs, `2026-03-10`, and `2026-03-12`. Next I’m checking the full transcript tail for duplicated blocks and then I’ll fill any missing log summaries from sessions not yet represented.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/REBECCA-TRANSCRIPT.md#261-261), lines 261 to 560
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/REBECCA-TRANSCRIPT.md#561-561), lines 561 to 980
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/REBECCA-TRANSCRIPT.md#981-981), lines 981 to 1450
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/REBECCA-TRANSCRIPT.md#1451-1451), lines 1451 to 2234
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/GROUP_PROGRESS_LOG#321-321), lines 321 to 555
+
+I’m now running an exact-duplicate audit on REBECCA-TRANSCRIPT.md to catch repeated lines/blocks, then I’ll apply only safe removals so no unique timeline content is lost.
+
+Searched for text `# GitHub Copilot Session` (`**/docs/REBECCA-TRANSCRIPT.md`), 7 results
+
+Ran terminal command: $path='docs/REBECCA-TRANSCRIPT.md'; $lines=Get-Content $path; $dupes=@{}; for($i=0;$i -lt $lines.Count;$i++){ $line=$lines[$i]; if([string]::IsNullOrWhiteSpace($line)){continue}; if(-not $dupes.ContainsKey($line)){ $dupes[$line]=@() }; $dupes[$line]+=($i+1) }; $dupes.GetEnumerator() | Where-Object { $_.Value.Count -gt 1 } | Sort-Object { $_.Value.Count } -Descending | Select-Object -First 80 | ForEach-Object { "COUNT=$($_.Value.Count) | LINE=$($_.Key.Substring(0,[Math]::Min($_.Key.Length,120)).Replace("`t"," ")) | LINES=$($_.Value -join ',')" }
+
+Read [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/a191c22b0a0d3674b76693daa1d20a14/GitHub.copilot-chat/chat-session-resources/79e4fdbf-293a-419a-8295-3f3eaf0dbc87/call_vHud2lL7TS34cZ1kVPiA5Ee7__vscode-1773333252677/content.txt)
+
+Ran terminal command: $path='docs/REBECCA-TRANSCRIPT.md'; $lines=Get-Content $path; for($i=1;$i -lt $lines.Count;$i++){ if($lines[$i] -eq $lines[$i-1] -and $lines[$i].Trim() -ne ''){ "LINE $($i+1): $($lines[$i])" } }
+
+Ran terminal command: $path='docs/REBECCA-TRANSCRIPT.md'; $lines=Get-Content $path; $n=4; $map=@{}; for($i=0;$i -le $lines.Count-$n;$i++){ $block=($lines[$i..($i+$n-1)] -join "`n"); if($block.Trim().Length -lt 40){continue}; if(-not $map.ContainsKey($block)){ $map[$block]=@() }; $map[$block]+=($i+1) }; $dups=$map.GetEnumerator() | Where-Object { $_.Value.Count -gt 1 } | Sort-Object { $_.Value.Count } -Descending; $dups | Select-Object -First 20 | ForEach-Object { "COUNT=$($_.Value.Count) STARTS=$($_.Value -join ',') BLOCK=`n$($_.Key)`n---" }
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/REBECCA-TRANSCRIPT.md#404-404), lines 404 to 456
+
+I confirmed there isn’t another giant replay block, but there are still duplicated transcript lines from repeated scan attempts in Session 3; I’m removing those duplicate-only lines next. After that, I’ll append the missing `Rebecca Gautreaux Log` entries in GROUP_PROGRESS_LOG for the later transcript work (README/test-fix pass and UI/UX styling plan).
+
+Generating patch (13 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/REBECCA-TRANSCRIPT.md)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/REBECCA-TRANSCRIPT.md#434-434), lines 434 to 454
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/GROUP_PROGRESS_LOG#520-520), lines 520 to 555
+
+Generating patch (104 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/GROUP_PROGRESS_LOG)
+
+
+```
+
+```
+I’ve started updating GROUP_PROGRESS_LOG; next I’m doing one safe cleanup pass in the transcript to remove repeated empty code-fence artifacts (the duplicated ````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.````` blocks) since they’re duplicate noise, not unique session content.blocks) since they’re duplicate noise, not unique session content.
+
+Ran terminal command: $path='docs/REBECCA-TRANSCRIPT.md'; $raw=Get-Content $path -Raw; $pattern='```\r?\n\r?\n```'; $count=[regex]::Matches($raw,$pattern).Count; "EMPTY_FENCE_BLOCKS=$count"
+
+Ran terminal command: $path='docs/REBECCA-TRANSCRIPT.md'; $raw=Get-Content $path -Raw; $raw=$raw -replace '```\r?\n\r?\n```\r?\n?', ''; Set-Content -Path $path -Value $raw -NoNewline; $after=Get-Content $path -Raw; $count=[regex]::Matches($after,'```\r?\n\r?\n```').Count; "EMPTY_FENCE_BLOCKS_AFTER=$count"
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/REBECCA-TRANSCRIPT.md#410-410), lines 410 to 450
+
+Searched for text ```` ``` ```` (`**/docs/REBECCA-TRANSCRIPT.md`), 16 results
+
+Searched for text `## Rebecca Gautreaux Log — 2026-03-12` (`**/docs/GROUP_PROGRESS_LOG`), 3 results
+
+Read changed files in the active git repository
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/GROUP_PROGRESS_LOG#540-540), lines 540 to 653
+
+Searched for text ``Searched for regex `\*\*E2E Status\*\*` (`**/docs/REBECCA-TRANSCRIPT.md`), 2 results`` (`**/docs/REBECCA-TRANSCRIPT.md`), 3 results
+
+Read memory riskradar-testing-notes.md
+
+Read changed files in the active git repository
+
+Ran terminal command: git diff -- docs/GROUP_PROGRESS_LOG | Out-String
+
+Implemented both requested tasks.
+
+1. Transcript duplicate audit and cleanup
+- Checked REBECCA-TRANSCRIPT.md for duplicated session blocks and repeated artifacts.
+- No large repeated session block remained (Sessions `1` to `6` each appear once).
+- Removed duplicate/noise artifacts: empty code-fence entries (` ``` ... ``` `) that were repeated from prior patch logs.
+- Result: cleaned transcript while preserving chronological content.
+
+Updated file:
+- `docs/REBECCA-TRANSCRIPT.md`
+
+2. Group Progress Log completion from transcript
+- Reviewed transcript coverage and found missing summary entries after the existing `2026-03-12` branch-sync log.
+- Added missing `Rebecca Gautreaux Log` entries for:
+  - Documentation + test stabilization work (README test docs, dependency/test fixes, green suite result, TODO status sync).
+  - UI/UX planning work (creation and tightening of `UI_UX_STYLING_PLAN.md`, asset mapping additions).
+- Kept the same structure/style used in the rest of the file.
+
+Updated file:
+- `docs/GROUP_PROGRESS_LOG`
+
+If you want, I can do one additional normalization pass next to standardize label formatting in the transcript (for example, converting mixed `User:` and `**User:**` into one style) without changing content.`) that were repeated from prior patch logs.
+- Result: cleaned transcript while preserving chronological content.
+
+Updated file:
+- `docs/REBECCA-TRANSCRIPT.md`
+
+2. Group Progress Log completion from transcript
+- Reviewed transcript coverage and found missing summary entries after the existing `2026-03-12` branch-sync log.
+- Added missing `Rebecca Gautreaux Log` entries for:
+  - Documentation + test stabilization work (README test docs, dependency/test fixes, green suite result, TODO status sync).
+  - UI/UX planning work (creation and tightening of `UI_UX_STYLING_PLAN.md`, asset mapping additions).
+- Kept the same structure/style used in the rest of the file.
+
+Updated file:
+- `docs/GROUP_PROGRESS_LOG`
+
+If you want, I can do one additional normalization pass next to standardize label formatting in the transcript (for example, converting mixed `User:` and `**User:**` into one style) without changing content.
+
+Made changes.
+
+User: Yes, make it so "''User:''' is '''**User:**''', and that the names of all AI tools are similarly boldened
+
+GitHub Copilot: I’ll normalize the transcript label formatting now by converting plain speaker/tool labels to bold Markdown labels (for example `User:` to `**User:**`) and then verify all replacements were applied cleanly.
+
+Searched for regex ``^(User:|GitHub Copilot:|Workspace:|VS Code:|Ran terminal command:|Read |Searched for |Generating patch |Configuring a Python Environment|Creating a Virtual Environment|Checked |Completed with input:|Search complete:|Asked [0-9]+ questions|Read changed files|Starting:|Completed:|Installing packages |Fetching Python environment information|Fetching Python executable information|Ran `pylanceRunCodeSnippet`|Checked background terminal output|Awaited terminal completion|Killed terminal|Created |Edited |Updated |Response cleared due content safety filters, retrying with modified prompt\.)`` (`**/docs/REBECCA-TRANSCRIPT.md`), 200 results
+
+Ran terminal command: $path='docs/REBECCA-TRANSCRIPT.md'; $text=Get-Content $path -Raw; $replacements=@{
+'(?m)^User:'='**User:**';
+'(?m)^GitHub Copilot:'='**GitHub Copilot:**';
+'(?m)^Workspace:'='**Workspace:**';
+'(?m)^VS Code:'='**VS Code:**';
+'(?m)^Ran terminal command:'='**Ran terminal command:**';
+'(?m)^Read changed files in ' ='**Read changed files in** ';
+'(?m)^Read memory$'='**Read memory**';
+'(?m)^Read ' ='**Read** ';
+'(?m)^Searched for ' ='**Searched for** ';
+'(?m)^Search complete:'='**Search complete:**';
+'(?m)^Generating patch ' ='**Generating patch** ';
+'(?m)^Configuring a Python Environment$'='**Configuring a Python Environment**';
+'(?m)^Creating a Virtual Environment$'='**Creating a Virtual Environment**';
+'(?m)^Checked ' ='**Checked** ';
+'(?m)^Completed with input:'='**Completed with input:**';
+'(?m)^Asked ([0-9]+ questions)'='**Asked $1**';
+'(?m)^Starting:'='**Starting:**';
+'(?m)^Completed:'='**Completed:**';
+'(?m)^Installing packages ' ='**Installing packages** ';
+'(?m)^Fetching Python environment information$'='**Fetching Python environment information**';
+'(?m)^Fetching Python executable information for ' ='**Fetching Python executable information for** ';
+'(?m)^Ran `pylanceRunCodeSnippet`\s*$'='**Ran `pylanceRunCodeSnippet`**';
+'(?m)^Checked background terminal output$'='**Checked background terminal output**';
+'(?m)^Awaited terminal completion$'='**Awaited terminal completion**';
+'(?m)^Killed terminal$'='**Killed terminal**';
+'(?m)^Created ' ='**Created** ';
+'(?m)^Edited$'='**Edited**';
+'(?m)^Updated ' ='**Updated** ';
+'(?m)^Response cleared due to content safety filters, retrying with modified prompt\.'='**Response cleared due to content safety filters, retrying with modified prompt.**'
+};
+foreach($k in $replacements.Keys){ $text=[regex]::Replace($text,$k,$replacements[$k]); }
+Set-Content -Path $path -Value $text -NoNewline; 'LABEL_NORMALIZATION_DONE'
+
+I’ve applied the label normalization pass; now I’m verifying there are no remaining plain `User:` labels and that tool-name labels are consistently bolded where they appear as line starters.
+
+Read changed files in the active git repository
+
+Searched for regex `^User:|^GitHub Copilot:|^Workspace:|^VS Code:|^Ran terminal command:|^Read |^Searched for |^Generating patch |^Configuring a Python Environment$|^Completed with input:` (`**/docs/REBECCA-TRANSCRIPT.md`), 16 results
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/REBECCA-TRANSCRIPT.md#392-392), lines 392 to 430
+
+Ran terminal command: $path='docs/REBECCA-TRANSCRIPT.md'; $text=Get-Content $path -Raw; $text=[regex]::Replace($text,'(?m)^Configuring a Python Environment\s*$','**Configuring a Python Environment**'); $text=[regex]::Replace($text,'(?m)^Creating a Virtual Environment\s*$','**Creating a Virtual Environment**'); $text=[regex]::Replace($text,'(?m)^Fetching Python environment information\s*$','**Fetching Python environment information**'); $text=[regex]::Replace($text,'(?m)^Awaited terminal completion\s*$','**Awaited terminal completion**'); $text=[regex]::Replace($text,'(?m)^Checked background terminal output\s*$','**Checked background terminal output**'); Set-Content -Path $path -Value $text -NoNewline; 'SECOND_PASS_DONE'
+
+I finished a second cleanup pass for remaining unbolded tool labels. I’ll run one final validation sweep to ensure plain `User:` and common tool labels are gone.
+
+Searched for regex ``^User:|^GitHub Copilot:|^Workspace:|^VS Code:|^Ran terminal command:|^Read |^Searched for |^Generating patch |^Configuring a Python Environment$|^Creating a Virtual Environment$|^Completed with input:|^Search complete:|^Asked [0-9]+ questions|^Starting:|^Completed:|^Installing packages |^Fetching Python environment information$|^Ran `pylanceRunCodeSnippet`$|^Checked background terminal output$|^Awaited terminal completion$|^Killed terminal$|^Created |^Updated `` (`**/docs/REBECCA-TRANSCRIPT.md`), 1 result
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/REBECCA-TRANSCRIPT.md#1-1), lines 1 to 24
+
+Ran terminal command: (Get-Content 'docs/REBECCA-TRANSCRIPT.md' -Raw) -replace '(?m)^Killed terminal\s*$','**Killed terminal**' | Set-Content 'docs/REBECCA-TRANSCRIPT.md' -NoNewline; 'KILLED_TERMINAL_BOLDED'
+
+Searched for regex ``^User:|^GitHub Copilot:|^Workspace:|^VS Code:|^Ran terminal command:|^Read |^Searched for |^Generating patch |^Configuring a Python Environment$|^Creating a Virtual Environment$|^Completed with input:|^Search complete:|^Asked [0-9]+ questions|^Starting:|^Completed:|^Installing packages |^Fetching Python environment information$|^Ran `pylanceRunCodeSnippet`$|^Checked background terminal output$|^Awaited terminal completion$|^Killed terminal$|^Created |^Updated `` (`**/docs/REBECCA-TRANSCRIPT.md`), no results
+
+Done. I normalized the transcript formatting so labels are bolded as requested.
+
+Updated:
+- REBECCA-TRANSCRIPT.md
+
+Changes applied:
+- `User:` -> `**User:**`
+- `GitHub Copilot:` -> `**GitHub Copilot:**`
+- `Workspace:` -> `**Workspace:**`
+- `VS Code:` -> `**VS Code:**`
+- Tool/action labels were also bolded consistently (for example `Ran terminal command`, `Read`, `Searched for`, `Generating patch`, `Configuring a Python Environment`, `Completed with input`, etc.).
+
+Validation:
+- Ran a final pattern scan and confirmed no remaining unbolded occurrences of those label formats.
+
+---
