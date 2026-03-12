@@ -7,8 +7,8 @@ import { HapticTab } from '@/components/haptic-tab';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 
 const homeTabIcon = {
-  inactive: require('@/assets/icons/navigation/RiskRadar_STND_HomeBttn.png'),
-  active: require('@/assets/icons/navigation/RiskRadar_ALERT_HomeBttn.png'),
+  inactive: require('@/assets/icons/navigation/RiskRadar_ALERT_HomeBttn.png'),
+  active: require('@/assets/icons/navigation/RiskRadar_STND_HomeBttn.png'),
 };
 
 function HomeTabIcon({ focused }: { focused: boolean }) {
