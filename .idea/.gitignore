@@ -1,0 +1,9 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Django PowerTools cache (generated)
+/djangoPowerTools/
+# Machine-local datasource configuration (contains local file paths)
+/dataSources.local.xml
