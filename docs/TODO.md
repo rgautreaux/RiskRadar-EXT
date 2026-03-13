@@ -47,6 +47,7 @@ Use this process during each weekly meeting:
 | 2026-03-10 | TODO tracker baseline created; frontend split confirmed (`frontend/mobile/` + `frontend/web/`) | S1-02, DOC-01, DOC-02, DOC-03 | Environment config template for web app not added yet | Confirm next Stage 1 implementation slice after scaffold | `docs/TODO.md`, `README.md`, `frontend/README.md`, `frontend/mobile/README.md`, `frontend/web/README.md` | Continue S1-02 and begin S1-01/S1-03 |
 | 2026-03-12 | Stage 1 PHP MVP scaffold added with dashboard, alerts, summaries, and profile pages; config template and API wrapper layer implemented | S1-03, S1-04, S1-06 | PHP CLI not installed on workspace `PATH`, so runtime lint/server verification is blocked locally | Decide whether to install PHP locally now or validate on a teammate machine with PHP available | `frontend/web/public/index.php`, `frontend/web/public/alerts.php`, `frontend/web/public/summaries.php`, `frontend/web/public/profile.php`, `frontend/web/services/api_client.php`, `frontend/web/README.md` | Run end-to-end verification once PHP is available |
 | 2026-03-12 | Local verification run completed: PHP installed via WinGet, backend launched on alternate port `8001` due to local `8000` conflict, dashboard/alerts/summaries/profile flows exercised successfully | S1-04, S1-06, DOC-01 | Local port `8000` is reserved/blocked on this machine; responsive screenshots at target widths still need capture | Confirm whether to free port `8000` or keep alternate-port local workflow documented for development | Live checks against `http://127.0.0.1:8081` + `http://127.0.0.1:8001`; profile registration/preferences POST verification | Capture viewport evidence and sync remaining status updates |
+| 2026-03-13 | Stage 1 security hardening completed (S1-05) and responsive/web-distinctness demo-note evidence documented for closure tracking | S1-01, DOC-01, DOC-02, DOC-03 | Screenshot capture is optional now that demo-note evidence exists; contract/architecture sync still in progress | Confirm whether to add screenshots later for presentation polish only | `frontend/web/services/validators.php`, `frontend/web/services/api_client.php`, `frontend/web/public/profile.php`, `docs/STAGE1_VERIFICATION_EVIDENCE.md`, `frontend/web/README.md` | Close S1-01 contract sync and final README/STAGES alignment pass |
 
 ## Master Task Tracker
 
@@ -56,9 +57,9 @@ Use this process during each weekly meeting:
 | 1 | S1-01 | Define web extension architecture and backend API integration flow | High | In Progress | Rebecca | Week of 2026-03-17 | 2026-03-12 | S1-00 | `docs/API_STAGE1_CONTRACT.md` | Include alerts, summaries, and users endpoint contract details (method, params, response shape, fallback behavior). |
 | 1 | S1-02 | Create frontend project structure and environment config template | High | Completed | Rebecca | Week of 2026-03-17 | 2026-03-12 | S1-00 | `frontend/web/config/app.php`, `frontend/web/config/config.local.example.php`, `frontend/web/README.md` | PHP web scaffold now includes local override config template and documented runtime settings. |
 | 1 | S1-03 | Implement backend connectivity wrappers with error handling and response normalization | High | Completed | Max | Week of 2026-03-24 | 2026-03-12 | S1-01, S1-02 | `frontend/web/services/api_client.php`, `frontend/web/services/validators.php`, `frontend/web/services/presentation.php` | Verified against live backend on alternate local port with success-state rendering, fallback-state rendering, CSRF-protected POST flows, and normalized handling for malformed/unavailable data paths. |
-| 1 | S1-04 | Build web UI screens for dashboard, alerts, summaries, and user profile/preferences | High | In Progress | Rebecca | Week of 2026-03-24 | 2026-03-12 | S1-03 | `frontend/web/public/index.php`, `frontend/web/public/alerts.php`, `frontend/web/public/summaries.php`, `frontend/web/public/profile.php`, `frontend/web/public/assets/app.css` | Functional live verification is complete for dashboard, alerts, summaries, registration, and preferences; remaining closure item is responsive manual QA evidence at target widths. |
+| 1 | S1-04 | Build web UI screens for dashboard, alerts, summaries, and user profile/preferences | High | Completed | Rebecca | Week of 2026-03-24 | 2026-03-13 | S1-03 | `frontend/web/public/index.php`, `frontend/web/public/alerts.php`, `frontend/web/public/summaries.php`, `frontend/web/public/profile.php`, `frontend/web/public/assets/app.css`, `docs/STAGE1_VERIFICATION_EVIDENCE.md` | UI routes, live data flows, responsive behavior notes (360/768/1280), and web-distinctness evidence are documented. |
 | 1 | S1-05 | Add input validation, sanitization, and defensive rendering for missing API fields | Medium | Completed | Max | Week of 2026-03-31 | 2026-03-13 | S1-03, S1-04 | `frontend/web/services/validators.php`, `frontend/web/services/api_client.php`, `frontend/web/public/profile.php` | Added allowlist-based query/form sanitization, stricter validation bounds, malformed-payload-safe normalization, and explicit write-path action rejection. |
-| 1 | S1-06 | Document setup and usage for backend + web app local run | High | In Progress | Rebecca | Week of 2026-03-31 | 2026-03-12 | S1-02, S1-04 | `frontend/web/README.md` | Startup/config notes are added; screenshots and full walkthrough evidence still need capture after runtime validation. |
+| 1 | S1-06 | Document setup and usage for backend + web app local run | High | Completed | Rebecca | Week of 2026-03-31 | 2026-03-13 | S1-02, S1-04 | `frontend/web/README.md`, `docs/STAGE1_VERIFICATION_EVIDENCE.md` | Setup/run guidance and Stage 1 demo-note verification evidence are now documented, including responsive checkpoints and distinctness notes. |
 | 2 | S2-01 | Define personal risk scoring model inputs, formula, and weighting rationale | High | Not Started | Max | Week of 2026-04-07 | 2026-03-10 | Stage 1 baseline | TBD | Use interpretable scale and document tradeoffs. |
 | 2 | S2-02 | Extend data model/schemas for user sensitivity and risk score output fields | High | Not Started | Rebecca | Week of 2026-04-07 | 2026-03-10 | S2-01 | TBD | Preserve backward compatibility. |
 | 2 | S2-03 | Implement backend risk scoring service and factor transparency output | High | Not Started | Max | Week of 2026-04-14 | 2026-03-10 | S2-02 | TBD | Return component breakdown for explainability. |
@@ -96,16 +97,16 @@ Build a distinct web-facing extension connected to existing backend APIs.
 - [ ] S1-01: Document architecture and backend route usage with endpoint contract details.
 - [x] S1-02: Create frontend directory structure and environment config template.
 - [x] S1-03: Build API service wrappers with standardized error handling.
-- [ ] S1-04: Implement dashboard-first MVP and scaffold alerts/summaries/user screens.
+- [x] S1-04: Implement dashboard-first MVP and scaffold alerts/summaries/user screens.
 - [x] S1-05: Add security/reliability controls (validation/sanitization/output escaping/CSRF/defensive rendering).
-- [ ] S1-06: Add setup, run, and usage documentation.
+- [x] S1-06: Add setup, run, and usage documentation.
 
 ### Verification Evidence
 - [x] Web app runs locally and connects to backend endpoints.
 - [x] Dashboard and scaffolded pages route correctly and render expected data.
 - [x] API timeout, non-2xx, and malformed/empty payload behavior is captured in notes/screenshots.
-- [ ] Responsive behavior validated at 360px, 768px, and 1280px with screenshots and/or demo notes.
-- [ ] Evidence demonstrates web UI distinctness from mobile flow/layout.
+- [x] Responsive behavior validated at 360px, 768px, and 1280px with screenshots and/or demo notes.
+- [x] Evidence demonstrates web UI distinctness from mobile flow/layout.
 
 ## Stage 2 TODOs: Risk Assessment and Alert Prioritization
 

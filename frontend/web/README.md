@@ -59,6 +59,12 @@ Then open:
 - Rendered output is escaped in shared helpers before display.
 - The web layout is intentionally desktop-oriented and distinct from the mobile app flow.
 
+## Stage 1 Verification Evidence
+
+- Responsive and distinctness verification notes are documented in `docs/STAGE1_VERIFICATION_EVIDENCE.md`.
+- Validation includes the required Stage 1 viewport checkpoints (360px, 768px, 1280px).
+- Notes include both behavior observations and implementation-level responsive indicators from `public/assets/app.css` breakpoints.
+
 ## Current Limitation
 
 PHP was installed locally during Stage 1 verification, but the executable is not yet on the user `PATH`. The app can still be served by invoking the installed binary directly from the WinGet package directory.
