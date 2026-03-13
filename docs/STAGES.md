@@ -111,7 +111,7 @@ Reference: `docs/API_STAGE1_CONTRACT.md`
 - Basic usability verification evidence (screenshots and/or walkthrough)
 
 ### Progress So Far
-**In Progress** - Stage 1 now has an explicit dashboard-first MVP boundary, measurable web-distinctness criteria, and a documented endpoint contract in `docs/API_STAGE1_CONTRACT.md` to guide `S1-01` and `S1-03` implementation.
+**Completed** - Stage 1 deliverables are implemented and documented, including dashboard-first web MVP pages, API wrapper integration, security/reliability controls, setup/run guidance, and responsive/web-distinctness verification evidence. See `docs/TODO.md`, `docs/API_STAGE1_CONTRACT.md`, and `docs/STAGE1_VERIFICATION_EVIDENCE.md`.
 
 ---
 

@@ -102,17 +102,24 @@ Begin Stage 1 with a small, functional PHP web-app vertical slice that connects 
 - Confirmation that Stage 1 progress markers remain current in project docs
 
 ## Stage 1: Finalization Steps (Post-Kickoff Closure and Validation)
-Use this finish order to minimize risk and close Stage 1 quickly:
 
--[] Finish S1-05 first (highest remaining implementation risk).
--[] Implement/verify allowlist validation, sanitization, output escaping, CSRF, and defensive null handling exactly as Stage 1 requires in STAGES.md:53 and TODO.md:60.
--[] Add concrete evidence links in the task tracker row after verification.
--[] Close responsive and distinctness evidence next (the main blocker to completion).
--[] Capture proof at 360px, 768px, 1280px plus notes showing web-vs-mobile layout distinction required by TODO.md:107, TODO.md:108, and criteria in STAGES.md:79.
--[] Attach screenshots/walkthrough artifacts to S1-04/S1-06 evidence fields in TODO.md:59 and TODO.md:61.
--[] Convert in-progress docs tasks to completed.
--[] S1-01: finalize architecture/route contract wording and confirm full parity with the matrix in API_STAGE1_CONTRACT.md:13.
--[] S1-06: finalize setup/run walkthrough with the actual local port workflow already observed in TODO.md:49.
--[] Sync status sources in one pass.
--[] Update checklist checkboxes and master tracker statuses in TODO.md:93.
--[] Ensure Stage progress wording remains consistent in STAGES.md:114 and README status table (as required by tracker hygiene notes in TODO.md:186).
+Stage 1 closure is complete as of **2026-03-13**.
+
+### Completion Checklist Outcome
+
+- [x] Finish S1-05 first (highest remaining implementation risk).
+- [x] Implement/verify allowlist validation, sanitization, output escaping, CSRF, and defensive null handling.
+- [x] Add concrete evidence links in the Stage 1 task tracker row.
+- [x] Close responsive and distinctness evidence.
+- [x] Capture 360px, 768px, and 1280px responsive verification notes and document web-vs-mobile distinctness.
+- [x] Attach walkthrough/evidence artifacts to Stage 1 docs tracking.
+- [x] Convert Stage 1 in-progress doc tasks to completed.
+- [x] Finalize S1-01 architecture/route contract wording and URL configuration guidance in `docs/API_STAGE1_CONTRACT.md`.
+- [x] Finalize S1-06 setup/run documentation and evidence linkage.
+- [x] Sync Stage 1 status wording across planning/progress docs.
+
+### Final Stage 1 Evidence Pointers
+
+- Execution tracker and completed checklist: `docs/TODO.md`
+- Architecture/contract matrix and route mapping: `docs/API_STAGE1_CONTRACT.md`
+- Responsive and web-distinctness verification notes: `docs/STAGE1_VERIFICATION_EVIDENCE.md`

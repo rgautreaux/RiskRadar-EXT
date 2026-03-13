@@ -98,6 +98,38 @@ The frontend workspace is now explicitly split so the mobile and web clients can
 - Web scaffold details are in [`frontend/web/README.md`](./frontend/web/README.md).
 - Frontend workspace guidance is in [`frontend/README.md`](./frontend/README.md).
 
+### Stage 1 Web-App Progress Note (Completed)
+
+Stage 1 (Web-App Extension) is complete as of **2026-03-13** and includes the following implemented web features, structures, and supporting details.
+
+**Implemented web feature set:**
+- Dashboard (`frontend/web/public/index.php`) with alert stats, top alerts snapshot, and latest summary panel.
+- Alerts explorer (`frontend/web/public/alerts.php`) with filter controls and safe empty-state behavior.
+- Summaries archive (`frontend/web/public/summaries.php`) with summary-type/limit filtering and defensive rendering.
+- Profile write-path scaffolding (`frontend/web/public/profile.php`) for register and preference updates.
+
+**Web architecture and structure:**
+- Public entrypoints: `frontend/web/public/`
+- Templates: `frontend/web/views/`
+- Shared layout/components: `frontend/web/components/`
+- API wrappers, presentation, validation, and security helpers: `frontend/web/services/`
+- Runtime/env configuration: `frontend/web/config/`
+
+**API contract and backend integration details:**
+- Endpoint matrix and schema snapshots: [`docs/API_STAGE1_CONTRACT.md`](./docs/API_STAGE1_CONTRACT.md)
+- Architecture flow and page-to-endpoint route mapping: [`docs/API_STAGE1_CONTRACT.md`](./docs/API_STAGE1_CONTRACT.md)
+- Local/deployed URL and API-prefix configuration guidance: [`docs/API_STAGE1_CONTRACT.md`](./docs/API_STAGE1_CONTRACT.md)
+
+**Security/reliability controls implemented in Stage 1:**
+- CSRF token verification on profile write paths.
+- Allowlist-based validation/sanitization for filters and forms.
+- Defensive response normalization for malformed/null backend fields.
+- Safe fallback behavior for timeout, non-2xx, and malformed JSON responses.
+
+**Verification evidence:**
+- Stage 1 responsive and web-distinctness validation notes: [`docs/STAGE1_VERIFICATION_EVIDENCE.md`](./docs/STAGE1_VERIFICATION_EVIDENCE.md)
+- Stage execution tracker and checklist completion: [`docs/TODO.md`](./docs/TODO.md)
+
 ### Additional Features and Extensions
 
 
@@ -122,7 +154,7 @@ Track execution tasks here: [Project TODO Tracker](./docs/TODO.md)
 
 | Stage | Title | Status | Last Updated | Scope | Notes |
 |---|---|---|---|---|---|
-| 1 | Web-App Extension | In Progress | 2026-03-12 | **Required** | Stage 1 work targets a dashboard-first MVP in `frontend/web/` (with scaffolded alerts/summaries/profile pages), explicit API contract/error-handling expectations (see `docs/API_STAGE1_CONTRACT.md`), and measurable web-distinctness verification versus the mobile client. Target: Week of 2026-03-31. |
+| 1 | Web-App Extension | Completed | 2026-03-13 | **Required** | Stage 1 dashboard MVP, API integration layer, security/reliability controls, setup docs, and responsive/web-distinctness verification evidence are complete. See `docs/TODO.md`, `docs/API_STAGE1_CONTRACT.md`, and `docs/STAGE1_VERIFICATION_EVIDENCE.md`. |
 | 2 | Environmental Risk Assessment and Alert Prioritization Extensions | Not Started | 2026-03-10 | **Required** | Personal risk scoring engine + smart alert prioritization. Target: Week of 2026-04-28. |
 | 3 | Data Visualization and User Experience Extensions | Not Started | 2026-03-10 | Optional/Stretch | Interactive Plotly-based risk map. Planned only if Stage 2 completes early. |
 | 4 | Predictive Analytics and AI-Driven Insights Extensions | Not Started | 2026-03-10 | Optional/Stretch | 24-48 hour forecasting + RiskRadar AI Assistant. Planned only if time permits after Stage 3. |
