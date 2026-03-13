@@ -57,7 +57,7 @@ Use this process during each weekly meeting:
 | 1 | S1-02 | Create frontend project structure and environment config template | High | Completed | Rebecca | Week of 2026-03-17 | 2026-03-12 | S1-00 | `frontend/web/config/app.php`, `frontend/web/config/config.local.example.php`, `frontend/web/README.md` | PHP web scaffold now includes local override config template and documented runtime settings. |
 | 1 | S1-03 | Implement backend connectivity wrappers with error handling and response normalization | High | Completed | Max | Week of 2026-03-24 | 2026-03-12 | S1-01, S1-02 | `frontend/web/services/api_client.php`, `frontend/web/services/validators.php`, `frontend/web/services/presentation.php` | Verified against live backend on alternate local port with success-state rendering, fallback-state rendering, CSRF-protected POST flows, and normalized handling for malformed/unavailable data paths. |
 | 1 | S1-04 | Build web UI screens for dashboard, alerts, summaries, and user profile/preferences | High | In Progress | Rebecca | Week of 2026-03-24 | 2026-03-12 | S1-03 | `frontend/web/public/index.php`, `frontend/web/public/alerts.php`, `frontend/web/public/summaries.php`, `frontend/web/public/profile.php`, `frontend/web/public/assets/app.css` | Functional live verification is complete for dashboard, alerts, summaries, registration, and preferences; remaining closure item is responsive manual QA evidence at target widths. |
-| 1 | S1-05 | Add input validation, sanitization, and defensive rendering for missing API fields | Medium | Not Started | Max | Week of 2026-03-31 | 2026-03-10 | S1-03, S1-04 | TBD | Avoid exposing secrets in source/client payloads. |
+| 1 | S1-05 | Add input validation, sanitization, and defensive rendering for missing API fields | Medium | Completed | Max | Week of 2026-03-31 | 2026-03-13 | S1-03, S1-04 | `frontend/web/services/validators.php`, `frontend/web/services/api_client.php`, `frontend/web/public/profile.php` | Added allowlist-based query/form sanitization, stricter validation bounds, malformed-payload-safe normalization, and explicit write-path action rejection. |
 | 1 | S1-06 | Document setup and usage for backend + web app local run | High | In Progress | Rebecca | Week of 2026-03-31 | 2026-03-12 | S1-02, S1-04 | `frontend/web/README.md` | Startup/config notes are added; screenshots and full walkthrough evidence still need capture after runtime validation. |
 | 2 | S2-01 | Define personal risk scoring model inputs, formula, and weighting rationale | High | Not Started | Max | Week of 2026-04-07 | 2026-03-10 | Stage 1 baseline | TBD | Use interpretable scale and document tradeoffs. |
 | 2 | S2-02 | Extend data model/schemas for user sensitivity and risk score output fields | High | Not Started | Rebecca | Week of 2026-04-07 | 2026-03-10 | S2-01 | TBD | Preserve backward compatibility. |
@@ -97,7 +97,7 @@ Build a distinct web-facing extension connected to existing backend APIs.
 - [x] S1-02: Create frontend directory structure and environment config template.
 - [x] S1-03: Build API service wrappers with standardized error handling.
 - [ ] S1-04: Implement dashboard-first MVP and scaffold alerts/summaries/user screens.
-- [ ] S1-05: Add security/reliability controls (validation/sanitization/output escaping/CSRF/defensive rendering).
+- [x] S1-05: Add security/reliability controls (validation/sanitization/output escaping/CSRF/defensive rendering).
 - [ ] S1-06: Add setup, run, and usage documentation.
 
 ### Verification Evidence
