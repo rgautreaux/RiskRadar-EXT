@@ -89,7 +89,7 @@ function rr_validate_registration(array $post): array
         $errors['display_name'] = 'Display name is required.';
     } elseif (strlen($data['display_name']) > 80) {
         $errors['display_name'] = 'Display name must be 80 characters or fewer.';
-    } elseif (!preg_match('/^[\p{L}\p{N} .''_-]+$/u', $data['display_name'])) {
+    } elseif (!preg_match("/^[\p{L}\p{N} .'_-]+$/u", $data['display_name'])) {
         $errors['display_name'] = 'Display name contains unsupported characters.';
     }
 
