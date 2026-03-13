@@ -2,7 +2,7 @@
 
 This directory contains the CMPS 357 Stage 1 PHP web-app extension for RiskRadar.
 
-## Current Stage 1 MVP Surface
+## Stage 1 Web Surface (Completed)
 
 - `public/index.php` — dashboard with alert stats, top alerts snapshot, and latest summary panel
 - `public/alerts.php` — alert list with filter controls and defensive empty-state behavior
@@ -65,6 +65,6 @@ Then open:
 - Validation includes the required Stage 1 viewport checkpoints (360px, 768px, 1280px).
 - Notes include both behavior observations and implementation-level responsive indicators from `public/assets/app.css` breakpoints.
 
-## Current Limitation
+## Local Runtime Note
 
-PHP was installed locally during Stage 1 verification, but the executable is not yet on the user `PATH`. The app can still be served by invoking the installed binary directly from the WinGet package directory.
+If backend port `8000` is unavailable on your machine, use an alternate local backend port (for example `8001`) and set `RISKRADAR_API_BASE_URL` accordingly.
