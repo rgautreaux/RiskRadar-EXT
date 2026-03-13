@@ -2,7 +2,7 @@
 
 This directory contains the CMPS 357 Stage 1 PHP web-app extension for RiskRadar.
 
-## Stage 1 Web Surface (Completed)
+## Stage 1: Web-App Extension (Completed)
 
 - `public/index.php` — dashboard with alert stats, top alerts snapshot, and latest summary panel
 - `public/alerts.php` — alert list with filter controls and defensive empty-state behavior

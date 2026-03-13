@@ -89,7 +89,7 @@ Use this process during each weekly meeting:
 | X | DOC-02 | Update STAGES/PROJECT docs when scope or stage progress changes | High | In Progress | Rebecca | Weekly | 2026-03-10 | Ongoing | Docs commits | Keep naming and status terms consistent. |
 | X | DOC-03 | Log AI-assisted sessions in TRANSCRIPT and reflect in REFLECTION | High | In Progress | Rebecca | Weekly | 2026-03-10 | Ongoing | Transcript/Reflection entries | Maintain continuity and auditability. |
 
-## Stage 1 TODOs: Web-App Extension
+## Stage 1: Web-App Extension (Completed)
 
 ### Objective
 Build a distinct web-facing extension connected to existing backend APIs.

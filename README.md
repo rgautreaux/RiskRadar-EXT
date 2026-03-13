@@ -98,7 +98,7 @@ The frontend workspace is now explicitly split so the mobile and web clients can
 - Web scaffold details are in [`frontend/web/README.md`](./frontend/web/README.md).
 - Frontend workspace guidance is in [`frontend/README.md`](./frontend/README.md).
 
-### Stage 1 Web-App Progress Note (Completed)
+### Stage 1: Web-App Extension (Completed)
 
 Stage 1 (Web-App Extension) is complete as of **2026-03-13** and includes the following implemented web features, structures, and supporting details.
 

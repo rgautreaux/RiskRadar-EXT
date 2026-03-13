@@ -4,7 +4,7 @@
 
 ---
 
-## Stage 1: Web-App Extension (MVP Start Plan)
+## Stage 1: Web-App Extension (Completed)
 
 ### Objective
 Begin Stage 1 with a small, functional PHP web-app vertical slice that connects to existing RiskRadar backend APIs and demonstrates a distinct web interface.
@@ -101,7 +101,7 @@ Begin Stage 1 with a small, functional PHP web-app vertical slice that connects 
 - Notes showing API success and API-failure behavior
 - Confirmation that Stage 1 progress markers remain current in project docs
 
-## Stage 1: Finalization Steps (Post-Kickoff Closure and Validation)
+## Stage 1: Web-App Extension (Completed) Finalization Record
 
 Stage 1 closure is complete as of **2026-03-13**.
 

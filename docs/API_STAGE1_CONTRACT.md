@@ -1,4 +1,4 @@
-# Stage 1 API Contract Matrix (Web-App MVP)
+# Stage 1: Web-App Extension API Contract Matrix (Completed)
 
 This document defines the backend contracts used by the Stage 1 PHP web-app implementation in `frontend/web/`.
 
