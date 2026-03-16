@@ -13,10 +13,10 @@
     - Need some way to store user payment method, which needs some way to keep track of users.
 
 **3. Target Audience**: Who are we targeting?
-- Travellers? 
+- Travelers? 
     - Need weather information to plan trips
 - Truckers?
-    - Need weather information for travelling conditions. 
+    - Need weather information for traveling conditions. 
 - Industry Owners?
     - Need weather information for project construction. 
 - General Public?
