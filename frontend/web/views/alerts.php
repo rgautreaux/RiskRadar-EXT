@@ -52,6 +52,7 @@
                     </div>
                     <h2><?php echo e($alert['title']); ?></h2>
                     <p><?php echo e($alert['description'] ?: 'No description was provided by the source feed.'); ?></p>
+                    <p><a href="alert_detail.php?id=<?php echo e((string) $alert['id']); ?>">View full alert details</a></p>
                     <dl class="metadata-grid">
                         <div>
                             <dt>Type</dt>
