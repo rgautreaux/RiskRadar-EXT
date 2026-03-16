@@ -28,10 +28,10 @@ class BaseScraper(ABC):
         start_ms = time.monotonic_ns() // 1_000_000
         session = SessionLocal()
         log = ScrapeLog(source=self.source_name, started_at=started, status="success")
+        new_count = 0
 
         try:
             raw_items = self.fetch_raw_data()
-            new_count = 0
 
             for item in raw_items:
                 try:
@@ -68,3 +68,5 @@ class BaseScraper(ABC):
             session.add(log)
             session.commit()
             session.close()
+
+        return new_count

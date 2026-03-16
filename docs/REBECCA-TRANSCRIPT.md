@@ -2078,6 +2078,68 @@ If you want, I can next give you an exact file-by-file implementation checklist 
 
 **GitHub Copilot:** I’m creating the planning document now in the docs area, with a concrete file-by-file checklist tied to the current Expo Router app and the wireframe asset set so it’s directly usable for implementation.
 
+---
+
+# GitHub Copilot Session 6 - Codebase Audit, Fixes, and Verification
+
+**User:** Are there any errors or broken code to be concerned about in this current codebase?
+
+**GitHub Copilot:** Yes. There is at least one real runtime break, plus some tooling-level issues.
+
+**Findings (ordered by severity)**
+1. High: Manual scrape trigger endpoint is broken and will fail at runtime.
+   - In backend/api/system.py, it imports and calls `build_scraper_list`, but that symbol does not exist in the registry module.
+   - The registry exposes `load_all_scrapers` in backend/scrapers/registry.py.
+   - In backend/api/system.py, it calls `scraper.run(db)`, but `run` takes no db argument in backend/scrapers/base_scraper.py.
+2. Medium: Trigger endpoint expects a count, but scraper run currently returns no value.
+3. Low: Diagnostics show many import/type errors in tests that appear environment/type-check configuration related, not functional breaks.
+
+**User:** Yes, run this audit diagnose any faulty/broken/concerning code
+
+Once all weak points and problems within the codebase are identified, resolve the issues they pose so that the codebase runs correctly/cleanly
+
+Once all breaks/broken code/end-to-end issues are identified and resolved, update the TRANSCRIPT with an exact, word-for-word transcript of this session, and then update the GROUP LOG with an update for '''Rebecca'''
+
+**GitHub Copilot:** I’m starting a full audit-and-fix pass now: first I’ll check current repo state and run backend tests to capture real failures, then I’ll fix each confirmed weak point and re-run until clean.
+
+**Ran terminal command:** Set-Location backend; ..\.venv\Scripts\python.exe -m pytest -q
+
+**Result:** 78 passed.
+
+**GitHub Copilot:** I found a concrete runtime weak point not covered by tests: the manual scrape trigger endpoint calls a non-existent registry function and passes the wrong run signature. I’m fixing that path now and then re-running tests plus frontend lint.
+
+**Code changes applied:**
+- Updated backend/api/system.py
+  - `build_scraper_list` -> `load_all_scrapers`
+  - Uses descriptor key `scraper` from registry output
+  - Calls `scraper.run()` (removed invalid db arg)
+- Updated backend/scrapers/base_scraper.py
+  - `run()` now returns `new_count` so API can report `alerts_stored`
+
+**GitHub Copilot:** Backend tests are still fully green after the runtime fix. I’m adding a focused API test for the system scrape-trigger path so this exact bug can’t regress, then I’ll rerun tests and frontend lint from the correct directory.
+
+**Created:** backend/tests/test_api_system.py
+
+**New tests added:**
+- `test_health_endpoint`
+- `test_trigger_scrape_requires_auth`
+- `test_trigger_scrape_runs_registered_scrapers`
+
+**Ran terminal command:** ..\.venv\Scripts\python.exe -m pytest -q
+
+**Result:** 81 passed.
+
+**Ran terminal command:** Set-Location ..\frontend\RiskRadar; npm.cmd run lint
+
+**Result:** Lint completed successfully (`expo lint`).
+
+**Session outcome:**
+- Identified and fixed a real runtime break in manual scrape triggering.
+- Added regression tests to protect that path.
+- Verified backend suite clean at 81 passing tests.
+- Verified frontend lint clean.
+
+
 **Generating patch** (352 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/UI_UX_STYLING_PLAN.md)
 
 
