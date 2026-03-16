@@ -146,12 +146,13 @@ def sample_alerts(db_session):
 @pytest.fixture
 def sample_user(db_session):
     """Insert a test user."""
-    import hashlib
+    from passlib.context import CryptContext
 
+    _pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
     user = User(
         display_name="Test User",
         email="test@example.com",
-        password_hash=hashlib.sha256("password123".encode()).hexdigest(),
+        password_hash=_pwd_context.hash("password123"),
         zip_code="90001",
         created_at=NOW,
         updated_at=NOW,
