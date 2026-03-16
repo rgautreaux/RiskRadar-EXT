@@ -7660,3 +7660,247 @@ If you still see a specific gap in the cloud shape, point me to that exact area 
 
 **User:** Transform the attached Mobile App Wireframes into Web App Wireframes while maintaining the original style. Include the following NEW pages/features in the Web-App Wireframes: - Interactive geographic risk map page - Predictive environmental risk forecasting (24-48 hours ahead) page - AI-based environmental assistant for interpreting environmental conditions and travel risk context 
 https://chatgpt.com/share/69b847f1-bd48-8002-851c-11c6ba8e1096
+
+
+---
+
+
+User: Create a Plan to make the web-app pages Wireframe Accurate to the RiskRadar_Web_Wireframes, while using the icons within /wireframe_icons
+
+GitHub Copilot: I will map the current web app structure against the wireframe assets and icon set, then produce a concrete implementation plan you can hand off for execution. I’m starting with a quick discovery pass of the web frontend, available wireframes, and the icon files.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/wireframe_icons)
+
+Read memory stage1-web-frontend.md
+
+Read memory git-onedrive-maintenance.md
+
+Discovery found the frontend is a PHP app with page entrypoints and the wireframe icon set is present; next I’ll use the Explore subagent to map existing page/component structure and identify where each wireframe element should be implemented.
+
+Map web UI structure
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web)
+
+Searched for regex `wireframe|mockup|ui spec|design spec|layout|component structure` (`**/docs/**`), 20 results
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/README.md)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/README.md)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/components)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/views)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/wireframe_icons)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public/assets)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/services)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/config)
+
+Searched for text `web wireframe` (`**/docs/**`), no results
+
+Searched for regex `wireframe_icons|design spec|icon|dashboard layout|card|panel|alert list` (`**/docs/**`), 40 results
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/components/layout.php)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public/assets/app.css#1-1), lines 1 to 300
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/views/dashboard.php)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public/index.php)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/views/alerts.php)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md#50-50), lines 50 to 200
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TODO.md#1-1), lines 1 to 100
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/views/summaries.php)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/ARCHITECTURE.md)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/services/api_client.php#1-1), lines 1 to 100
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/views/profile.php)
+
+Read memory repo
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/views/login.php)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/DATA_MODEL.md#1-1), lines 1 to 100
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/views/forecast.php)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/views/map.php)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/views/assistant.php)
+
+Read memory stage1-web-frontend.md
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public/assets/app.css#300-300), lines 300 to 427
+
+Read [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/efc527fbc52ea141903e763507674dc7/GitHub.copilot-chat/chat-session-resources/db6c38af-b30a-4a23-8fb9-264009d73894/call_T0A7JbkTJNRQbiB0bQj7sWJe__vscode-1773682544767/content.txt)
+
+I now have the frontend mapping and key gaps; before drafting the final plan, I need to lock scope and fidelity expectations so the execution handoff is unambiguous. I’ll ask a few targeted questions to finalize what “wireframe accurate” means for your team.
+
+Analyzing your answers...
+
+Read memory
+
+I have your scope decisions and will now draft the full execution-ready plan, including phase dependencies and verification gates for every page in scope. I’ll do one quick directory check so file targets are precise in the handoff.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/views)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public/assets)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/components)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/services)
+
+Analyzing your answers...
+
+Scope is now confirmed to include every web page including Risk; I’ll inspect the Risk route and then finalize a phase-by-phase plan with clear parallel workstreams and acceptance criteria.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public/risk.php)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/views/risk.php)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/views/assistant.php)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/views/map.php)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/views/forecast.php)
+
+Created memory file [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/efc527fbc52ea141903e763507674dc7/GitHub.copilot-chat/memory-tool/memories/ZGI2YzM4YWYtYjMwYS00YTIzLThmYjktMjY0MDA5ZDczODk0/plan.md)
+
+## Plan: Wireframe-Accurate RiskRadar Web App
+
+This plan targets a structural and visual match to the web wireframe across all pages, with consistent cross-page cohesion and hybrid icon usage from the wireframe icon set. I saved this plan in session memory at /memories/session/plan.md for handoff continuity.
+
+**Steps**
+1. Baseline all pages with before-state screenshots at desktop, tablet, and mobile breakpoints to anchor parity checks.
+2. Build a wireframe mapping matrix that maps each wireframe region and icon to concrete templates/layout blocks in the web app.
+3. Define per-page acceptance criteria for section order, layout proportions, spacing rhythm, and icon placement.
+4. Update shared shell and navigation first in layout.php so all pages inherit the same wireframe framing.  
+*blocks all page-level work*
+5. Expand shared visual foundations in app.css: reusable panel, grid, heading, metadata, and icon-slot patterns for consistent parity.
+6. Implement hybrid icon strategy globally (PNG wireframe icons for explicit imagery/branding, CSS-native treatments for repetitive badges where wireframe intent is preserved).  
+*parallel with step 5*
+7. Align core functional pages to wireframe structure and visuals: dashboard.php, alerts.php, summaries.php, profile.php.  
+*depends on step 4*
+8. Align auth pages to the same visual system and wireframe structure: login.php, register.php.  
+*depends on step 4, parallel with step 7*
+9. Convert scaffolded/future pages into wireframe-accurate shells (without expanding staged functionality): risk.php, map.php, forecast.php, assistant.php.  
+*depends on step 4, parallel with steps 7 and 8*
+10. Create wireframe-accurate detail shells for alert_detail.php and summary_detail.php.  
+*depends on step 4, parallel with steps 7 to 9*
+11. Run a consistency sweep across all updated routes to remove spacing/typography/icon drift and ensure visual cohesion.
+12. Update project docs with wireframe alignment status, icon usage rules, and completion matrix tied to page routes.
+
+**Relevant files**
+- layout.php
+- app.css
+- dashboard.php
+- alerts.php
+- summaries.php
+- profile.php
+- login.php
+- register.php
+- risk.php
+- map.php
+- forecast.php
+- assistant.php
+- alert_detail.php
+- summary_detail.php
+- RiskRadar_Web_Wireframes.png
+- wireframe_icons
+- STAGES.md
+
+**Verification**
+1. Per-page wireframe parity checklist pass/fail for structure, visual hierarchy, spacing rhythm, and icon placement.
+2. Responsive checks at desktop/tablet/mobile breakpoints for every route in scope.
+3. Route smoke test across all public entry pages to confirm no include/template regressions.
+4. Functional sanity check on API-backed pages for loaded and fallback states.
+5. Accessibility spot checks: keyboard navigation, focus visibility, labels, and icon accessibility handling.
+
+**Decisions captured**
+- Scope includes all current web pages, including Risk, Map, Forecast, Assistant, and both detail pages.
+- Fidelity target is structural plus visual match with consistent cross-page cohesion.
+- Icon strategy is hybrid using assets from wireframe_icons plus CSS-native recurring treatments where appropriate.
+- Functional stage boundaries remain intact; this effort is UI/UX alignment, not backend contract changes.
+
+If you want, I can now refine this into an execution order by teammate role (layout, page templates, QA/docs) so implementation can run in parallel cleanly.
+
+User: Yes, refine this into an execution order by teammate role (layout, page templates, QA/docs) so implementation can run in parallel cleanly.
+
+Then create a WIREFRAME_STYLE_IMPLEMENTATION.md flie containing this order/plan for future reference in implementing these steps
+
+GitHub Copilot: I will convert the plan into a dependency-aware execution order grouped by teammate role, then write it into a new reference document so your team can execute in parallel without blocking collisions. I’m quickly checking the docs folder and existing markdown style first, then I’ll create the file.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/STAGES.md#1-1), lines 1 to 140
+
+I confirmed the docs style and will now create a dedicated implementation document with role-based execution lanes, dependency gates, and parallelization rules your team can follow directly.
+
+Created [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/WIREFRAME_STYLE_IMPLEMENTATION.md)
+
+I created the document and caught a small formatting typo while reviewing; I’m applying a quick cleanup so the checklist reads correctly.
+
+Generating patch (10 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/WIREFRAME_STYLE_IMPLEMENTATION.md)
+
+
+```
+
+```
+Refined execution order by teammate role is complete and saved in WIREFRAME_STYLE_IMPLEMENTATION.md.
+
+What is included in that file:
+- Role-based lanes: Layout, Page Templates, QA and Docs
+- Clean dependency gates (A to D) so teams can work in parallel without blocking confusion
+- Phase-by-phase order with owners, duration targets, and exit criteria
+- Parallel work rules to reduce merge conflicts
+- Suggested branch strategy and merge order
+- Page assignment matrix by role
+- Acceptance criteria and phase checklists for implementation tracking
+
+If you want, I can next add a compact progress table at the top of WIREFRAME_STYLE_IMPLEMENTATION.md with owner names and due dates so it can be used directly in standups.
+
+Made changes.
+
+User: Yes
+
+GitHub Copilot: I’ll add a compact standup-friendly progress table at the top of the wireframe implementation doc, with owner and due-date fields ready to fill, so your team can track execution immediately.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/WIREFRAME_STYLE_IMPLEMENTATION.md#1-1), lines 1 to 120
+
+Generating patch (21 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/WIREFRAME_STYLE_IMPLEMENTATION.md)
+
+
+```
+
+```
+Added the compact standup tracking table to WIREFRAME_STYLE_IMPLEMENTATION.md near the top of the document.
+
+What was added:
+- A Standup Progress Tracker section
+- One row per phase (0 through 4)
+- Columns for lane owner, secondary owner, start date, target due date, status, and notes
+- Recommended status values for consistent reporting
+
+If you want, I can also pre-fill a suggested due-date sequence based on your April 29 timeline and leave only owner names as TBD.
+
+Made changes.
+
+
+---
+
+
