@@ -909,3 +909,78 @@ This follow-up command used **GitHub Copilot** to synchronize `docs/REFLECTION.m
 
 ---
 
+## Stage 1 Planning and Setup Session
+
+### Session Summary
+This session used **GitHub Copilot** to run a repository-aware discovery pass before execution of Stage 1, confirm scope decisions (dashboard-first MVP, top-level `frontend` placement, current backend runtime assumptions), and convert those decisions into an actionable kickoff plan that was then applied to planning docs.
+
+### (1) Tool Used
+- **Tool name:** GitHub Copilot
+
+### (2) Components That Benefited
+- **Discovery and dependency mapping:** Reviewed Stage 1 requirements, backend API surface, schemas, settings, and testing context before writing implementation steps.
+- **Scope decision support:** Captured key build-path decisions needed to avoid ambiguity before coding.
+- **Execution readiness:** Produced a concrete startup sequence that connected planning artifacts to immediate implementation work.
+
+### (3) How Output Was Reviewed/Verified
+- The proposed Stage 1 setup path was checked against `docs/STAGES.md`, `docs/INSTRUCTIONS.md`, and `README.md` for consistency.
+- API feasibility was validated by reading current routes/schemas before finalizing the startup plan.
+- Planning updates were reviewed for completeness of objective, sequence, and verification criteria.
+
+### (4) What Worked, What Needed Iteration, What Required Manual Implementation
+- **Worked immediately:** Discovery-to-plan translation and clear definition of Stage 1 startup priorities.
+- **Required multiple iterations / improvement:** Scope confirmation required follow-up clarification before finalizing the sequence.
+- **Required manual implementation:** Building and testing the planned web-layer features remained manual team implementation work.
+
+---
+
+## TODO Creation Session
+
+### Session Summary
+This session used **GitHub Copilot** to create and evolve `docs/TODO.md` from a basic task list into a stage-aligned execution tracker with check-in structure, ownership, dependencies, evidence tracking, and cross-document references for status reporting.
+
+### (1) Tool Used
+- **Tool name:** GitHub Copilot
+
+### (2) Components That Benefited
+- **Task orchestration:** Established a concrete task matrix spanning required and optional stage work.
+- **Weekly operations support:** Added check-in templates/logging to make status updates practical during meetings.
+- **Status consistency:** Linked tracker language and references with `README.md`, `docs/STAGES.md`, and `docs/INSTRUCTIONS.md`.
+
+### (3) How Output Was Reviewed/Verified
+- Task coverage was checked against stage requirements to ensure no major work areas were omitted.
+- Status vocabulary and doc links were reviewed for consistency across planning/progress files.
+- Readback checks were used to validate that tracker sections are usable for ongoing weekly updates.
+
+### (4) What Worked, What Needed Iteration, What Required Manual Implementation
+- **Worked immediately:** Initial creation of a structured tracker with stage/task alignment.
+- **Required multiple iterations / improvement:** Additional passes were needed to make the tracker meeting-ready and evidence-oriented.
+- **Required manual implementation:** Ongoing owner assignment updates, blocker management, and evidence maintenance remain manual team responsibilities.
+
+---
+
+## Wireframe-Accurate Web Planning Session
+
+### Session Summary
+This session used **GitHub Copilot** to plan a wireframe-accurate visual alignment effort for the web frontend across all pages, define dependency-aware implementation order, and create `docs/WIREFRAME_STYLE_IMPLEMENTATION.md` with role-based execution lanes and standup-ready tracking fields.
+
+### (1) Tool Used
+- **Tool name:** GitHub Copilot
+
+### (2) Components That Benefited
+- **UI/UX implementation planning:** Defined page-by-page wireframe fidelity targets and shared-layout precedence.
+- **Parallel team execution:** Converted work into role lanes (layout, page templates, QA/docs) with dependency gates to reduce collisions.
+- **Tracking readiness:** Added standup-oriented progress structure for phased delivery and accountability.
+
+### (3) How Output Was Reviewed/Verified
+- Existing web pages and shared layout/CSS artifacts were reviewed before drafting the plan.
+- Scope decisions were validated to include all current public routes and detail pages.
+- The resulting implementation document was checked for dependency clarity, phase order, and actionable checkpoints.
+
+### (4) What Worked, What Needed Iteration, What Required Manual Implementation
+- **Worked immediately:** Producing a complete role-based execution plan and creating the implementation reference doc.
+- **Required multiple iterations / improvement:** The planning artifact needed follow-up enhancement (standup table and formatting cleanup) after initial creation.
+- **Required manual implementation:** Executing UI updates, capturing screenshot evidence, and resolving merge conflicts during parallel page work remain manual team tasks.
+
+---
+
