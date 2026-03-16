@@ -1,6 +1,8 @@
 """Tests for user API endpoints."""
 
-import hashlib
+from passlib.context import CryptContext
+
+_pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 class TestRegisterUser:
@@ -36,8 +38,35 @@ class TestRegisterUser:
             "password": "mypassword",
         })
         user = db_session.query(User).filter(User.email == "carol@test.com").first()
-        expected_hash = hashlib.sha256("mypassword".encode()).hexdigest()
-        assert user.password_hash == expected_hash
+        assert user is not None
+        assert _pwd_context.verify("mypassword", user.password_hash)
+
+    def test_email_normalized_to_lowercase(self, test_client, db_session):
+        from db.models import User
+
+        resp = test_client.post("/api/v1/users/register", json={
+            "display_name": "Dave",
+            "email": "Dave@Test.COM",
+            "password": "pass",
+        })
+        assert resp.status_code == 200
+        assert resp.json()["email"] == "dave@test.com"
+        user = db_session.query(User).filter(User.email == "dave@test.com").first()
+        assert user is not None
+
+    def test_duplicate_email_case_insensitive(self, test_client):
+        test_client.post("/api/v1/users/register", json={
+            "display_name": "Eve",
+            "email": "eve@test.com",
+            "password": "pass",
+        })
+        resp = test_client.post("/api/v1/users/register", json={
+            "display_name": "Eve2",
+            "email": "EVE@TEST.COM",
+            "password": "pass",
+        })
+        assert resp.status_code == 400
+        assert "Email already registered" in resp.json()["detail"]
 
     def test_duplicate_email_rejected(self, test_client, sample_user):
         resp = test_client.post("/api/v1/users/register", json={

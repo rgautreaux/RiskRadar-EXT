@@ -15,13 +15,14 @@ _pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 @router.post("/register", response_model=UserOut)
 def register_user(body: UserCreate, db: Session = Depends(get_db)):
-    existing = db.query(User).filter(User.email == body.email).first()
+    normalized_email = body.email.lower()
+    existing = db.query(User).filter(User.email == normalized_email).first()
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
     user = User(
         display_name=body.display_name,
-        email=body.email,
+        email=normalized_email,
         password_hash=_pwd_context.hash(body.password),
         zip_code=body.zip_code,
     )
