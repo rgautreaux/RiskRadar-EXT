@@ -26,6 +26,8 @@ function rr_render_layout_start(string $title, string $activePage): void
                     <a class="<?php echo $activePage === 'alerts' ? 'is-active' : ''; ?>" href="alerts.php">Alerts</a>
                     <a class="<?php echo $activePage === 'summaries' ? 'is-active' : ''; ?>" href="summaries.php">Summaries</a>
                     <a class="<?php echo $activePage === 'profile' ? 'is-active' : ''; ?>" href="profile.php">Profile</a>
+                    <a class="<?php echo $activePage === 'login' ? 'is-active' : ''; ?>" href="login.php">Login</a>
+                    <a class="<?php echo $activePage === 'register' ? 'is-active' : ''; ?>" href="register.php">Register</a>
                 </nav>
             </header>
             <main class="page-shell">
