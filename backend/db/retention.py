@@ -45,7 +45,7 @@ def _estimate_row_bytes(rows: list[Any]) -> int:
     payload: list[dict[str, Any]] = []
     for row in rows:
         payload.append({column.name: getattr(row, column.name) for column in row.__table__.columns})
-    return len(json.dumps(payload, ensure_ascii=False).encode("utf-8"))
+    return len(json.dumps(payload, ensure_ascii=False, default=str).encode("utf-8"))
 
 
 def _build_archive_row(row: Any, archive_model: Any, cleanup_run_id: int) -> Any:
