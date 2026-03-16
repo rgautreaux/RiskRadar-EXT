@@ -1,10 +1,10 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr
 from typing import Optional
 
 
 class UserCreate(BaseModel):
     display_name: str
-    email: str
+    email: EmailStr
     password: str
     zip_code: Optional[str] = None
 

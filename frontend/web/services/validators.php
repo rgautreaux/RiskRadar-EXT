@@ -121,16 +121,18 @@ function rr_validate_registration(array $post): array
 function rr_validate_login(array $post): array
 {
     $data = [
-        'username' => trim((string) ($post['username'] ?? '')),
+        'email' => trim((string) ($post['email'] ?? '')),
         'password' => (string) ($post['password'] ?? ''),
         'zip_code' => trim((string) ($post['zip_code'] ?? '')),
     ];
     $errors = [];
 
-    if ($data['username'] === '') {
-        $errors['username'] = 'Username is required.';
-    } elseif (strlen($data['username']) > 120) {
-        $errors['username'] = 'Username must be 120 characters or fewer.';
+    if ($data['email'] === '') {
+        $errors['email'] = 'Email address is required.';
+    } elseif (strlen($data['email']) > 120) {
+        $errors['email'] = 'Email must be 120 characters or fewer.';
+    } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+        $errors['email'] = 'Enter a valid email address.';
     }
 
     if (strlen($data['password']) < 8) {

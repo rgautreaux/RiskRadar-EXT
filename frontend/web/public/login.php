@@ -5,7 +5,7 @@ require_once __DIR__ . '/../services/bootstrap.php';
 $flash = rr_get_flash();
 $loginErrors = [];
 $loginForm = [
-    'username' => '',
+    'email' => '',
     'zip_code' => '',
 ];
 
@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Backend login endpoint is not yet implemented in Stage 1.
         $loginErrors['_form'] = 'Login is not yet supported by the backend in Stage 1. Register a new account or use the Profile page to manage preferences.';
     }
+
 }
 
 require __DIR__ . '/../views/login.php';

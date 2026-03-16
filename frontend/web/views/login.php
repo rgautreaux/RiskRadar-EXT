@@ -20,9 +20,9 @@
         <form method="post" action="login.php" class="form-stack">
             <input type="hidden" name="csrf_token" value="<?php echo e(rr_csrf_token()); ?>">
             <label>
-                <span>Username</span>
-                <input type="text" name="username" maxlength="120" autocomplete="username" value="<?php echo e($loginForm['username']); ?>" required>
-                <?php if (isset($loginErrors['username'])) : ?><small class="field-error"><?php echo e($loginErrors['username']); ?></small><?php endif; ?>
+                <span>Email</span>
+                <input type="email" name="email" maxlength="120" autocomplete="email" value="<?php echo e($loginForm['email']); ?>" required>
+                <?php if (isset($loginErrors['email'])) : ?><small class="field-error"><?php echo e($loginErrors['email']); ?></small><?php endif; ?>
             </label>
             <label>
                 <span>Password</span>
