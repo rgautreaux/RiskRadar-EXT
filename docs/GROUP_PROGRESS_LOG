@@ -725,6 +725,76 @@ For work branches in team projects, periodic syncs (weekly or bi-weekly) prevent
 
 ---
 
+## Rebecca Gautreaux Log — 2026-03-16
+
+### Session Focus
+- Perform a full audit for faulty/broken/concerning code paths.
+- Fix confirmed runtime breakpoints so backend behavior is clean and reliable.
+- Re-run verification (tests + lint) and document exact outcomes.
+
+### Major Developments Completed
+
+#### 1) Runtime Weak Point Diagnosed and Fixed (System Scrape Trigger)
+- Identified a real runtime break in `backend/api/system.py`:
+	- Endpoint imported non-existent `build_scraper_list`.
+	- Endpoint called `scraper.run(db)` with invalid signature.
+- Implemented fixes:
+	- Switched import/call to `load_all_scrapers`.
+	- Used registry-provided `scraper` instances directly.
+	- Updated call to `scraper.run()`.
+- Why this was needed:
+	- Prevented runtime failure in `/api/v1/scrape/trigger`.
+	- Restored endpoint compatibility with current scraper registry contract.
+
+#### 2) Scraper Return Contract Tightened
+- Updated `backend/scrapers/base_scraper.py`:
+	- `run()` now returns `new_count`.
+- Why this was needed:
+	- Ensures system trigger responses can accurately report `alerts_stored`.
+	- Improves endpoint observability with deterministic numeric output.
+
+#### 3) New Regression Coverage Added for System Endpoints
+- Added `backend/tests/test_api_system.py` with tests for:
+	- `/api/v1/health` success payload.
+	- `/api/v1/scrape/trigger` auth protection.
+	- `/api/v1/scrape/trigger` successful execution with mocked scrapers.
+- Why this was needed:
+	- Catches future regressions in system router wiring and scrape-trigger flow.
+	- Adds direct coverage for a path that previously had a runtime break.
+
+### Commands / Verification Used
+- Full backend suite before fixes:
+	- `python -m pytest -q` (from `backend/`)
+	- Result: `78 passed`
+- Full backend suite after fixes + new tests:
+	- `python -m pytest -q` (from `backend/`)
+	- Result: `81 passed`
+- Frontend quality check:
+	- `cd frontend/RiskRadar`
+	- `npm.cmd run lint`
+	- Result: lint completed successfully (`expo lint`)
+
+### Issues / Blockers
+- Terminal working-directory drift caused occasional `backend\\backend` and `frontend path not found` warnings during command execution.
+- Resolved by running commands from explicit, correct directories.
+
+### Decisions Made
+- Treat static analyzer import/type noise as non-blocking unless corroborated by runtime/test failures.
+- Prioritize fixes for runtime-accessible endpoints over cosmetic/type-only diagnostics.
+- Add tests for previously uncovered critical paths immediately after fix.
+
+### Outcome
+- Confirmed and fixed a real runtime endpoint break.
+- Added test coverage to prevent recurrence.
+- Backend now passes `81` tests cleanly.
+- Frontend lint is clean.
+
+### Next Steps
+- Optional follow-up: add stricter path-safe terminal helpers in docs/scripts to avoid directory drift during verification runs.
+
+
+---
+
 ## Rebecca Gautreaux Log — 2026-03-12
 
 ### Session Focus
