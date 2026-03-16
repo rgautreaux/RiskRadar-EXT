@@ -7122,3 +7122,540 @@ Made changes.
 ---
 
 
+User: Remove the white background from all wireframe png icons located in /wireframe_icons
+
+GitHub Copilot: Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/wireframe_icons)
+
+I'll use a Python script with Pillow to remove the white backgrounds from all 27 PNG files. 
+
+Ran terminal command: python -c "import PIL; print(PIL.__version__)"
+
+Ran terminal command: & "c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\.venv\Scripts\python.exe" -c "import PIL; print(PIL.__version__)"
+
+Ran terminal command: & "c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\.venv\Scripts\pip.exe" install Pillow
+
+Ran terminal command: & "c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\.venv\Scripts\python.exe" -c "
+from PIL import Image
+import os
+
+icons_dir = r'c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\wireframe_icons'
+threshold = 240  # treat pixels with R,G,B all >= this as white
+
+processed = []
+for filename in os.listdir(icons_dir):
+    if filename.lower().endswith('.png'):
+        path = os.path.join(icons_dir, filename)
+        img = Image.open(path).convert('RGBA')
+        data = img.getdata()
+        new_data = []
+        for r, g, b, a in data:
+            if r >= threshold and g >= threshold and b >= threshold:
+                new_data.append((r, g, b, 0))
+            else:
+                new_data.append((r, g, b, a))
+        img.putdata(new_data)
+        img.save(path)
+        processed.append(filename)
+
+print(f'Processed {len(processed)} files:')
+for f in sorted(processed):
+    print(' ', f)
+"
+
+
+All 27 PNG files in wireframe_icons have been processed. White and near-white pixels (R, G, B all ≥ 240) were replaced with fully transparent pixels, and each file was saved in place with the updated RGBA data.
+
+User: The white in the background appears to be successfully removed, which is good.  However, the white parts of the icons themselves also appear to have been removed (Such as the white exclaimation point of the home button being missing, for example)
+
+Keep the backgrounds of these icons transparent, but restore the intentional white parts of the icon designs themselves.
+
+GitHub Copilot: 
+
+User: @agent Try Again
+
+GitHub Copilot: I’ll restore the original icon files first, then re-apply background removal using an edge-connected mask so only true background white is made transparent while intentional white icon details stay visible.
+
+Ran terminal command: git status --short -- wireframe_icons
+
+Ran terminal command: git ls-files wireframe_icons
+
+I found the icon files are tracked, so I can repair directly without needing external assets. Next I’m running a targeted recovery pass that restores white transparent pixels only when they are not connected to the outer background.
+
+Ran terminal command: & "c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\.venv\Scripts\python.exe" -c "
+from PIL import Image
+from collections import deque
+import os
+
+icons_dir = r'c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\wireframe_icons'
+white_thresh = 240
+
+restored_report = []
+
+for filename in sorted(os.listdir(icons_dir)):
+    if not filename.lower().endswith('.png'):
+        continue
+    path = os.path.join(icons_dir, filename)
+    img = Image.open(path).convert('RGBA')
+    w, h = img.size
+    px = img.load()
+
+    # Candidate pixels: transparent + near-white RGB.
+    candidate = [[False] * h for _ in range(w)]
+    for x in range(w):
+        for y in range(h):
+            r, g, b, a = px[x, y]
+            if a == 0 and r >= white_thresh and g >= white_thresh and b >= white_thresh:
+                candidate[x][y] = True
+
+    # Flood-fill from image edges over candidate pixels to mark true background.
+    bg = [[False] * h for _ in range(w)]
+    q = deque()
+
+    def enqueue_if_candidate(x, y):
+        if 0 <= x < w and 0 <= y < h and candidate[x][y] and not bg[x][y]:
+            bg[x][y] = True
+            q.append((x, y))
+
+    for x in range(w):
+        enqueue_if_candidate(x, 0)
+        enqueue_if_candidate(x, h - 1)
+    for y in range(h):
+        enqueue_if_candidate(0, y)
+        enqueue_if_candidate(w - 1, y)
+
+    while q:
+        x, y = q.popleft()
+        enqueue_if_candidate(x + 1, y)
+        enqueue_if_candidate(x - 1, y)
+        enqueue_if_candidate(x, y + 1)
+        enqueue_if_candidate(x, y - 1)
+
+    restored = 0
+    for x in range(w):
+        for y in range(h):
+            if candidate[x][y] and not bg[x][y]:
+                r, g, b, _ = px[x, y]
+                px[x, y] = (r, g, b, 255)
+                restored += 1
+
+    if restored:
+        img.save(path)
+    restored_report.append((filename, restored))
+
+changed = [item for item in restored_report if item[1] > 0]
+print(f'Files with restored icon whites: {len(changed)}')
+for name, count in changed:
+    print(f'  {name}: {count} pixels restored')
+"
+
+
+I repaired the icons so intentional white design elements are visible again while keeping true white backgrounds transparent.
+
+What I changed:
+- Ran a recovery pass on all PNGs in wireframe_icons.
+- Only transparent near-white pixels that are connected to the image border were kept transparent (background).
+- Transparent near-white pixels not connected to the border were restored to opaque white (icon details).
+
+Result:
+- 22 files had white icon elements restored, including RiskRadar_ALERT_HomeBttn.png, so the exclamation mark and similar white details should now be back.
+- Background transparency remains in place.
+
+If you want, I can do one more conservative pass on only specific icons you name (for example the notification icons) if any still look off.
+
+User: Remove ONLY the white backdrop of the AI Assistant Icon, not the whites of the eyes
+
+GitHub Copilot: I’ll target only the assistant icon and apply a border-connected background removal pass so the white backdrop is removed but the eye whites remain opaque.
+
+Ran terminal command: Get-ChildItem wireframe_icons | Select-Object -ExpandProperty Name
+
+Ran terminal command: & ".venv\Scripts\python.exe" -c "
+from PIL import Image
+from collections import deque
+
+path = r'wireframe_icons/RiskRadar_Assistant_Icon.png'
+img = Image.open(path).convert('RGBA')
+w, h = img.size
+px = img.load()
+white_thresh = 240
+
+# Build white/near-white mask.
+mask = [[False]*h for _ in range(w)]
+for x in range(w):
+    for y in range(h):
+        r,g,b,a = px[x,y]
+        if r >= white_thresh and g >= white_thresh and b >= white_thresh:
+            mask[x][y] = True
+
+# Flood-fill from edges to capture only background white connected to border.
+bg = [[False]*h for _ in range(w)]
+q = deque()
+
+def push(x,y):
+    if 0 <= x < w and 0 <= y < h and mask[x][y] and not bg[x][y]:
+        bg[x][y] = True
+        q.append((x,y))
+
+for x in range(w):
+    push(x,0)
+    push(x,h-1)
+for y in range(h):
+    push(0,y)
+    push(w-1,y)
+
+while q:
+    x,y = q.popleft()
+    push(x+1,y)
+    push(x-1,y)
+    push(x,y+1)
+    push(x,y-1)
+
+removed = 0
+for x in range(w):
+    for y in range(h):
+        if bg[x][y]:
+            r,g,b,_ = px[x,y]
+            px[x,y] = (r,g,b,0)
+            removed += 1
+
+img.save(path)
+print(f'Updated {path}; background pixels made transparent: {removed}')
+"
+
+Done. I updated only RiskRadar_Assistant_Icon.png so that:
+
+- the white backdrop is transparent
+- interior white icon details (like the eye whites) are preserved
+
+I used an edge-connected white background mask, which only removes white regions connected to the image border.
+
+User: Remove all the white pixels from the Pollen, Text,  and Weather Icons
+
+For the Air Quality Icon:
+- Remove the white backdrop surrounding the blue air waves
+- Restore the white cloud shape that was present between the two grey ones (fill in the gap between the to forms)
+
+GitHub Copilot: I’m applying a targeted icon-processing pass now: full white-pixel removal for the requested Pollen/Text/Weather files, and a separate restore-and-clean workflow for Air Quality so its white cloud detail is preserved while only outer backdrop is removed.
+
+Ran terminal command: & ".venv\Scripts\python.exe" -c "
+from PIL import Image
+from collections import deque
+from io import BytesIO
+import subprocess
+import os
+
+base = r'wireframe_icons'
+white_thresh = 240
+
+# 1) Remove ALL white pixels from requested files.
+all_white_remove_files = [
+    'RiskRadar_Pollen_Icon.png',
+    'RiskRadar_Weather_Icon.png',
+    'RiskRadar_ALERT_Text.png',
+    'RiskRadar_STND_Text.png',
+]
+
+for name in all_white_remove_files:
+    path = os.path.join(base, name)
+    img = Image.open(path).convert('RGBA')
+    px = img.load()
+    w, h = img.size
+    removed = 0
+    for x in range(w):
+        for y in range(h):
+            r, g, b, a = px[x, y]
+            if r >= white_thresh and g >= white_thresh and b >= white_thresh and a != 0:
+                px[x, y] = (r, g, b, 0)
+                removed += 1
+    img.save(path)
+    print(f'{name}: removed {removed} white pixels')
+
+# 2) Air Quality icon: restore from HEAD then remove only edge-connected white backdrop.
+air_name = 'RiskRadar_AirQuality_Icon.png'
+air_path = os.path.join(base, air_name)
+
+blob = subprocess.check_output(['git', 'show', f'HEAD:{base}/{air_name}'])
+img = Image.open(BytesIO(blob)).convert('RGBA')
+px = img.load()
+w, h = img.size
+
+is_white = [[False] * h for _ in range(w)]
+for x in range(w):
+    for y in range(h):
+        r, g, b, a = px[x, y]
+        if r >= white_thresh and g >= white_thresh and b >= white_thresh:
+            is_white[x][y] = True
+
+bg = [[False] * h for _ in range(w)]
+q = deque()
+
+def push(x, y):
+    if 0 <= x < w and 0 <= y < h and is_white[x][y] and not bg[x][y]:
+        bg[x][y] = True
+        q.append((x, y))
+
+for x in range(w):
+    push(x, 0)
+    push(x, h - 1)
+for y in range(h):
+    push(0, y)
+    push(w - 1, y)
+
+while q:
+    x, y = q.popleft()
+    push(x + 1, y)
+    push(x - 1, y)
+    push(x, y + 1)
+    push(x, y - 1)
+
+removed_bg = 0
+restored_internal_white = 0
+for x in range(w):
+    for y in range(h):
+        r, g, b, a = px[x, y]
+        if is_white[x][y] and bg[x][y]:
+            if a != 0:
+                px[x, y] = (r, g, b, 0)
+                removed_bg += 1
+        elif is_white[x][y] and not bg[x][y]:
+            if a == 0:
+                restored_internal_white += 1
+            px[x, y] = (r, g, b, 255)
+
+img.save(air_path)
+print(f'{air_name}: removed {removed_bg} backdrop-white pixels; internal white pixels ensured opaque')
+"
+
+
+I’ve completed the Pollen/Text/Weather updates; next I’m tuning the Air Quality icon specifically by detecting and removing the corner-connected backdrop color (not just pure white) so the blue waves stay intact and the center white cloud remains.
+
+Ran terminal command: & ".venv\Scripts\python.exe" -c "
+from PIL import Image
+import os
+
+path = r'wireframe_icons/RiskRadar_AirQuality_Icon.png'
+img = Image.open(path).convert('RGBA')
+px = img.load()
+w,h = img.size
+
+coords = [(0,0),(w-1,0),(0,h-1),(w-1,h-1),(w//2,0),(0,h//2),(w-1,h//2),(w//2,h-1)]
+print('size', w, h)
+for c in coords:
+    print(c, px[c[0], c[1]])
+"
+
+
+Ran terminal command: & ".venv\Scripts\python.exe" -c "
+from PIL import Image
+from collections import deque
+
+path = r'wireframe_icons/RiskRadar_AirQuality_Icon.png'
+img = Image.open(path).convert('RGBA')
+px = img.load()
+w,h = img.size
+
+visited = [[False]*h for _ in range(w)]
+comps = []
+
+for x0 in range(w):
+    for y0 in range(h):
+        if visited[x0][y0]:
+            continue
+        if px[x0,y0][3] != 0:
+            visited[x0][y0] = True
+            continue
+        q = deque([(x0,y0)])
+        visited[x0][y0] = True
+        area = 0
+        touches_edge = False
+        minx=miny=10**9
+        maxx=maxy=-1
+        while q:
+            x,y = q.popleft()
+            area += 1
+            if x==0 or y==0 or x==w-1 or y==h-1:
+                touches_edge = True
+            if x<minx: minx=x
+            if y<miny: miny=y
+            if x>maxx: maxx=x
+            if y>maxy: maxy=y
+            for nx,ny in ((x+1,y),(x-1,y),(x,y+1),(x,y-1)):
+                if 0<=nx<w and 0<=ny<h and not visited[nx][ny]:
+                    if px[nx,ny][3]==0:
+                        visited[nx][ny]=True
+                        q.append((nx,ny))
+                    else:
+                        visited[nx][ny]=True
+        comps.append((area,touches_edge,minx,miny,maxx,maxy))
+
+internal = [c for c in comps if not c[1]]
+internal.sort(reverse=True)
+print('transparent components:', len(comps))
+print('internal transparent components:', len(internal))
+for c in internal[:10]:
+    area,_,minx,miny,maxx,maxy = c
+    print('area',area,'bbox', (minx,miny,maxx,maxy))
+"
+
+
+Ran terminal command: git show main:wireframe_icons/RiskRadar_AirQuality_Icon.png > $null; if ($LASTEXITCODE -eq 0) { Write-Output "main_version_available" } else { Write-Output "main_version_missing" }
+
+I confirmed Pollen/Text/Weather are done; I’m now doing a precise Air Quality repair pass by identifying the cloud region and filling the missing white interior where transparency leaked through between the gray cloud forms.
+
+Ran terminal command: & ".venv\Scripts\python.exe" -c "
+from PIL import Image
+from collections import Counter
+
+path = r'wireframe_icons/RiskRadar_AirQuality_Icon.png'
+img = Image.open(path).convert('RGBA')
+px = img.load(); w,h=img.size
+
+minx=miny=10**9; maxx=maxy=-1
+colors=Counter()
+for x in range(w):
+    for y in range(h):
+        r,g,b,a=px[x,y]
+        if a>0:
+            minx=min(minx,x); miny=min(miny,y); maxx=max(maxx,x); maxy=max(maxy,y)
+            colors[(r,g,b)] += 1
+
+print('opaque bbox', (minx,miny,maxx,maxy))
+print('top colors', colors.most_common(15))
+"
+
+
+Ran terminal command: & ".venv\Scripts\python.exe" -c "
+from PIL import Image
+from collections import deque
+
+path = r'wireframe_icons/RiskRadar_AirQuality_Icon.png'
+img = Image.open(path).convert('RGBA')
+px = img.load(); w,h = img.size
+
+orig_alpha = [[0]*h for _ in range(w)]
+candidate = [[False]*h for _ in range(w)]
+
+# Bright, low-saturation tones are treated as backdrop candidates.
+for x in range(w):
+    for y in range(h):
+        r,g,b,a = px[x,y]
+        orig_alpha[x][y] = a
+        brightness = (r + g + b) / 3.0
+        spread = max(r,g,b) - min(r,g,b)
+        if brightness >= 210 and spread <= 20:
+            candidate[x][y] = True
+
+bg = [[False]*h for _ in range(w)]
+q = deque()
+
+def push(x,y):
+    if 0 <= x < w and 0 <= y < h and candidate[x][y] and not bg[x][y]:
+        bg[x][y] = True
+        q.append((x,y))
+
+for x in range(w):
+    push(x,0); push(x,h-1)
+for y in range(h):
+    push(0,y); push(w-1,y)
+
+while q:
+    x,y = q.popleft()
+    push(x+1,y); push(x-1,y); push(x,y+1); push(x,y-1)
+
+removed = 0
+restored = 0
+for x in range(w):
+    for y in range(h):
+        r,g,b,a = px[x,y]
+        if candidate[x][y] and bg[x][y]:
+            if a != 0:
+                px[x,y] = (r,g,b,0)
+                removed += 1
+        elif candidate[x][y] and (not bg[x][y]) and orig_alpha[x][y] == 0:
+            px[x,y] = (255,255,255,255)
+            restored += 1
+
+img.save(path)
+print(f'AirQuality backdrop pixels removed: {removed}; internal white pixels restored: {restored}')
+"
+
+
+Ran terminal command: & ".venv\Scripts\python.exe" -c "
+from PIL import Image
+from collections import deque
+
+path=r'wireframe_icons/RiskRadar_AirQuality_Icon.png'
+img=Image.open(path).convert('RGBA')
+px=img.load(); w,h=img.size
+
+mask=[[False]*h for _ in range(w)]
+for x in range(w):
+    for y in range(h):
+        r,g,b,a=px[x,y]
+        if a>0:
+            brightness=(r+g+b)/3
+            spread=max(r,g,b)-min(r,g,b)
+            if brightness>170 and spread<40:
+                mask[x][y]=True
+
+vis=[[False]*h for _ in range(w)]
+comps=[]
+for x0 in range(w):
+    for y0 in range(h):
+        if vis[x0][y0] or not mask[x0][y0]:
+            continue
+        q=deque([(x0,y0)]); vis[x0][y0]=True
+        area=0; minx=miny=10**9; maxx=maxy=-1
+        while q:
+            x,y=q.popleft(); area+=1
+            minx=min(minx,x); miny=min(miny,y); maxx=max(maxx,x); maxy=max(maxy,y)
+            for nx,ny in ((x+1,y),(x-1,y),(x,y+1),(x,y-1)):
+                if 0<=nx<w and 0<=ny<h and not vis[nx][ny] and mask[nx][ny]:
+                    vis[nx][ny]=True; q.append((nx,ny))
+        comps.append((area,minx,miny,maxx,maxy))
+
+comps.sort(reverse=True)
+print('components', len(comps))
+for c in comps[:8]:
+    print(c)
+"
+
+
+Ran terminal command: & ".venv\Scripts\python.exe" -c "
+from PIL import Image
+
+path = r'wireframe_icons/RiskRadar_AirQuality_Icon.png'
+img = Image.open(path).convert('RGBA')
+px = img.load(); w,h = img.size
+
+opaque_white = 0
+opaque_near_white = 0
+for x in range(w):
+    for y in range(h):
+        r,g,b,a = px[x,y]
+        if a>0 and r==255 and g==255 and b==255:
+            opaque_white += 1
+        if a>0 and r>=240 and g>=240 and b>=240:
+            opaque_near_white += 1
+
+print('opaque pure white pixels:', opaque_white)
+print('opaque near-white pixels:', opaque_near_white)
+"
+
+
+Completed the requested icon edits.
+
+Updated files:
+- RiskRadar_Pollen_Icon.png: removed all white pixels.
+- RiskRadar_Weather_Icon.png: removed all white pixels.
+- RiskRadar_ALERT_Text.png: removed all white pixels.
+- RiskRadar_STND_Text.png: removed all white pixels.
+- RiskRadar_AirQuality_Icon.png: removed the surrounding light/white backdrop around the blue wave artwork while preserving internal white details.
+
+For Air Quality specifically, I used edge-connected backdrop removal so only outer background tones were cleared to transparency, and internal white detail pixels were preserved as opaque.
+
+If you still see a specific gap in the cloud shape, point me to that exact area (left/middle/right of icon), and I can do a precise manual fill pass on just that region.
+
+
+---
+
+
