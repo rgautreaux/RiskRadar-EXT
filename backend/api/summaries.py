@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from db.database import get_db
@@ -25,6 +25,14 @@ def latest_summary(db: Session = Depends(get_db)):
     return db.query(Summary).order_by(Summary.generated_at.desc()).first()
 
 
+@router.get("/{summary_id}", response_model=SummaryOut)
+def get_summary(summary_id: int, db: Session = Depends(get_db)):
+    summary = db.query(Summary).filter(Summary.id == summary_id).first()
+    if not summary:
+        raise HTTPException(status_code=404, detail="Summary not found")
+    return summary
+
+
 @router.post("/generate", response_model=SummaryOut)
 def generate_summary(db: Session = Depends(get_db)):
     from llm.summarizer import Summarizer
@@ -32,6 +40,5 @@ def generate_summary(db: Session = Depends(get_db)):
     summarizer = Summarizer()
     summary = summarizer.generate_daily_digest(db)
     if not summary:
-        from fastapi import HTTPException
         raise HTTPException(status_code=404, detail="No alerts to summarize")
     return summary

@@ -40,6 +40,21 @@ class TestLatestSummary:
         assert resp.json() is None
 
 
+class TestGetSummary:
+    def test_get_existing_summary(self, test_client, sample_summary):
+        resp = test_client.get(f"/api/v1/summaries/{sample_summary.id}")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["id"] == sample_summary.id
+        assert data["title"] == sample_summary.title
+        assert data["summary_type"] == "daily"
+
+    def test_get_summary_not_found(self, test_client):
+        resp = test_client.get("/api/v1/summaries/99999")
+        assert resp.status_code == 404
+        assert "Summary not found" in resp.json()["detail"]
+
+
 class TestGenerateSummary:
     def test_generate_with_alerts(self, test_client, sample_alerts):
         mock_return = ("## Daily Digest\nTest summary content.", 100)

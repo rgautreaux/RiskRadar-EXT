@@ -2,71 +2,27 @@
 
 <section class="page-heading">
     <div>
-        <p class="eyebrow">User pathways</p>
-        <h1>Registration and preferences</h1>
+        <p class="eyebrow">User preferences</p>
+        <h1>Profile preferences</h1>
     </div>
-    <p>This Stage 1 page keeps the write-path scaffolding in place for user registration and preference updates against the existing backend.</p>
+    <p>Use this page to manage alert preferences for an existing user account. Account creation now lives on the dedicated registration page.</p>
 </section>
 
 <?php if ($flash) : ?>
     <?php rr_render_message($flash['message'], $flash['type']); ?>
 <?php endif; ?>
 
-<?php if ($registerResult && $registerResult['message']) : ?>
-    <?php rr_render_message($registerResult['message']); ?>
-<?php endif; ?>
-
 <?php if ($preferencesResult && $preferencesResult['message']) : ?>
     <?php rr_render_message($preferencesResult['message']); ?>
 <?php endif; ?>
 
-<section class="two-column-grid">
-    <article class="panel">
-        <div class="panel-header">
-            <div>
-                <p class="eyebrow">Write path</p>
-                <h2>Register user</h2>
-            </div>
-        </div>
-        <form method="post" action="profile.php" class="form-stack">
-            <input type="hidden" name="csrf_token" value="<?php echo e(rr_csrf_token()); ?>">
-            <input type="hidden" name="action" value="register">
-            <label>
-                <span>Display name</span>
-                <input type="text" name="display_name" maxlength="80" value="<?php echo e($registerForm['display_name']); ?>" required>
-                <?php if (isset($registerErrors['display_name'])) : ?><small class="field-error"><?php echo e($registerErrors['display_name']); ?></small><?php endif; ?>
-            </label>
-            <label>
-                <span>Email</span>
-                <input type="email" name="email" maxlength="120" value="<?php echo e($registerForm['email']); ?>" required>
-                <?php if (isset($registerErrors['email'])) : ?><small class="field-error"><?php echo e($registerErrors['email']); ?></small><?php endif; ?>
-            </label>
-            <label>
-                <span>Password</span>
-                <input type="password" name="password" minlength="8" required>
-                <?php if (isset($registerErrors['password'])) : ?><small class="field-error"><?php echo e($registerErrors['password']); ?></small><?php endif; ?>
-            </label>
-            <label>
-                <span>ZIP code</span>
-                <input type="text" name="zip_code" inputmode="numeric" maxlength="5" value="<?php echo e((string) ($registerForm['zip_code'] ?? '')); ?>">
-                <?php if (isset($registerErrors['zip_code'])) : ?><small class="field-error"><?php echo e($registerErrors['zip_code']); ?></small><?php endif; ?>
-            </label>
-            <button class="button-primary" type="submit">Create account</button>
-        </form>
-        <?php if ($registerResult && $registerResult['ok'] && $registerResult['data']) : ?>
-            <div class="result-panel">
-                <p>Created user ID: <strong><?php echo e((string) $registerResult['data']['id']); ?></strong></p>
-                <p>Created at: <?php echo e(rr_format_datetime($registerResult['data']['created_at'])); ?></p>
-            </div>
-        <?php endif; ?>
-    </article>
-
-    <article class="panel">
+<section class="panel">
         <div class="panel-header">
             <div>
                 <p class="eyebrow">Write path</p>
                 <h2>Update preferences</h2>
             </div>
+            <a href="register.php">Need an account? Register</a>
         </div>
         <form method="post" action="profile.php" class="form-stack">
             <input type="hidden" name="csrf_token" value="<?php echo e(rr_csrf_token()); ?>">
@@ -115,7 +71,6 @@
                 <p>Stored alert types: <?php echo e(implode(', ', rr_parse_alert_types($preferencesResult['data']['alert_types'])) ?: 'None'); ?></p>
             </div>
         <?php endif; ?>
-    </article>
 </section>
 
 <?php rr_render_layout_end(); ?>

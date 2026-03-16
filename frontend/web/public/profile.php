@@ -3,16 +3,8 @@
 require_once __DIR__ . '/../services/bootstrap.php';
 
 $flash = rr_get_flash();
-$registerErrors = [];
 $preferencesErrors = [];
-$registerResult = null;
 $preferencesResult = null;
-$registerForm = [
-    'display_name' => '',
-    'email' => '',
-    'password' => '',
-    'zip_code' => '',
-];
 $preferencesForm = [
     'user_id' => null,
     'zip_code' => '',
@@ -29,22 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    if (!in_array($action, ['register', 'preferences'], true)) {
+    if ($action !== 'preferences') {
         rr_set_flash('warning', 'Unsupported form action was rejected.');
         header('Location: profile.php');
         exit;
-    }
-
-    if ($action === 'register') {
-        [$registerForm, $registerErrors] = rr_validate_registration($_POST);
-        if (!$registerErrors) {
-            $registerResult = rr_register_user($config, $registerForm);
-            if ($registerResult['ok']) {
-                rr_set_flash('success', 'User registration succeeded.');
-                header('Location: profile.php');
-                exit;
-            }
-        }
     }
 
     if ($action === 'preferences') {

@@ -118,6 +118,38 @@ function rr_validate_registration(array $post): array
     return [$data, $errors];
 }
 
+function rr_validate_login(array $post): array
+{
+    $data = [
+        'email' => trim((string) ($post['email'] ?? '')),
+        'password' => (string) ($post['password'] ?? ''),
+        'zip_code' => trim((string) ($post['zip_code'] ?? '')),
+    ];
+    $errors = [];
+
+    if ($data['email'] === '') {
+        $errors['email'] = 'Email address is required.';
+    } elseif (strlen($data['email']) > 120) {
+        $errors['email'] = 'Email must be 120 characters or fewer.';
+    } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+        $errors['email'] = 'Enter a valid email address.';
+    }
+
+    if (strlen($data['password']) < 8) {
+        $errors['password'] = 'Password must be at least 8 characters.';
+    }
+
+    if ($data['zip_code'] !== '' && !preg_match('/^\d{5}$/', $data['zip_code'])) {
+        $errors['zip_code'] = 'ZIP code must be a 5-digit US ZIP code.';
+    }
+
+    if ($data['zip_code'] === '') {
+        $data['zip_code'] = null;
+    }
+
+    return [$data, $errors];
+}
+
 function rr_validate_preferences(array $post): array
 {
     $alertTypes = $post['alert_types'] ?? [];
