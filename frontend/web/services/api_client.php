@@ -319,6 +319,30 @@ function rr_register_user(array $config, array $payload): array
     return rr_success_result(rr_normalize_user($result['data']), $result['status']);
 }
 
+function rr_fetch_alert_by_id(array $config, int $id): array
+{
+    $result = rr_http_request($config, 'GET', 'alerts/' . $id);
+    if (!$result['ok']) {
+        $message = ($result['status'] ?? 0) === 404
+            ? 'That alert was not found in the backend.'
+            : 'The alert could not be loaded. The backend may be unavailable.';
+        return rr_fallback_result(null, $message, $result['status'] ?? null);
+    }
+    return rr_success_result(rr_normalize_alert($result['data']), $result['status']);
+}
+
+function rr_fetch_summary_by_id(array $config, int $id): array
+{
+    $result = rr_http_request($config, 'GET', 'summaries/' . $id);
+    if (!$result['ok']) {
+        $message = ($result['status'] ?? 0) === 404
+            ? 'That summary was not found in the backend.'
+            : 'The summary could not be loaded. The backend may be unavailable.';
+        return rr_fallback_result(null, $message, $result['status'] ?? null);
+    }
+    return rr_success_result(rr_normalize_summary($result['data']), $result['status']);
+}
+
 function rr_update_preferences(array $config, int $userId, array $payload): array
 {
     $result = rr_http_request($config, 'PUT', 'users/' . $userId . '/preferences', [], $payload);
