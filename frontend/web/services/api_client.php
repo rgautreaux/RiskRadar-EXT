@@ -44,8 +44,12 @@ function rr_safe_string(mixed $value, string $default = ''): string
         return $value;
     }
 
-    if (is_int($value) || is_float($value) || is_bool($value)) {
+    if (is_int($value) || is_float($value)) {
         return (string) $value;
+    }
+
+    if (is_bool($value)) {
+        return $value ? 'true' : 'false';
     }
 
     return $default;
@@ -61,8 +65,12 @@ function rr_safe_nullable_string(mixed $value): ?string
         return $value;
     }
 
-    if (is_int($value) || is_float($value) || is_bool($value)) {
+    if (is_int($value) || is_float($value)) {
         return (string) $value;
+    }
+
+    if (is_bool($value)) {
+        return $value ? 'true' : 'false';
     }
 
     return null;
@@ -177,6 +185,25 @@ function rr_http_request(array $config, string $method, string $path, array $que
 
 function rr_normalize_alert(?array $alert): array
 {
+    if (!is_array($alert)) {
+        return [
+            'id' => 0,
+            'source' => 'Unknown',
+            'source_id' => null,
+            'alert_type' => 'other',
+            'severity' => 'low',
+            'title' => 'Untitled alert',
+            'description' => null,
+            'latitude' => null,
+            'longitude' => null,
+            'location_name' => null,
+            'event_start' => null,
+            'event_end' => null,
+            'fetched_at' => '',
+            'created_at' => '',
+        ];
+    }
+
     return [
         'id' => (int) ($alert['id'] ?? 0),
         'source' => rr_safe_string($alert['source'] ?? null, 'Unknown'),
