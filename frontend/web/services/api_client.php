@@ -38,6 +38,53 @@ function rr_success_result(mixed $data, ?int $status = null): array
     ];
 }
 
+function rr_safe_string(mixed $value, string $default = ''): string
+{
+    if (is_string($value)) {
+        return $value;
+    }
+
+    if (is_int($value) || is_float($value)) {
+        return (string) $value;
+    }
+
+    if (is_bool($value)) {
+        return $value ? 'true' : 'false';
+    }
+
+    return $default;
+}
+
+function rr_safe_nullable_string(mixed $value): ?string
+{
+    if ($value === null) {
+        return null;
+    }
+
+    if (is_string($value)) {
+        return $value;
+    }
+
+    if (is_int($value) || is_float($value)) {
+        return (string) $value;
+    }
+
+    if (is_bool($value)) {
+        return $value ? 'true' : 'false';
+    }
+
+    return null;
+}
+
+function rr_safe_nullable_float(mixed $value): ?float
+{
+    if ($value === null || $value === '') {
+        return null;
+    }
+
+    return is_numeric($value) ? (float) $value : null;
+}
+
 function rr_http_request(array $config, string $method, string $path, array $query = [], ?array $body = null): array
 {
     $url = rr_api_url($config, $path, $query);
@@ -138,21 +185,40 @@ function rr_http_request(array $config, string $method, string $path, array $que
 
 function rr_normalize_alert(?array $alert): array
 {
+    if (!is_array($alert)) {
+        return [
+            'id' => 0,
+            'source' => 'Unknown',
+            'source_id' => null,
+            'alert_type' => 'other',
+            'severity' => 'low',
+            'title' => 'Untitled alert',
+            'description' => null,
+            'latitude' => null,
+            'longitude' => null,
+            'location_name' => null,
+            'event_start' => null,
+            'event_end' => null,
+            'fetched_at' => '',
+            'created_at' => '',
+        ];
+    }
+
     return [
         'id' => (int) ($alert['id'] ?? 0),
-        'source' => (string) ($alert['source'] ?? 'Unknown'),
-        'source_id' => $alert['source_id'] ?? null,
-        'alert_type' => (string) ($alert['alert_type'] ?? 'other'),
-        'severity' => (string) ($alert['severity'] ?? 'low'),
-        'title' => (string) ($alert['title'] ?? 'Untitled alert'),
-        'description' => $alert['description'] ?? null,
-        'latitude' => isset($alert['latitude']) ? (float) $alert['latitude'] : null,
-        'longitude' => isset($alert['longitude']) ? (float) $alert['longitude'] : null,
-        'location_name' => $alert['location_name'] ?? null,
-        'event_start' => $alert['event_start'] ?? null,
-        'event_end' => $alert['event_end'] ?? null,
-        'fetched_at' => (string) ($alert['fetched_at'] ?? ''),
-        'created_at' => (string) ($alert['created_at'] ?? ''),
+        'source' => rr_safe_string($alert['source'] ?? null, 'Unknown'),
+        'source_id' => rr_safe_nullable_string($alert['source_id'] ?? null),
+        'alert_type' => rr_safe_string($alert['alert_type'] ?? null, 'other'),
+        'severity' => rr_safe_string($alert['severity'] ?? null, 'low'),
+        'title' => rr_safe_string($alert['title'] ?? null, 'Untitled alert'),
+        'description' => rr_safe_nullable_string($alert['description'] ?? null),
+        'latitude' => rr_safe_nullable_float($alert['latitude'] ?? null),
+        'longitude' => rr_safe_nullable_float($alert['longitude'] ?? null),
+        'location_name' => rr_safe_nullable_string($alert['location_name'] ?? null),
+        'event_start' => rr_safe_nullable_string($alert['event_start'] ?? null),
+        'event_end' => rr_safe_nullable_string($alert['event_end'] ?? null),
+        'fetched_at' => rr_safe_string($alert['fetched_at'] ?? null),
+        'created_at' => rr_safe_string($alert['created_at'] ?? null),
     ];
 }
 
@@ -164,12 +230,12 @@ function rr_normalize_summary(?array $summary): ?array
 
     return [
         'id' => (int) ($summary['id'] ?? 0),
-        'title' => (string) ($summary['title'] ?? 'Untitled summary'),
-        'content' => (string) ($summary['content'] ?? ''),
-        'summary_type' => (string) ($summary['summary_type'] ?? 'general'),
-        'region' => $summary['region'] ?? null,
-        'generated_at' => (string) ($summary['generated_at'] ?? ''),
-        'model_used' => $summary['model_used'] ?? null,
+        'title' => rr_safe_string($summary['title'] ?? null, 'Untitled summary'),
+        'content' => rr_safe_string($summary['content'] ?? null),
+        'summary_type' => rr_safe_string($summary['summary_type'] ?? null, 'general'),
+        'region' => rr_safe_nullable_string($summary['region'] ?? null),
+        'generated_at' => rr_safe_string($summary['generated_at'] ?? null),
+        'model_used' => rr_safe_nullable_string($summary['model_used'] ?? null),
     ];
 }
 
@@ -181,12 +247,12 @@ function rr_normalize_user(?array $user): ?array
 
     return [
         'id' => (int) ($user['id'] ?? 0),
-        'display_name' => $user['display_name'] ?? null,
-        'email' => $user['email'] ?? null,
-        'zip_code' => $user['zip_code'] ?? null,
-        'alert_types' => $user['alert_types'] ?? null,
-        'notify_severity' => $user['notify_severity'] ?? null,
-        'created_at' => (string) ($user['created_at'] ?? ''),
+        'display_name' => rr_safe_nullable_string($user['display_name'] ?? null),
+        'email' => rr_safe_nullable_string($user['email'] ?? null),
+        'zip_code' => rr_safe_nullable_string($user['zip_code'] ?? null),
+        'alert_types' => rr_safe_nullable_string($user['alert_types'] ?? null),
+        'notify_severity' => rr_safe_nullable_string($user['notify_severity'] ?? null),
+        'created_at' => rr_safe_string($user['created_at'] ?? null),
     ];
 }
 

@@ -25,7 +25,7 @@ The premise is to solve a practical usability problem: environmental risk inform
 ---
 
 ## Project Goals (Staged)
-### Stage 1: Web-App Extension
+### Stage 1: Web-App Extension (Completed)
 - Deliver a functional PHP-based web interface with backend integration.
 - Provide core RiskRadar features (alerts, summaries, user-facing data) in a usable and consistent web experience.
 

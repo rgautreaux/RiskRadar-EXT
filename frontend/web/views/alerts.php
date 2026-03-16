@@ -32,7 +32,7 @@
         </label>
         <label>
             <span>Source</span>
-            <input type="text" name="source" maxlength="80" value="<?php echo e((string) ($filters['source'] ?? '')); ?>" placeholder="epa, nws, airnow">
+            <input type="text" name="source" maxlength="80" value="<?php echo e((string) ($filters['source'] ?? '')); ?>" placeholder="epa">
         </label>
         <label>
             <span>Limit</span>

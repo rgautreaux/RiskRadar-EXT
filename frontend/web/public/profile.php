@@ -29,6 +29,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    if (!in_array($action, ['register', 'preferences'], true)) {
+        rr_set_flash('warning', 'Unsupported form action was rejected.');
+        header('Location: profile.php');
+        exit;
+    }
+
     if ($action === 'register') {
         [$registerForm, $registerErrors] = rr_validate_registration($_POST);
         if (!$registerErrors) {

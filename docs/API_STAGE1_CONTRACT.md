@@ -1,4 +1,4 @@
-# Stage 1 API Contract Matrix (Web-App MVP)
+# Stage 1: Web-App Extension API Contract Matrix (Completed)
 
 This document defines the backend contracts used by the Stage 1 PHP web-app implementation in `frontend/web/`.
 
@@ -9,6 +9,65 @@ This document defines the backend contracts used by the Stage 1 PHP web-app impl
   - Timeout or network failure: return normalized error object and render non-blocking fallback UI.
   - Non-2xx response: surface safe message, preserve page shell/navigation.
   - Malformed or empty JSON: fail closed to safe defaults (empty list, null, or zero-state card).
+
+## Stage 1 Web Architecture and Route Usage Flow
+
+### Request flow (web page to backend)
+
+1. Public entrypoint receives browser request:
+  - `frontend/web/public/index.php`
+  - `frontend/web/public/alerts.php`
+  - `frontend/web/public/summaries.php`
+  - `frontend/web/public/profile.php`
+2. Entrypoint loads `frontend/web/services/bootstrap.php` to initialize session, config, and shared helpers.
+3. Entrypoint calls API wrapper functions in `frontend/web/services/api_client.php`.
+4. Wrapper composes URL from `base_url + prefix + route`, sends HTTP request, and normalizes data.
+5. Entrypoint renders corresponding `frontend/web/views/*.php` template using normalized data.
+6. Template output uses escaped rendering helpers and defensive fallbacks to keep page shells usable during API failures.
+
+### Stage 1 page-to-endpoint mapping
+
+| Web Page | Primary Wrapper Calls | Backend Routes Used |
+|---|---|---|
+| `public/index.php` (Dashboard) | `rr_fetch_alert_stats`, `rr_fetch_alerts(limit=5)`, `rr_fetch_latest_summary` | `GET /api/v1/alerts/stats`, `GET /api/v1/alerts`, `GET /api/v1/summaries/latest` |
+| `public/alerts.php` | `rr_fetch_alerts(filters)` | `GET /api/v1/alerts` |
+| `public/summaries.php` | `rr_fetch_summaries(filters)` | `GET /api/v1/summaries` |
+| `public/profile.php` | `rr_register_user`, `rr_update_preferences` | `POST /api/v1/users/register`, `PUT /api/v1/users/{user_id}/preferences` |
+
+## URL and Environment Configuration (Local and Deployed)
+
+Stage 1 web runtime uses `frontend/web/config/app.php` with optional overrides in `frontend/web/config/config.local.php`.
+
+### Configuration keys
+
+- `RISKRADAR_API_BASE_URL`: backend origin (scheme + host + port)
+- `RISKRADAR_API_PREFIX`: API path prefix (Stage 1: `/api/v1`)
+- `RISKRADAR_API_TIMEOUT`: request timeout in seconds
+
+### Local development profile
+
+- Typical backend URL: `http://127.0.0.1:8000`
+- Alternate local workflow used during validation: `http://127.0.0.1:8001`
+- Prefix: `/api/v1`
+
+### Deployed/staging profile template
+
+- Base URL should be set to deployed backend host (for example `https://<backend-host>`)
+- Prefix remains `/api/v1` unless backend routing changes
+- Timeout should be increased if deployment network latency requires it (for example `8-12` seconds)
+
+### URL composition rule
+
+The API wrapper resolves request URLs as:
+
+`{RISKRADAR_API_BASE_URL}/{trim(RISKRADAR_API_PREFIX)}/{resource_path}`
+
+Example:
+
+- Base URL: `http://127.0.0.1:8001`
+- Prefix: `/api/v1`
+- Resource path: `alerts/stats`
+- Final URL: `http://127.0.0.1:8001/api/v1/alerts/stats`
 
 ## Endpoint Matrix
 
