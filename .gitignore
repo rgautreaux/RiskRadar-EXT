@@ -1,6 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
 # Environment variables
 backend/.env
 
-# Temporary files
-backend/__pycache__/
+# Database
 backend/riskradar.db
+
+# IDEs
+.idea/
+
+# AI assistants
+.claude/
