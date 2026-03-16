@@ -3109,3 +3109,482 @@ The app structure has diverged from what the styling plan expected. Here are the
 - Auth screens (login.tsx, registration.tsx) were added that aren't covered in the current plan document.
   
 ---
+
+User: Is it possble to adjust this plan to accomadate the changes made in Ben-Manuel-Work-Branch?
+
+GitHub Copilot: You want the styling plan updated so it reflects what already changed on Ben-Manuel-Work-Branch. I’ll quickly inspect the mobile app files and any branch-reference notes to identify which checklist items should be marked done, revised, or reordered.
+
+Searched for regex `Ben-Manuel-Work-Branch|Manuel|Ben` (`**/*.{md,ts,tsx,json}`), 29 results
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/components)
+
+I didn’t find a direct branch note, so I’m now checking the current mobile files themselves to infer what Ben’s branch changes likely introduced and which checklist items are now stale.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app/%28tabs%29/index.tsx)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app/%28tabs%29/explore.tsx)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app/modal.tsx)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/constants/theme.ts)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app/_layout.tsx)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app/%28tabs%29/_layout.tsx)
+
+I’ve confirmed shell-level branding is present, but the main screens are still starter content. Next I’m checking the themed primitives and reusable components to map what Ben’s branch may already have completed versus what the document still shows as pending.
+
+Searched for files matching `**/frontend/RiskRadar/components/{brand-header.tsx,section-header.tsx,risk-card.tsx,hazard-chip.tsx,tab-bar-icon.tsx}`, no matches
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/components/themed-view.tsx)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/components/themed-text.tsx)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/assets/icons)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/assets/icons/branding)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/assets/icons/navigation)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/assets/icons/hazards)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/assets/images/wireframes)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app.json)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app/main)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/app/auth)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/frontend/RiskRadar/README.md)
+
+I can absolutely adjust it, and I now have enough context to propose a concrete revision. I’m pulling exact line references next so you can update the markdown with high confidence and trace each checklist status to current code.
+
+Searched for regex `ParallaxScrollView|Welcome!|Collapsible|This is a modal` (`**/frontend/RiskRadar/app/**/*.tsx`), 21 results
+
+Searched for regex `BrandPalette|Spacing|Typography|dark: lightColors` (`**/frontend/RiskRadar/constants/theme.ts`), 25 results
+
+Searched for regex `notifications-active|title: 'Alerts'|tabBarStyle|HomeTabIcon` (`**/frontend/RiskRadar/app/(tabs)/_layout.tsx`), 8 results
+
+Searched for regex `type\?: 'default' \| 'title' \| 'defaultSemiBold' \| 'subtitle' \| 'link'|color: '#0a7ea4'` (`**/frontend/RiskRadar/components/themed-text.tsx`), 2 results
+
+Searched for text `backgroundColor = useThemeColor` (`**/frontend/RiskRadar/components/themed-view.tsx`), 1 result
+
+Yes, it is possible, and this is a good time to do it.
+
+Based on the current branch state, I would update the plan in UI_UX_STYLING_PLAN.md with a branch-reconciliation section so Ben’s work can be merged without losing your checklist accuracy.
+
+What should be updated now (from current code evidence):
+
+1. Keep shell items marked complete.
+- Theme tokens are implemented in theme.ts
+- Root layout branding is in _layout.tsx
+- Tab shell branding exists in _layout.tsx
+- App shell metadata is branded in app.json
+
+2. Keep main screen work marked pending.
+- Home still uses starter parallax in index.tsx
+- Alerts tab still uses starter educational content in explore.tsx
+- Modal is still starter text in modal.tsx
+
+3. Keep reusable component creation marked pending.
+- Planned files are not present yet under components
+
+4. Keep themed primitives marked pending.
+- Themed text variants are still starter-limited in themed-text.tsx
+- Hardcoded starter link color still exists in themed-text.tsx
+
+One important discrepancy to explicitly call out in the plan:
+- Home tab icon active/inactive mapping appears reversed versus the written asset mapping table in _layout.tsx
+
+How to adapt the plan for Ben-Manuel-Work-Branch specifically:
+
+1. Add a new Phase 0: Branch Reconciliation.
+- Compare Ben branch files against the plan’s target files.
+- Mark each checklist item as: Done in Rebecca branch, Done in Ben branch, Needs merge decision.
+- Resolve conflicts before Phase 3 screen rebuild.
+
+2. Add a “Merge Decision Matrix” table to the plan with columns:
+- File
+- Rebecca status
+- Ben status
+- Keep version
+- Follow-up task
+- Owner
+
+3. Freeze styling-token ownership.
+- Keep theme.ts as source of truth to avoid drift between branches.
+
+If you want, I can draft the exact markdown text to paste into UI_UX_STYLING_PLAN.md for the new Phase 0 and merge matrix section.
+
+User: Implement these changes so that the plan takes into account all UI/UX developments from all branches of the project.  The goal is a cohesive, ready-to-implement plan for makeing the mobile app wireframe-accurate aesthetically
+
+GitHub Copilot: I’m now reconciling actual Git branch history for the mobile frontend so the plan reflects UI/UX work across branches, not just the current working tree. I’ll extract which branches touched RiskRadar screen and component files, then fold that into a concrete merge-ready implementation plan.
+
+Read memory
+
+Read memory riskradar-testing-notes.md
+
+Ran terminal command: git branch -a
+
+I found all available branches, including Ben’s and multiple teammates’ branches. Next I’ll detect exactly which branches changed the mobile RiskRadar files so we can make the plan explicitly cross-branch and implementation-safe.
+
+Ran terminal command: $branches = git for-each-ref --format="%(refname:short)" refs/heads refs/remotes/origin | Where-Object { $_ -notmatch "HEAD$" } | Sort-Object -Unique; foreach ($b in $branches) { $changes = git diff --name-only main..$b -- frontend/RiskRadar 2>$null; if ($LASTEXITCODE -eq 0 -and $changes) { Write-Output "=== $b ==="; $changes | Select-Object -First 60 } }
+
+Read [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/a191c22b0a0d3674b76693daa1d20a14/GitHub.copilot-chat/chat-session-resources/42225c1b-210e-499a-8eab-3ef533fe737b/call_7JLAOjUxQfTSP4xEWc2aMfHX__vscode-1773683517192/content.txt#1-1), lines 1 to 360
+
+Read [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/a191c22b0a0d3674b76693daa1d20a14/GitHub.copilot-chat/chat-session-resources/42225c1b-210e-499a-8eab-3ef533fe737b/call_7JLAOjUxQfTSP4xEWc2aMfHX__vscode-1773683517192/content.txt#361-361), lines 361 to 520
+
+I identified that Ben’s branch is the only one with distinct extra mobile screens (auth and main home) beyond the shell/theming work. I’ll inspect those branch file contents now so we can encode them as explicit integration tasks in the plan.
+
+Ran terminal command: git show origin/Ben-Manuel-Work-Branch:frontend/RiskRadar/app/auth/login.tsx
+
+Ran terminal command: git show origin/Ben-Manuel-Work-Branch:frontend/RiskRadar/app/auth/registration.tsx
+
+Ran terminal command: git show origin/Ben-Manuel-Work-Branch:frontend/RiskRadar/app/main/home.tsx
+
+Read [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/a191c22b0a0d3674b76693daa1d20a14/GitHub.copilot-chat/chat-session-resources/42225c1b-210e-499a-8eab-3ef533fe737b/call_S4hxhUK471i9EWrjFuTFcjQg__vscode-1773683517196/content.txt)
+
+Ran terminal command: $files = @('frontend/RiskRadar/app/(tabs)/index.tsx','frontend/RiskRadar/app/(tabs)/explore.tsx','frontend/RiskRadar/app/modal.tsx','frontend/RiskRadar/components/themed-text.tsx','frontend/RiskRadar/components/themed-view.tsx','frontend/RiskRadar/constants/theme.ts','frontend/RiskRadar/app/(tabs)/_layout.tsx'); foreach ($f in $files) { Write-Output "=== $f ==="; git show origin/Ben-Manuel-Work-Branch:$f | Select-Object -First 40 }
+
+Ran terminal command: git show origin/Ben-Manuel-Work-Branch:frontend/RiskRadar/app/(tabs)/index.tsx
+
+I discovered an important branch-structure mismatch: Ben’s branch is using a different, older Expo route layout and doesn’t contain several current files. I’m now reading Ben’s key screen files with escaped paths so I can encode a safe merge strategy in the plan.
+
+Ran terminal command: git show "origin/Ben-Manuel-Work-Branch:frontend/RiskRadar/app/(tabs)/index.tsx"
+
+Ran terminal command: git ls-tree -r --name-only origin/Ben-Manuel-Work-Branch frontend/RiskRadar/app
+
+I have enough branch evidence to make the plan cohesive: shell/theming work from Rebecca-side branches plus auth/onboarding prototypes from Ben’s branch, with explicit route unification steps. I’m now editing the plan file directly with a new cross-branch reconciliation phase and updated checklist statuses.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/UI_UX_STYLING_PLAN.md#1-1), lines 1 to 340
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/UI_UX_STYLING_PLAN.md#341-341), lines 341 to 413
+
+Generating patch (137 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/UI_UX_STYLING_PLAN.md)
+
+
+```
+
+```
+
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/UI_UX_STYLING_PLAN.md#1-1), lines 1 to 260
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/UI_UX_STYLING_PLAN.md#260-260), lines 260 to 465
+
+Inserted into memory file riskradar-testing-notes.md
+
+Updated the plan to make it branch-aware and ready for cohesive implementation across all current UI/UX workstreams.
+
+I edited UI_UX_STYLING_PLAN.md with these concrete changes:
+
+1. Added a cross-branch baseline section
+- New section: Cross-Branch Reconciliation Baseline (Mar 16, 2026).
+- Captures what came from Rebecca-aligned branches, Ben branch, and copilot/sub-pr-21.
+- Adds explicit merge rules so older routing does not overwrite the branded shell foundation.
+
+2. Updated current baseline and status snapshot
+- Reframed baseline as two parallel UI streams:
+  - Branded shell/tokens work.
+  - Ben auth/onboarding prototypes.
+- Snapshot now includes:
+  - Done in current baseline.
+  - Done in Ben branch to integrate.
+  - New routing reconciliation and icon-state validation risks.
+
+3. Expanded checklist to cover Ben branch work explicitly
+- Added a new file section for auth and main screens:
+  - login, registration, and main/home integration tasks.
+- Added a tab-icon mapping validation item in the tab layout section.
+- Added de-purpleing requirement for Ben prototype colors during integration.
+
+4. Reworked implementation order for multi-branch execution
+- Added Phase 0: Branch Reconciliation before foundation/screen work.
+- Added Phase 5: Branch-Integrated QA.
+- Updated recommended action order so route ownership and UX-flow porting happen first.
+
+5. Strengthened verification criteria
+- Added auth-route and guest-flow verification checks to prevent dead-end routing after merge.
+
+Also recorded this branch-architecture finding in repository memory for reuse.
+
+Natural next steps:
+1. I can now convert this updated plan into a branch merge checklist by file with exact keep/port decisions.
+2. I can start implementing Phase 0 directly in the mobile app codebase.
+
+
+Made changes.
+
+User: Include a branch merge checklist as part of this plan with exact keep/port decisions
+
+GitHub Copilot: I’ll add a dedicated Branch Merge Checklist section to the plan with file-by-file keep/port decisions so implementation can proceed without ambiguity during merges.
+
+Generating patch (55 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/UI_UX_STYLING_PLAN.md)
+
+
+```
+
+```
+I’ve inserted the full merge checklist with exact keep/port decisions and conflict rules into the plan. I’ll do one quick read-back check to ensure placement and wording are clean and ready for team execution.
+
+Searched for regex `## Branch Merge Checklist|### Merge Decision Table|### Step-by-Step Merge Execution Checklist|### Conflict Resolution Rules` (`**/docs/UI_UX_STYLING_PLAN.md`), 4 results
+
+Added a full branch merge checklist with explicit keep/port decisions to UI_UX_STYLING_PLAN.md.
+
+What was added:
+
+1. New section: Branch Merge Checklist (Exact Keep/Port Decisions)
+- Location: UI_UX_STYLING_PLAN.md
+
+2. Merge Decision Table
+- File-by-file decisions for:
+  - Theme and shell files to keep
+  - Tab and screen files to rewrite
+  - Ben auth files to port and restyle
+  - Ben main home file to use for intent only
+  - Asset ownership and non-mobile branch exclusion
+- Location: UI_UX_STYLING_PLAN.md
+
+3. Step-by-step merge execution checklist
+- Ordered operational checklist for reconciliation and implementation.
+- Location: UI_UX_STYLING_PLAN.md
+
+4. Conflict resolution rules
+- Required rules for handling routing/style conflicts and token consistency.
+- Location: UI_UX_STYLING_PLAN.md
+
+If you want, I can next generate a companion PR-ready task list grouped by owner (Ben/Rebecca/shared) directly under this section.
+
+Made changes.
+
+User: Yes, generate a companion PR-ready task list grouped by owner (Ben/Rebecca/shared) directly under this section so that each member knows what adjustments must be made to work parallel to each other and avoid conflicts
+
+GitHub Copilot: I’m adding a PR-ready owner matrix directly under the Branch Merge Checklist with parallel-safe task splits for Ben, Rebecca, and shared responsibilities, including explicit sequencing to avoid merge conflicts.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/UI_UX_STYLING_PLAN.md#52-52), lines 52 to 190
+
+Generating patch (77 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/UI_UX_STYLING_PLAN.md)
+
+
+```
+
+```
+The owner-grouped PR list is now in place with parallel tracks, merge order, and file ownership guardrails to reduce collisions. I’ll quickly verify section headings and then you can hand this to the team as an execution map.
+
+Searched for regex `PR-Ready Parallel Task List|Rebecca Owner Track|Ben Owner Track|Merge Queue|File Ownership Guardrail` (`**/docs/UI_UX_STYLING_PLAN.md`), 5 results
+
+Added the companion PR-ready owner task list directly under the branch merge section in UI_UX_STYLING_PLAN.md.
+
+What is now included:
+
+1. Owner-grouped parallel execution tracks
+- Shared setup PRs
+- Rebecca owner PRs
+- Ben owner PRs
+- Shared final integration PR
+- Section starts at UI_UX_STYLING_PLAN.md
+
+2. Exact PR scopes with conflict guards
+- Each PR includes:
+  - explicit file scope
+  - expected deliverable
+  - conflict-avoidance rule
+- Rebecca track starts at UI_UX_STYLING_PLAN.md
+- Ben track starts at UI_UX_STYLING_PLAN.md
+
+3. Merge queue order for safe sequencing
+- Concrete order from S1 through S3 so parallel work converges cleanly.
+- Located at UI_UX_STYLING_PLAN.md
+
+4. File ownership guardrails
+- Temporary ownership boundaries for high-conflict files while parallel work is active.
+- Located at UI_UX_STYLING_PLAN.md
+
+If you want, I can next convert this into a copy-paste GitHub PR template block for each PR ID (S1, S2, R1, R2, R3, B1, B2, S3).
+
+Made changes.
+
+User: Create a plan on how to address the '''#### Shared (do first)''' tasks
+
+
+GitHub Copilot: I'll create a detailed execution plan for the Shared tasks (S1 and S2) that breaks them into concrete, actionable steps with file targets and expected outcomes. 
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/UI_UX_STYLING_PLAN.md#104-104), lines 104 to 168
+
+I'll create a detailed execution plan for the Shared tasks with step-by-step actions and code stubs. Adding as a new subsection under the parallel task list. 
+
+Using "Apply Patch"
+
+I don't have file editing tools available right now, so I'll save the detailed Shared tasks plan to session memory for you, then present it clearly so you can review and apply it. 
+
+Created memory file [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/a191c22b0a0d3674b76693daa1d20a14/GitHub.copilot-chat/memory-tool/memories/NDIyMjVjMWItMjEwZS00OTlhLThlYWItM2VmNTMzZmU3Mzdi/detailed-shared-tasks-plan.md)
+
+Perfect. I've created a comprehensive execution plan for the Shared tasks (S1 and S2). Here's the summary:
+
+## **PR S1: Lock Base Architecture Contract** (7 Steps)
+
+**What it does**: Freezes the shell so parallel work can proceed safely.
+
+1. **Audit base files** — Verify `constants/theme.ts`, `app/_layout.tsx`, `app/(tabs)/_layout.tsx` all use RiskRadar branding (not Expo defaults).
+
+2. **Validate icon mapping** — Check home tab icon active/inactive state (currently ALERT=inactive, STND=active). Flag for design verification but don't change yet.
+
+3. **Clarify route ownership** — Confirm (tabs) and modal present, auth/* and main/* NOT yet present (those are Ben's to add in B1).
+
+4. **Add inline docs** — Add brief comment blocks to each base file documenting purpose and locking status.
+
+5. **Create sign-off checklist** — Add "Base Architecture Sign-Off" section to the plan document with team approval checkboxes.
+
+6. **Run lint** — Confirm `npm run lint` passes with zero errors.
+
+7. **Submit PR S1** — Request review from Rebecca (owner), Ben (visibility), and tech lead. **Merge only after all agree.**
+
+---
+
+## **PR S2: Create New Reusable Component Files** (4 Steps)
+
+**What it does**: Define 5 component interfaces so Ben and Rebecca can build screens around them without waiting for implementations.
+
+1. **Create 5 skeleton components** with full TypeScript interfaces:
+   - `BrandHeader` — Logo + location + notification icon
+   - `SectionHeader` — Title + optional action button
+   - `RiskCard` — Weather/air quality/hazard display card
+   - `HazardChip` — Compact earthquake/flood/wind/fire badge
+   - `TabBarIcon` — Icon wrapper for tab bar
+
+2. **Export from index** — Create/update `components/index.ts` to export all components and types.
+
+3. **Verify lint** — Confirm `npm run lint` passes.
+
+4. **Submit PR S2** — Request review from Ben and Rebecca. **Merge only after they confirm interfaces match their usage plans.**
+
+---
+
+## **Critical Sequence**
+
+1. ✅ S1 completes → team agreement locked
+2. ✅ S2 completes → component contracts frozen
+3. ➡️ **Then**: R1 + B1 can start **in parallel** (they're independent)
+4. ➡️ **Then**: R2 + B2 start after R1/B1 merge
+5. ➡️ **Finally**: S3 integration gate
+
+The full detailed plan with exact code stubs and checklist items is now saved in my session memory for you to reference while implementing. You can request it anytime, or I can help you execute either S1 or S2 step-by-step.
+
+**Ready to start with S1 audit checklist first?**
+
+User: Adjust this plan to implement the concept of having a '''Light Mode and Dark Mode'''
+
+GitHub Copilot: I’m going to revise the plan sections that currently assume light-only so the implementation explicitly supports both Light Mode and Dark Mode, including tokens, component behavior, QA checks, and definition-of-done criteria.
+
+Generating patch (143 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/UI_UX_STYLING_PLAN.md)
+
+
+```
+
+```
+I’ve updated the plan to make dual-theme support a first-class requirement, including token definitions, file-level tasks, implementation phases, and verification criteria. I’ll quickly confirm the key dark-mode additions are present in the document.
+
+Searched for regex ``Light Mode and Dark Mode|### Dark Mode Tokens|Colors.dark|9.5 `frontend/RiskRadar/hooks/use-color-scheme.ts`|Dark Mode parity|toggling system theme`` (`**/docs/UI_UX_STYLING_PLAN.md`), 10 results
+
+Updated the plan to explicitly implement Light Mode + Dark Mode across the full workflow in UI_UX_STYLING_PLAN.md.
+
+What changed:
+
+1. Success criteria now requires both modes
+- Added dual-mode token requirement and no hard-coded screen color fallbacks.
+- See UI_UX_STYLING_PLAN.md
+
+2. Locked defaults now set visual mode to both modes
+- Changed “light mode only” to Light + Dark.
+- See UI_UX_STYLING_PLAN.md
+
+3. Added a locked Dark Mode token set
+- Introduced complete dark palette under Locked Brand System.
+- See UI_UX_STYLING_PLAN.md
+
+4. Expanded file checklists for theme parity
+- theme.ts: added required dark palette and semantic-key parity tasks.
+- `app/_layout.tsx`: status bar now explicitly dynamic by theme.
+- `(tabs)/_layout.tsx`: tab contrast checks in both themes.
+- themed-text.tsx and themed-view.tsx: added dual-theme contrast/surface tasks.
+- Added hook-specific section for runtime theme resolution:
+  - UI_UX_STYLING_PLAN.md
+
+5. Updated implementation phases and QA
+- Phase 1 now includes dual-theme token rebuild + hook validation.
+- Phase 5 now includes Light/Dark parity validation.
+- See UI_UX_STYLING_PLAN.md
+
+6. Strengthened verification and done criteria
+- Added explicit checks for:
+  - Light mode contrast
+  - Dark mode contrast
+  - live system-theme toggling without restart
+- Definition of Done now requires consistency in both modes.
+- See UI_UX_STYLING_PLAN.md
+
+If you want, next I can add a compact “Theme Acceptance Matrix” table (screen x light/dark x pass criteria) right under Verification Checklist so testing is faster for the team.
+
+Made changes.
+
+User: Both Rebecca and Celeste were assigned the task to "Style all frontend components to match RiskRadar branding (color palette, typography, iconography) (Epic: UI/UX)"
+
+Adjust the assigned responsibilities of this plan to include Celeste
+
+GitHub Copilot: I’ll update the owner-assignment portions of the plan so Celeste is explicitly included in the UI/UX styling responsibilities and parallel PR tracks, while keeping conflict boundaries clear.
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/UI_UX_STYLING_PLAN.md#90-90), lines 90 to 200
+
+I found the exact owner-assignment section; I’m now patching it so Celeste is explicitly co-assigned to UI/UX styling work with clear file boundaries to prevent conflicts.
+
+Using "Apply Patch"
+
+I found the exact assignment section and will now update it to explicitly include Celeste as a UI/UX styling owner with parallel-safe PR tasks and ownership boundaries.
+
+Generating patch (56 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/docs/UI_UX_STYLING_PLAN.md)
+
+
+```
+
+```
+
+
+Searched for regex `Celeste Owner Track|PR C1|PR C2|Ben, Rebecca, and Celeste|PR R1, PR C1, and PR B1|Celeste owns changes` (`**/docs/UI_UX_STYLING_PLAN.md`), 7 results
+
+Updated. Celeste is now explicitly included in assigned UI/UX responsibilities in the plan.
+
+What I changed in UI_UX_STYLING_PLAN.md:
+
+1. Shared track updated to include Celeste
+- S2 conflict guard now says Ben, Rebecca, and Celeste can branch in parallel.
+- See UI_UX_STYLING_PLAN.md
+
+2. Added a dedicated Celeste Owner Track
+- Added:
+  - PR C1: reusable branded component implementation
+  - PR C2: component-level contrast/theming hardening
+- See UI_UX_STYLING_PLAN.md
+
+3. Updated merge queue for three parallel contributors
+- Parallel stage now includes `PR R1, PR C1, PR B1`
+- Next parallel stage includes `PR R2, PR C2, PR B2`
+- See UI_UX_STYLING_PLAN.md
+
+4. Added explicit Celeste file ownership guardrails
+- Celeste now owns:
+  - `brand-header.tsx`
+  - `section-header.tsx`
+  - `risk-card.tsx`
+  - `hazard-chip.tsx`
+  - `tab-bar-icon.tsx`
+- See UI_UX_STYLING_PLAN.md
+
+This now reflects that both Rebecca and Celeste are assigned to frontend styling under the UI/UX epic, with concrete parallel boundaries to avoid merge conflicts.
+
+Made changes.
+
+
+---
