@@ -1,5 +1,4 @@
 import { Tabs } from 'expo-router';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React from 'react';
 import { Image, StyleSheet } from 'react-native';
 
@@ -50,19 +49,6 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ focused }) => <HomeTabIcon focused={focused} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Alerts',
-          tabBarIcon: ({ color, focused }) => (
-            <MaterialIcons
-              size={24}
-              name={focused ? 'notifications-active' : 'notifications-none'}
-              color={color}
-            />
-          ),
         }}
       />
     </Tabs>
