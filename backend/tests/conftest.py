@@ -148,7 +148,7 @@ def sample_user(db_session):
     """Insert a test user."""
     from passlib.context import CryptContext
 
-    _pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    _pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
     user = User(
         display_name="Test User",
         email="test@example.com",

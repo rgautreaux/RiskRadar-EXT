@@ -102,6 +102,48 @@ The frontend workspace is now explicitly split so the mobile and web clients can
 
 Stage 1 (Web-App Extension) is complete as of **2026-03-13** and includes the following implemented web features, structures, and supporting details.
 
+#### Major Stage 1 Developments
+
+1. **Web architecture and API contract formalization**
+	- Finalized page-to-endpoint request flow and wrapper responsibilities for PHP entrypoints.
+	- Documented Stage 1 endpoint matrix, schema snapshots, fallback behaviors, and URL composition rules.
+	- Captured local and deployed environment configuration expectations for stable route targeting.
+
+2. **Dedicated PHP web-app scaffold under `frontend/web/`**
+	- Established web-native directory boundaries for entrypoints, templates, components, services, and config.
+	- Preserved mobile/web separation by keeping Expo client work under `frontend/mobile/`.
+	- Added local override configuration template for backend URL/prefix/timeout settings.
+
+3. **Backend integration and normalization layer**
+	- Implemented wrappers for alerts, summaries, register, and preferences write paths.
+	- Standardized handling for timeout/non-2xx/malformed payload outcomes to prevent fatal page failures.
+	- Added presentation-safe defaults so views can render resilient zero/empty states.
+
+4. **Dashboard-first web UI with scaffolded core views**
+	- Delivered a desktop-oriented dashboard with alert statistics, top-alert snapshot, and latest summary context.
+	- Added Stage 1 scaffold pages for alerts, summaries, and profile/preferences updates.
+	- Implemented responsive behavior for required viewport checkpoints (360px, 768px, 1280px).
+
+5. **Security and reliability hardening for web write paths**
+	- Added CSRF token protection for profile/register preference workflows.
+	- Added allowlist-based validation/sanitization for key query and form inputs.
+	- Ensured escaped output rendering and defensive handling of missing/null fields.
+
+6. **Stage 1 setup and verification documentation**
+	- Documented backend + PHP local run flow and configuration options.
+	- Added Stage 1 verification evidence notes for responsive behavior and web-distinctness criteria.
+	- Synchronized Stage 1 completion state across planning/tracker/summary docs.
+
+#### Stage 1 Deliverables (Detailed)
+
+| Deliverable | Description | Primary Artifacts |
+|---|---|---|
+| Web app extension codebase | PHP web MVP with dashboard plus scaffolded alerts/summaries/profile views | `frontend/web/public/index.php`, `frontend/web/public/alerts.php`, `frontend/web/public/summaries.php`, `frontend/web/public/profile.php` |
+| API integration layer in PHP | Service wrappers, normalization, validation, and presentation/security helpers | `frontend/web/services/api_client.php`, `frontend/web/services/validators.php`, `frontend/web/services/presentation.php`, `frontend/web/services/bootstrap.php` |
+| Stage 1 endpoint contract matrix | Route/method/input/output/fallback definitions and schema snapshots | `docs/API_STAGE1_CONTRACT.md` |
+| Setup and run documentation | Configuration and local execution instructions for backend + PHP app | `frontend/web/README.md` |
+| Verification evidence | Responsive and web-distinctness checkpoints with implementation signals | `docs/STAGE1_VERIFICATION_EVIDENCE.md`, `docs/TODO.md` |
+
 **Implemented web feature set:**
 - Dashboard (`frontend/web/public/index.php`) with alert stats, top alerts snapshot, and latest summary panel.
 - Alerts explorer (`frontend/web/public/alerts.php`) with filter controls and safe empty-state behavior.
@@ -129,6 +171,18 @@ Stage 1 (Web-App Extension) is complete as of **2026-03-13** and includes the fo
 **Verification evidence:**
 - Stage 1 responsive and web-distinctness validation notes: [`docs/STAGE1_VERIFICATION_EVIDENCE.md`](./docs/STAGE1_VERIFICATION_EVIDENCE.md)
 - Stage execution tracker and checklist completion: [`docs/TODO.md`](./docs/TODO.md)
+
+#### Live Runtime Re-Validation (2026-03-17)
+
+- **Web + backend integration sanity checks (live):**
+	- `GET /api/v1/alerts/stats` returned `200 OK`
+	- `GET /api/v1/summaries/latest` returned `200 OK`
+	- `index.php`, `alerts.php`, `summaries.php`, and `profile.php` all returned `200 OK` from local PHP server (`127.0.0.1:8081`)
+- **Backend test suite status (live run):**
+	- Initial run: `71 passed, 5 failed, 3 errors` (all failures concentrated in `tests/test_api_users.py` due to bcrypt/passlib backend mismatch on password hashing)
+	- Remediation applied: switched passlib context scheme from `bcrypt` to `pbkdf2_sha256` consistently in app and tests (`backend/api/users.py`, `backend/tests/test_api_users.py`, `backend/tests/conftest.py`)
+	- Verification rerun: `79 passed, 0 failed, 0 errors`
+	- Current status: backend suite is fully clean and Stage 1 runtime validation is complete.
 
 ### Additional Features and Extensions
 
