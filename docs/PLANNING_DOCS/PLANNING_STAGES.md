@@ -1,6 +1,6 @@
 # Stage 1 Planning (Kickoff)
 
-**Context:** This document details the tactical execution plan for Stage 1 (Web-App Extension), which is a **REQUIRED** deliverable targeting completion by **Week of March 31, 2026** as part of the broader CMPS 357 project due April 29, 2026. See [STAGES.md](./STAGES.md) and [README.md](../README.md) for overall timeline and scope alignment (Stages 1-2 required; Stages 3-4 optional/stretch).
+**Context:** This document details the tactical execution plan for Stage 1 (Web-App Extension), which is a **REQUIRED** deliverable targeting completion by **Week of March 31, 2026** as part of the broader CMPS 357 project due April 29, 2026. See [STAGES.md](../STAGES.md) and [README.md](../../README.md) for overall timeline and scope alignment (Stages 1-2 required; Stages 3-4 optional/stretch).
 
 ---
 
@@ -92,7 +92,7 @@ Begin Stage 1 with a small, functional PHP web-app vertical slice that connects 
 ### Stage 1 Deliverables (Kickoff Phase)
 - `/frontend/web` scaffold with initial PHP pages/components/services
 - API integration layer for alerts/summaries/users
-- Stage 1 endpoint contract matrix in `docs/API_STAGE1_CONTRACT.md`
+- Stage 1 endpoint contract matrix in `docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md`
 - Environment/config template for frontend
 - Updated setup notes and verification checklist
 
@@ -114,15 +114,15 @@ Stage 1 closure is complete as of **2026-03-13**.
 - [x] Capture 360px, 768px, and 1280px responsive verification notes and document web-vs-mobile distinctness.
 - [x] Attach walkthrough/evidence artifacts to Stage 1 docs tracking.
 - [x] Convert Stage 1 in-progress doc tasks to completed.
-- [x] Finalize S1-01 architecture/route contract wording and URL configuration guidance in `docs/API_STAGE1_CONTRACT.md`.
+- [x] Finalize S1-01 architecture/route contract wording and URL configuration guidance in `docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md`.
 - [x] Finalize S1-06 setup/run documentation and evidence linkage.
 - [x] Sync Stage 1 status wording across planning/progress docs.
 
 ### Final Stage 1 Evidence Pointers
 
 - Execution tracker and completed checklist: `docs/TODO.md`
-- Architecture/contract matrix and route mapping: `docs/API_STAGE1_CONTRACT.md`
-- Responsive and web-distinctness verification notes: `docs/STAGE1_VERIFICATION_EVIDENCE.md`
+- Architecture/contract matrix and route mapping: `docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md`
+- Responsive and web-distinctness verification notes: `docs/PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md`
 
 ---
 

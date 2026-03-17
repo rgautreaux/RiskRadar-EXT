@@ -1,4 +1,4 @@
-// @ts-nocheck
+import Constants from 'expo-constants';
 
 export type RiskScoreResponse = {
   user_id: number;
@@ -18,7 +18,13 @@ export type PrioritizedAlert = {
   urgency_label?: 'low' | 'medium' | 'high';
 };
 
-const DEFAULT_API_BASE = 'http://127.0.0.1:8000';
+// Read from app.json `extra.apiBaseUrl`. On Android emulator use
+// `http://10.0.2.2:8000`; on iOS simulator `http://127.0.0.1:8000` works.
+// Override by setting `extra.apiBaseUrl` in app.json or app.config.js.
+const DEFAULT_API_BASE: string =
+  (Constants.expoConfig?.extra as { apiBaseUrl?: string } | undefined)
+    ?.apiBaseUrl ?? 'http://127.0.0.1:8000';
+
 const API_PREFIX = '/api/v1';
 
 function buildUrl(path: string, query?: Record<string, string | number | undefined>): string {
