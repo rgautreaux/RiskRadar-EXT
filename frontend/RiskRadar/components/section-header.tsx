@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
-import { Colors, Spacing, Radius, Typography } from '@/constants/theme';
+import { Colors, Spacing, Radius, Fonts } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export interface SectionHeaderProps {
@@ -85,7 +85,8 @@ export function SectionHeader({
               styles.actionLabel,
               {
                 color: palette.white,
-                fontFamily: Typography.sans.semibold,
+                fontFamily: Fonts.sans,
+                fontWeight: '600',
               },
             ]}
           >

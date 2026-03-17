@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Image, StyleSheet, ViewStyle } from 'react-native';
-import { Colors, Spacing, Radius } from '@/constants/theme';
+import { Colors, Spacing, Radius, Fonts } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export interface BrandHeaderProps {

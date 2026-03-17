@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, ViewStyle, TextStyle, ImageSourcePropType } from 'react-native';
-import { Colors, Spacing, Radius, Typography } from '@/constants/theme';
+import { Colors, Spacing, Radius, Fonts } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export interface RiskCardProps {
@@ -133,7 +133,8 @@ export function RiskCard({
               styles.value,
               {
                 color: palette.text,
-                fontFamily: Typography.sans.bold,
+                fontFamily: Fonts.sans,
+                fontWeight: '700',
               },
             ]}
           >
@@ -145,7 +146,8 @@ export function RiskCard({
                 styles.unit,
                 {
                   color: palette.textSecondary,
-                  fontFamily: Typography.sans.regular,
+                  fontFamily: Fonts.sans,
+                  fontWeight: '400',
                 },
               ]}
             >

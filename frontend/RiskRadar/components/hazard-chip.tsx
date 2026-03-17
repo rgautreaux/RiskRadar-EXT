@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, ViewStyle, ImageSourcePropType } from 'react-native';
-import { Colors, Spacing, Radius, Typography } from '@/constants/theme';
+import { Colors, Spacing, Radius, Fonts } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export interface HazardChipProps {
@@ -91,7 +91,8 @@ export function HazardChip({
               styles.badgeText,
               {
                 color: isActive ? palette.danger : palette.white,
-                fontFamily: Typography.sans.bold,
+                fontFamily: Fonts.sans,
+                fontWeight: '700',
               },
             ]}
           >
