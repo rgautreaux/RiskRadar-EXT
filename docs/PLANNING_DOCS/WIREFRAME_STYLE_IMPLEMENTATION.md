@@ -8,11 +8,11 @@ Use this table for daily check-ins and updates.
 
 | Workstream | Lane Owner | Secondary Owner | Start Date | Target Due Date | Status | Notes |
 |---|---|---|---|---|---|---|
-| Phase 0: Kickoff and Mapping | TBD | TBD | TBD | TBD | Not Started | Mapping matrix, icon matrix, and acceptance checklist |
-| Phase 1: Shared Foundation | TBD | TBD | TBD | TBD | Not Started | Shared layout, global CSS patterns, hybrid icon foundation |
-| Phase 2: Core Functional Page Parity | TBD | TBD | TBD | TBD | Not Started | Dashboard, Alerts, Summaries, Profile, Login, Register, Risk |
-| Phase 3: Scaffold and Detail Shell Parity | TBD | TBD | TBD | TBD | Not Started | Map, Forecast, Assistant, Alert Detail, Summary Detail |
-| Phase 4: Global Consistency and Signoff | TBD | TBD | TBD | TBD | Not Started | Consistency sweep, responsive checks, accessibility spot checks |
+| Phase 0: Kickoff and Mapping | Rebecca | Max | TBD | TBD | Not Started | Shared mapping kickoff; both lanes participate |
+| Phase 1: Shared Foundation | Rebecca | Max | TBD | TBD | Not Started | Shared layout, global CSS patterns, hybrid icon foundation |
+| Phase 2: Core Functional Page Parity | Max | Rebecca | TBD | TBD | Not Started | Dashboard, Alerts, Summaries, Profile, Login, Register, Risk |
+| Phase 3: Scaffold and Detail Shell Parity | Max | Rebecca | TBD | TBD | Not Started | Map, Forecast, Assistant, Alert Detail, Summary Detail |
+| Phase 4: Global Consistency and Signoff | Max | Rebecca | TBD | TBD | Not Started | QA/docs lead with rapid shared/layout fix support |
 
 Recommended status values: Not Started, In Progress, Blocked, In Review, Completed.
 
@@ -66,6 +66,77 @@ Three parallel lanes are used:
 1. Layout Lane
 2. Page Templates Lane
 3. QA and Docs Lane
+
+## Role Descriptions, Explanations, and Contributions
+
+### Layout Lane
+
+Responsibilities:
+1. Own shared shell and navigation updates in frontend/web/components/layout.php.
+2. Own reusable design-system and global styling updates in frontend/web/public/assets/app.css.
+3. Define and enforce spacing rhythm, breakpoint behavior, and global icon-treatment conventions.
+4. Provide shared class refinements requested by repeated template needs.
+
+Why this role exists:
+- The layout/CSS foundation is the highest merge-conflict surface.
+- Single-lane ownership keeps global changes coherent and prevents style drift.
+
+Contribution to this plan:
+- Unblocks Gate B by stabilizing the shared baseline.
+- Makes page-by-page parity faster and safer for template work.
+- Preserves cross-page consistency for final signoff.
+
+### Page Templates Lane
+
+Responsibilities:
+1. Implement page-level wireframe parity in frontend/web/views/*.php.
+2. Apply shared classes from the foundation without rewriting global structure.
+3. Keep existing Stage 1 and staged scaffold boundaries intact while improving structure/visual parity.
+
+Why this role exists:
+- Most implementation volume is page-level template work.
+- Isolating template ownership maximizes throughput and limits overlap with global CSS ownership.
+
+Contribution to this plan:
+- Delivers most of the visible Phase 2 and Phase 3 outputs.
+- Drives Gate C and Gate D completion.
+- Converts shared design rules into route-level parity.
+
+### QA and Docs Lane
+
+Responsibilities:
+1. Run route smoke tests and parity checks after merge batches.
+2. Validate responsiveness and accessibility spot checks.
+3. Capture screenshot/evidence artifacts and maintain implementation records.
+4. Keep transcript/reflection and phase-tracking documentation synchronized.
+
+Why this role exists:
+- Verification and evidence must run continuously, not only at the end.
+- Dedicated ownership improves auditability and reduces missed signoff criteria.
+
+Contribution to this plan:
+- Protects regression safety while implementation proceeds.
+- Provides objective gate evidence for parity and quality.
+- Ensures final documentation/signoff completeness.
+
+## Two-Person Assignment (Rebecca and Max)
+
+To minimize merge conflicts and maintain delivery speed:
+1. Rebecca is primary Layout Lane owner and integration support owner.
+2. Max is primary Page Templates Lane owner and QA and Docs execution lead.
+3. Cross-coverage is maintained by assigning each member as secondary owner on the other member's lead phases.
+
+Phase-level assignment:
+1. Phase 0: Lane Owner Rebecca, Secondary Max.
+2. Phase 1: Lane Owner Rebecca, Secondary Max.
+3. Phase 2: Lane Owner Max, Secondary Rebecca.
+4. Phase 3: Lane Owner Max, Secondary Rebecca.
+5. Phase 4: Lane Owner Max, Secondary Rebecca.
+
+Lane-level ownership map:
+1. Layout Lane: Rebecca (primary), Max (secondary).
+2. Page Templates Lane: Max (primary), Rebecca (secondary).
+3. QA and Docs Lane: Max (primary), Rebecca (secondary).
 
 ## Dependency Gates
 
