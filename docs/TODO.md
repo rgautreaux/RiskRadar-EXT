@@ -74,11 +74,11 @@ Use this process during each weekly meeting:
 | 1 | S1-04 | Build web UI screens for dashboard, alerts, summaries, and user profile/preferences | High | Completed | Rebecca | Week of 2026-03-24 | 2026-03-13 | S1-03 | `frontend/web/public/index.php`, `frontend/web/public/alerts.php`, `frontend/web/public/summaries.php`, `frontend/web/public/profile.php`, `frontend/web/public/assets/app.css`, `docs/STAGE1_VERIFICATION_EVIDENCE.md` | UI routes, live data flows, responsive behavior notes (360/768/1280), and web-distinctness evidence are documented. |
 | 1 | S1-05 | Add input validation, sanitization, and defensive rendering for missing API fields | Medium | Completed | Max | Week of 2026-03-31 | 2026-03-13 | S1-03, S1-04 | `frontend/web/services/validators.php`, `frontend/web/services/api_client.php`, `frontend/web/public/profile.php` | Added allowlist-based query/form sanitization, stricter validation bounds, malformed-payload-safe normalization, and explicit write-path action rejection. |
 | 1 | S1-06 | Document setup and usage for backend + web app local run | High | Completed | Rebecca | Week of 2026-03-31 | 2026-03-13 | S1-02, S1-04 | `frontend/web/README.md`, `docs/STAGE1_VERIFICATION_EVIDENCE.md` | Setup/run guidance and Stage 1 demo-note verification evidence are now documented, including responsive checkpoints and distinctness notes. |
-| 2 | S2-01 | Define personal risk scoring model inputs, formula, and weighting rationale | High | Not Started | Max | Week of 2026-04-07 | 2026-03-10 | Stage 1 baseline | TBD | Use interpretable scale and document tradeoffs. |
+| 2 | S2-01 | Define personal risk scoring model inputs, formula, and weighting rationale | High | In Progress | Max | Week of 2026-04-07 | 2026-03-17 | Stage 1 baseline | `docs/STAGE2_IMPLEMENTATION_SPEC.md`, `docs/PLANNING_STAGES.md` | Initial scoring formula/normalization lock documented; implementation coding next. |
 | 2 | S2-02 | Extend data model/schemas for user sensitivity and risk score output fields | High | Not Started | Rebecca | Week of 2026-04-07 | 2026-03-10 | S2-01 | TBD | Preserve backward compatibility. |
 | 2 | S2-03 | Implement backend risk scoring service and factor transparency output | High | Not Started | Max | Week of 2026-04-14 | 2026-03-10 | S2-02 | TBD | Return component breakdown for explainability. |
 | 2 | S2-04 | Expose risk score endpoint(s) with validation and auth handling | High | Not Started | Max | Week of 2026-04-14 | 2026-03-10 | S2-03 | TBD | Add API examples to docs. |
-| 2 | S2-05 | Define alert prioritization ranking criteria and normalization strategy | High | Not Started | Max | Week of 2026-04-14 | 2026-03-10 | S2-01 | TBD | Include risk score, distance, severity, sensitivity. |
+| 2 | S2-05 | Define alert prioritization ranking criteria and normalization strategy | High | In Progress | Max | Week of 2026-04-14 | 2026-03-17 | S2-01 | `docs/STAGE2_IMPLEMENTATION_SPEC.md`, `docs/PLANNING_STAGES.md` | Priority formula, thresholds, and deterministic tie-break policy locked for kickoff. |
 | 2 | S2-06 | Implement prioritization algorithm with deterministic tie handling | High | Not Started | Max | Week of 2026-04-21 | 2026-03-10 | S2-05 | TBD | Add thresholds for high/medium/low urgency. |
 | 2 | S2-07 | Integrate prioritized output into alert pipeline and API metadata | High | Not Started | Max | Week of 2026-04-21 | 2026-03-10 | S2-06 | TBD | Preserve raw alert context for auditability. |
 | 2 | S2-08 | Surface prioritized alerts and score context in web/mobile UI | High | Not Started | Rebecca | Week of 2026-04-21 | 2026-03-10 | S2-04, S2-07 | TBD | Add fallback behavior if score unavailable. |
@@ -126,6 +126,13 @@ Build a distinct web-facing extension connected to existing backend APIs.
 
 ### Objective
 Implement personalized risk scoring and smart alert prioritization.
+
+### Stage 2 Kickoff Lock Checklist (2026-03-17)
+- [x] Scoring formula and 0-100 normalization policy documented.
+- [x] Sensitivity 0-5 contract and fallback defaults documented.
+- [x] Prioritization formula and urgency thresholds documented.
+- [x] Deterministic tie-break order documented.
+- [x] Stage 2 implementation scaffolding created (backend/web/mobile prep modules).
 
 ### Personal Risk Scoring Checklist
 - [ ] S2-01: Define scoring factors, scale, and weighting rationale.

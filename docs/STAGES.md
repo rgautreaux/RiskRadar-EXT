@@ -133,6 +133,16 @@ Reference: `docs/API_STAGE1_CONTRACT.md`
 
 **Objective**: Extend backend intelligence by introducing personalized risk scoring and smart alert prioritization for both mobile and web clients. *(REQUIRED - Target Completion: Week of April 28, 2026)*
 
+### Stage 2 Kickoff Policy Lock (2026-03-17)
+Reference: `docs/STAGE2_IMPLEMENTATION_SPEC.md`
+
+- **Scoring model locked**: 0-100 normalized weighted sum with tier labels (`Low 0-39`, `Medium 40-69`, `High 70-100`).
+- **Sensitivity contract locked**: 0-5 per factor, with defaults for existing users.
+- **Prioritization formula locked**: weighted risk contribution + distance + severity + sensitivity match.
+- **Tie-break policy locked**: severity score, then freshness (`fetched_at`), then alert ID.
+- **Compatibility strategy locked**: preserve Stage 1 `/api/v1/alerts` behavior and introduce `/api/v1/alerts/prioritized` for Stage 2 metadata.
+- **Scaffolding prepared**: backend service modules, web risk view integration points, and mobile data-service hooks are now staged for implementation handoff.
+
 ### Step 1: Personal Risk Scoring Engine
 
 #### Tasks:

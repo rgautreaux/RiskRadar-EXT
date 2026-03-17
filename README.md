@@ -13,6 +13,7 @@ Our goal for the CMPS 357 final project is to build a unique web-app extension w
 - Requirements and scope: [docs/INSTRUCTIONS.md](./docs/INSTRUCTIONS.md)
 - Stage-by-stage implementation plan: [docs/STAGES.md](./docs/STAGES.md)
 - Execution tracker and evidence log: [docs/TODO.md](./docs/TODO.md)
+- Stage 2 implementation spec lock: [docs/STAGE2_IMPLEMENTATION_SPEC.md](./docs/STAGE2_IMPLEMENTATION_SPEC.md)
 - User walkthrough for web extension: [USER_GUIDE.md](./USER_GUIDE.md)
 - Stage 1 API contract: [docs/API_STAGE1_CONTRACT.md](./docs/API_STAGE1_CONTRACT.md)
 - Stage 1 verification evidence: [docs/STAGE1_VERIFICATION_EVIDENCE.md](./docs/STAGE1_VERIFICATION_EVIDENCE.md)
@@ -224,7 +225,7 @@ Recommended update order when progress changes:
 | Stage | Title | Status | Last Updated | Scope | Notes |
 |---|---|---|---|---|---|
 | 1 | Web-App Extension | Completed | 2026-03-13 | **Required** | Stage 1 dashboard MVP, API integration layer, security/reliability controls, setup docs, and responsive/web-distinctness verification evidence are complete. See `docs/TODO.md`, `docs/API_STAGE1_CONTRACT.md`, and `docs/STAGE1_VERIFICATION_EVIDENCE.md`. |
-| 2 | Environmental Risk Assessment and Alert Prioritization Extensions | Not Started | 2026-03-17 | **Required** | Kickoff planning calendar is finalized in `docs/PLANNING_STAGES.md`; implementation remains not started. Target: Week of 2026-04-28. |
+| 2 | Environmental Risk Assessment and Alert Prioritization Extensions | Not Started | 2026-03-17 | **Required** | Kickoff plan + policy lock are documented in `docs/PLANNING_STAGES.md` and `docs/STAGE2_IMPLEMENTATION_SPEC.md`; scaffolding is prepared for S2-02/S2-03/S2-08. Target: Week of 2026-04-28. |
 | 3 | Data Visualization and User Experience Extensions | Not Started | 2026-03-10 | Optional/Stretch | Interactive Plotly-based risk map. Planned only if Stage 2 completes early. |
 | 4 | Predictive Analytics and AI-Driven Insights Extensions | Not Started | 2026-03-10 | Optional/Stretch | 24-48 hour forecasting + RiskRadar AI Assistant. Planned only if time permits after Stage 3. |
 

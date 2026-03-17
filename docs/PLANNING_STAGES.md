@@ -212,6 +212,13 @@ Deliver Stage 2 by implementing a deterministic, explainable personal risk-scori
 - Web and mobile screenshots/walkthrough notes for success and fallback states.
 - Backward compatibility checks confirming Stage 1 routes remain stable.
 
+### Stage 2 Kickoff Assets (Prepared)
+- Policy lock and formulas: `docs/STAGE2_IMPLEMENTATION_SPEC.md`
+- Backend scaffold services: `backend/services/risk_scoring.py`, `backend/services/alert_prioritization.py`
+- Backend scaffold tests: `backend/tests/test_stage2_scaffolding.py`
+- Web scaffold integration path: `frontend/web/public/risk.php`, `frontend/web/views/risk.php`, `frontend/web/services/api_client.php`
+- Mobile scaffold integration path: `frontend/mobile/RiskRadar/services/riskService.ts`, `frontend/mobile/RiskRadar/hooks/useRiskData.ts`
+
 ### Stage 2 Risks and Mitigations
 - **Risk:** Formula churn causes rework late in sprint.
   - **Mitigation:** Lock weights/thresholds in S2-01 and treat later changes as controlled refinements.
