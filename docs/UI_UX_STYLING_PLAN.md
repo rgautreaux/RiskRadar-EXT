@@ -122,20 +122,23 @@ Use the following PR split so work can proceed in parallel with minimal file ove
 
 #### Rebecca Owner Track
 
-- [ ] PR R1: Foundation primitives and tab-shell stabilization.
+- [x] PR R1: Foundation primitives and tab-shell stabilization.
 - Scope: `frontend/RiskRadar/components/themed-text.tsx`, `frontend/RiskRadar/components/themed-view.tsx`, `frontend/RiskRadar/app/(tabs)/_layout.tsx`.
 - Deliverable: Token-driven text/view variants and validated home icon active/inactive mapping.
 - Conflict guard: Do not edit `app/auth/*` in this PR.
+- **Status (Mar 17, 2026):** COMPLETED. Created `themed-text.tsx` with 8 text variants (hero, title, subtitle, sectionTitle, cardTitle, eyebrow, body, meta) bound to typography tokens. Created `themed-view.tsx` with semantic surface modes (background, card, surfaceMuted) and optional elevation/padding. Fixed home tab icon mapping in `_layout.tsx` to show alert (red) for focused state and standard (green) for unfocused state.
 
-- [ ] PR R2: Alerts and modal rebuild on branded architecture.
+- [x] PR R2: Alerts and modal rebuild on branded architecture.
 - Scope: `frontend/RiskRadar/app/(tabs)/explore.tsx`, `frontend/RiskRadar/app/modal.tsx`.
 - Deliverable: No Expo starter content, no parallax usage, shared branded component consumption.
 - Conflict guard: Avoid edits to `app/(tabs)/index.tsx` while Ben track is active.
+- **Status (Mar 17, 2026):** COMPLETED. Rebuilt `explore.tsx` as wireframe-accurate Alerts list screen with AlertCard components showing severity-based coloring (critical=red, warning=yellow, info=blue). Created `modal.tsx` as branded notification details panel with alert header, description, recommendations, and action button. Both use ThemedView and ThemedText for consistent styling.
 
-- [ ] PR R3: Parallax deprecation cleanup.
+- [x] PR R3: Parallax deprecation cleanup.
 - Scope: `frontend/RiskRadar/components/parallax-scroll-view.tsx` and any remaining references.
 - Deliverable: Either fully unused + retained temporarily, or removed after zero-consumer confirmation.
 - Conflict guard: Merge only after R2 and B2 to avoid accidental reintroduction.
+- **Status (Mar 17, 2026):** COMPLETED. Verified that `parallax-scroll-view.tsx` component does not exist in current codebase and no usage remains. All screens use standard ScrollView or View layouts.
 
 #### Celeste Owner Track
 
