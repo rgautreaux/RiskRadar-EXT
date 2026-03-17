@@ -197,6 +197,12 @@ Gate A completion definition:
 3. Checklist items map to at least one field in a matrix artifact.
 4. Rebecca and Max approve Gate A and status is marked Completed.
 
+### Gate A Decision Log
+
+| Date | Decision | Owner | Status | Notes |
+|---|---|---|---|---|
+| 2026-03-17 | Gate A artifact drafting started and consistency pass initiated | Rebecca | Open | Awaiting Max co-review and final approval |
+
 ## Execution Order by Role
 
 ## Phase 0: Kickoff and Mapping (All Roles)

@@ -14,6 +14,20 @@ Provide objective pass/fail checks for Gate A baseline artifacts before Gate A a
 - [ ] GateA icon placement matrix exists
 - [ ] GateA acceptance checklist template exists
 
+## Reviewer Assignment Checklist
+
+Rebecca ownership (Layout Lane):
+- [x] Canonical page scope and mapping matrix drafted
+- [x] Icon placement matrix drafted
+- [x] Cross-artifact naming consistency pass executed
+- [ ] Final Gate A submission for co-review completed
+
+Max ownership (QA and Docs Lane):
+- [ ] Structural parity checklist review completed
+- [ ] Visual and icon parity checklist review completed
+- [ ] Responsiveness and accessibility placeholder review completed
+- [ ] Co-approval recorded in Gate A decision log
+
 ## Structural Parity Checks
 
 - [ ] All 12 in-scope pages are present in mapping matrix
@@ -67,6 +81,10 @@ Evidence:
 - [ ] Structural checklist items map to fields in GATEA_WIREFRAME_MAPPING_MATRIX.md
 - [ ] Icon checklist items map to fields in GATEA_ICON_PLACEMENT_MATRIX.md
 - [ ] Scope names are identical across all three Gate A artifacts
+
+Consistency pass status:
+- Completed 2026-03-17 by Rebecca.
+- Correction applied: normalized icon asset path prefix format in GATEA_ICON_PLACEMENT_MATRIX.md.
 
 ## Gate A Review and Approval
 

@@ -32,9 +32,9 @@ Define where icons appear by page and region, with asset type and size conventio
 | Profile | Header Branding | wireframe_icons/RiskRadar_STND_Logo.png | PNG | icon-lg | If missing, use text logo RiskRadar | Branding only |
 | Login | Auth Header | wireframe_icons/RiskRadar_STND_Text.png | PNG | icon-lg | If missing, render plain title text | Keep auth shell minimal |
 | Register | Auth Header | wireframe_icons/RiskRadar_STND_Text.png | PNG | icon-lg | If missing, render plain title text | Match login treatment |
-| Risk | Local EQ/Flood/Fire/Wind rows | RiskRadar_LocalEQ_Icon.png; RiskRadar_LocalFlood_Icon.png; RiskRadar_LocalFIre_Icon.png; RiskRadar_LocalWindEvent_Icon.png | PNG | icon-md | If missing, use CSS category chip | Preserve row ordering |
-| Risk | Global EQ/Flood/Fire/Wind rows | RiskRadar_GlobalEQ_Icon.png; RiskRadar_GlobalFlood_Icon.png; RiskRadar_GlobalFire_Icon.png; RiskRadar_GlobalWindEvent_Icon.png | PNG | icon-md | If missing, use CSS category chip | Preserve row ordering |
-| Risk | Environmental rows | RiskRadar_AirQuality_Icon.png; RiskRadar_Pollen_Icon.png; RiskRadar_Pollution_Icon.png; RiskRadar_Weather_Icon.png | PNG | icon-md | If missing, use CSS environmental chip | Match wireframe grouping |
+| Risk | Local EQ/Flood/Fire/Wind rows | wireframe_icons/RiskRadar_LocalEQ_Icon.png; wireframe_icons/RiskRadar_LocalFlood_Icon.png; wireframe_icons/RiskRadar_LocalFIre_Icon.png; wireframe_icons/RiskRadar_LocalWindEvent_Icon.png | PNG | icon-md | If missing, use CSS category chip | Preserve row ordering |
+| Risk | Global EQ/Flood/Fire/Wind rows | wireframe_icons/RiskRadar_GlobalEQ_Icon.png; wireframe_icons/RiskRadar_GlobalFlood_Icon.png; wireframe_icons/RiskRadar_GlobalFire_Icon.png; wireframe_icons/RiskRadar_GlobalWindEvent_Icon.png | PNG | icon-md | If missing, use CSS category chip | Preserve row ordering |
+| Risk | Environmental rows | wireframe_icons/RiskRadar_AirQuality_Icon.png; wireframe_icons/RiskRadar_Pollen_Icon.png; wireframe_icons/RiskRadar_Pollution_Icon.png; wireframe_icons/RiskRadar_Weather_Icon.png | PNG | icon-md | If missing, use CSS environmental chip | Match wireframe grouping |
 | Map | Page Header | wireframe_icons/RiskRadar_STND_HomeBttn.png | PNG | icon-sm | If missing, omit icon and keep label | Shell-only page |
 | Forecast | Page Header | wireframe_icons/RiskRadar_STND_HomeBttn.png | PNG | icon-sm | If missing, omit icon and keep label | Shell-only page |
 | Assistant | Header | wireframe_icons/RiskRadar_Assistant_Icon.png | PNG | icon-md | If missing, use CSS assistant badge | Shell-only page |
@@ -47,3 +47,12 @@ Define where icons appear by page and region, with asset type and size conventio
 - [ ] Size class assigned for each placement
 - [ ] Fallback rule assigned for each placement
 - [ ] PNG vs CSS-badge usage follows hybrid strategy
+
+## Naming Consistency Pass (2026-03-17)
+
+Result: Completed with corrections.
+
+Corrections applied:
+1. Normalized icon asset references to include the wireframe_icons/ prefix across all rows.
+
+No remaining naming mismatches found between page names in this file and GATEA_WIREFRAME_MAPPING_MATRIX.md.
