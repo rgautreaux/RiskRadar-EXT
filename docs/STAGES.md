@@ -12,6 +12,8 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 - Stage 1 endpoint contract: [PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md](./PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md)
 - Stage 1 verification evidence: [PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md](./PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md)
 - Stage 2 implementation spec: [PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md](./PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md)
+- Stage 2 endpoint contract: [PLANNING_DOCS/STAGE2_DOCS/API_STAGE2_CONTRACT.md](./PLANNING_DOCS/STAGE2_DOCS/API_STAGE2_CONTRACT.md)
+- Stage 2 verification evidence: [PLANNING_DOCS/STAGE2_DOCS/STAGE2_VERIFICATION_EVIDENCE.md](./PLANNING_DOCS/STAGE2_DOCS/STAGE2_VERIFICATION_EVIDENCE.md)
 
 ## Stage Alignment Note
 
@@ -135,6 +137,12 @@ Reference: `docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md`
 ## Stage 2: Environmental Risk Assessment and Alert Prioritization Extensions
 
 **Objective**: Extend backend intelligence by introducing personalized risk scoring and smart alert prioritization for both mobile and web clients. *(REQUIRED - Target Completion: Week of April 28, 2026)*
+
+### Stage 2 Dedicated Artifacts
+
+- Endpoint contract matrix: `docs/PLANNING_DOCS/STAGE2_DOCS/API_STAGE2_CONTRACT.md`
+- Verification evidence log: `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_VERIFICATION_EVIDENCE.md`
+- Policy lock reference: `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`
 
 ### Stage 2 Kickoff Policy Lock (2026-03-17)
 Reference: `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`

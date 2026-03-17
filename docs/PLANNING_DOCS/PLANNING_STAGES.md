@@ -213,7 +213,9 @@ Deliver Stage 2 by implementing a deterministic, explainable personal risk-scori
 - Backward compatibility checks confirming Stage 1 routes remain stable.
 
 ### Stage 2 Kickoff Assets (Prepared)
-- Policy lock and formulas: `docs/STAGE2_IMPLEMENTATION_SPEC.md`
+- Policy lock and formulas: `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`
+- Endpoint contract matrix: `docs/PLANNING_DOCS/STAGE2_DOCS/API_STAGE2_CONTRACT.md`
+- Verification evidence log: `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_VERIFICATION_EVIDENCE.md`
 - Backend scaffold services: `backend/services/risk_scoring.py`, `backend/services/alert_prioritization.py`
 - Backend scaffold tests: `backend/tests/test_stage2_scaffolding.py`
 - Web scaffold integration path: `frontend/web/public/risk.php`, `frontend/web/views/risk.php`, `frontend/web/services/api_client.php`
