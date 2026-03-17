@@ -18,7 +18,7 @@ export default function Home() {
   const [zipCode, setZipCode] = useState('');
   
   // This state will eventually be driven by auth context
-  const [isGuest, setIsGuest] = useState(true); 
+  const [isGuest] = useState(true);
 
   const handleSearch = () => {
     if (zipCode.length === 5) {

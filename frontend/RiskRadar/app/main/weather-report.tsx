@@ -15,7 +15,8 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 export default function WeatherReport() {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const zipCode = params.zipCode || 'Unknown Location';
+  const rawZipCode = params.zipCode;
+  const zipCode = Array.isArray(rawZipCode) ? rawZipCode[0] : rawZipCode ?? 'Unknown Location';
 
   return (
     <SafeAreaView style={styles.safeArea}>
