@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, ViewStyle, TextStyle, ImageSourcePropType } from 'react-native';
+import { View, Text, Image, StyleSheet, ViewStyle, ImageSourcePropType } from 'react-native';
 import { Colors, Spacing, Radius, Fonts } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
@@ -165,7 +165,7 @@ export function RiskCard({
 const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
-    borderRadius: Radius.card,
+    borderRadius: Radius.md,
     padding: Spacing.md,
     gap: Spacing.sm,
   },

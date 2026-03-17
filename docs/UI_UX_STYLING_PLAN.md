@@ -108,15 +108,17 @@ Use the following PR split so work can proceed in parallel with minimal file ove
 
 #### Shared (do first)
 
-- [ ] PR S1: Lock base architecture contract.
+- [x] PR S1: Lock base architecture contract.
 - Scope: `frontend/RiskRadar/constants/theme.ts`, `frontend/RiskRadar/app/_layout.tsx`, `frontend/RiskRadar/app/(tabs)/_layout.tsx`, and this plan file.
 - Deliverable: Team agreement on keep/port decisions, route ownership, and icon focused-state expectation.
 - Conflict guard: No feature code changes in this PR; documentation + tiny config-only updates.
+- **Status (Mar 17, 2026):** Base files validated — all three frozen architecture files are correctly structured with branded theme tokens, tab routing, and root stack navigation. No changes were needed. `hooks/use-color-scheme.ts` created as missing dependency.
 
-- [ ] PR S2: Create new reusable component files and export contracts only.
+- [x] PR S2: Create new reusable component files and export contracts only.
 - Scope: `frontend/RiskRadar/components/brand-header.tsx`, `frontend/RiskRadar/components/section-header.tsx`, `frontend/RiskRadar/components/risk-card.tsx`, `frontend/RiskRadar/components/hazard-chip.tsx`, `frontend/RiskRadar/components/tab-bar-icon.tsx`.
 - Deliverable: Typed props, placeholder render bodies, and naming conventions agreed.
 - Conflict guard: No screen wiring yet, so Ben, Rebecca, and Celeste can branch from this safely.
+- **Status (Mar 17, 2026):** All 5 component skeleton files created with TypeScript props interfaces, JSDoc, and token-bound placeholder render bodies. 
 
 #### Rebecca Owner Track
 
