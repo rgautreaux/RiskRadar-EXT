@@ -24,5 +24,7 @@
 - Created and continuously synchronized core project docs (`README.md`, `STAGES.md`, `TODO.md`, `PLANNING_STAGES.md`, `PROJECT_PROPOSAL.md`, `INSTRUCTIONS.md`, `PROJECT_DESCRIPTION.md`).
 - Maintained AI-usage audit artifacts by repeatedly updating and aligning `docs/TRANSCRIPT.md` and `docs/REFLECTION.md`.
 - Led Stage 1 web extension execution and verification work, including PHP frontend scaffolding, usability fixes, icon integration, and Stage 2-4 web page scaffolding prep.
+- Diagnosed and resolved backend auth test breakage by aligning password hashing compatibility settings across app and tests, then validated the clean backend test suite.
+- Produced Stage 2 planning/contract/evidence documentation and synchronized those artifacts across README, STAGES, TODO, and planning indexes.
 - Coordinated Git reliability cleanup, merge/conflict resolution, PR synchronization, and branch maintenance during active development.
 - Contributed to backend/database-aligned documentation and validation workflows to keep implementation status and evidence records accurate.

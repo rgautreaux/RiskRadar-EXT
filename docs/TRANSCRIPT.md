@@ -327,6 +327,100 @@ Just tell me and I’ll break it down step-by-step.
 
 ---
 
+## Authors, Transcript, and Reflection Maintenance Session (2026-03-17)
+
+**Rebecca:** Update AUTHORS with the information from TRANSCRIPT and REFLECTION
+
+Then complete the following tasks:
+
+- Update TRANSCRIPT for '''Rebecca''' with an exact, word-for-word transcript of this entire session (including this command and what comes after it)
+- Update REFLECTION for '''Rebecca''' with a reflection of the developments in this session, and all other transcript entries that are missing a corresponding reflection entry
+
+**GitHub Copilot:** I’m going to read the current AUTHORS, TRANSCRIPT, and REFLECTION files first, then align them by adding missing author details and synchronizing transcript/reflection entries for Rebecca in this session.
+
+**GitHub Copilot:** I’ve loaded the existing docs and memory; next I’m checking section coverage and the ends of TRANSCRIPT/REFLECTION so I can append exact-matching entries without breaking structure.
+
+**GitHub Copilot:** I found the docs are very long, so I’m now extracting clean heading comparisons, duplicate checks, and file tails to safely append a new Rebecca session entry and avoid creating duplicate sections.
+
+**GitHub Copilot:** I confirmed there are currently no transcript headings missing in reflection; I’m now editing AUTHORS plus appending a new Rebecca transcript/reflection pair for this exact session so coverage stays complete.
+
+**GitHub Copilot:** Executed work in this session:
+- Updated `docs/AUTHORS.md` with contribution details supported by transcript/reflection history, including backend auth-test compatibility remediation and Stage 2 documentation synchronization responsibilities.
+- Appended this transcript entry in `docs/TRANSCRIPT.md` for Rebecca with the exact command text from this session.
+- Appended a matching reflection entry in `docs/REFLECTION.md` for this same session.
+- Re-ran heading coverage and duplicate checks to ensure transcript/reflection uniqueness and correspondence.
+
+Validation snapshot for this session:
+- Heading coverage check before appending this entry: no transcript headings were missing reflection counterparts.
+- Duplicate heading check before appending this entry: no duplicate `##` headings were found in either file.
+
+---
+
+## Documentation Cross-Linking + Transcript/Reflection Backfill Session (2026-03-17)
+
+**Rebecca:** Implement cross-reference links between README, STAGES, TODO, and other top-level documentation to make navigation and grading easier in the future that incorporate the following:
+
+- Lightweight documentation navigation by updating the key top-level docs so README, STAGES, TODO, and related files link to each other directly for faster grading, cross-referencing, and project walkthroughs
+
+- Avoid duplicating or breaking existing structure
+
+- Quick navigation hubs linking scope, planning, tracker, status, evidence, and user guide docs
+
+- Explicit “update order” instructions connecting TODO → STAGES → README.
+References to USER_GUIDE.md, PLANNING_STAGES.md, Stage 1 Documents (API_STAGE1_CONTRACT.md and STAGE1_VERIFICATION_EVIDENCE.md), Stage 2 documents (STAGE2_IMPLEMENTATION_SPEC.md), and other planning/tracking/historical/referencial socuments where relevant
+
+**GitHub Copilot:** Implemented lightweight cross-reference navigation across the main grading docs without restructuring existing content.
+
+### What I updated
+
+- Added a new Documentation Quick Links hub in [README.md](./README.md) connecting:
+  - scope/requirements
+  - planning narrative
+  - tracker/status authority
+  - Stage 1 evidence docs
+  - Stage 2 implementation spec
+  - user walkthrough
+  - planning/history folder index
+- Added explicit required update sequence in [README.md](./README.md): TODO -> STAGES -> README, with USER_GUIDE as step 4 when workflows change.
+- Corrected Stage 1 and Stage 2 references in [README.md](./README.md) to actual paths under [docs/PLANNING_DOCS/](./docs/PLANNING_DOCS/).
+- Fixed certification link in [README.md](./README.md) to [docs/CERTIFICATION.md](./docs/CERTIFICATION.md).
+
+- Expanded the Navigation Quick Links in [docs/STAGES.md](./docs/STAGES.md) to include:
+  - [docs/PLANNING_DOCS/PLANNING_STAGES.md](./docs/PLANNING_DOCS/PLANNING_STAGES.md)
+  - [docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md](./docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md)
+  - [docs/PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md](./docs/PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md)
+  - [docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md](./docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md)
+- Kept existing stage structure intact, while updating in-text references to correct planning-doc paths and reinforcing update order.
+
+- Updated top References and sync wording in [docs/TODO.md](./docs/TODO.md) to function as a stronger navigation hub for grading and cross-doc maintenance.
+- Added explicit grading-consistency sequence in [docs/TODO.md](./docs/TODO.md): TODO -> STAGES -> README.
+- Normalized legacy path references in [docs/TODO.md](./docs/TODO.md) to actual planning-doc locations.
+
+- Added a lightweight Documentation Navigation Hub at the top of [USER_GUIDE.md](./USER_GUIDE.md), linking it directly to status, planning, tracker, and Stage 1/2 evidence/spec docs.
+
+### Notes
+
+- No structure was removed or reorganized; changes were additive and path-correction focused.
+- No code/test behavior was changed (documentation-only update).
+
+**Rebecca:** Complete the following tasks:
+
+- Update TRANSCRIPT for '''Rebecca''' with an exact, word-for-word transcript of this entire session (including this command and what comes after it)
+- Update REFLECTION for '''Rebecca''' with a reflection of the developments in this session, and all other transcript entries that are missing a corresponding reflection entry
+
+**GitHub Copilot:** Process executed in this session:
+- Reviewed `docs/TRANSCRIPT.md` and `docs/REFLECTION.md` directly.
+- Ran heading-comparison checks for transcript/reflection coverage in CMPS 357 docs.
+- Ran the same missing-coverage check for CMPS 490 docs to ensure no unaddressed gaps existed there either.
+- Confirmed no pre-existing transcript entries were missing corresponding reflection entries at the time of this command.
+- Appended this transcript session entry for Rebecca.
+- Appended a matching reflection entry in `docs/REFLECTION.md` for this session.
+
+Validation notes recorded for this command:
+- Transcript/reflection coverage check result before appending this entry: no missing historical transcript sections in reflection.
+- CMPS 490 transcript/reflection check result: no missing historical transcript sections in reflection.
+
+
 ## Runtime Validation, Backend Fix, and Documentation Synchronization Session (2026-03-17)
 
 **Rebecca:** Re-run runtime tests live to validate the documentation's confirmation of Stage 1's completion/cleaness/correctness
@@ -710,6 +804,55 @@ Updated REFLECTION.md with a structured summary that includes all four required 
 If you want, I can also tailor the tone to sound more first-person (“I used…”, “I verified by…”) to match your instructor’s preferred reflection style.
 
 Made changes.
+
+---
+
+## Stage 2 Contract/Evidence Creation and Transcript/Reflection Completion Session (2026-03-17)
+
+**Rebecca:** Create an API Stage Contract file and Verification Evidence file for Stage 2 mirroring the dedicated files for Stage 1
+
+GitHub Copilot: I will locate the Stage 1 contract and verification evidence documents first, then create matching Stage 2 versions with equivalent structure and updated content.
+
+GitHub Copilot: I found the Stage 1 file names referenced in the stage tracker, so next I’m reading those documents and the Stage 2 section to mirror their format accurately.
+
+GitHub Copilot: The Stage 1 links currently point to missing files, so I’m now locating where the dedicated Stage 1 contract and evidence files actually live to mirror them exactly for Stage 2.
+
+GitHub Copilot: I have the Stage 1 templates and Stage 2 spec; I’m quickly checking current Stage 2 code scaffolding so the new Stage 2 contract/evidence files reflect real routes, models, and verification points.
+
+GitHub Copilot: I’m ready to add two new Stage 2 docs in the Stage 2 planning folder, modeled after the Stage 1 contract/evidence format, and then I’ll wire links into the stage planning docs so they’re discoverable.
+
+GitHub Copilot: The two Stage 2 files are now created; next I’m adding references in the stage planning docs so they mirror how Stage 1 dedicated artifacts are surfaced.
+
+GitHub Copilot: I’ve finished the new files and STAGES links; I’m doing one quick patch retry in the planning file with exact context so the Stage 2 asset list includes these new artifacts too.
+
+GitHub Copilot: Created the Stage 2 dedicated documentation artifacts, mirroring the Stage 1 contract/evidence pattern, and linked them into planning docs.
+
+Files added:
+- [docs/PLANNING_DOCS/STAGE2_DOCS/API_STAGE2_CONTRACT.md](docs/PLANNING_DOCS/STAGE2_DOCS/API_STAGE2_CONTRACT.md)
+- [docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_VERIFICATION_EVIDENCE.md](docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_VERIFICATION_EVIDENCE.md)
+
+Files updated for discoverability:
+- [docs/STAGES.md](docs/STAGES.md)
+- [docs/PLANNING_DOCS/PLANNING_STAGES.md](docs/PLANNING_DOCS/PLANNING_STAGES.md)
+
+What is included in the new Stage 2 files:
+- Stage 2 API contract matrix with planned/target routes, inputs, outputs, error/fallback behavior, compatibility notes, and schema snapshot.
+- Stage 2 verification evidence log with deterministic service-test evidence, contract lock evidence, fallback integration evidence, and remaining completion gates.
+
+Validation:
+- No editor errors were reported in any of the new or updated files.
+
+**Rebecca:** Complete the following tasks:
+
+- Update TRANSCRIPT for '''Rebecca''' with an exact, word-for-word transcript of this entire session (including this command and what comes after it)
+- Update REFLECTION for '''Rebecca''' with a reflection of the developments in this session, and all other transcript entries that are missing a corresponding reflection entry
+
+GitHub Copilot: I’ll inspect the existing transcript and reflection formats first, then append this session in the same style and add any missing reflection coverage mapped to transcript entries.
+
+GitHub Copilot: I’ve confirmed formatting style; next I’ll compare section headings between transcript and reflection to identify missing reflection entries, then append both files in one pass.
+
+GitHub Copilot: I verified heading coverage and there were no older transcript sessions lacking a reflection entry; I’m now appending one new transcript block for this session and one matching reflection block.
+
 
 ---
 

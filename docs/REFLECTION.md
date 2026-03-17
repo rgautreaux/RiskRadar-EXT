@@ -54,6 +54,60 @@ This session used **GitHub Copilot** to see how effective it would be in summari
 
 ---
 
+## Authors, Transcript, and Reflection Maintenance Session (2026-03-17)
+
+### Session Summary
+This session used **GitHub Copilot** to update `docs/AUTHORS.md` using evidence from existing transcript/reflection history, append a new Rebecca transcript entry for this exact command sequence, and add matching reflection coverage while confirming transcript/reflection heading correspondence and uniqueness.
+
+### (1) Tool Used
+- **Tool name:** GitHub Copilot
+
+### (2) Components That Benefited
+- **Author attribution quality:** Updated `docs/AUTHORS.md` to better reflect documented implementation and documentation-governance contributions from prior sessions.
+- **Transcript completeness:** Added a new session entry in `docs/TRANSCRIPT.md` including the exact user command text for this request.
+- **Reflection continuity:** Added this corresponding reflection entry so the new transcript section is represented in `docs/REFLECTION.md`.
+- **Documentation governance checks:** Re-ran heading coverage and duplicate-heading checks to preserve uniqueness and one-to-one correspondence.
+
+### (3) How Output Was Reviewed/Verified
+- Compared all `##` headings in `docs/TRANSCRIPT.md` against `docs/REFLECTION.md` before edits; no existing transcript headings were missing reflection counterparts.
+- Checked duplicate top-level heading counts in both files before appending; no duplicates were detected.
+- Read file tails and then appended new sections with a unique session title in both documents.
+- Performed a post-edit verification pass to ensure the new transcript heading has a matching reflection heading.
+
+### (4) What Worked, What Needed Iteration, What Required Manual Implementation
+- **Worked immediately:** Coverage and duplicate checks returned clean results, allowing direct targeted updates.
+- **Required multiple iterations / improvement:** Transcript length required segmented reads and command-output tailing to safely append in the correct location.
+- **Required manual implementation:** Final editorial preferences on transcript depth and long-term wording harmonization remain manual team decisions.
+
+---
+
+## Documentation Cross-Linking + Transcript/Reflection Backfill Session (2026-03-17)
+
+### Session Summary
+This session used **GitHub Copilot** to implement documentation navigation improvements across top-level grading files and then complete transcript/reflection maintenance for Rebecca. The work added lightweight navigation hubs and explicit documentation update-order guidance, corrected stale Stage 1/Stage 2 path references, appended a full transcript block for this session, and verified that earlier transcript entries were not missing reflection counterparts.
+
+### (1) Tool Used
+- **Tool name:** GitHub Copilot
+
+### (2) Components That Benefited
+- **Navigation and grading efficiency:** Added direct cross-links between `README.md`, `docs/STAGES.md`, `docs/TODO.md`, `USER_GUIDE.md`, and planning/evidence artifacts.
+- **Update-order governance:** Reinforced the required sync sequence (`TODO -> STAGES -> README`) in primary planning/tracking docs.
+- **Path accuracy:** Repointed legacy references to Stage 1 and Stage 2 documents under `docs/PLANNING_DOCS/...`.
+- **Transcript/reflection continuity:** Added a new transcript entry for this session and a matching reflection entry.
+
+### (3) How Output Was Reviewed/Verified
+- Reviewed target files directly before editing (`README.md`, `docs/STAGES.md`, `docs/TODO.md`, `USER_GUIDE.md`).
+- Verified Stage 1/Stage 2 target files exist via file search (`API_STAGE1_CONTRACT.md`, `STAGE1_VERIFICATION_EVIDENCE.md`, `STAGE2_IMPLEMENTATION_SPEC.md`).
+- Ran heading-comparison checks between `docs/TRANSCRIPT.md` and `docs/REFLECTION.md` to identify missing reflection coverage.
+- Ran the same missing-coverage check for `CMPS490_contents/CMPS490_docs/TRANSCRIPT.md` vs `CMPS490_contents/CMPS490_docs/REFLECTION.md`.
+- Confirmed no pre-existing missing transcript-to-reflection entries before appending this session's new pair.
+
+### (4) What Worked, What Needed Iteration, What Required Manual Implementation
+- **Worked immediately:** Adding navigation hubs/update-order guidance and correcting major stale cross-links in one pass.
+- **Required multiple iterations / improvement:** Path normalization required follow-up scans because some legacy references persisted in long tracker tables.
+- **Required manual implementation:** Final editorial decisions on strict transcript verbatim depth and long-term style harmonization across historical entries remain manual team responsibilities.
+
+
 ## Reflection Generation Test Session
 
 ### Session Summary
@@ -1141,5 +1195,32 @@ This session used **GitHub Copilot** to keep project documentation audit-ready b
 - **Worked immediately:** Generating the user guide and wiring cross-document quick links/update-order instructions.
 - **Required multiple iterations / improvement:** Transcript maintenance required careful distinction between historical quoted duplicates and true duplicate session headings.
 - **Required manual implementation:** Final editorial judgment for how aggressively to deduplicate historical transcript prose (without altering evidentiary quotes) remains a manual team decision.
+
+---
+
+## Stage 2 Contract/Evidence Creation and Transcript/Reflection Completion Session (2026-03-17)
+
+### Session Summary
+This session used **GitHub Copilot** to create Stage 2 dedicated API contract and verification evidence artifacts modeled after the Stage 1 pattern, wire those artifacts into planning/status documentation, and then execute transcript/reflection maintenance by appending a word-for-word transcript block for Rebecca and adding corresponding reflection coverage.
+
+### (1) Tool Used
+- **Tool name:** GitHub Copilot
+
+### (2) Components That Benefited
+- **Stage 2 artifact readiness:** Added `docs/PLANNING_DOCS/STAGE2_DOCS/API_STAGE2_CONTRACT.md` and `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_VERIFICATION_EVIDENCE.md` with policy-aligned contract/evidence structure.
+- **Documentation discoverability:** Updated quick-link/discoverability paths in `docs/STAGES.md` and `docs/PLANNING_DOCS/PLANNING_STAGES.md`.
+- **Governance continuity:** Appended transcript coverage for this full session and command, including post-command actions.
+- **Reflection completeness audit:** Compared transcript and reflection heading coverage and confirmed no older transcript entries were missing reflection counterparts before appending this new entry.
+
+### (3) How Output Was Reviewed/Verified
+- Read Stage 1 source templates in `docs/PLANNING_DOCS/STAGE1_DOCS/` and Stage 2 policy lock in `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md` before drafting Stage 2 docs.
+- Cross-checked Stage 2 contract language against current scaffolding in backend/web/mobile modules to keep route/schema references consistent.
+- Ran diagnostics on newly created and updated markdown files; no file-level errors were reported.
+- Compared level-two headings across `docs/TRANSCRIPT.md` and `docs/REFLECTION.md` to identify missing reflection coverage.
+
+### (4) What Worked, What Needed Iteration, What Required Manual Implementation
+- **Worked immediately:** Creating Stage 2 dedicated contract/evidence files and linking them into existing planning/status docs.
+- **Required multiple iterations / improvement:** Path and context alignment required a follow-up pass because legacy references in docs still pointed to previous Stage 1 locations.
+- **Required manual implementation:** Future Stage 2 endpoint implementation, API response capture, and final closure screenshots/demo evidence remain manual team tasks.
 
 ---
