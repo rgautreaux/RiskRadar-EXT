@@ -8,7 +8,7 @@ Use this table for daily check-ins and updates.
 
 | Workstream | Lane Owner | Secondary Owner | Start Date | Target Due Date | Status | Notes |
 |---|---|---|---|---|---|---|
-| Phase 0: Kickoff and Mapping | Rebecca | Max | 2026-03-17 | TBD | In Progress | Gate A artifact drafting started |
+| Phase 0: Kickoff and Mapping | Rebecca | Max | 2026-03-17 | TBD | In Review | Rebecca tasks complete; awaiting Max co-review |
 | Phase 1: Shared Foundation | Rebecca | Max | TBD | TBD | Not Started | Shared layout, global CSS patterns, hybrid icon foundation |
 | Phase 2: Core Functional Page Parity | Max | Rebecca | TBD | TBD | Not Started | Dashboard, Alerts, Summaries, Profile, Login, Register, Risk |
 | Phase 3: Scaffold and Detail Shell Parity | Max | Rebecca | TBD | TBD | Not Started | Map, Forecast, Assistant, Alert Detail, Summary Detail |
@@ -202,6 +202,7 @@ Gate A completion definition:
 | Date | Decision | Owner | Status | Notes |
 |---|---|---|---|---|
 | 2026-03-17 | Gate A artifact drafting started and consistency pass initiated | Rebecca | Open | Awaiting Max co-review and final approval |
+| 2026-03-17 | Rebecca completed Gate A assigned work and submitted review package | Rebecca | In Review | Ready-to-send review note prepared for Max |
 
 ## Execution Order by Role
 
@@ -371,9 +372,9 @@ A page is considered complete only if all pass:
 ## Implementation Checklist by Phase
 
 Phase 0:
-- [ ] Mapping matrix created
-- [ ] Icon matrix created
-- [ ] Checklist template created
+- [x] Mapping matrix created
+- [x] Icon matrix created
+- [x] Checklist template created
 
 Phase 1:
 - [ ] Shared layout updated

@@ -327,6 +327,66 @@ Just tell me and I’ll break it down step-by-step.
 
 ---
 
+## Gate A Mapping Matrix Completion and Documentation Synchronization Session (2026-03-17)
+
+**Rebecca:** How many tasks assiged to Rebecca in this plan can be executed right now without risk?
+
+**GitHub Copilot:** 3 tasks can be executed right now with low risk, based on the current gating and status.
+
+Those are the Phase 0 items (which Rebecca owns as lane owner and are not blocked by any prior gate):
+1. Mapping matrix creation
+2. Icon matrix creation
+3. Acceptance checklist template creation
+
+Why only these now: Gate A must be completed before major template rewrites, and Gate B depends on Gate A, so Phase 1+ implementation work should wait until these Phase 0 deliverables are finished and approved.
+
+If you want a stricter count of Rebecca-only (not shared) work, then it is 1 immediate task: preparing the global section taxonomy.
+
+**Rebecca:** Create a plan to complete Gate A for Phase 0
+
+**GitHub Copilot:** Plan: Complete Gate A Baseline.
+
+Complete Phase 0 Gate A by producing the three required artifacts in sequence: page-to-wireframe mapping matrix, icon placement matrix, and acceptance checklist template. Use existing docs and frontend route inventory as source truth so Gate A can be approved without code-risk changes.
+
+**Rebecca:** Add this Gate A Completion Plan as a section of this plan for group reference.
+
+Then begin Rebecca's assigned
+implementation steps for Gate A Completion
+
+**GitHub Copilot:** Completed. I added the Gate A Completion Plan into the main planning document and began Rebecca's assigned implementation steps by creating all three Gate A working artifacts.
+
+**Rebecca:** Execute all three of these next steps
+
+**GitHub Copilot:** All three next steps are complete.
+
+1. Strict naming consistency pass executed and mismatches marked/fixed.
+2. Gate A decision log section added to the main plan.
+3. Reviewer-ready ownership checkboxes prefilled for Rebecca and Max.
+
+**Rebecca:** Execute the Completion Checklist assigned to Rebecca for the Gate A Mapping Matrix
+
+Then execute the following actions:
+- Update all Gate A related files with the Mapping Matrix development
+- Check the remaining Gate A requirements, and if all of Rebecca's Gate A work is done then add a ready-to-send review note for Max
+
+Once this is done:
+- Update TRANSCRIPT for '''Rebecca''' with an exact, word-for-word transcript of this entire session (including this command and what comes after it)
+- Update REFLECTION for '''Rebecca''' with a reflection of the developments in this session, and all other transcript entries that are missing a corresponding reflection entry
+
+**GitHub Copilot:** Executed actions for this command:
+1. Executed Rebecca's completion checklist in `GATEA_WIREFRAME_MAPPING_MATRIX.md` and moved mapping status to In Review.
+2. Updated all Gate A files for mapping-matrix-driven progress:
+  - `WIREFRAME_STYLE_IMPLEMENTATION.md` updated to Phase 0 In Review, decision log extended, Phase 0 implementation checklist checked.
+  - `GATEA_WIREFRAME_MAPPING_MATRIX.md` checklist fully checked and Rebecca execution notes added.
+  - `GATEA_ICON_PLACEMENT_MATRIX.md` status moved to In Review and completion checklist checked.
+  - `GATEA_ACCEPTANCE_CHECKLIST_TEMPLATE.md` status moved to In Review, Rebecca-assigned checks completed, evidence fields populated, and traceability checks completed.
+3. Verified remaining Gate A requirements for Rebecca are complete and added a ready-to-send review note for Max in `GATEA_ACCEPTANCE_CHECKLIST_TEMPLATE.md`.
+4. Ran transcript/reflection heading comparison for missing correspondence and recorded result:
+  - Missing transcript headings in reflection: none.
+5. Appended this transcript entry and a matching reflection entry for this session.
+
+---
+
 ## Authors, Transcript, and Reflection Maintenance Session (2026-03-17)
 
 **Rebecca:** Update AUTHORS with the information from TRANSCRIPT and REFLECTION

@@ -1,6 +1,6 @@
 # Gate A Icon Placement Matrix
 
-Status: Draft
+Status: In Review
 Owner: Rebecca (Layout Lane)
 Last Updated: 2026-03-17
 
@@ -43,10 +43,10 @@ Define where icons appear by page and region, with asset type and size conventio
 
 ## Completion Checklist
 
-- [ ] Icon entries exist for all in-scope pages
-- [ ] Size class assigned for each placement
-- [ ] Fallback rule assigned for each placement
-- [ ] PNG vs CSS-badge usage follows hybrid strategy
+- [x] Icon entries exist for all in-scope pages
+- [x] Size class assigned for each placement
+- [x] Fallback rule assigned for each placement
+- [x] PNG vs CSS-badge usage follows hybrid strategy
 
 ## Naming Consistency Pass (2026-03-17)
 
