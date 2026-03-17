@@ -17,16 +17,27 @@ Replace the Expo starter UI with a branded, wireframe-accurate RiskRadar mobile 
 - Screens render cleanly on both Android and iOS-sized layouts without overflow or broken alignment.
 - The app starts, navigates, and lints without introducing runtime or TypeScript issues.
 
+## Planning Sync Snapshot (Mar 17, 2026)
+
+- Primary planning docs in active use are `docs/TODO.md` (sprint/stage board) and this plan (`docs/UI_UX_STYLING_PLAN.md`).
+- There is currently no separate `STAGES` file under `docs/`; stage tracking is represented by sprint phases in `docs/TODO.md`.
+- The "Precise Screen-by-Screen Wiring Checklist" section in this plan is the current source of truth for route-level implementation order and acceptance criteria.
+
 ## Current Frontend Baseline
 
 The current mobile frontend is located in `frontend/RiskRadar`.
 
-As of Mar 16, 2026, a branch audit confirms two major UI/UX streams that must be merged intentionally:
+As of Mar 17, 2026, a branch audit confirms two major UI/UX streams that must be merged intentionally:
 
 - Branded shell and token system work (assets, `theme.ts`, `app/_layout.tsx`, `app/(tabs)/_layout.tsx`, and `app.json`) is present in Rebecca-aligned branches and is the strongest wireframe foundation.
 - Ben's branch contains meaningful auth and onboarding UI prototypes (`app/auth/login.tsx`, `app/auth/registration.tsx`, and `app/main/home.tsx`) but uses an older route architecture and does not include the current branded shell/token files.
 
-The current branch still has Expo starter content on the main tab screens (`app/(tabs)/index.tsx`, `app/(tabs)/explore.tsx`, and `app/modal.tsx`), starter-style themed primitives (`components/themed-text.tsx`, `components/themed-view.tsx`), and active `parallax-scroll-view` usage on tab screens.
+The current branch has a mixed completion state:
+
+- Shell + branding foundations are implemented (`constants/theme.ts`, `app/_layout.tsx`, `app/(tabs)/_layout.tsx`, `app.json`, wireframe assets).
+- `app/(tabs)/index.tsx` still needs full wireframe-accurate dashboard implementation.
+- `app/(tabs)/explore.tsx` and `app/modal.tsx` are rebuilt from starter state but still require final asset wiring/polish for full wireframe fidelity.
+- Shared reusable components created as contracts still need full production wiring on target screens.
 
 Key current entry points:
 
@@ -321,9 +332,9 @@ Typography defaults:
 
 - Done in current baseline: wireframe assets copied into `frontend/RiskRadar/assets/`, branded tokens implemented in `frontend/RiskRadar/constants/theme.ts`, app shell theming updated in `frontend/RiskRadar/app/_layout.tsx`, branded tab bar applied in `frontend/RiskRadar/app/(tabs)/_layout.tsx`, and Expo app metadata updated in `frontend/RiskRadar/app.json`.
 - Done in Ben branch (to be integrated): `app/auth/login.tsx`, `app/auth/registration.tsx`, and `app/main/home.tsx` provide usable UX flow and content structure for onboarding and location-risk search.
-- Verified: `npm run lint` completed successfully in `frontend/RiskRadar` on Mar 12, 2026.
-- Still pending: replace Expo starter screen content in `index.tsx`, `explore.tsx`, and `modal.tsx`; update `themed-text.tsx` and `themed-view.tsx`; stop using `parallax-scroll-view.tsx` for phase 1 screens; create reusable branded components; and reconcile Ben's auth/main flow into the current routing shell. Component-level dark surface hardening (contrast validation per screen) remains a Phase 2 task.
-- Risk to resolve: home tab icon state mapping in `app/(tabs)/_layout.tsx` must be validated against active/inactive asset intent before final polish.
+- Verified: lint/startup and backend test validations have been run in recent sessions; maintain re-validation after each wiring chunk.
+- Still pending: full wireframe-accurate Home route rebuild, final Alerts/Modal icon-asset wiring, shared component production wiring (C1/C2), and Ben auth/main flow reconciliation into current shell.
+- Resolved risk: Home tab icon state mapping was corrected so standard icon appears on Home and alert variant appears in Alerts-route context.
 
 ## File-by-File Implementation Checklist
 
