@@ -179,10 +179,10 @@ Stage 1 (Web-App Extension) is complete as of **2026-03-13** and includes the fo
 	- `GET /api/v1/summaries/latest` returned `200 OK`
 	- `index.php`, `alerts.php`, `summaries.php`, and `profile.php` all returned `200 OK` from local PHP server (`127.0.0.1:8081`)
 - **Backend test suite status (live run):**
-	- Command: `pytest tests test_scrape_and_summarize.py -q` (run from `backend/`)
-	- Result: `71 passed, 5 failed, 3 errors`
-	- Failure concentration: `tests/test_api_users.py` (bcrypt/passlib hashing backend mismatch causing password-hash path failures)
-	- Impact scope: Stage 1 docs and runtime page connectivity remain validated, but backend test suite is not currently fully clean.
+	- Initial run: `71 passed, 5 failed, 3 errors` (all failures concentrated in `tests/test_api_users.py` due to bcrypt/passlib backend mismatch on password hashing)
+	- Remediation applied: switched passlib context scheme from `bcrypt` to `pbkdf2_sha256` consistently in app and tests (`backend/api/users.py`, `backend/tests/test_api_users.py`, `backend/tests/conftest.py`)
+	- Verification rerun: `79 passed, 0 failed, 0 errors`
+	- Current status: backend suite is fully clean and Stage 1 runtime validation is complete.
 
 ### Additional Features and Extensions
 
