@@ -1090,3 +1090,56 @@ This session used **GitHub Copilot** to move Stage 2 from planning into implemen
 - **Required manual implementation:** Full Stage 2 feature coding (model/schema migration wiring, API route implementation, and production-ready UI behavior) remains manual development work.
 
 ---
+
+## README/Transcript/Reflection Synchronization Session (2026-03-17)
+
+### Session Summary
+This session used **GitHub Copilot** to synchronize top-level and AI-usage documentation after a full web-frontend README expansion. The work kept `README.md` current with web-scope changes, appended a transcript entry for Rebecca with exact command text, added a matching reflection entry, and then re-ran uniqueness and consistency checks across transcript/reflection records.
+
+### (1) Tool Used
+- **Tool name:** GitHub Copilot
+
+### (2) Components That Benefited
+- **README currency:** Updated root-level status language so repository-level documentation reflects the current web frontend deliverables and scaffolds.
+- **Transcript completeness:** Added an explicit session record for Rebecca, including the exact command text requested in the prompt.
+- **Reflection coverage:** Added corresponding reflection coverage for this newly recorded transcript session.
+- **Quality governance:** Re-ran duplicate and style checks to preserve distinct entries and consistent phrasing.
+
+### (3) How Output Was Reviewed/Verified
+- Compared transcript and reflection level-two headings to ensure no transcript session lacked reflection coverage.
+- Checked both files for duplicate headings and repeated entry titles after appending new sections.
+- Ran targeted consistency scans for frequent typo/phrasing drift patterns and reviewed newly appended content for alignment with existing formatting style.
+
+### (4) What Worked, What Needed Iteration, What Required Manual Implementation
+- **Worked immediately:** Applying synchronized updates across README, transcript, and reflection in one pass.
+- **Required multiple iterations / improvement:** Large historical transcript content required repeated structural checks to confirm coverage and distinctness after appending new entries.
+- **Required manual implementation:** Final editorial judgments about transcript fidelity and long-form style normalization remain team-owned decisions.
+
+---
+
+## README, User Guide, Navigation Links, and Transcript/Reflection Maintenance Session (2026-03-17)
+
+### Session Summary
+This session used **GitHub Copilot** to keep project documentation audit-ready by completing three linked tasks: (1) writing a full user-facing web-extension guide, (2) adding cross-document navigation links and sync-order guidance for grading/readability, and (3) executing transcript/reflection maintenance checks with new session coverage added for Rebecca.
+
+### (1) Tool Used
+- **Tool name:** GitHub Copilot
+
+### (2) Components That Benefited
+- **User documentation completeness:** Added `USER_GUIDE.md` with clear startup, configuration, route usage, troubleshooting, and shutdown steps.
+- **Grading/navigation speed:** Added and synchronized quick-link pathways across `README.md` and core docs (`STAGES`, `TODO`, `INSTRUCTIONS`, backend update guidance).
+- **Governance continuity:** Updated transcript/reflection records and ensured one-to-one session coverage for this session.
+- **Status discoverability:** Kept `README.md` current and added direct links to transcript/reflection artifacts.
+
+### (3) How Output Was Reviewed/Verified
+- Verified README link set and stage-status context directly after edits.
+- Compared `##` headings between `docs/TRANSCRIPT.md` and `docs/REFLECTION.md` to detect missing reflection coverage.
+- Ran duplicate checks for both files (heading-level plus repeated-block scans).
+- Ran formatting/consistency scans and preserved intentionally verbatim user quotes in transcript entries.
+
+### (4) What Worked, What Needed Iteration, What Required Manual Implementation
+- **Worked immediately:** Generating the user guide and wiring cross-document quick links/update-order instructions.
+- **Required multiple iterations / improvement:** Transcript maintenance required careful distinction between historical quoted duplicates and true duplicate session headings.
+- **Required manual implementation:** Final editorial judgment for how aggressively to deduplicate historical transcript prose (without altering evidentiary quotes) remains a manual team decision.
+
+---

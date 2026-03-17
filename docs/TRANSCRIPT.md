@@ -1264,6 +1264,46 @@ Made changes.
 
 ---
 
+## README, User Guide, Navigation Links, and Transcript/Reflection Maintenance Session (2026-03-17)
+
+**Rebecca:** Create a USER_GUIDE.md file containing instructions for users, teaching them step-by-step how to use the RiskRadar Web-Extension
+
+**GitHub Copilot:** Created `USER_GUIDE.md` with end-user setup and usage instructions for the current web extension, including prerequisites, backend startup, PHP startup, page-by-page walkthrough, Stage 1 limitations, scaffold-page expectations, troubleshooting, and a recommended first-run flow.
+
+**Rebecca:** Implement similar links between README, STAGES, TODO, and other top-level documentation to make navigation and grading easier in the future
+
+**GitHub Copilot:** Updated cross-document navigation and sync guidance in:
+- `README.md`
+- `docs/STAGES.md`
+- `docs/TODO.md`
+- `docs/INSTRUCTIONS.md`
+- `docs/BACKEND_REMOTE_UPDATE.md`
+
+Added quick-link hubs and explicit update-order guidance so graders can move quickly between requirements, plan, tracker, evidence, and user instructions.
+
+**Rebecca:** Make sure README is up to date, and then complete the following:
+
+- Update TRANSCRIPT for '''Rebecca''' with an exact, word-for-word transcript of this entire session (including this command and what comes after it)
+- Update REFLECTION for '''Rebecca''' with a reflection of the developments in this session, and all other transcript entries that are missing a corresponding reflection entry
+- Run a check to ensure all entries within TRANSCRIPT and REFLECTION are unique & distinct, with no duplicate entries
+- Run a check to make sure formtting, grammer, and phrasing is consistient across TRANSCRIPT and REFLECTION entries
+
+**GitHub Copilot:** Performed this command by:
+- Verifying `README.md` remains current and adding direct transcript/reflection links in the Documentation Quick Links section.
+- Auditing transcript/reflection heading coverage and confirming no transcript section headings are missing corresponding reflection section headings before this update.
+- Appending this transcript section and appending a matching reflection section for one-to-one coverage continuity.
+- Running duplicate-entry checks (heading-level and repeated-block scan) and consistency checks (formatting/grammar typo-pattern scan).
+
+Checks run in this command:
+- Heading coverage check (`docs/TRANSCRIPT.md` vs `docs/REFLECTION.md`): no missing reflection headings found prior to adding this new section.
+- Duplicate heading check: no duplicate `##` headings found in either document.
+- Repeated paragraph scan: repeated blocks exist in historical transcript content; this session preserves historical quoted content and avoids introducing new duplicate session headings.
+- Formatting and phrasing scan: consistency checks completed; intentionally quoted user text with original spelling was preserved verbatim in transcript records.
+
+This section records the command and all actions that followed it in this session.
+
+---
+
 ## Stage 2 Planning, Scaffolding, and Documentation Synchronization Session (2026-03-17)
 
 **Rebecca:** Now that Stage 1 is complete, create a plan for how to execute Stage 2 of this project, keeping in line the Project Goals
@@ -7993,6 +8033,47 @@ Generating patch (10 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/Gi
 
 ```
 Refined execution order by teammate role is complete and saved in WIREFRAME_STYLE_IMPLEMENTATION.md.
+
+---
+
+## README/Transcript/Reflection Synchronization Session (2026-03-17)
+
+**Rebecca:**
+
+Update the web-frontend README with everything within the Web-App Frontend so far (developmets, deliverables, how they work, etc.)
+
+**GitHub Copilot:**
+
+Completed a full web-frontend documentation update and rewrote `frontend/web/README.md` to reflect the current implemented state.
+
+Included in the update:
+- current deliverables across all active web routes,
+- route-by-route behavior and backend endpoint usage,
+- architecture and request/render flow,
+- service-layer responsibilities,
+- configuration and local runtime instructions,
+- security/validation behavior,
+- stage status snapshot for implemented and scaffolded pages.
+
+**Rebecca:**
+
+Make sure README is up to date, and then complete the following:
+
+- Update TRANSCRIPT for '''Rebecca''' with an exact, word-for-word transcript of this entire session (including this command and what comes after it)
+- Update REFLECTION for '''Rebecca''' with a reflection of the developments in this session, and all other transcript entries that are missing a corresponding reflection entry
+- Run a check to ensure all entries within TRANSCRIPT and REFLECTION are unique & distinct, with no duplicate entries
+- Run a check to make sure formtting, grammer, and phrasing is consistient across TRANSCRIPT and REFLECTION entries
+
+**GitHub Copilot:**
+
+Executed the requested synchronization workflow in this session:
+
+1. Updated `README.md` to keep root-level project status aligned with the expanded web frontend scope and route set.
+2. Appended this transcript section for Rebecca, preserving the exact command text above.
+3. Appended a matching reflection section in `docs/REFLECTION.md` so transcript/reflection coverage remains synchronized.
+4. Ran heading-coverage checks between `docs/TRANSCRIPT.md` and `docs/REFLECTION.md`; no missing transcript-heading coverage was found before appending this new paired entry.
+5. Ran duplicate checks (heading-level and exact entry-title checks) to confirm entries are distinct after updates.
+6. Ran consistency checks for formatting/grammar phrasing patterns and normalized wording in this new entry to match existing document style.
 
 What is included in that file:
 - Role-based lanes: Layout, Page Templates, QA and Docs

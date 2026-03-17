@@ -10,16 +10,6 @@ Our goal for the CMPS 357 final project is to build a unique web-app extension w
 
 ## Documentation Quick Links (Grading + Navigation)
 
-- Requirements and scope: [docs/INSTRUCTIONS.md](./docs/INSTRUCTIONS.md)
-- Stage-by-stage implementation plan: [docs/STAGES.md](./docs/STAGES.md)
-- Execution tracker and evidence log: [docs/TODO.md](./docs/TODO.md)
-- Stage 2 implementation spec lock: [docs/STAGE2_IMPLEMENTATION_SPEC.md](./docs/STAGE2_IMPLEMENTATION_SPEC.md)
-- AI usage transcript: [docs/TRANSCRIPT.md](./docs/TRANSCRIPT.md)
-- AI usage reflection: [docs/REFLECTION.md](./docs/REFLECTION.md)
-- User walkthrough for web extension: [USER_GUIDE.md](./USER_GUIDE.md)
-- Stage 1 API contract: [docs/API_STAGE1_CONTRACT.md](./docs/API_STAGE1_CONTRACT.md)
-- Stage 1 verification evidence: [docs/STAGE1_VERIFICATION_EVIDENCE.md](./docs/STAGE1_VERIFICATION_EVIDENCE.md)
-- Web app local setup: [frontend/web/README.md](./frontend/web/README.md)
 
 ---
 
@@ -198,6 +188,29 @@ Stage 1 (Web-App Extension) is complete as of **2026-03-13** and includes the fo
 	- Current status: backend suite is fully clean and Stage 1 runtime validation is complete.
 
 ### Additional Features and Extensions
+
+As of 2026-03-17, the web extension has progressed beyond the initial Stage 1 baseline and now includes additional implemented features plus scaffolded extension surfaces:
+
+- New web account flows:
+	- `frontend/web/public/register.php`
+	- `frontend/web/public/login.php`
+- New detail views for read-path depth:
+	- `frontend/web/public/alert_detail.php`
+	- `frontend/web/public/summary_detail.php`
+- Stage 2 kickoff integration page:
+	- `frontend/web/public/risk.php` (wired to planned risk-score and prioritized-alert routes)
+- Stage 3/4 scaffold pages for optional stretch work:
+	- `frontend/web/public/map.php`
+	- `frontend/web/public/forecast.php`
+	- `frontend/web/public/assistant.php`
+
+The web frontend setup and implementation details are maintained in `frontend/web/README.md`, which now documents:
+
+- all current public routes and their behavior,
+- service-layer request/normalization flow,
+- configuration and local runtime guidance,
+- security/validation controls,
+- stage-status snapshot across implemented and scaffolded pages.
 
 
 ---
