@@ -8,8 +8,10 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 - Task tracker and weekly evidence: [TODO.md](./TODO.md)
 - Status authority for stage table: [../README.md](../README.md)
 - User-facing usage guide: [../USER_GUIDE.md](../USER_GUIDE.md)
-- Stage 1 endpoint contract: [API_STAGE1_CONTRACT.md](./API_STAGE1_CONTRACT.md)
-- Stage 1 verification evidence: [STAGE1_VERIFICATION_EVIDENCE.md](./STAGE1_VERIFICATION_EVIDENCE.md)
+- Planning timeline details: [PLANNING_DOCS/PLANNING_STAGES.md](./PLANNING_DOCS/PLANNING_STAGES.md)
+- Stage 1 endpoint contract: [PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md](./PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md)
+- Stage 1 verification evidence: [PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md](./PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md)
+- Stage 2 implementation spec: [PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md](./PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md)
 
 ## Stage Alignment Note
 
@@ -21,6 +23,7 @@ Recommended sync order when updating progress:
 1. Update implementation evidence and task status in [TODO.md](./TODO.md)
 2. Update stage narrative and completion notes in [STAGES.md](./STAGES.md)
 3. Synchronize top-level stage status in [../README.md](../README.md)
+4. If user workflow changed, update [../USER_GUIDE.md](../USER_GUIDE.md)
 
 ## Scope and Timeline
 
@@ -49,7 +52,7 @@ Recommended sync order when updating progress:
 1. **Define the web extension architecture**
    - Document how the PHP web app communicates with backend API routes.
    - Identify reusable backend endpoints (alerts, summaries, users) and document method, params, response shape, and fallback behavior.
-   - Maintain the Stage 1 API contract matrix in `docs/API_STAGE1_CONTRACT.md`.
+   - Maintain the Stage 1 API contract matrix in `docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md`.
    - Define URL/environment configuration for local and deployed usage.
 
 2. **Create web-app project structure**
@@ -97,7 +100,7 @@ Recommended sync order when updating progress:
 - Keyboard-friendly navigation and responsive behavior are verified on common viewport sizes.
 
 ### Stage 1 API Contract Snapshot
-Reference: `docs/API_STAGE1_CONTRACT.md`
+Reference: `docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md`
 
 | Route | Method | Request Inputs | Response Model | Fallback Behavior |
 |---|---|---|---|---|
@@ -120,12 +123,12 @@ Reference: `docs/API_STAGE1_CONTRACT.md`
 **Deliverables**:
 - Web app extension codebase (PHP frontend)
 - API integration layer in PHP
-- Stage 1 endpoint contract matrix (`docs/API_STAGE1_CONTRACT.md`)
+- Stage 1 endpoint contract matrix (`docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md`)
 - Setup and run documentation
 - Basic usability verification evidence (screenshots and/or walkthrough)
 
 ### Progress So Far
-**Completed** - Stage 1 deliverables are implemented and documented, including dashboard-first web MVP pages, API wrapper integration, security/reliability controls, setup/run guidance, and responsive/web-distinctness verification evidence. See `docs/TODO.md`, `docs/API_STAGE1_CONTRACT.md`, and `docs/STAGE1_VERIFICATION_EVIDENCE.md`.
+**Completed** - Stage 1 deliverables are implemented and documented, including dashboard-first web MVP pages, API wrapper integration, security/reliability controls, setup/run guidance, and responsive/web-distinctness verification evidence. See `docs/TODO.md`, `docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md`, and `docs/PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md`.
 
 ---
 
@@ -134,7 +137,7 @@ Reference: `docs/API_STAGE1_CONTRACT.md`
 **Objective**: Extend backend intelligence by introducing personalized risk scoring and smart alert prioritization for both mobile and web clients. *(REQUIRED - Target Completion: Week of April 28, 2026)*
 
 ### Stage 2 Kickoff Policy Lock (2026-03-17)
-Reference: `docs/STAGE2_IMPLEMENTATION_SPEC.md`
+Reference: `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`
 
 - **Scoring model locked**: 0-100 normalized weighted sum with tier labels (`Low 0-39`, `Medium 40-69`, `High 70-100`).
 - **Sensitivity contract locked**: 0-5 per factor, with defaults for existing users.
@@ -208,7 +211,7 @@ Reference: `docs/STAGE2_IMPLEMENTATION_SPEC.md`
 - Documentation of model logic and tradeoffs
 
 ### Progress So Far
-🔄 **In Progress (Kickoff + Scaffolding)** - Stage 2 policy lock is documented in `docs/STAGE2_IMPLEMENTATION_SPEC.md`, kickoff planning is tracked in `docs/PLANNING_STAGES.md`, and initial backend/web/mobile scaffolding is prepared for S2-02/S2-03/S2-08 implementation.
+🔄 **In Progress (Kickoff + Scaffolding)** - Stage 2 policy lock is documented in `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`, kickoff planning is tracked in `docs/PLANNING_DOCS/PLANNING_STAGES.md`, and initial backend/web/mobile scaffolding is prepared for S2-02/S2-03/S2-08 implementation.
 
 ---
 

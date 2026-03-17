@@ -2,6 +2,15 @@
 
 This guide walks you through how to run and use the RiskRadar Web-Extension step-by-step.
 
+## Documentation Navigation Hub
+
+- Project status summary: [README.md](./README.md)
+- Stage narrative and deliverables: [docs/STAGES.md](./docs/STAGES.md)
+- Task tracker and evidence log: [docs/TODO.md](./docs/TODO.md)
+- Planning timeline and stage history: [docs/PLANNING_DOCS/PLANNING_STAGES.md](./docs/PLANNING_DOCS/PLANNING_STAGES.md)
+- Stage 1 contract and verification evidence: [docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md](./docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md), [docs/PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md](./docs/PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md)
+- Stage 2 implementation spec: [docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md](./docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md)
+
 ## What You Can Do Right Now
 
 The currently functional web experience includes:
