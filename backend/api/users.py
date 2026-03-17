@@ -10,7 +10,7 @@ from schemas.user import UserCreate, UserPrefsUpdate, UserOut
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
-_pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+_pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 
 @router.post("/register", response_model=UserOut)
