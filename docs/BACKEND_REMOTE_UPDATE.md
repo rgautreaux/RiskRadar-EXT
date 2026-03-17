@@ -12,6 +12,13 @@ Our `backend/` directory was built on top of the original Team6Project (RiskRada
 
 This document outlines the available options, their trade-offs, and the recommended approach given our CMPS 357 extensions.
 
+## Related Project Documentation
+
+- Requirements and scope: [INSTRUCTIONS.md](./INSTRUCTIONS.md)
+- Stage plan and implementation boundaries: [STAGES.md](./STAGES.md)
+- Task/evidence tracker: [TODO.md](./TODO.md)
+- Top-level status summary: [../README.md](../README.md)
+
 ---
 
 ## Step 1: Add the Upstream Remote (Required for All Options)

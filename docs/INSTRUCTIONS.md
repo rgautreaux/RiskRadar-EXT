@@ -6,6 +6,13 @@
 
 This document defines the required staged extension work for the CMPS 357 RiskRadar final project.
 
+## Related Documents
+
+- Stage implementation plan: [STAGES.md](./STAGES.md)
+- Execution tracker and evidence: [TODO.md](./TODO.md)
+- Top-level project status summary: [../README.md](../README.md)
+- User walkthrough for web extension: [../USER_GUIDE.md](../USER_GUIDE.md)
+
 The extension should:
 
 - Build a distinct web-facing experience from the original mobile surface.

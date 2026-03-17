@@ -2,11 +2,25 @@
 
 This document provides a complete, stage-by-stage implementation plan aligned with the required extension work in `docs/INSTRUCTIONS.md`. The format and structure follow the same style used in `EXAMPLE_STAGES.md` for consistency, readability, and professional reporting.
 
+## Navigation Quick Links
+
+- Requirements source: [INSTRUCTIONS.md](./INSTRUCTIONS.md)
+- Task tracker and weekly evidence: [TODO.md](./TODO.md)
+- Status authority for stage table: [../README.md](../README.md)
+- User-facing usage guide: [../USER_GUIDE.md](../USER_GUIDE.md)
+- Stage 1 endpoint contract: [API_STAGE1_CONTRACT.md](./API_STAGE1_CONTRACT.md)
+- Stage 1 verification evidence: [STAGE1_VERIFICATION_EVIDENCE.md](./STAGE1_VERIFICATION_EVIDENCE.md)
+
 ## Stage Alignment Note
 
 - This plan maps directly to Stages 1-4 in `docs/INSTRUCTIONS.md`.
 - Each stage includes implementation tasks, deliverables, and verification expectations.
 - Stage progress markers should be updated as work is completed.
+
+Recommended sync order when updating progress:
+1. Update implementation evidence and task status in [TODO.md](./TODO.md)
+2. Update stage narrative and completion notes in [STAGES.md](./STAGES.md)
+3. Synchronize top-level stage status in [../README.md](../README.md)
 
 ## Scope and Timeline
 

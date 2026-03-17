@@ -16,6 +16,17 @@ This document tracks implementation tasks required to complete the CMPS 357 exte
 - Requirements scope: [INSTRUCTIONS.md](./INSTRUCTIONS.md)
 - Stage planning details: [STAGES.md](./STAGES.md)
 - Progress status source of truth: [README.md](../README.md)
+- User-facing web usage guide: [../USER_GUIDE.md](../USER_GUIDE.md)
+- Stage 1 API contract: [API_STAGE1_CONTRACT.md](./API_STAGE1_CONTRACT.md)
+- Stage 1 verification evidence: [STAGE1_VERIFICATION_EVIDENCE.md](./STAGE1_VERIFICATION_EVIDENCE.md)
+
+## Documentation Sync Checklist
+
+When closing or advancing work, update docs in this order:
+1. Update task status, blockers, and evidence in [TODO.md](./TODO.md)
+2. Update stage implementation narrative in [STAGES.md](./STAGES.md)
+3. Update stage status table and summary in [../README.md](../README.md)
+4. If user workflow changed, update [../USER_GUIDE.md](../USER_GUIDE.md)
 
 ## Status Legend
 

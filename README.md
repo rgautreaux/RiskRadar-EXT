@@ -8,6 +8,16 @@ Our senior project focuses on developing **RiskRadar**, an environmental risk aw
 
 Our goal for the CMPS 357 final project is to build a unique web-app extension with a distinct frontend interface while extending the platform with features such as personalized risk assessment, interactive mapping, and predictive/AI-supported insights.
 
+## Documentation Quick Links (Grading + Navigation)
+
+- Requirements and scope: [docs/INSTRUCTIONS.md](./docs/INSTRUCTIONS.md)
+- Stage-by-stage implementation plan: [docs/STAGES.md](./docs/STAGES.md)
+- Execution tracker and evidence log: [docs/TODO.md](./docs/TODO.md)
+- User walkthrough for web extension: [USER_GUIDE.md](./USER_GUIDE.md)
+- Stage 1 API contract: [docs/API_STAGE1_CONTRACT.md](./docs/API_STAGE1_CONTRACT.md)
+- Stage 1 verification evidence: [docs/STAGE1_VERIFICATION_EVIDENCE.md](./docs/STAGE1_VERIFICATION_EVIDENCE.md)
+- Web app local setup: [frontend/web/README.md](./frontend/web/README.md)
+
 ---
 
 # CMPS 357 Extension Project Proposal
@@ -199,6 +209,11 @@ The required Certification of Original Work is included in the [CERTIFICATION.md
 
 See the full staged implementation plan here: [Project Stages](./docs/STAGES.md)
 Track execution tasks here: [Project TODO Tracker](./docs/TODO.md)
+
+Recommended update order when progress changes:
+1. Update task/evidence rows in [docs/TODO.md](./docs/TODO.md)
+2. Update stage narrative and deliverables in [docs/STAGES.md](./docs/STAGES.md)
+3. Sync status table and summary notes in [README.md](./README.md)
 
 `README.md` remains the source of truth for current stage status values.
 
