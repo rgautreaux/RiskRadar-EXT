@@ -8,7 +8,7 @@ Use this table for daily check-ins and updates.
 
 | Workstream | Lane Owner | Secondary Owner | Start Date | Target Due Date | Status | Notes |
 |---|---|---|---|---|---|---|
-| Phase 0: Kickoff and Mapping | Rebecca | Max | TBD | TBD | Not Started | Shared mapping kickoff; both lanes participate |
+| Phase 0: Kickoff and Mapping | Rebecca | Max | 2026-03-17 | TBD | In Progress | Gate A artifact drafting started |
 | Phase 1: Shared Foundation | Rebecca | Max | TBD | TBD | Not Started | Shared layout, global CSS patterns, hybrid icon foundation |
 | Phase 2: Core Functional Page Parity | Max | Rebecca | TBD | TBD | Not Started | Dashboard, Alerts, Summaries, Profile, Login, Register, Risk |
 | Phase 3: Scaffold and Detail Shell Parity | Max | Rebecca | TBD | TBD | Not Started | Map, Forecast, Assistant, Alert Detail, Summary Detail |
@@ -151,6 +151,51 @@ Gate C: Core Functional Pages Parity
 
 Gate D: Scaffold Page Shell Parity
 - Must be complete before final documentation closeout.
+
+## Gate A Completion Plan
+
+Purpose:
+- Complete the Wireframe Mapping Baseline with low-risk documentation work that unblocks Phase 1 without code changes.
+
+Required Gate A artifacts:
+1. Page-by-page wireframe mapping matrix.
+2. Icon placement matrix by page and component region.
+3. Acceptance checklist template for structure, visuals, responsiveness, and accessibility.
+
+Execution sequence:
+1. Confirm page scope and route inventory from existing web views.
+2. Build a canonical wireframe reference index from RiskRadar_Web_Wireframes.png.
+3. Produce mapping matrix draft for all in-scope pages.
+4. Produce icon placement matrix draft using wireframe_icons assets.
+5. Produce acceptance checklist template aligned to matrix fields.
+6. Run naming consistency pass across all three artifacts.
+7. Move Gate A to In Review and request Rebecca and Max approval.
+
+Parallelization rules for Gate A:
+1. Scope confirmation and wireframe indexing can run in parallel.
+2. Mapping matrix and icon matrix can run in parallel after scope is fixed.
+3. Checklist template should follow early matrix drafts so criteria remain traceable.
+
+Owner assignments:
+1. Rebecca (Layout Lane):
+   - Lead scope confirmation and global section taxonomy.
+   - Lead mapping matrix and icon matrix creation.
+   - Run final consistency pass and submit Gate A for review.
+2. Max (Template and QA/Docs support):
+   - Support current page structure inventory verification.
+   - Support acceptance checklist evidence structure.
+   - Co-review Gate A artifact completeness.
+
+Gate A artifact locations:
+- docs/PLANNING_DOCS/STAGE2_DOCS/GATEA_WIREFRAME_MAPPING_MATRIX.md
+- docs/PLANNING_DOCS/STAGE2_DOCS/GATEA_ICON_PLACEMENT_MATRIX.md
+- docs/PLANNING_DOCS/STAGE2_DOCS/GATEA_ACCEPTANCE_CHECKLIST_TEMPLATE.md
+
+Gate A completion definition:
+1. All three artifacts exist and include all in-scope pages.
+2. Page names, view names, and icon labels are consistent across artifacts.
+3. Checklist items map to at least one field in a matrix artifact.
+4. Rebecca and Max approve Gate A and status is marked Completed.
 
 ## Execution Order by Role
 
