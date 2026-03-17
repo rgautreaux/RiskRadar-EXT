@@ -244,7 +244,7 @@ export default function ModalScreen() {
         </SafeAreaView>
       </Modal>
 
-      <StatusBar barStyle="light-content" />
+      <StatusBar />
     </>
   );
 }

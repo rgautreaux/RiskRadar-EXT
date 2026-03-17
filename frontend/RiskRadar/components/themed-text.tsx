@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TextProps, StyleSheet } from 'react-native';
+import { Text, TextProps, StyleSheet, TextStyle } from 'react-native';
 
 import { Colors, Fonts, Typography } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -59,36 +59,33 @@ export function ThemedText({
  */
 function getTypographyStyle(
   type: ThemedTextProps['type'],
-): React.CSSProperties {
-  const fontFamily =
-    Fonts.sans || 'system-ui, -apple-system, BlinkMacSystemFont, Segoe UI';
-
+): TextStyle {
   switch (type) {
     case 'hero':
       return {
         ...Typography.hero,
         fontFamily: Fonts.rounded,
-      };
+      } as TextStyle;
     case 'title':
       return {
         ...Typography.title,
         fontFamily: Fonts.sans,
-      };
+      } as TextStyle;
     case 'subtitle':
       return {
         ...Typography.subtitle,
         fontFamily: Fonts.sans,
-      };
+      } as TextStyle;
     case 'sectionTitle':
       return {
         ...Typography.sectionLabel,
         fontFamily: Fonts.rounded,
-      };
+      } as TextStyle;
     case 'cardTitle':
       return {
         ...Typography.cardHeading,
         fontFamily: Fonts.sans,
-      };
+      } as TextStyle;
     case 'eyebrow':
       return {
         fontFamily: Fonts.sans,
@@ -97,22 +94,22 @@ function getTypographyStyle(
         fontWeight: '600',
         textTransform: 'uppercase',
         letterSpacing: 0.5,
-      };
+      } as TextStyle;
     case 'body':
       return {
         ...Typography.body,
         fontFamily: Fonts.sans,
-      };
+      } as TextStyle;
     case 'meta':
       return {
         ...Typography.meta,
         fontFamily: Fonts.sans,
-      };
+      } as TextStyle;
     default:
       return {
         ...Typography.body,
         fontFamily: Fonts.sans,
-      };
+      } as TextStyle;
   }
 }
 

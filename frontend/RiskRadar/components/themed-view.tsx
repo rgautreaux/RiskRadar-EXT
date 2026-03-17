@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ViewProps, StyleSheet } from 'react-native';
+import { View, ViewProps, StyleSheet, ViewStyle } from 'react-native';
 
 import { Colors, Shadows, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -72,7 +72,7 @@ export function ThemedView({
  */
 function getPaddingStyle(
   padding: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-): React.CSSProperties {
+): ViewStyle {
   const paddingMap = {
     xs: Spacing.xs,
     sm: Spacing.sm,
