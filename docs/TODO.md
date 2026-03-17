@@ -61,6 +61,7 @@ Use this process during each weekly meeting:
 | 2026-03-13 | Stage 1 security hardening completed (S1-05) and responsive/web-distinctness demo-note evidence documented for closure tracking | S1-01, DOC-01, DOC-02, DOC-03 | Screenshot capture is optional now that demo-note evidence exists; contract/architecture synchronization remained pending at this checkpoint | Confirm whether to add screenshots later for presentation polish only | `frontend/web/services/validators.php`, `frontend/web/services/api_client.php`, `frontend/web/public/profile.php`, `docs/STAGE1_VERIFICATION_EVIDENCE.md`, `frontend/web/README.md` | Close S1-01 contract sync and final README/STAGES alignment pass |
 | 2026-03-13 | Stage 1 architecture/contract completion pass finalized S1-01 with explicit request flow, page-to-endpoint mapping, and local/deployed URL configuration guidance | DOC-01, DOC-02, DOC-03 | None | Confirm whether Stage 1 status marker should be switched to Completed in all summary docs now | `docs/API_STAGE1_CONTRACT.md`, `docs/TODO.md` | Run final Stage 1 cross-doc sync pass (`README.md`, `docs/STAGES.md`) |
 | 2026-03-13 | Stage 1 status synchronization pass completed across progress/planning docs; README now includes consolidated Stage 1 web feature/structure progress note | DOC-01, DOC-02 | None | None | `README.md`, `docs/STAGES.md`, `docs/PLANNING_STAGES.md`, `docs/ARCHITECTURE.md`, `docs/TODO.md` | Begin Stage 2 planning readiness and define S2-01 scoring inputs |
+| 2026-03-17 | Stage 2 kickoff planning calendar finalized and cross-doc status wording synchronized (planning/tracking/status authority) | DOC-01, DOC-02 | None | Confirm S2-01 kickoff owner checklist for next check-in | `docs/PLANNING_STAGES.md`, `docs/STAGES.md`, `docs/TODO.md`, `README.md` | Start S2-01 scoring model draft and S2-05 ranking criteria draft |
 
 ## Master Task Tracker
 
@@ -97,7 +98,7 @@ Use this process during each weekly meeting:
 | 4 | S4-07 | Integrate assistant UI experience and evaluate quality/safety behavior | High | Not Started | Rebecca | Week of 2026-06-02 | 2026-03-10 | S4-06 | TBD | **OPTIONAL/STRETCH**: Test relevance, clarity, and missing-context behavior. |
 | 4 | S4-08 | Document predictive/assistant limitations and future improvements | High | Not Started | Rebecca | Week of 2026-06-02 | 2026-03-10 | S4-04, S4-07 | TBD | **OPTIONAL/STRETCH**: Include interpretation guidance for users. |
 | X | DOC-01 | Keep README stage-status table synchronized with completed tasks | High | In Progress | Rebecca | Weekly | 2026-03-10 | Ongoing | README commits | README remains status authority. |
-| X | DOC-02 | Update STAGES/PROJECT docs when scope or stage progress changes | High | In Progress | Rebecca | Weekly | 2026-03-10 | Ongoing | Docs commits | Keep naming and status terms consistent. |
+| X | DOC-02 | Update STAGES/PROJECT docs when scope or stage progress changes | High | In Progress | Rebecca | Weekly | 2026-03-17 | Ongoing | `docs/PLANNING_STAGES.md`, `docs/STAGES.md`, `README.md`, `docs/TODO.md` | Keep naming and status terms consistent. |
 | X | DOC-03 | Log AI-assisted sessions in TRANSCRIPT and reflect in REFLECTION | High | In Progress | Rebecca | Weekly | 2026-03-10 | Ongoing | Transcript/Reflection entries | Maintain continuity and auditability. |
 
 ## Stage 1: Web-App Extension (Completed)
@@ -121,7 +122,7 @@ Build a distinct web-facing extension connected to existing backend APIs.
 - [x] Responsive behavior validated at 360px, 768px, and 1280px with screenshots and/or demo notes.
 - [x] Evidence demonstrates web UI distinctness from mobile flow/layout.
 
-## Stage 2 TODOs: Risk Assessment and Alert Prioritization
+## Stage 2 TODOs: Environmental Risk Assessment and Alert Prioritization Extensions
 
 ### Objective
 Implement personalized risk scoring and smart alert prioritization.

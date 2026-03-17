@@ -123,3 +123,101 @@ Stage 1 closure is complete as of **2026-03-13**.
 - Execution tracker and completed checklist: `docs/TODO.md`
 - Architecture/contract matrix and route mapping: `docs/API_STAGE1_CONTRACT.md`
 - Responsive and web-distinctness verification notes: `docs/STAGE1_VERIFICATION_EVIDENCE.md`
+
+---
+
+## Stage 2 Planning (Kickoff)
+
+**Context:** This section defines the tactical execution plan for Stage 2 (Environmental Risk Assessment and Alert Prioritization Extensions), which is a **REQUIRED** deliverable targeting completion by **Week of April 28, 2026**. This plan is aligned to `docs/STAGES.md`, `docs/TODO.md`, and `README.md`.
+
+### Objective
+Deliver Stage 2 by implementing a deterministic, explainable personal risk-scoring pipeline and smart alert prioritization flow, then surfacing both outputs across web and mobile clients while preserving Stage 1 endpoint compatibility.
+
+### Scope Decisions (Confirmed)
+- **Risk score model**: 0-100 normalized weighted sum with threshold labels.
+- **Sensitivity input model**: 0-5 per sensitivity factor (with defaults for backward compatibility).
+- **Prioritization API strategy**: Add a new prioritized route and preserve existing Stage 1 route behavior.
+- **Client scope**: Integrate Stage 2 outputs in both web and mobile baseline experiences.
+- **Scoring approach**: Formula-based deterministic logic (no LLM dependency for score computation).
+
+### Stage 2 Kickoff Steps
+
+1. **Lock Stage 2 technical specification**
+	- Finalize normalization rules for each factor and document 0-100 score conversion.
+	- Finalize high/medium/low thresholds.
+	- Finalize deterministic tie-break ordering for same-score alerts.
+
+2. **Define and document sensitivity contract**
+	- Confirm 0-5 sensitivity factors and default fallback values.
+	- Document behavior for users with missing preferences/location data.
+	- Keep fields optional in update pathways for existing-user compatibility.
+
+3. **Implement backend schema/model updates (S2-02)**
+	- Extend user model and schemas for sensitivity fields.
+	- Add/adjust response schemas for risk score output and factor transparency.
+	- Add priority metadata schema for ranked alerts.
+
+4. **Implement risk scoring service (S2-03)**
+	- Build reusable scoring service module.
+	- Return score + factor breakdown for explainability.
+	- Ensure deterministic output for repeated identical inputs.
+
+5. **Expose score endpoint(s) (S2-04)**
+	- Add score retrieval endpoint with validation/auth rules.
+	- Add fallback-safe responses for missing or partial user context.
+	- Add API examples to docs once endpoint shape is stable.
+
+6. **Define and implement ranking logic (S2-05, S2-06)**
+	- Weight risk contribution, severity, distance, and sensitivity relevance.
+	- Normalize components into a stable priority score.
+	- Apply deterministic tie handling and urgency labels.
+
+7. **Integrate prioritization into alert pipeline (S2-07)**
+	- Add prioritized alert endpoint and preserve legacy endpoint compatibility.
+	- Include rank, score, urgency label, and short explanation metadata.
+	- Preserve raw alert fields for auditability.
+
+8. **Surface Stage 2 outputs in web/mobile UI (S2-08)**
+	- Web: add score and prioritized context to risk/dashboard/alert detail views.
+	- Mobile: add score + prioritized alert surface in baseline tabs flow.
+	- Ensure clients consume backend ordering (no duplicated ranking logic in UI).
+
+9. **Run Stage 2 verification and doc sync (S2-09 + docs)**
+	- Add deterministic scoring/ranking tests and endpoint contract checks.
+	- Validate backward compatibility with Stage 1 routes.
+	- Update Stage 2 progress markers/evidence in `docs/TODO.md`, `docs/STAGES.md`, and `README.md`.
+
+### Week-by-Week Execution Calendar (S2-01 to S2-09)
+
+| Week Of | Planned Focus | Task IDs | Primary Owner | Expected Evidence |
+|---|---|---|---|---|
+| 2026-03-17 | Stage 2 design lock and ambiguity resolution | S2-01, S2-05 | Max (lead), Rebecca (review) | Formula draft, threshold definitions, tie-break policy notes |
+| 2026-03-24 | Data model/schema preparation and service scaffolding | S2-02, S2-03 (start) | Rebecca (S2-02), Max (S2-03) | Schema/model diff, service skeletons, fixture updates |
+| 2026-03-31 | Risk scoring implementation and endpoint integration | S2-03, S2-04 (start) | Max | Scoring module tests, endpoint prototype responses |
+| 2026-04-07 | Prioritization algorithm and pipeline integration | S2-04, S2-06, S2-07 (start) | Max | Ranked output samples, route integration notes |
+| 2026-04-14 | Client integration across web and mobile | S2-07, S2-08 | Rebecca (lead), Max (support) | UI screenshots/demo notes for prioritized alerts + score |
+| 2026-04-21 | Testing hardening and cross-doc synchronization | S2-09, DOC-01, DOC-02 | Max + Rebecca | Test evidence, status updates in TODO/STAGES/README |
+| 2026-04-28 | Stage 2 closure buffer and acceptance pass | Residuals/cleanup | Max + Rebecca | Final verification notes and Stage 2 completion marker |
+
+### Stage 2 Deliverables (Kickoff Phase)
+- Risk scoring service implementation and supporting schemas/models.
+- Prioritized alert endpoint and metadata integration.
+- Web + mobile baseline surfaces showing score and prioritized alerts.
+- Test coverage for deterministic scoring/ranking and compatibility checks.
+- Documentation updates across planning/tracking/architecture artifacts.
+
+### Verification Evidence to Collect
+- Repeat-input test output showing consistent risk score and rank order.
+- API response examples for score and prioritized alert routes.
+- Web and mobile screenshots/walkthrough notes for success and fallback states.
+- Backward compatibility checks confirming Stage 1 routes remain stable.
+
+### Stage 2 Risks and Mitigations
+- **Risk:** Formula churn causes rework late in sprint.
+  - **Mitigation:** Lock weights/thresholds in S2-01 and treat later changes as controlled refinements.
+- **Risk:** Breaking Stage 1 consumers by changing legacy alert payloads.
+  - **Mitigation:** Keep legacy routes stable and expose Stage 2 metadata via dedicated prioritized route.
+- **Risk:** Missing user context (location/preferences) creates unstable ranking behavior.
+  - **Mitigation:** Use documented defaults and deterministic fallback ranking path.
+- **Risk:** Documentation lag near deadline.
+  - **Mitigation:** Attach evidence artifacts to weekly tracker updates, not only at finalization.

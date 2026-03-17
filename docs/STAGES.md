@@ -198,7 +198,7 @@ Reference: `docs/API_STAGE1_CONTRACT.md`
 - Documentation of model logic and tradeoffs
 
 ### Progress So Far
-⏳ **Not Started** - Planned: personal risk scoring engine and smart alert ranking.
+⏳ **Not Started (Implementation)** - Stage 2 kickoff planning is documented in `docs/PLANNING_STAGES.md`; implementation tasks (S2-01 through S2-09) have not started yet.
 
 ---
 
