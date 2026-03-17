@@ -14,6 +14,8 @@ Our goal for the CMPS 357 final project is to build a unique web-app extension w
 - Stage-by-stage implementation plan: [docs/STAGES.md](./docs/STAGES.md)
 - Execution tracker and evidence log: [docs/TODO.md](./docs/TODO.md)
 - Stage 2 implementation spec lock: [docs/STAGE2_IMPLEMENTATION_SPEC.md](./docs/STAGE2_IMPLEMENTATION_SPEC.md)
+- AI usage transcript: [docs/TRANSCRIPT.md](./docs/TRANSCRIPT.md)
+- AI usage reflection: [docs/REFLECTION.md](./docs/REFLECTION.md)
 - User walkthrough for web extension: [USER_GUIDE.md](./USER_GUIDE.md)
 - Stage 1 API contract: [docs/API_STAGE1_CONTRACT.md](./docs/API_STAGE1_CONTRACT.md)
 - Stage 1 verification evidence: [docs/STAGE1_VERIFICATION_EVIDENCE.md](./docs/STAGE1_VERIFICATION_EVIDENCE.md)
