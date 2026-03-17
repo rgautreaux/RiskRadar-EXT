@@ -1,5 +1,9 @@
-from services.alert_prioritization import AlertPriorityInput, compute_priority, sort_prioritized_alerts
-from services.risk_scoring import RiskFactors, UserSensitivities, compute_risk_score
+from backend.services.alert_prioritization import (
+    AlertPriorityInput,
+    compute_priority,
+    sort_prioritized_alerts,
+)
+from backend.services.risk_scoring import RiskFactors, UserSensitivities, compute_risk_score
 
 
 def test_risk_score_scaffolding_is_deterministic():

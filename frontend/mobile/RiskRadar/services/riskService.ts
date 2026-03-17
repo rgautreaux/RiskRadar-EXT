@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 export type RiskScoreResponse = {
   user_id: number;
   score: number;

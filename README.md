@@ -225,7 +225,7 @@ Recommended update order when progress changes:
 | Stage | Title | Status | Last Updated | Scope | Notes |
 |---|---|---|---|---|---|
 | 1 | Web-App Extension | Completed | 2026-03-13 | **Required** | Stage 1 dashboard MVP, API integration layer, security/reliability controls, setup docs, and responsive/web-distinctness verification evidence are complete. See `docs/TODO.md`, `docs/API_STAGE1_CONTRACT.md`, and `docs/STAGE1_VERIFICATION_EVIDENCE.md`. |
-| 2 | Environmental Risk Assessment and Alert Prioritization Extensions | Not Started | 2026-03-17 | **Required** | Kickoff plan + policy lock are documented in `docs/PLANNING_STAGES.md` and `docs/STAGE2_IMPLEMENTATION_SPEC.md`; scaffolding is prepared for S2-02/S2-03/S2-08. Target: Week of 2026-04-28. |
+| 2 | Environmental Risk Assessment and Alert Prioritization Extensions | In Progress | 2026-03-17 | **Required** | Kickoff plan + policy lock are documented in `docs/PLANNING_STAGES.md` and `docs/STAGE2_IMPLEMENTATION_SPEC.md`; backend/web/mobile scaffolding is in place and S2-01/S2-05 are active. Target: Week of 2026-04-28. |
 | 3 | Data Visualization and User Experience Extensions | Not Started | 2026-03-10 | Optional/Stretch | Interactive Plotly-based risk map. Planned only if Stage 2 completes early. |
 | 4 | Predictive Analytics and AI-Driven Insights Extensions | Not Started | 2026-03-10 | Optional/Stretch | 24-48 hour forecasting + RiskRadar AI Assistant. Planned only if time permits after Stage 3. |
 

@@ -208,7 +208,7 @@ Reference: `docs/STAGE2_IMPLEMENTATION_SPEC.md`
 - Documentation of model logic and tradeoffs
 
 ### Progress So Far
-⏳ **Not Started (Implementation)** - Stage 2 kickoff planning is documented in `docs/PLANNING_STAGES.md`; implementation tasks (S2-01 through S2-09) have not started yet.
+🔄 **In Progress (Kickoff + Scaffolding)** - Stage 2 policy lock is documented in `docs/STAGE2_IMPLEMENTATION_SPEC.md`, kickoff planning is tracked in `docs/PLANNING_STAGES.md`, and initial backend/web/mobile scaffolding is prepared for S2-02/S2-03/S2-08 implementation.
 
 ---
 
