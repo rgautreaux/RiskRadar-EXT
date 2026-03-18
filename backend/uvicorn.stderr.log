@@ -1,0 +1,27 @@
+INFO:     Started server process [456]
+INFO:     Waiting for application startup.
+2026-03-12 13:14:51,390 scrapers.registry INFO Skipping legacy scraper 'firms': NASA_FIRMS_MAP_KEY not set
+2026-03-12 13:14:51,396 scrapers.registry INFO Registry loaded: 4 scrapers total
+2026-03-12 13:14:51,397 apscheduler.scheduler INFO Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-12 13:14:51,399 scrapers.scheduler INFO Registered scraper 'nws': interval=30m, first_run=+0m
+2026-03-12 13:14:51,400 apscheduler.scheduler INFO Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-12 13:14:51,401 scrapers.scheduler INFO Registered scraper 'airnow': interval=30m, first_run=+1m
+2026-03-12 13:14:51,401 apscheduler.scheduler INFO Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-12 13:14:51,401 scrapers.scheduler INFO Registered scraper 'epa': interval=60m, first_run=+3m
+2026-03-12 13:14:51,402 apscheduler.scheduler INFO Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-12 13:14:51,402 scrapers.scheduler INFO Registered scraper 'api_usgs_earthquakes': interval=30m, first_run=+7m
+2026-03-12 13:14:51,403 apscheduler.scheduler INFO Added job "NWSScraper.run" to job store "default"
+2026-03-12 13:14:51,404 apscheduler.scheduler INFO Added job "AirNowScraper.run" to job store "default"
+2026-03-12 13:14:51,404 apscheduler.scheduler INFO Added job "EPAScraper.run" to job store "default"
+2026-03-12 13:14:51,404 apscheduler.scheduler INFO Added job "GenericAPIScraper.run" to job store "default"
+2026-03-12 13:14:51,405 apscheduler.scheduler INFO Scheduler started
+2026-03-12 13:14:51,405 scrapers.scheduler INFO Scheduler started — 4 scrapers registered
+INFO:     Application startup complete.
+2026-03-12 13:14:51,406 apscheduler.executors.default INFO Running job "NWSScraper.run (trigger: interval[0:30:00], next run at: 2026-03-12 13:44:51 CDT)" (scheduled at 2026-03-12 18:14:51.390001+00:00)
+ERROR:    [Errno 13] error while attempting to bind on address ('127.0.0.1', 8000): [winerror 10013] an attempt was made to access a socket in a way forbidden by its access permissions
+INFO:     Waiting for application shutdown.
+2026-03-12 13:14:58,342 httpx INFO HTTP Request: GET https://api.weather.gov/alerts/active?point=34.0522%2C-118.2437 "HTTP/1.1 200 OK"
+2026-03-12 13:14:58,350 scrapers.base_scraper INFO [nws] fetched=1 new=0
+2026-03-12 13:14:58,359 apscheduler.executors.default INFO Job "NWSScraper.run (trigger: interval[0:30:00], next run at: 2026-03-12 13:44:51 CDT)" executed successfully
+2026-03-12 13:14:58,360 apscheduler.scheduler INFO Scheduler has been shut down
+INFO:     Application shutdown complete.

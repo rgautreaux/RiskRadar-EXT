@@ -1,0 +1,28 @@
+INFO:     Started server process [21400]
+INFO:     Waiting for application startup.
+2026-03-12 13:15:30,864 scrapers.registry INFO Skipping legacy scraper 'firms': NASA_FIRMS_MAP_KEY not set
+2026-03-12 13:15:30,870 scrapers.registry INFO Registry loaded: 4 scrapers total
+2026-03-12 13:15:30,872 apscheduler.scheduler INFO Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-12 13:15:30,873 scrapers.scheduler INFO Registered scraper 'nws': interval=30m, first_run=+0m
+2026-03-12 13:15:30,874 apscheduler.scheduler INFO Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-12 13:15:30,875 scrapers.scheduler INFO Registered scraper 'airnow': interval=30m, first_run=+1m
+2026-03-12 13:15:30,875 apscheduler.scheduler INFO Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-12 13:15:30,875 scrapers.scheduler INFO Registered scraper 'epa': interval=60m, first_run=+3m
+2026-03-12 13:15:30,876 apscheduler.scheduler INFO Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-12 13:15:30,876 scrapers.scheduler INFO Registered scraper 'api_usgs_earthquakes': interval=30m, first_run=+7m
+2026-03-12 13:15:30,877 apscheduler.scheduler INFO Added job "NWSScraper.run" to job store "default"
+2026-03-12 13:15:30,878 apscheduler.scheduler INFO Added job "AirNowScraper.run" to job store "default"
+2026-03-12 13:15:30,878 apscheduler.scheduler INFO Added job "EPAScraper.run" to job store "default"
+2026-03-12 13:15:30,878 apscheduler.scheduler INFO Added job "GenericAPIScraper.run" to job store "default"
+2026-03-12 13:15:30,878 apscheduler.scheduler INFO Scheduler started
+2026-03-12 13:15:30,879 scrapers.scheduler INFO Scheduler started — 4 scrapers registered
+INFO:     Application startup complete.
+2026-03-12 13:15:30,879 apscheduler.executors.default INFO Running job "NWSScraper.run (trigger: interval[0:30:00], next run at: 2026-03-12 13:45:30 CDT)" (scheduled at 2026-03-12 18:15:30.864659+00:00)
+INFO:     Uvicorn running on http://127.0.0.1:8001 (Press CTRL+C to quit)
+2026-03-12 13:15:32,338 httpx INFO HTTP Request: GET https://api.weather.gov/alerts/active?point=34.0522%2C-118.2437 "HTTP/1.1 200 OK"
+2026-03-12 13:15:32,345 scrapers.base_scraper INFO [nws] fetched=1 new=0
+2026-03-12 13:15:32,352 apscheduler.executors.default INFO Job "NWSScraper.run (trigger: interval[0:30:00], next run at: 2026-03-12 13:45:30 CDT)" executed successfully
+2026-03-12 13:16:30,869 apscheduler.executors.default INFO Running job "AirNowScraper.run (trigger: interval[0:30:00], next run at: 2026-03-12 13:46:30 CDT)" (scheduled at 2026-03-12 18:16:30.864659+00:00)
+2026-03-12 13:16:31,895 httpx INFO HTTP Request: GET https://www.airnowapi.org/aq/observation/zipCode/current/?format=application%2Fjson&zipCode=90001&distance=25&API_KEY=B77FFDEA-971C-4B29-A506-0254F5C893D6 "HTTP/1.1 200 "
+2026-03-12 13:16:31,906 scrapers.base_scraper INFO [airnow] fetched=2 new=2
+2026-03-12 13:16:31,912 apscheduler.executors.default INFO Job "AirNowScraper.run (trigger: interval[0:30:00], next run at: 2026-03-12 13:46:30 CDT)" executed successfully

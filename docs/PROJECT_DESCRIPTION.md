@@ -33,7 +33,7 @@ The extension is structured around four staged development goals:
 2. **Environmental Risk Assessment and Alert Prioritization**  
 	Add a personalized risk scoring engine and smart alert ordering based on severity, proximity, and user sensitivity factors.
 
-3. **Data Visualization and UX Extension**  
+3. **Data Visualization and User Experience Extensions**  
 	Introduce an interactive risk map experience to help users interpret spatial environmental patterns more effectively.
 
 4. **Predictive Analytics and AI-Driven Insights**  
@@ -83,6 +83,6 @@ In course terms, the project demonstrates:
 
 ## Long-Term Vision
 
-RiskRadar’s long-term vision is to become a reliable environmental risk companion that combines real-time awareness with personalized, explainable guidance. The CMPS 357 extension establishes the groundwork for that direction by broadening platform reach (web), improving insight quality (scoring and prioritization), and preparing for forward-looking support (forecasting and assistant capabilities).
+RiskRadar’s long-term vision is to become a reliable environmental risk companion that combines real-time awareness with personalized, explainable guidance. The CMPS 357 extension establishes the groundwork for that direction by broadening platform reach (web), improving insight quality (scoring and prioritization), and preparing for forward-looking support (forecasting and RiskRadar AI Assistant capabilities).
 
 By unifying environmental monitoring, interpretation, and communication, this project aims to help users make safer and more informed day-to-day and travel decisions.

@@ -2,11 +2,42 @@
 
 This document provides a complete, stage-by-stage implementation plan aligned with the required extension work in `docs/INSTRUCTIONS.md`. The format and structure follow the same style used in `EXAMPLE_STAGES.md` for consistency, readability, and professional reporting.
 
+## Navigation Quick Links
+
+- Requirements source: [INSTRUCTIONS.md](./INSTRUCTIONS.md)
+- Task tracker and weekly evidence: [TODO.md](./TODO.md)
+- Status authority for stage table: [../README.md](../README.md)
+- User-facing usage guide: [../USER_GUIDE.md](../USER_GUIDE.md)
+- Planning timeline details: [PLANNING_DOCS/PLANNING_STAGES.md](./PLANNING_DOCS/PLANNING_STAGES.md)
+- Stage 1 endpoint contract: [PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md](./PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md)
+- Stage 1 verification evidence: [PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md](./PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md)
+- Stage 2 implementation spec: [PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md](./PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md)
+- Stage 2 endpoint contract: [PLANNING_DOCS/STAGE2_DOCS/API_STAGE2_CONTRACT.md](./PLANNING_DOCS/STAGE2_DOCS/API_STAGE2_CONTRACT.md)
+- Stage 2 verification evidence: [PLANNING_DOCS/STAGE2_DOCS/STAGE2_VERIFICATION_EVIDENCE.md](./PLANNING_DOCS/STAGE2_DOCS/STAGE2_VERIFICATION_EVIDENCE.md)
+
 ## Stage Alignment Note
 
 - This plan maps directly to Stages 1-4 in `docs/INSTRUCTIONS.md`.
 - Each stage includes implementation tasks, deliverables, and verification expectations.
 - Stage progress markers should be updated as work is completed.
+
+Recommended sync order when updating progress:
+1. Update implementation evidence and task status in [TODO.md](./TODO.md)
+2. Update stage narrative and completion notes in [STAGES.md](./STAGES.md)
+3. Synchronize top-level stage status in [../README.md](../README.md)
+4. If user workflow changed, update [../USER_GUIDE.md](../USER_GUIDE.md)
+
+## Scope and Timeline
+
+**Required Deliverables (Target: April 29, 2026):**
+- **Stage 1**: Web-App Extension (Priority 1)
+- **Stage 2**: Environmental Risk Assessment and Alert Prioritization Extensions (Priority 2)
+  - Step 1: Personal Risk Scoring Engine
+  - Step 2: Smart Alert Prioritization System
+
+**Optional Stretch Goals (If Time Permits):**
+- **Stage 3**: Data Visualization and User Experience Extensions (contingent on Stage 2 completion)
+- **Stage 4**: Predictive Analytics and AI-Driven Insights Extensions (contingent on Stage 3 completion)
 
 **Status Legend**
 - **Not Started**: Requirements are defined, but implementation has not begun.
@@ -15,60 +46,113 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 
 ---
 
-## Stage 1: Web-App Extension
+## Stage 1: Web-App Extension (Completed)
 
-**Objective**: Build a web-application extension of RiskRadar that uses the existing backend and data sources while providing a unique frontend experience.
+**Objective**: Build a web-application extension of RiskRadar that uses the existing backend and data sources while providing a unique frontend experience. *(REQUIRED - Target Completion: Week of March 31, 2026)*
 
 ### Tasks:
 1. **Define the web extension architecture**
    - Document how the PHP web app communicates with backend API routes.
-   - Identify reusable backend endpoints (alerts, summaries, users).
+   - Identify reusable backend endpoints (alerts, summaries, users) and document method, params, response shape, and fallback behavior.
+   - Maintain the Stage 1 API contract matrix in `docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md`.
    - Define URL/environment configuration for local and deployed usage.
 
 2. **Create web-app project structure**
-   - Add a dedicated web-app directory (for example, `web/` or `frontend/web/`).
+   - Keep the existing Expo mobile app under `frontend/mobile/` and build the dedicated PHP web app under `frontend/web/` with organized subdirectories for views, components, services, and assets.
    - Organize views, reusable PHP components, API client helpers, and assets.
-   - Add `.env.example` (or config template) for API base URL and environment settings.
+   - Add `.env.example` (or config template) for API base URL, API prefix (`/api/v1`), and timeout settings.
 
 3. **Implement backend connectivity from PHP**
-   - Create PHP service wrappers for backend endpoints.
-   - Implement robust HTTP error handling (timeouts, non-2xx, malformed responses).
+   - Create PHP service wrappers for existing backend endpoints (alerts, summaries, user data).
+   - Handle authentication (if needed) and include necessary headers.
+   - Implement robust HTTP error handling (timeouts, non-2xx, malformed responses) with user-safe fallback messages.
    - Normalize response objects for use by presentation templates.
 
 4. **Design and implement unique web UI screens**
-   - Build a web homepage/dashboard distinct from the mobile experience.
-   - Add core feature pages for alerts, summaries, and user profile/preferences.
+   - Build a web homepage/dashboard distinct from the mobile experience as the Stage 1 MVP vertical slice.
+   - Add scaffolded core pages for alerts, summaries, and user profile/preferences (placeholder-ready if full implementation is deferred).
    - Ensure consistent navigation and responsive layout behavior.
 
 5. **Add security and reliability essentials**
-   - Validate and sanitize all user inputs in forms and query parameters.
+   - Validate and sanitize all user inputs in forms and query parameters using allowlists where possible.
+   - Escape rendered output in PHP templates and use CSRF protection for form submissions.
    - Avoid exposing secrets in source code or client-side payloads.
-   - Add defensive rendering for missing/null API fields.
+   - Add defensive rendering for missing/null API fields and retry-safe timeout handling.
 
 6. **Document setup and usage**
    - Add run instructions for local PHP server and backend startup.
    - Document required environment variables and expected API availability.
    - Include screenshots or sample flows in docs.
 
+### Stage 1 Implementation Boundary (MVP First)
+- **In Scope for Stage 1 completion**:
+  - Dashboard vertical slice in `frontend/web/` with alerts summary/stats and latest summary.
+  - Working API wrapper layer for alerts, summaries, and user preference/register pathways.
+  - Navigation plus scaffolded alerts/summaries/profile pages.
+  - Setup/run documentation and Stage 1 verification evidence.
+- **Out of Scope for Stage 1 (deferred to later stages or follow-on iteration)**:
+  - Personalized risk scoring logic and smart alert ranking.
+  - Interactive risk map.
+  - Predictive analytics and AI assistant enhancements.
+
+### Web Distinctness Criteria (Stage 1 Definition of Done)
+- Dashboard uses desktop-oriented information density (multi-card stats + latest summary context in one view).
+- Navigation and layout patterns are web-native and not a direct mirror of the mobile screen flow.
+- At least one comparative/overview element is included (for example: "top alerts now" with latest summary snapshot).
+- Keyboard-friendly navigation and responsive behavior are verified on common viewport sizes.
+
+### Stage 1 API Contract Snapshot
+Reference: `docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md`
+
+| Route | Method | Request Inputs | Response Model | Fallback Behavior |
+|---|---|---|---|---|
+| `/api/v1/alerts` | GET | Query: `alert_type?`, `severity?`, `source?`, `limit<=200`, `offset` | `list[AlertOut]` | Treat non-2xx/timeout/malformed payload as empty list with user-safe message. |
+| `/api/v1/alerts/stats` | GET | None | `AlertStats` | Render zero-state stats card if request fails. |
+| `/api/v1/alerts/{alert_id}` | GET | Path: `alert_id:int` | `AlertOut` | Handle `404` as not-found state; do not crash page rendering. |
+| `/api/v1/summaries` | GET | Query: `summary_type?`, `limit?` | `list[SummaryOut]` | Render empty summaries state on failure/empty payload. |
+| `/api/v1/summaries/latest` | GET | None | `SummaryOut | null` | Render "no summary available" panel when null/error. |
+| `/api/v1/summaries/generate` | POST | None | `SummaryOut` | Handle `404` as "no alerts to summarize"; keep dashboard usable. |
+| `/api/v1/users/register` | POST | JSON `UserCreate` | `UserOut` | Handle `400` duplicate email with inline validation message. |
+| `/api/v1/users/{user_id}/preferences` | PUT | Path: `user_id:int`, JSON `UserPrefsUpdate` | `UserOut` | Handle `404` user-not-found with non-blocking UI error state. |
+
 ### Verification Checklist:
-- Web app loads successfully and connects to backend APIs.
-- Core pages render and handle API errors gracefully.
-- UI is responsive and functionally distinct from mobile app interface.
+- Web app loads successfully and connects to backend APIs from local config template values.
+- Dashboard renders live data and shows safe fallback UI for timeout, non-2xx, and malformed/empty payload paths.
+- Stage 1 MVP pages (dashboard + scaffolded alerts/summaries/profile) route correctly.
+- UI is responsive and functionally distinct from mobile interface at 360px, 768px, and 1280px viewports.
+- Verification evidence includes screenshots/walkthrough notes for success and failure states.
 
 **Deliverables**:
 - Web app extension codebase (PHP frontend)
 - API integration layer in PHP
+- Stage 1 endpoint contract matrix (`docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md`)
 - Setup and run documentation
 - Basic usability verification evidence (screenshots and/or walkthrough)
 
 ### Progress So Far
-🔄 **In Progress** - Building a unique PHP web interface connected to existing backend APIs.
+**Completed** - Stage 1 deliverables are implemented and documented, including dashboard-first web MVP pages, API wrapper integration, security/reliability controls, setup/run guidance, and responsive/web-distinctness verification evidence. See `docs/TODO.md`, `docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md`, and `docs/PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md`.
 
 ---
 
 ## Stage 2: Environmental Risk Assessment and Alert Prioritization Extensions
 
-**Objective**: Extend backend intelligence by introducing personalized risk scoring and smart alert prioritization for both mobile and web clients.
+**Objective**: Extend backend intelligence by introducing personalized risk scoring and smart alert prioritization for both mobile and web clients. *(REQUIRED - Target Completion: Week of April 28, 2026)*
+
+### Stage 2 Dedicated Artifacts
+
+- Endpoint contract matrix: `docs/PLANNING_DOCS/STAGE2_DOCS/API_STAGE2_CONTRACT.md`
+- Verification evidence log: `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_VERIFICATION_EVIDENCE.md`
+- Policy lock reference: `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`
+
+### Stage 2 Kickoff Policy Lock (2026-03-17)
+Reference: `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`
+
+- **Scoring model locked**: 0-100 normalized weighted sum with tier labels (`Low 0-39`, `Medium 40-69`, `High 70-100`).
+- **Sensitivity contract locked**: 0-5 per factor, with defaults for existing users.
+- **Prioritization formula locked**: weighted risk contribution + distance + severity + sensitivity match.
+- **Tie-break policy locked**: severity score, then freshness (`fetched_at`), then alert ID.
+- **Compatibility strategy locked**: preserve Stage 1 `/api/v1/alerts` behavior and introduce `/api/v1/alerts/prioritized` for Stage 2 metadata.
+- **Scaffolding prepared**: backend service modules, web risk view integration points, and mobile data-service hooks are now staged for implementation handoff.
 
 ### Step 1: Personal Risk Scoring Engine
 
@@ -135,13 +219,13 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 - Documentation of model logic and tradeoffs
 
 ### Progress So Far
-⏳ **Not Started** - Planned: personal risk scoring engine and smart alert ranking.
+🔄 **In Progress (Kickoff + Scaffolding)** - Stage 2 policy lock is documented in `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`, kickoff planning is tracked in `docs/PLANNING_DOCS/PLANNING_STAGES.md`, and initial backend/web/mobile scaffolding is prepared for S2-02/S2-03/S2-08 implementation.
 
 ---
 
 ## Stage 3: Data Visualization and User Experience Extensions
 
-**Objective**: Add an interactive risk map experience that helps users explore and understand environmental risk conditions spatially.
+**Objective**: Add an interactive risk map experience that helps users explore and understand environmental risk conditions spatially. *(OPTIONAL STRETCH GOAL - Only if Stage 2 completes early)*
 
 ### Step 1: Interactive Risk Map (UI Extension)
 
@@ -189,7 +273,7 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 
 ## Stage 4: Predictive Analytics and AI-Driven Insights Extensions
 
-**Objective**: Extend RiskRadar with short-horizon risk forecasting and an AI assistant that helps users interpret conditions, alerts, and travel implications.
+**Objective**: Extend RiskRadar with short-horizon risk forecasting and an AI assistant that helps users interpret conditions, alerts, and travel implications. *(OPTIONAL STRETCH GOAL - Only if Stage 3 completes early)*
 
 ### Step 1: Predictive Environmental Risk (AI/Data Extension)
 
@@ -224,7 +308,7 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 #### Tasks:
 1. **Define assistant scope and guardrails**
    - Focus on interpreting environmental conditions, alerts, and travel risk context.
-   - Restrict to informational guidance (non-medical, non-emergency replacement).
+   - Restrict to informational guidance (non-medical and not a replacement for emergency services).
    - Define safe fallback messaging when confidence is low.
 
 2. **Implement assistant backend integration**
@@ -255,7 +339,7 @@ This document provides a complete, stage-by-stage implementation plan aligned wi
 - Updated documentation for usage and interpretation
 
 ### Progress So Far
-⏳ **Not Started** - Planned: 24-48h forecasting and RiskRadar assistant integration.
+⏳ **Not Started** - Planned: 24-48 hour forecasting and RiskRadar AI Assistant integration.
 
 ---
 

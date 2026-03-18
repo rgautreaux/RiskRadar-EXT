@@ -1,10 +1,10 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, EmailStr
 from typing import Optional
 
 
 class UserCreate(BaseModel):
     display_name: str
-    email: str
+    email: EmailStr
     password: str
     zip_code: Optional[str] = None
 
@@ -25,5 +25,4 @@ class UserOut(BaseModel):
     notify_severity: Optional[str] = None
     created_at: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
