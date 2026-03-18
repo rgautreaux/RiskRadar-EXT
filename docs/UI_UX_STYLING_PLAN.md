@@ -413,7 +413,7 @@ Checklist:
 
 Purpose:
 
-- Rebuild the home screen to match the wireframe’s main dashboard layout.
+Rebuild the home screen to match the wireframe’s main dashboard layout.
 
 Checklist:
 
@@ -421,6 +421,9 @@ Checklist:
 - [ ] Add a branded header with RiskRadar logo treatment.
 - [ ] Add a top summary area for location/context and high-priority risk information.
 - [ ] Add wireframe-style data cards for weather, air quality, pollen, and hazard alerts.
+	- [ ] Weather card must display both the exact temperature and the "feels like" temperature (factoring in wind chill and other environmental conditions).
+	- [ ] Weather card should provide advice on how to dress and what to pack for travelers, based on current and forecasted conditions.
+	- [ ] Prompt users for their expected length of stay in the location and offer a packing guide tailored to the weather in the region.
 - [ ] Use hazard icons from the wireframe asset set instead of placeholder illustrations.
 - [ ] Ensure card spacing and hierarchy visually match the mobile wireframe.
 - [ ] Use a standard `ScrollView` layout, not `ParallaxScrollView`.
