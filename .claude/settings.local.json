@@ -1,7 +1,33 @@
 {
   "permissions": {
     "allow": [
-      "Bash(\"C:/Users/quihu/OneDrive/Desktop/School work/Team6Project/backend/config/settings.py\":*)"
+      "Bash(\"C:/Users/quihu/OneDrive/Desktop/School work/Team6Project/backend/config/settings.py\":*)",
+      "Bash(ls \"C:/Users/quihu/OneDrive/Desktop/School work/Team6Project/frontend/RiskRadar/app/\\(tabs\\)/_layout.tsx\")",
+      "Bash(npx expo:*)",
+      "Bash(npm install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(where python:*)",
+      "Bash(where python3:*)",
+      "Bash(where py:*)",
+      "Bash(ls \"/c/Python\"*)",
+      "Read(//c/Users/quihu/AppData/Local/Programs/**)",
+      "Bash(curl -s http://localhost:8000/api/v1/alerts/stats)",
+      "Bash(curl -s http://localhost:8000/api/v1/summaries/latest)",
+      "Bash(curl -s http://localhost:8000/api/v1/health)",
+      "Bash(curl -s -X POST http://localhost:8000/api/v1/summaries/generate)",
+      "Bash(curl -s -X POST http://localhost:8000/api/v1/summaries/generate -v)",
+      "Bash(ipconfig)",
+      "Bash(find '/c/Users/quihu/OneDrive/Desktop/School work/Team6Project' -type f \\\\\\(-name *.env* -o -name *config* -o -name settings* \\\\\\))",
+      "Bash(curl -s -X POST http://localhost:8000/api/v1/users/register -H \"Content-Type: application/json\" -d '{\"\"display_name\"\":\"\"Test User\"\",\"\"email\"\":\"\"test@test.com\"\",\"\"password\"\":\"\"password123\"\"}')",
+      "Bash(curl -s -X POST http://localhost:8000/api/v1/users/login -H \"Content-Type: application/json\" -d '{\"\"email\"\":\"\"test@test.com\"\",\"\"password\"\":\"\"password123\"\"}')",
+      "Bash(curl -s \"http://localhost:8000/api/v1/alerts/?limit=3\")",
+      "Bash(python3 -m json.tool)",
+      "Bash(curl -s http://localhost:8000/api/v1/alerts/?limit=3)",
+      "Bash(py -m json.tool)",
+      "Bash(curl -s http://localhost:8000/api/v1/alerts/?limit=2)",
+      "Bash(curl -s \"http://localhost:8000/api/v1/alerts/1\")",
+      "Bash(curl -s \"http://localhost:8000/api/v1/alerts/?limit=3&zip_code=70506\")",
+      "Bash(curl -s \"http://localhost:8000/api/v1/location/info?zip_code=70506\")"
     ]
   }
 }
