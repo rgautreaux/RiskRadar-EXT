@@ -100,15 +100,41 @@ class Summarizer:
         logger.info(f"Daily digest generated: {len(alerts)} alerts, {tokens} tokens")
         return summary
 
-    def generate_breaking_summary(self, alert: Alert) -> str:
-        """Short summary for push notifications."""
-        alert_data = {
-            "type": alert.alert_type,
-            "title": alert.title,
-            "description": (alert.description or "")[:300],
-            "location": alert.location_name,
-            "severity": alert.severity,
-        }
-        user_msg = BREAKING_USER.format(alert_json=json.dumps(alert_data))
-        text, _ = self._call_llm(BREAKING_SYSTEM, user_msg)
-        return text
+    def generate_local_digest(
+        self, db: Session, alerts: list, city: str, state: str, zip_code: str
+    ) -> "Summary":
+        """Generate a summary scoped to a specific location."""
+        alerts_data = [
+            {
+                "type": a.alert_type,
+                "severity": a.severity,
+                "title": a.title,
+                "description": (a.description or "")[:500],
+                "location": a.location_name,
+                "time": a.event_start,
+            }
+            for a in alerts
+        ]
+
+        user_msg = DAILY_DIGEST_USER.format(
+            count=len(alerts),
+            date=date.today().strftime("%B %d, %Y"),
+            alerts_json=json.dumps(alerts_data, indent=2),
+        )
+
+        text, tokens = self._call_llm(DAILY_DIGEST_SYSTEM, user_msg)
+
+        summary = Summary(
+            title=f"Local Digest for {city}, {state} — {date.today().strftime('%b %d, %Y')}",
+            content=text,
+            summary_type="local",
+            alert_ids=json.dumps([a.id for a in alerts]),
+            region=f"{city}, {state} {zip_code}",
+            model_used=settings.LLM_MODEL,
+            token_count=tokens,
+        )
+        db.add(summary)
+        db.commit()
+        db.refresh(summary)
+        logger.info(f"Local digest for {city}, {state}: {len(alerts)} alerts, {tokens} tokens")
+        return summary

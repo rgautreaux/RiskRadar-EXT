@@ -64,13 +64,15 @@ export default function WeatherReport() {
 
         // Fetch location info, on-demand alerts, and latest summary in parallel
         const promises: Promise<any>[] = [
-          apiFetch<Summary | null>('/summaries/latest').catch(() => null),
+          apiFetch<Summary | null>(`/summaries/latest/local?zip_code=${zipCode}`).catch(() => null)
         ];
 
         if (isValidZip) {
           promises.push(
             apiFetch<LocationInfo>(`/location/info?zip_code=${zipCode}`).catch(() => null),
             apiFetch<AlertItem[]>(`/location/alerts?zip_code=${zipCode}`).catch(() => []),
+            apiFetch<Summary | null>(`/summaries/generate/local?zip_code=${zipCode}`, { method: 'POST' }).catch(() => null),
+            apiFetch<Summary | null>(`/summaries/latest/local?zip_code=${zipCode}`).catch(() => null)
           );
         } else {
           promises.push(Promise.resolve(null), Promise.resolve([]));
