@@ -22,6 +22,7 @@ Replace the Expo starter UI with a branded, wireframe-accurate RiskRadar mobile 
 - Primary planning docs in active use are `docs/TODO.md` (sprint/stage board) and this plan (`docs/UI_UX_STYLING_PLAN.md`).
 - There is currently no separate `STAGES` file under `docs/`; stage tracking is represented by sprint phases in `docs/TODO.md`.
 - The "Precise Screen-by-Screen Wiring Checklist" section in this plan is the current source of truth for route-level implementation order and acceptance criteria.
+- Mar 18 documentation sync pass: progress checkboxes were reconciled with completed Rebecca-track PR outcomes (R1/R2/R3), while pending cross-team polish and QA items remain explicitly open.
 
 ## Current Frontend Baseline
 
