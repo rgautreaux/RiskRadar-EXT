@@ -73,21 +73,11 @@ Week-by-week sprint board for tracking delivery to the goal of having most imple
 **Owners:** Qui, Max, Rebecca
 
 ### To Do
-- [ ] 🟡 Audit sources in `backend/config/sources.yaml`
-- [ ] 🟡 Run and verify SQL migrations in `backend/db/migrations/`
 
 ### In Progress
-- [ ] 🟡 Move active tasks here
 
 ### Done
-- [x] 🟢 Verify scraper normalization for required `alerts` fields (covered by `backend/tests/test_scrapers.py` and `backend/tests/test_scraper_db_integration.py`)
-- [x] 🟢 Validate dedup behavior on (`source`, `source_id`) (covered by `backend/tests/test_models.py` + scraper integration tests)
-- [x] 🟢 Confirm MariaDB schema alignment with ORM models (`backend/db/migrations/2026-03-03_mariadb_scraper_alignment.sql` + migration notes)
-- [x] 🟢 Add a repeatable local DB setup/verification checklist (documented in `README.md` MariaDB setup + quick verify section)
 
----
-
-## Sprint 3 — API + AI Quality
 
 **Dates:** Mar 23 - Mar 29  
 **Sprint Goal:** Complete core API behavior and improve summary quality/reliability.  
