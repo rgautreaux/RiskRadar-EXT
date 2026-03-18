@@ -18,9 +18,12 @@ export type PrioritizedAlert = {
   urgency_label?: 'low' | 'medium' | 'high';
 };
 
-// Read from app.json `extra.apiBaseUrl`. On Android emulator use
-// `http://10.0.2.2:8000`; on iOS simulator `http://127.0.0.1:8000` works.
-// Override by setting `extra.apiBaseUrl` in app.json or app.config.js.
+// Read the API base URL from app.config.js `extra.apiBaseUrl`, which is
+// populated via the API_BASE_URL environment variable at dev-server start.
+// When the env var is not set this falls back to 127.0.0.1, which works for
+// the iOS simulator and web. For the Android emulator set:
+//   API_BASE_URL=http://10.0.2.2:8000 npx expo start --android
+// For a physical device use your machine's LAN IP instead.
 const DEFAULT_API_BASE: string =
   (Constants.expoConfig?.extra as { apiBaseUrl?: string } | undefined)
     ?.apiBaseUrl ?? 'http://127.0.0.1:8000';
