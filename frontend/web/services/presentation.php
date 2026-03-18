@@ -62,3 +62,51 @@ function rr_build_page_url(string $page): string
 {
     return $page;
 }
+
+function rr_risk_level_label(?float $score): string
+{
+    if ($score === null) {
+        return 'Unavailable';
+    }
+
+    if ($score >= 70.0) {
+        return 'High';
+    }
+
+    if ($score >= 40.0) {
+        return 'Medium';
+    }
+
+    return 'Low';
+}
+
+function rr_format_risk_score(?float $score): string
+{
+    if ($score === null) {
+        return 'Unavailable';
+    }
+
+    return number_format($score, 2);
+}
+
+function rr_priority_label(?string $urgency): string
+{
+    if ($urgency === null) {
+        return 'Priority unavailable';
+    }
+
+    $value = strtolower($urgency);
+    if ($value === 'high') {
+        return 'High Priority';
+    }
+
+    if ($value === 'medium') {
+        return 'Medium Priority';
+    }
+
+    if ($value === 'low') {
+        return 'Low Priority';
+    }
+
+    return 'Priority unavailable';
+}

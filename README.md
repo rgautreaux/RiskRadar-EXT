@@ -8,6 +8,26 @@ Our senior project focuses on developing **RiskRadar**, an environmental risk aw
 
 Our goal for the CMPS 357 final project is to build a unique web-app extension with a distinct frontend interface while extending the platform with features such as personalized risk assessment, interactive mapping, and predictive/AI-supported insights.
 
+## Documentation Quick Links (Grading + Navigation)
+
+**Navigation hubs**
+
+- Scope and requirements: [docs/INSTRUCTIONS.md](./docs/INSTRUCTIONS.md), [docs/PROJECT_DESCRIPTION.md](./docs/PROJECT_DESCRIPTION.md)
+- Planning and stage narrative: [docs/STAGES.md](./docs/STAGES.md), [docs/PLANNING_DOCS/PLANNING_STAGES.md](./docs/PLANNING_DOCS/PLANNING_STAGES.md)
+- Execution tracker and weekly status: [docs/TODO.md](./docs/TODO.md)
+- Status authority and summary snapshot: [README.md](./README.md)
+- Stage 1 evidence and contract: [docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md](./docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md), [docs/PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md](./docs/PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md)
+- Stage 2 implementation spec: [docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md](./docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md)
+- User walkthrough and demo flow: [USER_GUIDE.md](./USER_GUIDE.md)
+- Historical/reference docs index: [docs/PLANNING_DOCS/](./docs/PLANNING_DOCS/)
+
+**Documentation update order (required for sync):**
+1. Update implementation tasks/evidence in [docs/TODO.md](./docs/TODO.md)
+2. Update stage narrative and deliverables in [docs/STAGES.md](./docs/STAGES.md)
+3. Update summary status table in [README.md](./README.md)
+4. If workflow changes, update [USER_GUIDE.md](./USER_GUIDE.md)
+
+
 ---
 
 # CMPS 357 Extension Project Proposal
@@ -140,9 +160,9 @@ Stage 1 (Web-App Extension) is complete as of **2026-03-13** and includes the fo
 |---|---|---|
 | Web app extension codebase | PHP web MVP with dashboard plus scaffolded alerts/summaries/profile views | `frontend/web/public/index.php`, `frontend/web/public/alerts.php`, `frontend/web/public/summaries.php`, `frontend/web/public/profile.php` |
 | API integration layer in PHP | Service wrappers, normalization, validation, and presentation/security helpers | `frontend/web/services/api_client.php`, `frontend/web/services/validators.php`, `frontend/web/services/presentation.php`, `frontend/web/services/bootstrap.php` |
-| Stage 1 endpoint contract matrix | Route/method/input/output/fallback definitions and schema snapshots | `docs/API_STAGE1_CONTRACT.md` |
+| Stage 1 endpoint contract matrix | Route/method/input/output/fallback definitions and schema snapshots | `docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md` |
 | Setup and run documentation | Configuration and local execution instructions for backend + PHP app | `frontend/web/README.md` |
-| Verification evidence | Responsive and web-distinctness checkpoints with implementation signals | `docs/STAGE1_VERIFICATION_EVIDENCE.md`, `docs/TODO.md` |
+| Verification evidence | Responsive and web-distinctness checkpoints with implementation signals | `docs/PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md`, `docs/TODO.md` |
 
 **Implemented web feature set:**
 - Dashboard (`frontend/web/public/index.php`) with alert stats, top alerts snapshot, and latest summary panel.
@@ -158,9 +178,9 @@ Stage 1 (Web-App Extension) is complete as of **2026-03-13** and includes the fo
 - Runtime/env configuration: `frontend/web/config/`
 
 **API contract and backend integration details:**
-- Endpoint matrix and schema snapshots: [`docs/API_STAGE1_CONTRACT.md`](./docs/API_STAGE1_CONTRACT.md)
-- Architecture flow and page-to-endpoint route mapping: [`docs/API_STAGE1_CONTRACT.md`](./docs/API_STAGE1_CONTRACT.md)
-- Local/deployed URL and API-prefix configuration guidance: [`docs/API_STAGE1_CONTRACT.md`](./docs/API_STAGE1_CONTRACT.md)
+- Endpoint matrix and schema snapshots: [`docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md`](./docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md)
+- Architecture flow and page-to-endpoint route mapping: [`docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md`](./docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md)
+- Local/deployed URL and API-prefix configuration guidance: [`docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md`](./docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md)
 
 **Security/reliability controls implemented in Stage 1:**
 - CSRF token verification on profile write paths.
@@ -169,7 +189,7 @@ Stage 1 (Web-App Extension) is complete as of **2026-03-13** and includes the fo
 - Safe fallback behavior for timeout, non-2xx, and malformed JSON responses.
 
 **Verification evidence:**
-- Stage 1 responsive and web-distinctness validation notes: [`docs/STAGE1_VERIFICATION_EVIDENCE.md`](./docs/STAGE1_VERIFICATION_EVIDENCE.md)
+- Stage 1 responsive and web-distinctness validation notes: [`docs/PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md`](./docs/PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md)
 - Stage execution tracker and checklist completion: [`docs/TODO.md`](./docs/TODO.md)
 
 #### Live Runtime Re-Validation (2026-03-17)
@@ -186,6 +206,29 @@ Stage 1 (Web-App Extension) is complete as of **2026-03-13** and includes the fo
 
 ### Additional Features and Extensions
 
+As of 2026-03-17, the web extension has progressed beyond the initial Stage 1 baseline and now includes additional implemented features plus scaffolded extension surfaces:
+
+- New web account flows:
+	- `frontend/web/public/register.php`
+	- `frontend/web/public/login.php`
+- New detail views for read-path depth:
+	- `frontend/web/public/alert_detail.php`
+	- `frontend/web/public/summary_detail.php`
+- Stage 2 kickoff integration page:
+	- `frontend/web/public/risk.php` (wired to planned risk-score and prioritized-alert routes)
+- Stage 3/4 scaffold pages for optional stretch work:
+	- `frontend/web/public/map.php`
+	- `frontend/web/public/forecast.php`
+	- `frontend/web/public/assistant.php`
+
+The web frontend setup and implementation details are maintained in `frontend/web/README.md`, which now documents:
+
+- all current public routes and their behavior,
+- service-layer request/normalization flow,
+- configuration and local runtime guidance,
+- security/validation controls,
+- stage-status snapshot across implemented and scaffolded pages.
+
 
 ---
 
@@ -193,12 +236,17 @@ Stage 1 (Web-App Extension) is complete as of **2026-03-13** and includes the fo
 ## Project Progress
 
 ### Certification of Original Work
-The required Certification of Original Work is included in the [CERTIFICATION.md](./CERTIFICATION.md) file.
+The required Certification of Original Work is included in the [docs/CERTIFICATION.md](./docs/CERTIFICATION.md) file.
 
 ### Stages and Steps
 
 See the full staged implementation plan here: [Project Stages](./docs/STAGES.md)
 Track execution tasks here: [Project TODO Tracker](./docs/TODO.md)
+
+Recommended update order when progress changes:
+1. Update task/evidence rows in [docs/TODO.md](./docs/TODO.md)
+2. Update stage narrative and deliverables in [docs/STAGES.md](./docs/STAGES.md)
+3. Sync status table and summary notes in [README.md](./README.md)
 
 `README.md` remains the source of truth for current stage status values.
 
@@ -208,8 +256,8 @@ Track execution tasks here: [Project TODO Tracker](./docs/TODO.md)
 
 | Stage | Title | Status | Last Updated | Scope | Notes |
 |---|---|---|---|---|---|
-| 1 | Web-App Extension | Completed | 2026-03-13 | **Required** | Stage 1 dashboard MVP, API integration layer, security/reliability controls, setup docs, and responsive/web-distinctness verification evidence are complete. See `docs/TODO.md`, `docs/API_STAGE1_CONTRACT.md`, and `docs/STAGE1_VERIFICATION_EVIDENCE.md`. |
-| 2 | Environmental Risk Assessment and Alert Prioritization Extensions | Not Started | 2026-03-10 | **Required** | Personal risk scoring engine + smart alert prioritization. Target: Week of 2026-04-28. |
+| 1 | Web-App Extension | Completed | 2026-03-13 | **Required** | Stage 1 dashboard MVP, API integration layer, security/reliability controls, setup docs, and responsive/web-distinctness verification evidence are complete. See `docs/TODO.md`, `docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md`, and `docs/PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md`. |
+| 2 | Environmental Risk Assessment and Alert Prioritization Extensions | In Progress | 2026-03-17 | **Required** | Kickoff plan + policy lock are documented in `docs/PLANNING_DOCS/PLANNING_STAGES.md` and `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`; backend/web/mobile scaffolding is in place and S2-01/S2-05 are active. Target: Week of 2026-04-28. |
 | 3 | Data Visualization and User Experience Extensions | Not Started | 2026-03-10 | Optional/Stretch | Interactive Plotly-based risk map. Planned only if Stage 2 completes early. |
 | 4 | Predictive Analytics and AI-Driven Insights Extensions | Not Started | 2026-03-10 | Optional/Stretch | 24-48 hour forecasting + RiskRadar AI Assistant. Planned only if time permits after Stage 3. |
 

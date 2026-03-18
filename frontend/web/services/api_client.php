@@ -219,6 +219,28 @@ function rr_normalize_alert(?array $alert): array
         'event_end' => rr_safe_nullable_string($alert['event_end'] ?? null),
         'fetched_at' => rr_safe_string($alert['fetched_at'] ?? null),
         'created_at' => rr_safe_string($alert['created_at'] ?? null),
+        'priority_score' => rr_safe_nullable_float($alert['priority_score'] ?? null),
+        'urgency_label' => rr_safe_nullable_string($alert['urgency_label'] ?? null),
+        'priority_explanation' => rr_safe_nullable_string($alert['priority_explanation'] ?? null),
+    ];
+}
+
+function rr_normalize_risk_score(?array $payload): ?array
+{
+    if (!is_array($payload)) {
+        return null;
+    }
+
+    $score = rr_safe_nullable_float($payload['score'] ?? null);
+    $baseScore = rr_safe_nullable_float($payload['base_score'] ?? null);
+    $multiplier = rr_safe_nullable_float($payload['multiplier'] ?? null);
+
+    return [
+        'user_id' => (int) ($payload['user_id'] ?? 0),
+        'score' => $score,
+        'level' => rr_safe_string($payload['level'] ?? null, 'low'),
+        'base_score' => $baseScore,
+        'multiplier' => $multiplier,
     ];
 }
 
@@ -282,6 +304,32 @@ function rr_fetch_alerts(array $config, array $filters = []): array
 
     $alerts = array_map('rr_normalize_alert', $result['data']);
     return rr_success_result($alerts, $result['status']);
+}
+
+function rr_fetch_prioritized_alerts(array $config, int $userId, int $limit = 10): array
+{
+    $filters = [
+        'user_id' => $userId,
+        'limit' => max(1, min(50, $limit)),
+    ];
+
+    $result = rr_http_request($config, 'GET', 'alerts/prioritized', $filters);
+    if (!$result['ok'] || !is_array($result['data'])) {
+        return rr_fallback_result([], 'Prioritized alerts are unavailable. Showing an empty list.', $result['status'] ?? null);
+    }
+
+    $alerts = array_map('rr_normalize_alert', $result['data']);
+    return rr_success_result($alerts, $result['status']);
+}
+
+function rr_fetch_user_risk_score(array $config, int $userId): array
+{
+    $result = rr_http_request($config, 'GET', 'users/' . $userId . '/risk-score');
+    if (!$result['ok']) {
+        return rr_fallback_result(null, 'Risk scoring data is unavailable right now.', $result['status'] ?? null);
+    }
+
+    return rr_success_result(rr_normalize_risk_score(is_array($result['data']) ? $result['data'] : null), $result['status']);
 }
 
 function rr_fetch_latest_summary(array $config): array

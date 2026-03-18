@@ -8,11 +8,11 @@ Use this table for daily check-ins and updates.
 
 | Workstream | Lane Owner | Secondary Owner | Start Date | Target Due Date | Status | Notes |
 |---|---|---|---|---|---|---|
-| Phase 0: Kickoff and Mapping | TBD | TBD | TBD | TBD | Not Started | Mapping matrix, icon matrix, and acceptance checklist |
-| Phase 1: Shared Foundation | TBD | TBD | TBD | TBD | Not Started | Shared layout, global CSS patterns, hybrid icon foundation |
-| Phase 2: Core Functional Page Parity | TBD | TBD | TBD | TBD | Not Started | Dashboard, Alerts, Summaries, Profile, Login, Register, Risk |
-| Phase 3: Scaffold and Detail Shell Parity | TBD | TBD | TBD | TBD | Not Started | Map, Forecast, Assistant, Alert Detail, Summary Detail |
-| Phase 4: Global Consistency and Signoff | TBD | TBD | TBD | TBD | Not Started | Consistency sweep, responsive checks, accessibility spot checks |
+| Phase 0: Kickoff and Mapping | Rebecca | Max | 2026-03-17 | TBD | In Review | Rebecca tasks complete; awaiting Max co-review |
+| Phase 1: Shared Foundation | Rebecca | Max | TBD | TBD | Not Started | Shared layout, global CSS patterns, hybrid icon foundation |
+| Phase 2: Core Functional Page Parity | Max | Rebecca | TBD | TBD | Not Started | Dashboard, Alerts, Summaries, Profile, Login, Register, Risk |
+| Phase 3: Scaffold and Detail Shell Parity | Max | Rebecca | TBD | TBD | Not Started | Map, Forecast, Assistant, Alert Detail, Summary Detail |
+| Phase 4: Global Consistency and Signoff | Max | Rebecca | TBD | TBD | Not Started | QA/docs lead with rapid shared/layout fix support |
 
 Recommended status values: Not Started, In Progress, Blocked, In Review, Completed.
 
@@ -67,6 +67,77 @@ Three parallel lanes are used:
 2. Page Templates Lane
 3. QA and Docs Lane
 
+## Role Descriptions, Explanations, and Contributions
+
+### Layout Lane
+
+Responsibilities:
+1. Own shared shell and navigation updates in frontend/web/components/layout.php.
+2. Own reusable design-system and global styling updates in frontend/web/public/assets/app.css.
+3. Define and enforce spacing rhythm, breakpoint behavior, and global icon-treatment conventions.
+4. Provide shared class refinements requested by repeated template needs.
+
+Why this role exists:
+- The layout/CSS foundation is the highest merge-conflict surface.
+- Single-lane ownership keeps global changes coherent and prevents style drift.
+
+Contribution to this plan:
+- Unblocks Gate B by stabilizing the shared baseline.
+- Makes page-by-page parity faster and safer for template work.
+- Preserves cross-page consistency for final signoff.
+
+### Page Templates Lane
+
+Responsibilities:
+1. Implement page-level wireframe parity in frontend/web/views/*.php.
+2. Apply shared classes from the foundation without rewriting global structure.
+3. Keep existing Stage 1 and staged scaffold boundaries intact while improving structure/visual parity.
+
+Why this role exists:
+- Most implementation volume is page-level template work.
+- Isolating template ownership maximizes throughput and limits overlap with global CSS ownership.
+
+Contribution to this plan:
+- Delivers most of the visible Phase 2 and Phase 3 outputs.
+- Drives Gate C and Gate D completion.
+- Converts shared design rules into route-level parity.
+
+### QA and Docs Lane
+
+Responsibilities:
+1. Run route smoke tests and parity checks after merge batches.
+2. Validate responsiveness and accessibility spot checks.
+3. Capture screenshot/evidence artifacts and maintain implementation records.
+4. Keep transcript/reflection and phase-tracking documentation synchronized.
+
+Why this role exists:
+- Verification and evidence must run continuously, not only at the end.
+- Dedicated ownership improves auditability and reduces missed signoff criteria.
+
+Contribution to this plan:
+- Protects regression safety while implementation proceeds.
+- Provides objective gate evidence for parity and quality.
+- Ensures final documentation/signoff completeness.
+
+## Two-Person Assignment (Rebecca and Max)
+
+To minimize merge conflicts and maintain delivery speed:
+1. Rebecca is primary Layout Lane owner and integration support owner.
+2. Max is primary Page Templates Lane owner and QA and Docs execution lead.
+3. Cross-coverage is maintained by assigning each member as secondary owner on the other member's lead phases.
+
+Phase-level assignment:
+1. Phase 0: Lane Owner Rebecca, Secondary Max.
+2. Phase 1: Lane Owner Rebecca, Secondary Max.
+3. Phase 2: Lane Owner Max, Secondary Rebecca.
+4. Phase 3: Lane Owner Max, Secondary Rebecca.
+5. Phase 4: Lane Owner Max, Secondary Rebecca.
+
+Lane-level ownership map:
+1. Layout Lane: Rebecca (primary), Max (secondary).
+2. Page Templates Lane: Max (primary), Rebecca (secondary).
+3. QA and Docs Lane: Max (primary), Rebecca (secondary).
+
 ## Dependency Gates
 
 Gate A: Wireframe Mapping Baseline
@@ -80,6 +151,58 @@ Gate C: Core Functional Pages Parity
 
 Gate D: Scaffold Page Shell Parity
 - Must be complete before final documentation closeout.
+
+## Gate A Completion Plan
+
+Purpose:
+- Complete the Wireframe Mapping Baseline with low-risk documentation work that unblocks Phase 1 without code changes.
+
+Required Gate A artifacts:
+1. Page-by-page wireframe mapping matrix.
+2. Icon placement matrix by page and component region.
+3. Acceptance checklist template for structure, visuals, responsiveness, and accessibility.
+
+Execution sequence:
+1. Confirm page scope and route inventory from existing web views.
+2. Build a canonical wireframe reference index from RiskRadar_Web_Wireframes.png.
+3. Produce mapping matrix draft for all in-scope pages.
+4. Produce icon placement matrix draft using wireframe_icons assets.
+5. Produce acceptance checklist template aligned to matrix fields.
+6. Run naming consistency pass across all three artifacts.
+7. Move Gate A to In Review and request Rebecca and Max approval.
+
+Parallelization rules for Gate A:
+1. Scope confirmation and wireframe indexing can run in parallel.
+2. Mapping matrix and icon matrix can run in parallel after scope is fixed.
+3. Checklist template should follow early matrix drafts so criteria remain traceable.
+
+Owner assignments:
+1. Rebecca (Layout Lane):
+   - Lead scope confirmation and global section taxonomy.
+   - Lead mapping matrix and icon matrix creation.
+   - Run final consistency pass and submit Gate A for review.
+2. Max (Template and QA/Docs support):
+   - Support current page structure inventory verification.
+   - Support acceptance checklist evidence structure.
+   - Co-review Gate A artifact completeness.
+
+Gate A artifact locations:
+- docs/PLANNING_DOCS/STAGE2_DOCS/GATEA_WIREFRAME_MAPPING_MATRIX.md
+- docs/PLANNING_DOCS/STAGE2_DOCS/GATEA_ICON_PLACEMENT_MATRIX.md
+- docs/PLANNING_DOCS/STAGE2_DOCS/GATEA_ACCEPTANCE_CHECKLIST_TEMPLATE.md
+
+Gate A completion definition:
+1. All three artifacts exist and include all in-scope pages.
+2. Page names, view names, and icon labels are consistent across artifacts.
+3. Checklist items map to at least one field in a matrix artifact.
+4. Rebecca and Max approve Gate A and status is marked Completed.
+
+### Gate A Decision Log
+
+| Date | Decision | Owner | Status | Notes |
+|---|---|---|---|---|
+| 2026-03-17 | Gate A artifact drafting started and consistency pass initiated | Rebecca | Open | Awaiting Max co-review and final approval |
+| 2026-03-17 | Rebecca completed Gate A assigned work and submitted review package | Rebecca | In Review | Ready-to-send review note prepared for Max |
 
 ## Execution Order by Role
 
@@ -249,9 +372,9 @@ A page is considered complete only if all pass:
 ## Implementation Checklist by Phase
 
 Phase 0:
-- [ ] Mapping matrix created
-- [ ] Icon matrix created
-- [ ] Checklist template created
+- [x] Mapping matrix created
+- [x] Icon matrix created
+- [x] Checklist template created
 
 Phase 1:
 - [ ] Shared layout updated
