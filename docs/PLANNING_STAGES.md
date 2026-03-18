@@ -4,7 +4,7 @@
 
 ---
 
-## Stage 1: Web-App Extension (MVP Start Plan)
+## Stage 1: Web-App Extension (Completed)
 
 ### Objective
 Begin Stage 1 with a small, functional PHP web-app vertical slice that connects to existing RiskRadar backend APIs and demonstrates a distinct web interface.
@@ -100,3 +100,26 @@ Begin Stage 1 with a small, functional PHP web-app vertical slice that connects 
 - Screenshots or short walkthrough of dashboard and core pages
 - Notes showing API success and API-failure behavior
 - Confirmation that Stage 1 progress markers remain current in project docs
+
+## Stage 1: Web-App Extension (Completed) Finalization Record
+
+Stage 1 closure is complete as of **2026-03-13**.
+
+### Completion Checklist Outcome
+
+- [x] Finish S1-05 first (highest remaining implementation risk).
+- [x] Implement/verify allowlist validation, sanitization, output escaping, CSRF, and defensive null handling.
+- [x] Add concrete evidence links in the Stage 1 task tracker row.
+- [x] Close responsive and distinctness evidence.
+- [x] Capture 360px, 768px, and 1280px responsive verification notes and document web-vs-mobile distinctness.
+- [x] Attach walkthrough/evidence artifacts to Stage 1 docs tracking.
+- [x] Convert Stage 1 in-progress doc tasks to completed.
+- [x] Finalize S1-01 architecture/route contract wording and URL configuration guidance in `docs/API_STAGE1_CONTRACT.md`.
+- [x] Finalize S1-06 setup/run documentation and evidence linkage.
+- [x] Sync Stage 1 status wording across planning/progress docs.
+
+### Final Stage 1 Evidence Pointers
+
+- Execution tracker and completed checklist: `docs/TODO.md`
+- Architecture/contract matrix and route mapping: `docs/API_STAGE1_CONTRACT.md`
+- Responsive and web-distinctness verification notes: `docs/STAGE1_VERIFICATION_EVIDENCE.md`

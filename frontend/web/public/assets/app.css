@@ -310,6 +310,17 @@ fieldset {
     cursor: pointer;
 }
 
+.inline-button {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.back-link {
+    text-decoration: none;
+    font-weight: 500;
+}
+
 .message {
     padding: 14px 18px;
 }
@@ -337,9 +348,45 @@ fieldset {
     grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.detail-grid {
+    margin-top: 20px;
+}
+
+.roadmap-list {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--muted);
+    display: grid;
+    gap: 10px;
+}
+
 dt,
 dd {
     margin: 0;
+}
+
+.auth-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 40px 0;
+}
+
+.auth-panel {
+    width: 100%;
+    max-width: 480px;
+}
+
+.auth-foot {
+    margin: 16px 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.auth-foot a {
+    color: var(--ink);
+    font-weight: 500;
+    text-decoration: underline;
 }
 
 @media (max-width: 960px) {
