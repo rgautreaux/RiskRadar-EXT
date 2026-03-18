@@ -1,16 +1,72 @@
-# Python
+
+# Python cache files - should never be committed
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python bytecode
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+ENV/
+
+
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+
+*.egg
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE files
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries
+.idea/shelf
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test artifacts
 .pytest_cache/
+.coverage
+htmlcov/
 
-# Environment variables
-# backend/.env
+# Node modules (frontend)
+node_modules/
 
-# Database
-backend/riskradar.db
 
-# IDEs
+# Test and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
 .idea/
+.vscode/
+*.swp
 
-# AI assistants
-.claude/

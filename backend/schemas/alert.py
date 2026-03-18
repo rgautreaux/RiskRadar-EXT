@@ -1,5 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
+from datetime import datetime
 
 
 class AlertOut(BaseModel):
@@ -15,11 +16,9 @@ class AlertOut(BaseModel):
     location_name: Optional[str] = None
     event_start: Optional[str] = None
     event_end: Optional[str] = None
-    fetched_at: str
-    created_at: str
-
-    class Config:
-        from_attributes = True
+    fetched_at: datetime
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
 
 
 class AlertStats(BaseModel):
