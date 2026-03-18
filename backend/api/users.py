@@ -40,12 +40,18 @@ def update_preferences(user_id: int, body: UserPrefsUpdate, db: Session = Depend
 
     if body.zip_code is not None:
         user.zip_code = body.zip_code
+    if body.latitude is not None:
+        user.latitude = body.latitude
+    if body.longitude is not None:
+        user.longitude = body.longitude
     if body.alert_types is not None:
         user.alert_types = json.dumps(body.alert_types)
     if body.notify_severity is not None:
         user.notify_severity = body.notify_severity
     if body.device_token is not None:
         user.device_token = body.device_token
+    if body.health_conditions is not None:
+        user.health_conditions = json.dumps(body.health_conditions)
 
     db.commit()
     db.refresh(user)

@@ -24,6 +24,7 @@ function rr_render_layout_start(string $title, string $activePage): void
                 <nav class="topnav" aria-label="Primary navigation">
                     <a class="<?php echo $activePage === 'dashboard' ? 'is-active' : ''; ?>" href="index.php">Dashboard</a>
                     <a class="<?php echo $activePage === 'alerts' ? 'is-active' : ''; ?>" href="alerts.php">Alerts</a>
+                    <a class="<?php echo $activePage === 'smart_alerts' ? 'is-active' : ''; ?>" href="smart_alerts.php">Smart Alerts</a>
                     <a class="<?php echo $activePage === 'summaries' ? 'is-active' : ''; ?>" href="summaries.php">Summaries</a>
                     <a class="<?php echo $activePage === 'profile' ? 'is-active' : ''; ?>" href="profile.php">Profile</a>
                     <a class="<?php echo $activePage === 'risk' ? 'is-active' : ''; ?>" href="risk.php">Risk</a>

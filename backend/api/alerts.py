@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 
 from db.database import get_db
-from db.models import Alert
-from schemas.alert import AlertOut, AlertStats
+from db.models import Alert, User
+from schemas.alert import AlertOut, AlertStats, PrioritizedAlertListOut
 
 router = APIRouter(prefix="/alerts", tags=["Alerts"])
 
@@ -46,10 +46,29 @@ def alert_stats(db: Session = Depends(get_db)):
     return AlertStats(total=total or 0, by_type=by_type, by_severity=by_severity)
 
 
+@router.get("/prioritized/{user_id}", response_model=PrioritizedAlertListOut)
+def prioritized_alerts(
+    user_id: int,
+    radius_km: float = Query(default=150.0, ge=1.0, le=500.0),
+    limit: int = Query(default=50, ge=1, le=200),
+    db: Session = Depends(get_db),
+):
+    """Return alerts ranked by personalized priority for the given user.
+
+    Combines distance, severity, user health sensitivity, and alert recency
+    into a composite priority score (0-100) with deterministic tie-breaking.
+    """
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    from scoring.prioritization import prioritize_alerts
+    return prioritize_alerts(user, db, radius_km=radius_km, limit=limit)
+
+
 @router.get("/{alert_id}", response_model=AlertOut)
 def get_alert(alert_id: int, db: Session = Depends(get_db)):
     alert = db.query(Alert).filter(Alert.id == alert_id).first()
     if not alert:
-        from fastapi import HTTPException
         raise HTTPException(status_code=404, detail="Alert not found")
     return alert

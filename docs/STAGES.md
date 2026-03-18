@@ -219,7 +219,27 @@ Reference: `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`
 - Documentation of model logic and tradeoffs
 
 ### Progress So Far
-🔄 **In Progress (Kickoff + Scaffolding)** - Stage 2 policy lock is documented in `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`, kickoff planning is tracked in `docs/PLANNING_DOCS/PLANNING_STAGES.md`, and initial backend/web/mobile scaffolding is prepared for S2-02/S2-03/S2-08 implementation.
+✅ **Completed** - Both steps are implemented and tested:
+
+**Step 1 (Personal Risk Scoring Engine):**
+- Scoring model defined: 0-100 scale with proximity (40%), severity (30%), health sensitivity (20%), alert density (10%) weights.
+- User model extended with `health_conditions` field (backward compatible, default `[]`).
+- Scoring service implemented in `backend/scoring/__init__.py` with haversine distance, severity weighting, condition-to-alert-type matching, and density thresholds.
+- API endpoint: `GET /api/v1/risk/score/{user_id}?radius_km=150` returns score, level, factor breakdown, and nearby alert count.
+- User preferences updated to accept `health_conditions`, `latitude`, `longitude` via PUT.
+- DB migration: `backend/db/migrations/2026-03-18_add_health_conditions.sql`.
+- 36 tests passing in `backend/tests/test_risk_scoring.py` (unit + integration + API).
+
+**Step 2 (Smart Alert Prioritization System):**
+- Ranking criteria defined: distance (35%), severity (30%), health sensitivity (25%), recency (10%).
+- Prioritization algorithm implemented in `backend/scoring/prioritization.py` with deterministic tie-breaking (priority desc → severity rank desc → distance asc → fetched_at desc → alert_id asc).
+- Urgency thresholds: high (70-100), medium (40-69), low (0-39).
+- API endpoint: `GET /api/v1/alerts/prioritized/{user_id}?radius_km=150&limit=50` returns prioritized alert list with per-alert priority score, level, distance, and factor breakdown.
+- Schemas added: `PrioritizedAlertOut`, `PrioritizedAlertListOut`, `PriorityFactors` in `backend/schemas/alert.py`.
+- Raw alert context preserved in response (all original alert fields included alongside priority metadata).
+- Web UI: Smart Alerts page (`frontend/web/public/smart_alerts.php`) shows ranked alerts with priority labels, factor breakdown, and fallback states.
+- Risk page (`frontend/web/views/risk.php`) updated from scaffold to functional page with risk score display and top-5 prioritized alert preview.
+- Tests in `backend/tests/test_alert_prioritization.py`: unit tests for all 4 factor calculators, integration tests for `prioritize_alerts` and `compute_alert_priority`, and API endpoint tests.
 
 ---
 

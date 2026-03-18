@@ -78,16 +78,16 @@ Use this process during each weekly meeting:
 | 1 | S1-03 | Implement backend connectivity wrappers with error handling and response normalization | High | Completed | Max | Week of 2026-03-24 | 2026-03-12 | S1-01, S1-02 | `frontend/web/services/api_client.php`, `frontend/web/services/validators.php`, `frontend/web/services/presentation.php` | Verified against live backend on alternate local port with success-state rendering, fallback-state rendering, CSRF-protected POST flows, and normalized handling for malformed/unavailable data paths. |
 | 1 | S1-04 | Build web UI screens for dashboard, alerts, summaries, and user profile/preferences | High | Completed | Rebecca | Week of 2026-03-24 | 2026-03-13 | S1-03 | `frontend/web/public/index.php`, `frontend/web/public/alerts.php`, `frontend/web/public/summaries.php`, `frontend/web/public/profile.php`, `frontend/web/public/assets/app.css`, `docs/PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md` | UI routes, live data flows, responsive behavior notes (360/768/1280), and web-distinctness evidence are documented. |
 | 1 | S1-05 | Add input validation, sanitization, and defensive rendering for missing API fields | Medium | Completed | Max | Week of 2026-03-31 | 2026-03-13 | S1-03, S1-04 | `frontend/web/services/validators.php`, `frontend/web/services/api_client.php`, `frontend/web/public/profile.php` | Added allowlist-based query/form sanitization, stricter validation bounds, malformed-payload-safe normalization, and explicit write-path action rejection. |
-| 1 | S1-06 | Document setup and usage for backend + web app local run | High | Completed | Rebecca | Week of 2026-03-31 | 2026-03-13 | S1-02, S1-04 | `frontend/web/README.md`, `docs/PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md` | Setup/run guidance and Stage 1 demo-note verification evidence are now documented, including responsive checkpoints and distinctness notes. |
-| 2 | S2-01 | Define personal risk scoring model inputs, formula, and weighting rationale | High | In Progress | Max | Week of 2026-04-07 | 2026-03-17 | Stage 1 baseline | `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`, `docs/PLANNING_DOCS/PLANNING_STAGES.md` | Initial scoring formula/normalization lock documented; implementation coding next. |
-| 2 | S2-02 | Extend data model/schemas for user sensitivity and risk score output fields | High | Not Started | Rebecca | Week of 2026-04-07 | 2026-03-10 | S2-01 | TBD | Preserve backward compatibility. |
-| 2 | S2-03 | Implement backend risk scoring service and factor transparency output | High | Not Started | Max | Week of 2026-04-14 | 2026-03-10 | S2-02 | TBD | Return component breakdown for explainability. |
-| 2 | S2-04 | Expose risk score endpoint(s) with validation and auth handling | High | Not Started | Max | Week of 2026-04-14 | 2026-03-10 | S2-03 | TBD | Add API examples to docs. |
-| 2 | S2-05 | Define alert prioritization ranking criteria and normalization strategy | High | In Progress | Max | Week of 2026-04-14 | 2026-03-17 | S2-01 | `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`, `docs/PLANNING_DOCS/PLANNING_STAGES.md` | Priority formula, thresholds, and deterministic tie-break policy locked for kickoff. |
-| 2 | S2-06 | Implement prioritization algorithm with deterministic tie handling | High | Not Started | Max | Week of 2026-04-21 | 2026-03-10 | S2-05 | TBD | Add thresholds for high/medium/low urgency. |
-| 2 | S2-07 | Integrate prioritized output into alert pipeline and API metadata | High | Not Started | Max | Week of 2026-04-21 | 2026-03-10 | S2-06 | TBD | Preserve raw alert context for auditability. |
-| 2 | S2-08 | Surface prioritized alerts and score context in web/mobile UI | High | Not Started | Rebecca | Week of 2026-04-21 | 2026-03-10 | S2-04, S2-07 | TBD | Add fallback behavior if score unavailable. |
-| 2 | S2-09 | Add tests for scoring consistency and prioritization behavior | High | Not Started | Max | Week of 2026-04-28 | 2026-03-10 | S2-03, S2-07 | TBD | Include repeat-input consistency checks. |
+| 1 | S1-06 | Document setup and usage for backend + web app local run | High | Completed | Rebecca | Week of 2026-03-31 | 2026-03-13 | S1-02, S1-04 | `frontend/web/README.md`, `docs/STAGE1_VERIFICATION_EVIDENCE.md` | Setup/run guidance and Stage 1 demo-note verification evidence are now documented, including responsive checkpoints and distinctness notes. |
+| 2 | S2-01 | Define personal risk scoring model inputs, formula, and weighting rationale | High | Completed | Max | Week of 2026-04-07 | 2026-03-18 | Stage 1 baseline | `backend/scoring/__init__.py` | 0-100 scale with 4 weighted factors: proximity (40%), severity (30%), health sensitivity (20%), alert density (10%). |
+| 2 | S2-02 | Extend data model/schemas for user sensitivity and risk score output fields | High | Completed | Rebecca | Week of 2026-04-07 | 2026-03-18 | S2-01 | `backend/db/models.py`, `backend/schemas/user.py`, `backend/schemas/risk_score.py` | Added health_conditions to User model/schema, created RiskScoreOut schema. Backward compatible via default '[]'. |
+| 2 | S2-03 | Implement backend risk scoring service and factor transparency output | High | Completed | Max | Week of 2026-04-14 | 2026-03-18 | S2-02 | `backend/scoring/__init__.py`, `backend/tests/test_risk_scoring.py` | Scoring engine with haversine proximity, severity weighting, health sensitivity matching, density thresholds. Returns per-factor breakdown. |
+| 2 | S2-04 | Expose risk score endpoint(s) with validation and auth handling | High | Completed | Max | Week of 2026-04-14 | 2026-03-18 | S2-03 | `backend/api/risk.py`, `backend/api/router.py` | GET /api/v1/risk/score/{user_id} with optional radius_km parameter. 404 for missing user, input validation via Query bounds. |
+| 2 | S2-05 | Define alert prioritization ranking criteria and normalization strategy | High | Completed | Max | Week of 2026-04-14 | 2026-03-18 | S2-01 | `backend/scoring/prioritization.py` | Distance (35%), severity (30%), sensitivity (25%), recency (10%). Priority 0-100 with high/medium/low thresholds. |
+| 2 | S2-06 | Implement prioritization algorithm with deterministic tie handling | High | Completed | Max | Week of 2026-04-21 | 2026-03-18 | S2-05 | `backend/scoring/prioritization.py` | Deterministic sort: priority desc, severity rank desc, distance asc, fetched_at desc, alert_id asc. Thresholds: high (70-100), medium (40-69), low (0-39). |
+| 2 | S2-07 | Integrate prioritized output into alert pipeline and API metadata | High | Completed | Max | Week of 2026-04-21 | 2026-03-18 | S2-06 | `backend/api/alerts.py`, `backend/schemas/alert.py` | GET /api/v1/alerts/prioritized/{user_id} returns PrioritizedAlertListOut with full alert context + priority metadata. |
+| 2 | S2-08 | Surface prioritized alerts and score context in web/mobile UI | High | Completed | Rebecca | Week of 2026-04-21 | 2026-03-18 | S2-04, S2-07 | `frontend/web/public/smart_alerts.php`, `frontend/web/views/smart_alerts.php`, `frontend/web/views/risk.php` | Smart Alerts page with priority labels, factor breakdown, fallback states. Risk page updated with score display and top-5 prioritized preview. |
+| 2 | S2-09 | Add tests for scoring consistency and prioritization behavior | High | Completed | Max | Week of 2026-04-28 | 2026-03-18 | S2-03, S2-07 | `backend/tests/test_risk_scoring.py`, `backend/tests/test_alert_prioritization.py` | 36 scoring tests + prioritization tests covering factor calculators, integration (ordering, limits, radius, health conditions, determinism), single-alert priority, and API endpoint behavior. |
 | 3 | S3-01 | Define Plotly risk map architecture and required geospatial fields | High | Not Started | Rebecca | Week of 2026-04-28 | 2026-03-10 | Stage 2 data outputs | TBD | **OPTIONAL/STRETCH**: Only if Stage 2 completes early. Select map approach and refresh strategy. |
 | 3 | S3-02 | Implement data transformation pipeline for map-friendly structures | High | Not Started | Max | Week of 2026-05-05 | 2026-03-10 | S3-01 | TBD | **OPTIONAL/STRETCH**: Validate coordinates and attach hover metadata. |
 | 3 | S3-03 | Build interactive map components (zoom/pan/click detail interactions) | High | Not Started | Rebecca | Week of 2026-05-05 | 2026-03-10 | S3-02 | TBD | **OPTIONAL/STRETCH**: Include legend and risk-level visual encoding. |
@@ -140,22 +140,22 @@ Implement personalized risk scoring and smart alert prioritization.
 - [x] Stage 2 implementation scaffolding created (backend/web/mobile prep modules).
 
 ### Personal Risk Scoring Checklist
-- [ ] S2-01: Define scoring factors, scale, and weighting rationale.
-- [ ] S2-02: Update models/schemas for sensitivity and score outputs.
-- [ ] S2-03: Implement risk scoring service with factor breakdown.
-- [ ] S2-04: Add score endpoint(s) with validation/auth handling.
+- [x] S2-01: Define scoring factors, scale, and weighting rationale.
+- [x] S2-02: Update models/schemas for sensitivity and score outputs.
+- [x] S2-03: Implement risk scoring service with factor breakdown.
+- [x] S2-04: Add score endpoint(s) with validation/auth handling.
 
 ### Alert Prioritization Checklist
-- [ ] S2-05: Define ranking formula and urgency thresholds.
-- [ ] S2-06: Implement deterministic prioritization logic.
-- [ ] S2-07: Integrate ranking into alert pipeline and API metadata.
-- [ ] S2-08: Present prioritized results in web/mobile UI.
-- [ ] S2-09: Add tests for scoring and prioritization consistency.
+- [x] S2-05: Define ranking formula and urgency thresholds.
+- [x] S2-06: Implement deterministic prioritization logic.
+- [x] S2-07: Integrate ranking into alert pipeline and API metadata.
+- [x] S2-08: Present prioritized results in web/mobile UI.
+- [x] S2-09: Add tests for scoring and prioritization consistency.
 
 ### Verification Evidence
-- [ ] Identical inputs produce consistent risk score outputs.
-- [ ] Alert ordering matches documented ranking factors.
-- [ ] API docs include new score/priority fields and examples.
+- [x] Identical inputs produce consistent risk score outputs.
+- [x] Alert ordering matches documented ranking factors.
+- [x] API docs include new score/priority fields and examples.
 
 ## Stage 3 TODOs: Data Visualization and UX Extension
 
