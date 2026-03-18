@@ -11,9 +11,12 @@ class UserCreate(BaseModel):
 
 class UserPrefsUpdate(BaseModel):
     zip_code: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
     alert_types: Optional[list[str]] = None
     notify_severity: Optional[str] = None
     device_token: Optional[str] = None
+    health_conditions: Optional[list[str]] = None
 
 
 class UserOut(BaseModel):
@@ -21,8 +24,11 @@ class UserOut(BaseModel):
     display_name: Optional[str] = None
     email: Optional[str] = None
     zip_code: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
     alert_types: Optional[str] = None
     notify_severity: Optional[str] = None
+    health_conditions: Optional[str] = None
     created_at: str
 
     model_config = ConfigDict(from_attributes=True)

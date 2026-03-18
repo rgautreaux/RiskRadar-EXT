@@ -360,6 +360,111 @@ fieldset {
     gap: 10px;
 }
 
+/* --------------- Priority pills --------------- */
+
+.priority-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    margin-right: 8px;
+}
+
+.priority-high {
+    background: rgba(239, 111, 81, 0.22);
+    color: #7f1d1d;
+}
+
+.priority-medium {
+    background: rgba(242, 180, 65, 0.28);
+    color: #8a4b00;
+}
+
+.priority-low {
+    background: rgba(27, 138, 137, 0.18);
+    color: #0d5c5b;
+}
+
+.priority-score {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.85rem;
+    font-weight: 500;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--muted);
+    margin-right: 8px;
+}
+
+.prioritized-card {
+    border-left: 4px solid var(--accent-coral);
+}
+
+.prioritized-card .card-heading {
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.priority-details {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+}
+
+.priority-details summary {
+    cursor: pointer;
+    color: var(--accent-teal);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.priority-details .metadata-grid {
+    margin-top: 10px;
+}
+
+/* --------------- Factor breakdown cards --------------- */
+
+.factor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.factor-card {
+    padding: 16px;
+    background: var(--panel-strong);
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    display: grid;
+    gap: 4px;
+}
+
+.factor-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.factor-value {
+    font-size: 1.5rem;
+    font-family: 'IBM Plex Mono', monospace;
+}
+
+.factor-weight {
+    font-size: 0.8rem;
+    color: var(--muted);
+}
+
+.factor-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 4px 0 0;
+}
+
 dt,
 dd {
     margin: 0;

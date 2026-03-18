@@ -9,15 +9,25 @@ class Settings(BaseSettings):
     DATABASE_URL: str = ""
     DB_PATH: str = str(BASE_DIR / "riskradar.db")
 
+    # JWT Authentication
+    # IMPORTANT: Change JWT_SECRET_KEY in your .env file before production!
+    JWT_SECRET_KEY: str = "CHANGE-ME-set-a-real-secret-in-dotenv"
+    JWT_ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60  # token lifetime in minutes
+
     # API Keys
     AIRNOW_API_KEY: str = ""
+    OpenAQ_API_KEY: str = ""
     NASA_FIRMS_MAP_KEY: str = ""
+
+    # Firecrawl API Key
     FIRECRAWL_API_KEY: str = ""
 
     # LLM
     LLM_API_KEY: str = ""
-    LLM_PROVIDER: str = "deepseek"
-    LLM_MODEL: str = "deepseek-chat"
+    LLM_PROVIDER: str = ""
+    LLM_MODEL: str = ""
+    LLM_MAX_TOKENS: int = 2048
 
     # App Config
     DEFAULT_ZIP_CODE: str = "90001"

@@ -44,6 +44,20 @@ function rr_severity_class(?string $severity): string
     return 'severity-low';
 }
 
+function rr_priority_class(?string $level): string
+{
+    $normalized = strtolower((string) $level);
+    if ($normalized === 'high') {
+        return 'priority-high';
+    }
+
+    if ($normalized === 'medium') {
+        return 'priority-medium';
+    }
+
+    return 'priority-low';
+}
+
 function rr_parse_alert_types(?string $value): array
 {
     if (!$value) {

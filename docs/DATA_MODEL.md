@@ -91,6 +91,7 @@ Stores account identity and user preference fields used by API routes.
 | `longitude` | `FLOAT` | User longitude |
 | `alert_types` | `TEXT` | JSON array string of preferred alert types |
 | `notify_severity` | `TEXT` | Minimum notification severity |
+| `health_conditions` | `TEXT` | JSON array of health condition keys (e.g. `["respiratory","cardiovascular"]`) |
 | `created_at` | `TEXT` | Account creation timestamp |
 | `updated_at` | `TEXT` | Last update timestamp |
 
@@ -137,6 +138,7 @@ The active runtime schema is intentionally lightweight and **not fully normalize
 - **`alerts.raw_data`** stores semi-structured source payloads as serialized JSON text.
 - **`summaries.alert_ids`** stores array-style references instead of a junction table.
 - **`users.alert_types`** stores preference lists as JSON text.
+- **`users.health_conditions`** stores health sensitivity condition keys as JSON text.
 
 ### Implications
 
