@@ -1,4 +1,4 @@
-// @ts-nocheck
+import Constants from 'expo-constants';
 
 export type RiskScoreResponse = {
   user_id: number;
@@ -18,7 +18,16 @@ export type PrioritizedAlert = {
   urgency_label?: 'low' | 'medium' | 'high';
 };
 
-const DEFAULT_API_BASE = 'http://127.0.0.1:8000';
+// Read the API base URL from app.config.js `extra.apiBaseUrl`, which is
+// populated via the API_BASE_URL environment variable at dev-server start.
+// When the env var is not set this falls back to 127.0.0.1, which works for
+// the iOS simulator and web. For the Android emulator set:
+//   API_BASE_URL=http://10.0.2.2:8000 npx expo start --android
+// For a physical device use your machine's LAN IP instead.
+const DEFAULT_API_BASE: string =
+  (Constants.expoConfig?.extra as { apiBaseUrl?: string } | undefined)
+    ?.apiBaseUrl ?? 'http://127.0.0.1:8000';
+
 const API_PREFIX = '/api/v1';
 
 function buildUrl(path: string, query?: Record<string, string | number | undefined>): string {
