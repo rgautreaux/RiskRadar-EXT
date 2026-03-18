@@ -771,6 +771,17 @@ To keep the app efficient and stable while making it wireframe-accurate:
 
 ## Signature UX Details
 
+
+#### Dashboard Summary Drop-down UX (Assigned to Ben)
+
+- [ ] Add a drop-down or scrollable list UI element at the top or in a prominent dashboard section for summary selection.
+- [ ] Populate the drop-down/list with available summary titles or brief descriptions (fetched from API or placeholder data).
+- [ ] When a user selects a summary, display the full summary content below the drop-down/list, updating dynamically.
+- [ ] Ensure the user can scroll through available summaries, select one, and read its full content without navigating away from the dashboard.
+- [ ] Style the drop-down/list and summary display to match RiskRadar branding and maintain accessibility/contrast standards.
+- [ ] Test the summary selection and display flow for both mobile platforms.
+
+**Responsibility:** Ben (Home Dashboard route: `frontend/RiskRadar/app/(tabs)/index.tsx`)
 Purpose:
 
 - Operationalize small but intentional UI details so the app feels distinctly RiskRadar-owned rather than library-default.
