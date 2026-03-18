@@ -61,6 +61,7 @@ class User(Base):
     longitude = Column(Float)
     alert_types = Column(Text, default='["all"]')     # JSON array
     notify_severity = Column(Text, default="high")
+    health_conditions = Column(Text, default='[]')    # JSON array of condition keys
     created_at = Column(Text, nullable=False, default=_now)
     updated_at = Column(Text, nullable=False, default=_now, onupdate=_now)
 

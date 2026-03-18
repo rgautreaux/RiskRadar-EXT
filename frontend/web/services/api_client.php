@@ -356,3 +356,89 @@ function rr_update_preferences(array $config, int $userId, array $payload): arra
 
     return rr_success_result(rr_normalize_user($result['data']), $result['status']);
 }
+
+function rr_fetch_prioritized_alerts(array $config, int $userId, array $params = []): array
+{
+    $query = array_filter([
+        'radius_km' => $params['radius_km'] ?? null,
+        'limit' => $params['limit'] ?? null,
+    ], function ($v) { return $v !== null && $v !== ''; });
+
+    $result = rr_http_request($config, 'GET', 'alerts/prioritized/' . $userId, $query);
+    if (!$result['ok'] || !is_array($result['data'])) {
+        return rr_fallback_result(
+            ['user_id' => $userId, 'total_nearby' => 0, 'alerts' => [], 'computed_at' => ''],
+            'Prioritized alerts could not be loaded. The backend may be unavailable or user location is not set.',
+            $result['status'] ?? null,
+        );
+    }
+
+    $data = $result['data'];
+    $alerts = is_array($data['alerts'] ?? null) ? array_map('rr_normalize_prioritized_alert', $data['alerts']) : [];
+
+    return rr_success_result([
+        'user_id' => (int) ($data['user_id'] ?? $userId),
+        'total_nearby' => (int) ($data['total_nearby'] ?? 0),
+        'alerts' => $alerts,
+        'computed_at' => rr_safe_string($data['computed_at'] ?? null),
+    ], $result['status']);
+}
+
+function rr_normalize_prioritized_alert(?array $alert): array
+{
+    if (!is_array($alert)) {
+        return [
+            'alert_id' => 0,
+            'source' => 'Unknown',
+            'alert_type' => 'other',
+            'severity' => 'low',
+            'title' => 'Untitled alert',
+            'description' => null,
+            'location_name' => null,
+            'fetched_at' => '',
+            'priority_score' => 0.0,
+            'priority_level' => 'low',
+            'distance_km' => 0.0,
+            'priority_factors' => ['distance' => 0, 'severity' => 0, 'sensitivity' => 0, 'recency' => 0],
+        ];
+    }
+
+    return [
+        'alert_id' => (int) ($alert['alert_id'] ?? 0),
+        'source' => rr_safe_string($alert['source'] ?? null, 'Unknown'),
+        'source_id' => rr_safe_nullable_string($alert['source_id'] ?? null),
+        'alert_type' => rr_safe_string($alert['alert_type'] ?? null, 'other'),
+        'severity' => rr_safe_string($alert['severity'] ?? null, 'low'),
+        'title' => rr_safe_string($alert['title'] ?? null, 'Untitled alert'),
+        'description' => rr_safe_nullable_string($alert['description'] ?? null),
+        'latitude' => rr_safe_nullable_float($alert['latitude'] ?? null),
+        'longitude' => rr_safe_nullable_float($alert['longitude'] ?? null),
+        'location_name' => rr_safe_nullable_string($alert['location_name'] ?? null),
+        'event_start' => rr_safe_nullable_string($alert['event_start'] ?? null),
+        'event_end' => rr_safe_nullable_string($alert['event_end'] ?? null),
+        'fetched_at' => rr_safe_string($alert['fetched_at'] ?? null),
+        'created_at' => rr_safe_string($alert['created_at'] ?? null),
+        'priority_score' => is_numeric($alert['priority_score'] ?? null) ? (float) $alert['priority_score'] : 0.0,
+        'priority_level' => rr_safe_string($alert['priority_level'] ?? null, 'low'),
+        'distance_km' => is_numeric($alert['distance_km'] ?? null) ? round((float) $alert['distance_km'], 1) : 0.0,
+        'priority_factors' => is_array($alert['priority_factors'] ?? null) ? $alert['priority_factors'] : ['distance' => 0, 'severity' => 0, 'sensitivity' => 0, 'recency' => 0],
+    ];
+}
+
+function rr_fetch_risk_score(array $config, int $userId, array $params = []): array
+{
+    $query = array_filter([
+        'radius_km' => $params['radius_km'] ?? null,
+    ], function ($v) { return $v !== null && $v !== ''; });
+
+    $result = rr_http_request($config, 'GET', 'risk/score/' . $userId, $query);
+    if (!$result['ok'] || !is_array($result['data'])) {
+        return rr_fallback_result(
+            null,
+            'Risk score could not be loaded. Ensure your location is set in your profile.',
+            $result['status'] ?? null,
+        );
+    }
+
+    return rr_success_result($result['data'], $result['status']);
+}
