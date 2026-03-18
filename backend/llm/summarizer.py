@@ -101,8 +101,7 @@ class Summarizer:
         return summary
 
     def generate_local_digest(
-        self, db: Session, alerts: list, city: str, state: str, zip_code: str
-    ) -> "Summary":
+        self, db: Session, alerts: list, city: str, state: str, zip_code: str) -> "Summary":
         """Generate a summary scoped to a specific location."""
         alerts_data = [
             {
