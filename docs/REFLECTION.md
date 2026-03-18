@@ -1153,7 +1153,7 @@ This session used **GitHub Copilot** to move Stage 2 from planning into implemen
 - **Tool name:** GitHub Copilot
 
 ### (2) Components That Benefited
-- **Stage 2 readiness:** Added a locked implementation spec in `docs/STAGE2_IMPLEMENTATION_SPEC.md` to remove ambiguity before coding.
+- **Stage 2 readiness:** Added a locked implementation spec in `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md` to remove ambiguity before coding.
 - **Backend scaffolding:** Added deterministic service modules and scaffold tests for risk scoring and alert prioritization.
 - **Web/mobile scaffolding:** Added non-breaking integration helpers and Stage 2 placeholder data flows for risk score and prioritized alerts.
 - **Cross-doc consistency:** Synchronized naming/status phrasing in planning, staging, TODO tracking, and README status table.

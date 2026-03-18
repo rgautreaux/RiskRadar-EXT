@@ -65,12 +65,15 @@ function rr_build_page_url(string $page): string
 
 function rr_risk_level_label(?float $score): string
 {
-    $safe = $score ?? 0.0;
-    if ($safe >= 70.0) {
+    if ($score === null) {
+        return 'Unavailable';
+    }
+
+    if ($score >= 70.0) {
         return 'High';
     }
 
-    if ($safe >= 40.0) {
+    if ($score >= 40.0) {
         return 'Medium';
     }
 
@@ -88,7 +91,11 @@ function rr_format_risk_score(?float $score): string
 
 function rr_priority_label(?string $urgency): string
 {
-    $value = strtolower((string) $urgency);
+    if ($urgency === null) {
+        return 'Priority unavailable';
+    }
+
+    $value = strtolower($urgency);
     if ($value === 'high') {
         return 'High Priority';
     }
@@ -97,5 +104,9 @@ function rr_priority_label(?string $urgency): string
         return 'Medium Priority';
     }
 
-    return 'Low Priority';
+    if ($value === 'low') {
+        return 'Low Priority';
+    }
+
+    return 'Priority unavailable';
 }

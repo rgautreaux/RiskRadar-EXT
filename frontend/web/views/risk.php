@@ -11,20 +11,22 @@
 <?php rr_render_message($riskScoreResult['message']); ?>
 <?php rr_render_message($prioritizedAlertsResult['message']); ?>
 
+<?php $riskData = is_array($riskScoreResult['data']) ? $riskScoreResult['data'] : []; ?>
+
 <section class="stats-grid">
     <article class="stat-card accent-coral">
         <span class="stat-label">User ID</span>
-        <strong><?php echo e((string) ($riskScoreResult['data']['user_id'] ?? 0)); ?></strong>
+        <strong><?php echo e((string) ($riskData['user_id'] ?? 0)); ?></strong>
         <p>Selected via query parameter `user_id` (default: 1).</p>
     </article>
     <article class="stat-card accent-amber">
         <span class="stat-label">Risk Score</span>
-        <strong><?php echo e(rr_format_risk_score($riskScoreResult['data']['score'] ?? null)); ?></strong>
+        <strong><?php echo e(rr_format_risk_score($riskData['score'] ?? null)); ?></strong>
         <p>0-100 normalized weighted score for Stage 2.</p>
     </article>
     <article class="stat-card accent-teal">
         <span class="stat-label">Risk Level</span>
-        <strong><?php echo e(rr_risk_level_label($riskScoreResult['data']['score'] ?? null)); ?></strong>
+        <strong><?php echo e(rr_risk_level_label($riskData['score'] ?? null)); ?></strong>
         <p>Derived from threshold labels in Stage 2 spec.</p>
     </article>
 </section>
