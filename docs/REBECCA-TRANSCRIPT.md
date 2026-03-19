@@ -6919,3 +6919,260 @@ Made changes.
 
 
 ---
+
+User: To make RiskRadar more secure, the way the Database stores user emails has to change.  Storing the user emails as they are (plaintext) currently is not a secure way to store personally identifiable information.
+
+Using the analysis and contents of the `/SecurityDocs` directory, we have to change how we're storing user emails to make it as secure as possible. **Create a plan to implement Email and Password Encryption in the database to ensure user safety and privacy is protected by RiskRadar**
+
+The changes that are made must **NOT** undo the progress made to create a functional backend and frontend.  The integrity of the codebase **must** be preserved.
+
+All tests, pytests, and full-suites must pass.  Immplement security WITHOUT causing conflict and damage to the exsisting codebase.
+
+GitHub Copilot: ## Plan: Secure Email & Password Storage
+
+Enhance RiskRadar’s security by encrypting user emails and passwords in the database, leveraging best practices and insights from the SecurityDocs directory. The plan ensures minimal disruption to existing backend/frontend functionality and maintains test suite integrity.
+
+**Steps**
+
+### Phase 1: Discovery & Design
+1. Review SecurityDocs for relevant security recommendations, encryption standards, and compliance requirements.
+2. Audit current user email/password storage and access patterns in:
+   - models.py — user model definitions
+   - users.py — user registration/authentication logic
+   - security.py — password handling
+   - user.py — user schema
+3. Identify all places where emails/passwords are stored, processed, or transmitted.
+
+### Phase 2: Encryption Implementation
+4. Select encryption approach for emails (e.g., AES with key management, not hashing).
+5. Ensure password storage uses strong hashing (e.g., bcrypt/argon2), not reversible encryption.
+6. Update user model in models.py to store encrypted email and hashed password.
+7. Implement email encryption/decryption logic in security.py or a new utility module.
+8. Update user registration, login, and retrieval flows in users.py to handle encrypted emails and hashed passwords.
+9. Update migration scripts in migrations to convert existing plaintext emails to encrypted format.
+
+### Phase 3: Integration & Testing
+10. Update tests in test_api_users.py and related files to validate encrypted email and password handling.
+11. Run full test suite to ensure no regressions or conflicts.
+12. Validate frontend integration (if emails are displayed, ensure proper decryption and secure transmission).
+
+**Relevant files**
+- models.py — user model changes
+- users.py — registration/auth logic
+- security.py — encryption/hashing utilities
+- user.py — schema updates
+- migrations — migration scripts
+- test_api_users.py — test updates
+- SecurityDocs — reference for compliance and best practices
+
+**Verification**
+1. All backend and frontend tests pass (pytest, integration, UI).
+2. Emails are stored encrypted in the database; passwords are hashed.
+3. User registration, login, and retrieval work as before.
+4. No data loss or corruption during migration.
+5. Compliance with recommendations from SecurityDocs.
+
+**Decisions**
+- Email: Use symmetric encryption (AES) with secure key management.
+- Password: Use strong hashing (bcrypt/argon2), not encryption.
+- Migration: Convert existing emails to encrypted format without downtime.
+- Scope: Only user email and password fields; other PII out of scope unless specified.
+
+**Further Considerations**
+1. Key management: Recommend using environment variables or a secrets manager for encryption keys.
+2. Email search: Encrypted emails cannot be searched directly; consider deterministic encryption or secure search if needed.
+3. Compliance: Ensure GDPR/CCPA requirements are met per SecurityDocs.
+
+Please review and confirm or request changes before implementation.
+
+User: Create a USER_SECURITY_PLAN.md file in `/SecurityDocs` detailing this plan, its steps, the reasoning behind each step/choice, and how it will improve the project
+
+GitHub Copilot: Created [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/SecurityDocs/USER_SECURITY_PLAN.md)
+
+The USER_SECURITY_PLAN.md file has been created in /SecurityDocs. It details the plan, step-by-step reasoning, and how email/password encryption will improve RiskRadar’s security and compliance, without disrupting the existing codebase. Let me know if you want to review or modify any part of the plan.
+
+Made changes.
+
+User: How risky is this plan to implement with the curret state of the project?
+
+GitHub Copilot: The risk of implementing the email encryption and password hashing plan in the current state of the project is moderate but manageable, given the following factors:
+
+### Risk Factors
+- **Database Migration:** Changing email storage to encrypted format and updating password hashing requires careful migration. If not handled properly, it could lead to data loss or user login issues.
+- **Codebase Integration:** Multiple backend files (models, auth, API, schemas) must be updated. If changes are inconsistent, it could break registration, login, or user retrieval.
+- **Frontend Impact:** If the frontend displays or uses emails, it must handle decrypted values. Failure to update could cause display or communication errors.
+- **Testing:** All tests must be updated and pass. If tests are not comprehensive, regressions may go undetected.
+- **Key Management:** Improper handling of encryption keys could compromise security or make emails unrecoverable.
+
+### Mitigating Factors
+- The project already uses ORM models and has a migration system, making schema changes safer.
+- The plan includes updating tests and running full suites, reducing the risk of undetected breakage.
+- The migration is designed to be incremental, preserving existing data and functionality.
+
+### Summary
+- **Risk Level:** Moderate
+- **Main Risks:** Data migration errors, code integration bugs, key management mistakes.
+- **Mitigation:** Careful migration, comprehensive testing, incremental rollout, secure key handling.
+
+If the plan is followed step-by-step, with thorough testing and backups, the risk can be kept low and the project’s integrity preserved.
+
+User: Are there any additional precautions to avoid the mentioned risk factors and ensure that the integrity of the exsisting codebase is preserved?
+
+What can be done to prevent these risks from occuring?
+
+GitHub Copilot: Yes, there are several additional precautions you can take to minimize risk and preserve codebase integrity during the email encryption and password hashing implementation:
+
+### Precautions & Risk Prevention
+
+1. **Backup All Data**
+   - Before migration, create a full backup of the database (including user emails and passwords).
+   - Test restoring from backup to ensure data can be recovered if needed.
+
+2. **Incremental Migration**
+   - Migrate emails and passwords in small batches, not all at once.
+   - Validate each batch before proceeding to the next.
+
+3. **Comprehensive Testing**
+   - Expand test coverage for user registration, login, retrieval, and update flows.
+   - Add tests for edge cases (e.g., invalid email, corrupted encrypted data).
+   - Run tests after every change, not just at the end.
+
+4. **Staging Environment**
+   - Apply changes in a staging/test environment before production.
+   - Use real data (with consent or anonymized) to simulate migration and usage.
+
+5. **Code Reviews**
+   - Have multiple team members review migration scripts and code changes.
+   - Use automated linting and static analysis tools.
+
+6. **Key Management**
+   - Store encryption keys securely (environment variables, secrets manager).
+   - Never hard-code keys in the codebase or commit them to version control.
+   - Document key rotation and recovery procedures.
+
+7. **Migration Logging**
+   - Log all migration actions and errors for traceability.
+   - Alert on any failed or partial migrations.
+
+8. **User Communication**
+   - Inform users of upcoming changes, especially if downtime or login issues are possible.
+   - Provide support for users who encounter issues post-migration.
+
+9. **Rollback Plan**
+   - Prepare scripts and procedures to revert changes if something goes wrong.
+   - Test rollback in staging before production.
+
+10. **Monitor Post-Deployment**
+    - Monitor application logs and user activity for anomalies after deployment.
+    - Be ready to respond quickly to any issues.
+
+### Summary Table
+
+| Risk Factor                | Prevention Strategy                |
+|----------------------------|------------------------------------|
+| Data loss/corruption       | Backup, incremental migration, rollback plan |
+| Code integration bugs      | Staging environment, code reviews, comprehensive testing |
+| Key management mistakes    | Secure storage, documented procedures, never hard-code |
+| Undetected regressions     | Expanded test coverage, frequent test runs |
+| User disruption            | User communication, support, monitoring |
+
+By following these precautions, you greatly reduce the risk of breaking the codebase or losing data, and ensure a smooth, secure transition.
+
+User: Add these Precautions & Risk Prevention Strategies and corresponding SUmmary Table so that all group members are informedon how to avoid them
+
+GitHub Copilot: Generating patch (63 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/SecurityDocs/USER_SECURITY_PLAN.md)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/SecurityDocs/USER_SECURITY_PLAN.md#1-1), lines 1 to 60
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/SecurityDocs/USER_SECURITY_PLAN.md#61-61), lines 61 to 67
+
+Generating patch (62 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/SecurityDocs/USER_SECURITY_PLAN.md)
+
+
+```
+
+```
+Precautions & Risk Prevention Strategies and a summary table have been added to USER_SECURITY_PLAN.md. All group members can now reference these steps to avoid risks and preserve codebase integrity during implementation.
+
+Made changes.
+
+User: Is there any information on how to successfully and safely implement Password and Email Encryption that this plan is missing?
+
+GitHub Copilot: The plan is comprehensive, but a few additional best practices and technical details can further strengthen the implementation:
+
+### Additional Recommendations
+
+1. **Encryption Algorithm Details**
+   - Specify AES mode (e.g., AES-256-GCM for authenticated encryption).
+   - Use a unique initialization vector (IV) for each email encryption.
+   - Store IV alongside the encrypted email (not in plaintext).
+
+2. **Key Management**
+   - Use a dedicated secrets manager (e.g., AWS Secrets Manager, Azure Key Vault) for production.
+   - Rotate keys periodically and have a documented recovery process.
+   - Limit access to keys via role-based access control.
+
+3. **Password Hashing Details**
+   - Use bcrypt/argon2 with a strong, unique salt for each password.
+   - Set a high enough work factor (cost parameter) to resist brute-force attacks.
+   - Never use MD5, SHA1, or unsalted hashes.
+
+4. **Migration Safety**
+   - Validate encrypted emails and hashed passwords after migration (e.g., test login for migrated users).
+   - Keep old data until new format is confirmed working.
+
+5. **Error Handling**
+   - Handle decryption failures gracefully (e.g., log and alert, do not crash).
+   - Provide clear error messages for authentication failures.
+
+6. **Audit Logging**
+   - Log access to sensitive operations (encryption, decryption, password changes).
+   - Monitor for suspicious activity.
+
+7. **Documentation**
+   - Document encryption/hashing logic, key management, and migration steps for future maintainers.
+
+8. **Compliance**
+   - Ensure the solution meets all relevant legal and regulatory requirements (GDPR, CCPA, etc.).
+
+### Summary
+
+- Specify AES mode and IV handling.
+- Use a secrets manager for keys.
+- Set strong password hashing parameters.
+- Validate migration and handle errors gracefully.
+- Log sensitive operations and document procedures.
+
+Adding these details will make the plan even safer and more robust for implementation.
+
+User: Add these details to guarentee that this process will be safe to implement and take all risks and factors into account
+
+GitHub Copilot: Generating patch (41 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/SecurityDocs/USER_SECURITY_PLAN.md)
+
+
+```
+
+```
+The USER_SECURITY_PLAN.md now includes technical details and best practices for safe email and password encryption implementation. This guarantees the process is robust, secure, and takes all risks and factors into account. Let me know if you need further refinements or want to review the updated plan.
+
+Made changes.
+
+User: Incorporate into this plan that changes must be made so that emails must be unique/distinct, with only ONE email permitted per RiskRadar Account and only ONE RiskRadar Account per email
+
+GitHub Copilot: Generating patch (14 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/SecurityDocs/USER_SECURITY_PLAN.md)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/SecurityDocs/USER_SECURITY_PLAN.md#21-21), lines 21 to 40
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/SecurityDocs/USER_SECURITY_PLAN.md#41-41), lines 41 to 60
+
+Generating patch (10 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6-SeniorProject/SecurityDocs/USER_SECURITY_PLAN.md)
+
+
+```
+
+```
+The plan now explicitly requires that each email is unique, with only one RiskRadar account per email. Registration and update logic must reject duplicates, and the database must enforce a unique constraint on the email field. This ensures account integrity and prevents duplicate accounts.
+
+Made changes.
+
+---

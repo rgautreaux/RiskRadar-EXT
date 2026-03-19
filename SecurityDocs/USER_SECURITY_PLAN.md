@@ -58,6 +58,12 @@ Enhance the security and privacy of RiskRadar users by encrypting email addresse
 - **Model Update:** Modify user model to store encrypted emails.
 - **Logic Update:** Implement email encryption/decryption in authentication utilities.
 - **Migration:** Convert existing plaintext emails to encrypted format via migration scripts.
+  
+**Email Uniqueness Requirement:**
+	- Enforce that each email is unique in the database.
+	- Only one RiskRadar account is permitted per email address.
+	- Registration and update logic must reject duplicate emails, even after encryption.
+	- Database schema must maintain a unique constraint on the email field (encrypted or plaintext).
 
 **Reasoning:** Protects personally identifiable information (PII) from exposure in case of database compromise. AES is a proven, efficient standard for symmetric encryption.
 
