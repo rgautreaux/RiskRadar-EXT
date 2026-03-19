@@ -44,53 +44,63 @@ Enhance the security and privacy of RiskRadar users by encrypting email addresse
 
 ---
 
+
 ### 1. Analysis & Preparation
-- **Review SecurityDocs:** Analyze recommendations, compliance requirements (GDPR, CCPA), and encryption standards from `/SecurityDocs`.
-- **Audit Codebase:** Identify all locations where user emails and passwords are stored, processed, or transmitted.
+**Assigned:** Noah Benoit (Security Lead), Rebecca Gautreaux (Database Administrator)
+- **Review SecurityDocs:** Analyze recommendations, compliance requirements (GDPR, CCPA), and encryption standards from `/SecurityDocs`. *(Noah)*
+- **Audit Codebase:** Identify all locations where user emails and passwords are stored, processed, or transmitted. *(Rebecca, Noah)*
 
 **Reasoning:** Ensures the plan aligns with industry standards and project-specific requirements, and avoids missing any critical code paths.
 
 ---
 
+
 ### 2. Email Encryption Implementation
-- **Encryption Method:** Use AES symmetric encryption for email addresses, with secure key management (environment variables or secrets manager).
-- **Key Management:** Store encryption keys securely, never hard-coded.
-- **Model Update:** Modify user model to store encrypted emails.
-- **Logic Update:** Implement email encryption/decryption in authentication utilities.
-- **Migration:** Convert existing plaintext emails to encrypted format via migration scripts.
-  
+**Assigned:** Qui Huynh (Backend Developer), Noah Benoit (Security Lead), Rebecca Gautreaux (Database Administrator)
+- **Encryption Method:** Use AES symmetric encryption for email addresses, with secure key management (environment variables or secrets manager). *(Qui, Noah)*
+- **Key Management:** Store encryption keys securely, never hard-coded. *(Noah)*
+- **Model Update:** Modify user model to store encrypted emails. *(Qui, Rebecca)*
+- **Logic Update:** Implement email encryption/decryption in authentication utilities. *(Qui)*
+- **Migration:** Convert existing plaintext emails to encrypted format via migration scripts. *(Rebecca, Qui)*
+
 **Email Uniqueness Requirement:**
-	- Enforce that each email is unique in the database.
-	- Only one RiskRadar account is permitted per email address.
-	- Registration and update logic must reject duplicate emails, even after encryption.
-	- Database schema must maintain a unique constraint on the email field (encrypted or plaintext).
+	- Enforce that each email is unique in the database. *(Rebecca)*
+	- Only one RiskRadar account is permitted per email address. *(Qui, Rebecca)*
+	- Registration and update logic must reject duplicate emails, even after encryption. *(Qui)*
+	- Database schema must maintain a unique constraint on the email field (encrypted or plaintext). *(Rebecca)*
 
 **Reasoning:** Protects personally identifiable information (PII) from exposure in case of database compromise. AES is a proven, efficient standard for symmetric encryption.
 
 ---
 
+
 ### 3. Password Hashing Implementation
-- **Hashing Method:** Use bcrypt or argon2 for password hashing (not reversible encryption).
-- **Model Update:** Ensure password field stores only hashed values.
-- **Logic Update:** Update registration and authentication flows to use secure hashing.
+**Assigned:** Qui Huynh (Backend Developer), Noah Benoit (Security Lead)
+- **Hashing Method:** Use bcrypt or argon2 for password hashing (not reversible encryption). *(Qui, Noah)*
+- **Model Update:** Ensure password field stores only hashed values. *(Qui)*
+- **Logic Update:** Update registration and authentication flows to use secure hashing. *(Qui)*
 
 **Reasoning:** Passwords must never be stored in a reversible format. Hashing with salt prevents brute-force and rainbow table attacks.
 
 ---
 
+
 ### 4. Integration & Testing
-- **Update Tests:** Modify and add tests to validate encrypted email and hashed password handling.
-- **Run Full Suite:** Ensure all backend/frontend tests pass, confirming no regressions or conflicts.
-- **Frontend Validation:** Ensure decrypted emails are displayed securely where needed.
+**Assigned:** Qui Huynh (Backend Developer), Ben Manuel (Frontend Developer), Celeste George (Frontend Developer), Rebecca Gautreaux (Database Administrator)
+- **Update Tests:** Modify and add tests to validate encrypted email and hashed password handling. *(Qui, Ben, Celeste)*
+- **Run Full Suite:** Ensure all backend/frontend tests pass, confirming no regressions or conflicts. *(Qui, Ben, Celeste, Rebecca)*
+- **Frontend Validation:** Ensure decrypted emails are displayed securely where needed. *(Ben, Celeste)*
 
 **Reasoning:** Maintains project integrity and functionality, preventing disruption to existing features.
 
 ---
 
+
 ### 5. Compliance & Further Considerations
-- **Compliance:** Ensure GDPR/CCPA requirements are met (right to erasure, data minimization, etc.).
-- **Email Search:** Note that encrypted emails cannot be searched directly; consider deterministic encryption if search is required.
-- **Key Rotation:** Plan for periodic key rotation and secure backup.
+**Assigned:** Noah Benoit (Security Lead), Rebecca Gautreaux (Database Administrator)
+- **Compliance:** Ensure GDPR/CCPA requirements are met (right to erasure, data minimization, etc.). *(Noah)*
+- **Email Search:** Note that encrypted emails cannot be searched directly; consider deterministic encryption if search is required. *(Noah, Rebecca)*
+- **Key Rotation:** Plan for periodic key rotation and secure backup. *(Noah, Rebecca)*
 
 **Reasoning:** Legal compliance and operational security are critical for user trust and project longevity.
 
@@ -108,43 +118,44 @@ Enhance the security and privacy of RiskRadar users by encrypting email addresse
 
 To ensure the integrity of the codebase and minimize risks during implementation, follow these additional precautions:
 
-1. **Backup All Data**
+
+1. **Backup All Data** *(Rebecca Gautreaux)*
 	- Create a full backup of the database before migration.
 	- Test restoring from backup to ensure recovery is possible.
 
-2. **Incremental Migration**
+2. **Incremental Migration** *(Rebecca Gautreaux, Qui Huynh)*
 	- Migrate emails and passwords in small batches.
 	- Validate each batch before proceeding.
 
-3. **Comprehensive Testing**
+3. **Comprehensive Testing** *(Qui Huynh, Ben Manuel, Celeste George)*
 	- Expand test coverage for user registration, login, retrieval, and update flows.
 	- Add tests for edge cases and run tests after every change.
 
-4. **Staging Environment**
+4. **Staging Environment** *(Rebecca Gautreaux, Noah Benoit)*
 	- Apply changes in a staging/test environment before production.
 	- Use real or anonymized data to simulate migration and usage.
 
-5. **Code Reviews**
+5. **Code Reviews** *(Noah Benoit, Qui Huynh, Rebecca Gautreaux)*
 	- Have multiple team members review migration scripts and code changes.
 	- Use automated linting and static analysis tools.
 
-6. **Key Management**
+6. **Key Management** *(Noah Benoit)*
 	- Store encryption keys securely (environment variables, secrets manager).
 	- Never hard-code keys or commit them to version control.
 	- Document key rotation and recovery procedures.
 
-7. **Migration Logging**
+7. **Migration Logging** *(Rebecca Gautreaux)*
 	- Log all migration actions and errors for traceability.
 	- Alert on any failed or partial migrations.
 
-8. **User Communication**
+8. **User Communication** *(Noah Benoit)*
 	- Inform users of upcoming changes and provide support for post-migration issues.
 
-9. **Rollback Plan**
+9. **Rollback Plan** *(Rebecca Gautreaux)*
 	- Prepare scripts and procedures to revert changes if needed.
 	- Test rollback in staging before production.
 
-10. **Monitor Post-Deployment**
+10. **Monitor Post-Deployment** *(Rebecca Gautreaux, Noah Benoit)*
 	 - Monitor logs and user activity for anomalies after deployment.
 	 - Respond quickly to any issues.
 
