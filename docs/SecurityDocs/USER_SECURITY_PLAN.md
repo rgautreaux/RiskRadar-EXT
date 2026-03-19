@@ -40,6 +40,13 @@ By following these technical details and best practices, the team can ensure a s
 ## RiskRadar User Security Plan: Email & Password Encryption
 ---
 
+### Schema Design & Documentation
+For details on the planned schema changes for encrypted email and unique constraints, see:
+- [backend/db/migrations/email_encryption_schema_plan.md](../backend/db/migrations/email_encryption_schema_plan.md)
+
+This file outlines the proposed table modifications, migration steps, and integration notes to guide safe implementation and future review.
+---
+
 ### Codebase Audit Results: Email & Password Storage
 **Investigation conducted by Rebecca Gautreaux (Database Administrator)**
 
