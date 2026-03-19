@@ -5,8 +5,8 @@ import json
 import pytest
 from sqlalchemy.exc import IntegrityError
 
-from db.models import Alert, Summary, User, ScrapeLog
-from tests.conftest import NOW
+from backend.db.models import Alert, Summary, User, ScrapeLog
+from backend.tests.conftest import NOW
 
 
 class TestAlertModel:

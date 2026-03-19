@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
 from sqlalchemy import Column, Integer, Text, Float, UniqueConstraint, DateTime, JSON
-from db.database import Base
+from backend.db.database import Base
 
 
 def _now():
@@ -54,7 +54,8 @@ class User(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     device_token = Column(Text)
     display_name = Column(Text)
-    email = Column(Text, unique=True)
+    encrypted_email = Column(Text, nullable=False)
+    email_hash = Column(Text, unique=True, nullable=False)
     password_hash = Column(Text)
     zip_code = Column(Text)
     latitude = Column(Float)

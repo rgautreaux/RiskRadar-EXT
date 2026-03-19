@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 
-from db.models import Alert, AlertArchive, CleanupRun, ScrapeLog, ScrapeLogArchive
-from db.retention import run_retention_cleanup
+from backend.db.models import Alert, AlertArchive, CleanupRun, ScrapeLog, ScrapeLogArchive
+from backend.db.retention import run_retention_cleanup
 
 
 def _days_ago(days: int) -> datetime:

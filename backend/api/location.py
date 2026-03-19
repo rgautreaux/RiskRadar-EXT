@@ -110,7 +110,7 @@ def _aqi_to_severity(aqi: int) -> str:
 
 def _fetch_airnow(zip_code: str) -> list[dict]:
     """Fetch current air quality for a zip code from AirNow."""
-    from config.settings import settings
+    from backend.config.settings import settings
     api_key = settings.AIRNOW_API_KEY
     if not api_key:
         return []

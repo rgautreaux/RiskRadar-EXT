@@ -1,6 +1,6 @@
 """Tests for user API endpoints."""
 
-from auth.security import create_access_token, verify_password
+from backend.auth.security import create_access_token, verify_password
 
 
 def _auth_headers(user_id: int) -> dict[str, str]:

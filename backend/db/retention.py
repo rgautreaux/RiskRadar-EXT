@@ -7,9 +7,9 @@ from typing import Any
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from config.settings import settings
-from db.database import SessionLocal
-from db.models import (
+from backend.config.settings import settings
+from backend.db.database import SessionLocal
+from backend.db.models import (
     Alert,
     AlertArchive,
     CleanupRun,

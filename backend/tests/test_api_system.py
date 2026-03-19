@@ -1,6 +1,6 @@
 """Tests for system API endpoints."""
 
-from auth.security import create_access_token
+from backend.auth.security import create_access_token
 
 
 def _auth_headers(user_id: int) -> dict[str, str]:

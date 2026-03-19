@@ -5,7 +5,7 @@ from datetime import datetime, timedelta, timezone
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from config.settings import settings
+from backend.config.settings import settings
 from db.retention import run_retention_cleanup
 from scrapers.registry import load_all_scrapers
 

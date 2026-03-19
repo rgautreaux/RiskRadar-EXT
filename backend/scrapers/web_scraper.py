@@ -8,8 +8,8 @@ import json
 import logging
 from typing import Any
 
-from config.settings import settings
-from scrapers.base_scraper import BaseScraper
+from backend.config.settings import settings
+from backend.scrapers.base_scraper import BaseScraper
 
 logger = logging.getLogger(__name__)
 
@@ -63,7 +63,7 @@ class WebScraper(BaseScraper):
     def fetch_raw_data(self) -> list[dict]:
         from firecrawl import FirecrawlApp
 
-        from config.settings import settings
+        from backend.config.settings import settings
         firecrawl = FirecrawlApp(api_key=settings.FIRECRAWL_API_KEY)
 
         scrape_params = {"formats": ["markdown"]}

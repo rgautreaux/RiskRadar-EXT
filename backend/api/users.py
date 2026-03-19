@@ -57,7 +57,6 @@ def register_user(body: UserCreate, db: Session = Depends(get_db)):
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
-    # hash_password() uses bcrypt — see auth/security.py
     user = User(
         display_name=body.display_name,
         email=body.email,

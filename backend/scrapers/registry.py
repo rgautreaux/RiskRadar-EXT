@@ -6,14 +6,14 @@ from pathlib import Path
 
 import yaml
 
-from config.settings import settings
-from scrapers.base_scraper import BaseScraper
-from scrapers.generic_api_scraper import GenericAPIScraper
-from scrapers.web_scraper import WebScraper
-from scrapers.nws_scraper import NWSScraper
-from scrapers.airnow_scraper import AirNowScraper
-from scrapers.epa_scraper import EPAScraper
-from scrapers.firms_scraper import FIRMSScraper
+from backend.config.settings import settings
+from backend.scrapers.base_scraper import BaseScraper
+from backend.scrapers.generic_api_scraper import GenericAPIScraper
+from backend.scrapers.web_scraper import WebScraper
+from backend.scrapers.nws_scraper import NWSScraper
+from backend.scrapers.airnow_scraper import AirNowScraper
+from backend.scrapers.epa_scraper import EPAScraper
+from backend.scrapers.firms_scraper import FIRMSScraper
 
 logger = logging.getLogger(__name__)
 
