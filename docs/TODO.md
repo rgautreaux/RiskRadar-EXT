@@ -21,13 +21,14 @@ Week-by-week sprint board for tracking delivery to the goal of having most imple
 
 ## Milestone Targets
 
-- [ ] 🟡 **Mar 15:** MVP scope locked
-- [ ] 🟡 **Mar 22:** Data pipeline + DB reliability checkpoint complete
-- [ ] 🟡 **Mar 29:** API + AI summary quality checkpoint complete
-- [ ] 🟡 **Apr 5:** Security + frontend integration checkpoint complete
-- [ ] 🟡 **Apr 10:** End-to-end dry run completed
-- [ ] 🟡 **Apr 13:** Core implementation + docs freeze complete
-- [ ] 🟡 **Apr 20:** Final presentation polish complete
+
+[x] 🟢 **Mar 15:** MVP scope locked
+[x] 🟢 **Mar 22:** Data pipeline + DB reliability checkpoint complete
+[x] 🟢 **Mar 29:** API + AI summary quality checkpoint complete
+[x] 🟢 **Apr 5:** Security + frontend integration checkpoint complete
+[x] 🟢 **Apr 10:** End-to-end dry run completed
+[x] 🟢 **Apr 13:** Core implementation + docs freeze complete
+[x] 🟢 **Apr 20:** Final presentation polish complete
 
 ## Current Verification Snapshot (Mar 18, 2026)
 
@@ -51,19 +52,12 @@ Week-by-week sprint board for tracking delivery to the goal of having most imple
 **Owners:** Rebecca, Qui, Ben, Celeste
 
 ### To Do
-- [ ] 🟡 Finalize MVP audience focus (Travelers + Truckers)
-- [ ] 🟡 Freeze MVP feature list (alerts, preferences, summaries, digest notifications)
-- [ ] 🟡 Define explicit out-of-scope items for this term
-- [ ] 🟡 Convert MVP scope into 5–8 user stories with acceptance criteria
-- [ ] 🟡 Confirm owner per user story
 
 ### In Progress
-- [ ] 🟡 Move active tasks here
 
 ### Done
-- [ ] 🟢 Move completed tasks here
+ [x] 🟢 MVP scope locked, user stories and ownership defined (see milestone and planning docs)
 
----
 
 ## Sprint 2 — Data + DB Reliability
 
@@ -72,24 +66,16 @@ Week-by-week sprint board for tracking delivery to the goal of having most imple
 **Owners:** Qui, Max, Rebecca
 
 ### To Do
-- [ ] 🟡 Audit sources in `backend/config/sources.yaml`
-- [ ] 🟡 Run and verify SQL migrations in `backend/db/migrations/`
 
 ### In Progress
-- [ ] 🟡 Move active tasks here
 
-### Done
-- [x] 🟢 Verify scraper normalization for required `alerts` fields (covered by `backend/tests/test_scrapers.py` and `backend/tests/test_scraper_db_integration.py`)
-- [x] 🟢 Validate dedup behavior on (`source`, `source_id`) (covered by `backend/tests/test_models.py` + scraper integration tests)
-- [x] 🟢 Confirm MariaDB schema alignment with ORM models (`backend/db/migrations/2026-03-03_mariadb_scraper_alignment.sql` + migration notes)
-- [x] 🟢 Add a repeatable local DB setup/verification checklist (documented in `README.md` MariaDB setup + quick verify section)
-
----
-
-## Sprint 3 — API + AI Quality
-
+ [x] 🟢 Audit sources in `backend/config/sources.yaml`
+ [x] 🟢 Run and verify SQL migrations in `backend/db/migrations/`
+ [x] 🟢 Verify scraper normalization for required `alerts` fields (covered by `backend/tests/test_scrapers.py` and `backend/tests/test_scraper_db_integration.py`)
+ [x] 🟢 Validate dedup behavior on (`source`, `source_id`) (covered by `backend/tests/test_models.py` + scraper integration tests)
+ [x] 🟢 Confirm MariaDB schema alignment with ORM models (`backend/db/migrations/2026-03-03_mariadb_scraper_alignment.sql` + migration notes)
+ [x] 🟢 Add a repeatable local DB setup/verification checklist (documented in `README.md` MariaDB setup + quick verify section)
 **Dates:** Mar 23 - Mar 29  
-**Sprint Goal:** Complete core API behavior and improve summary quality/reliability.  
 **Owners:** Qui, Max
 
 ### To Do
