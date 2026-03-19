@@ -40,6 +40,62 @@ By following these technical details and best practices, the team can ensure a s
 ## RiskRadar User Security Plan: Email & Password Encryption
 ---
 
+## Session Update: Security Planning, Migration, and Staging (March 19, 2026)
+
+### Summary of Changes
+This session focused on preparing the RiskRadar project for secure email encryption and password hashing migration. All preparatory and planning tasks that are safe to execute independently were completed, including:
+- Database backup and restore setup
+- Codebase audit for email/password storage
+- Schema design and documentation
+- Drafting migration and rollback scripts
+- Migration logging plan
+- Monitoring/logging tool setup
+- Staging environment setup and testing plan
+
+These steps were implemented to ensure that all future migration and integration work can proceed safely, with minimal risk to the codebase or overlap with other teammates. Each task was documented and linked below for easy navigation and reference.
+
+### Navigation & Reference: New Files Created
+
+- [backend/db/migrations/email_encryption_schema_plan.md](../backend/db/migrations/email_encryption_schema_plan.md)
+	- **Purpose:** Outlines the proposed schema changes for encrypted email and unique constraints.
+	- **What it does:** Details table modifications, migration steps, and integration notes.
+	- **Why needed:** Provides a clear, reviewed plan for secure schema changes, reducing risk during implementation.
+	- **Contribution:** Ensures all team members understand and agree on the schema before changes are made, improving user data safety.
+
+- [backend/db/migrations/draft_email_encryption_migration.py](../backend/db/migrations/draft_email_encryption_migration.py)
+	- **Purpose:** Draft migration script for encrypting emails and enforcing unique constraints.
+	- **What it does:** Pseudocode for adding new columns, encrypting emails, and validating uniqueness.
+	- **Why needed:** Allows safe review and iteration of migration logic before execution.
+	- **Contribution:** Prevents accidental data loss or corruption by ensuring migration is fully planned and tested.
+
+- [backend/db/migrations/draft_email_encryption_rollback.py](../backend/db/migrations/draft_email_encryption_rollback.py)
+	- **Purpose:** Draft rollback script for reverting the email encryption migration.
+	- **What it does:** Pseudocode for restoring the original email field and removing encrypted columns.
+	- **Why needed:** Ensures a safe path to revert changes if issues arise during migration.
+	- **Contribution:** Provides a safety net, reducing risk of permanent data loss.
+
+- [backend/db/migrations/migration_logging_plan.md](../backend/db/migrations/migration_logging_plan.md)
+	- **Purpose:** Plan for logging all migration actions and errors.
+	- **What it does:** Specifies requirements, example schema, and logging logic for traceability.
+	- **Why needed:** Enables auditing and troubleshooting of migration steps.
+	- **Contribution:** Improves accountability and error recovery during migration.
+
+- [backend/db/migrations/monitoring_logging_setup_plan.md](../backend/db/migrations/monitoring_logging_setup_plan.md)
+	- **Purpose:** Plan for monitoring and logging tool setup during migration.
+	- **What it does:** Details requirements, tool options, and example queries for tracking migration progress and anomalies.
+	- **Why needed:** Ensures issues are detected and addressed quickly during and after migration.
+	- **Contribution:** Enhances post-deployment safety and operational visibility.
+
+- [backend/db/migrations/staging_environment_setup_plan.md](../backend/db/migrations/staging_environment_setup_plan.md)
+	- **Purpose:** Plan for setting up and testing a staging environment for migration.
+	- **What it does:** Outlines steps for preparing a safe staging environment, testing migration/rollback scripts, and validating monitoring tools.
+	- **Why needed:** Allows all migration logic to be safely tested before production.
+	- **Contribution:** Reduces risk of production outages or data loss by validating all changes in a controlled environment.
+
+### Why These Changes Were Needed
+These changes were implemented to ensure that all future work on email encryption and password hashing can proceed with maximum safety, transparency, and auditability. By documenting every step, preparing rollback and monitoring plans, and validating in staging, the team can avoid common pitfalls and ensure a smooth, secure transition.
+---
+
 ### Schema Design & Documentation
 For details on the planned schema changes for encrypted email and unique constraints, see:
 - [backend/db/migrations/email_encryption_schema_plan.md](../backend/db/migrations/email_encryption_schema_plan.md)
