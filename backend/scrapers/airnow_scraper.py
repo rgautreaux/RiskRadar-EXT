@@ -1,10 +1,9 @@
-"""AirNow — current air quality observations.
+"""AirNow - current air quality observations.
 
 API docs: https://docs.airnowapi.org/CurrentObservationsByZip/docs
 Requires an API key (free registration).
 """
 
-import json
 import httpx
 
 from config.settings import settings
@@ -31,7 +30,7 @@ class AirNowScraper(BaseScraper):
             "format": "application/json",
             "zipCode": settings.DEFAULT_ZIP_CODE,
             "distance": 25,
-            "API_KEY": "B77FFDEA-971C-4B29-A506-0254F5C893D6",
+            "API_KEY": settings.AIRNOW_API_KEY,
         }
 
         resp = httpx.get(url, params=params, timeout=30)
@@ -53,7 +52,7 @@ class AirNowScraper(BaseScraper):
             "severity": _aqi_to_severity(aqi),
             "title": f"{param} AQI: {aqi} ({category})",
             "description": f"Air quality in {area}, {state}: {param} AQI is {aqi} ({category}). Observed {date}.",
-            "raw_data": json.dumps(raw),
+            "raw_data": raw,
             "latitude": raw.get("Latitude"),
             "longitude": raw.get("Longitude"),
             "location_name": f"{area}, {state}",

@@ -1,98 +1,284 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import React from 'react';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
+  View,
+} from "react-native";
+import { useRouter } from "expo-router";
+import { Ionicons } from '@expo/vector-icons';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { Colors, Spacing, Radius, Shadows } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAuth } from '@/contexts/auth-context';
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  const router = useRouter();
+  const scheme = useColorScheme() ?? 'light';
+  const palette = Colors[scheme];
+  const { isLoggedIn, logout } = useAuth();
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
+  const handleLogin = () => {
+    router.push("/auth/login");
+  };
+
+  const handleCreateAccount = () => {
+    router.push("/auth/registration");
+  };
+
+  const handleGuest = () => {
+    router.push("/main/home");
+  };
+
+  const handleLogout = async () => {
+    await logout();
+  };
+
+  // If logged in, go straight to main home
+  if (isLoggedIn) {
+    return (
+      <ThemedView surface="card" style={styles.safeArea}>
+        <SafeAreaView style={styles.safeAreaContainer}>
+          <View style={styles.container}>
+            <View style={styles.heroContainer}>
+              <View style={styles.iconWrapper}>
+                <View style={[styles.iconBackground, { backgroundColor: palette.secondary }]}>
+                  <Ionicons name="radio-outline" size={64} color={palette.primary} />
+                </View>
+                <View style={[styles.pulseRing, { borderColor: palette.secondary }]} />
+              </View>
+              <ThemedText type="hero" style={styles.title}>
+                Risk<ThemedText type="hero" lightColor={palette.primary} darkColor={palette.primary}>Radar</ThemedText>
+              </ThemedText>
+              <ThemedText
+                type="body"
+                lightColor={palette.textSecondary}
+                darkColor={palette.textSecondary}
+                style={styles.subtitle}
+              >
+                Stay aware. Stay prepared.
+              </ThemedText>
+            </View>
+            <View style={styles.actionContainer}>
+              <TouchableOpacity
+                style={[styles.primaryButton, { backgroundColor: palette.primary, shadowColor: palette.primary }]}
+                onPress={() => router.push("/main/home")}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="home-outline" size={20} color={palette.white} style={styles.buttonIcon} />
+                <ThemedText type="cardTitle" lightColor={palette.white} darkColor={palette.white}>
+                  Go to Dashboard
+                </ThemedText>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.secondaryButton, { backgroundColor: palette.secondary }]}
+                onPress={handleLogout}
+                activeOpacity={0.6}
+              >
+                <Ionicons name="log-out-outline" size={20} color={palette.primary} style={styles.buttonIcon} />
+                <ThemedText type="cardTitle" lightColor={palette.primary} darkColor={palette.primary}>
+                  Log Out
+                </ThemedText>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </SafeAreaView>
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    );
+  }
+
+  return (
+    <ThemedView surface="card" style={styles.safeArea}>
+      <SafeAreaView style={styles.safeAreaContainer}>
+        <View style={styles.container}>
+          
+          {/* Main Hero Branding Section */}
+          <View style={styles.heroContainer}>
+            <View style={styles.iconWrapper}>
+              <View style={[styles.iconBackground, { backgroundColor: palette.secondary }]}>
+                <Ionicons name="radio-outline" size={64} color={palette.primary} />
+              </View>
+              <View style={[styles.pulseRing, { borderColor: palette.secondary }]} />
+            </View>
+            <ThemedText type="hero" style={styles.title}>
+              Risk<ThemedText type="hero" lightColor={palette.primary} darkColor={palette.primary}>Radar</ThemedText>
+            </ThemedText>
+            <ThemedText 
+              type="body" 
+              lightColor={palette.textSecondary}
+              darkColor={palette.textSecondary}
+              style={styles.subtitle}
+            >
+              Stay aware. Stay prepared.
+            </ThemedText>
+          </View>
+
+          {/* Action Buttons */}
+          <View style={styles.actionContainer}>
+            <TouchableOpacity 
+              style={[styles.primaryButton, { backgroundColor: palette.primary, shadowColor: palette.primary }]} 
+              onPress={handleLogin}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="log-in-outline" size={20} color={palette.white} style={styles.buttonIcon} />
+              <ThemedText type="cardTitle" lightColor={palette.white} darkColor={palette.white}>
+                Log In
+              </ThemedText>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={[styles.secondaryButton, { backgroundColor: palette.secondary }]}
+              onPress={handleCreateAccount}
+              activeOpacity={0.6}
+            >
+              <Ionicons name="person-add-outline" size={20} color={palette.primary} style={styles.buttonIcon} />
+              <ThemedText 
+                type="cardTitle" 
+                lightColor={palette.primary}
+                darkColor={palette.primary}
+              >
+                Create Account
+              </ThemedText>
+            </TouchableOpacity>
+          </View>
+
+          {/* Footer / Guest Mode */}
+          <View style={styles.footerContainer}>
+            <View style={styles.dividerContainer}>
+              <View style={[styles.divider, { backgroundColor: palette.border }]} />
+              <ThemedText 
+                type="eyebrow" 
+                lightColor={palette.textSecondary}
+                darkColor={palette.textSecondary}
+                style={styles.dividerText}
+              >
+                OR
+              </ThemedText>
+              <View style={[styles.divider, { backgroundColor: palette.border }]} />
+            </View>
+
+            <TouchableOpacity 
+              style={styles.guestButton} 
+              onPress={handleGuest}
+              activeOpacity={0.6}
+            >
+              <ThemedText 
+                type="body"
+                lightColor={palette.textSecondary}
+                darkColor={palette.textSecondary}
+              >
+                Continue as Guest
+              </ThemedText>
+              <Ionicons name="arrow-forward" size={16} color={palette.textSecondary} style={styles.guestIcon} />
+            </TouchableOpacity>
+          </View>
+
+        </View>
+      </SafeAreaView>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  safeArea: {
+    flex: 1,
+  },
+  safeAreaContainer: {
+    flex: 1,
+  },
+  container: {
+    flex: 1,
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: Spacing.md,
+    paddingTop: 60,
+    paddingBottom: 40,
+  },
+  heroContainer: {
+    alignItems: "center",
+    marginTop: 40,
+  },
+  iconWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: Spacing.xl,
+    position: 'relative',
+  },
+  iconBackground: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 2,
+  },
+  pulseRing: {
+    position: 'absolute',
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    borderWidth: 2,
+    zIndex: 1,
+  },
+  title: {
+    marginBottom: Spacing.sm,
+    letterSpacing: -1,
+  },
+  subtitle: {
+    textAlign: "center",
+  },
+  actionContainer: {
+    width: '100%',
+    paddingHorizontal: Spacing.sm,
+  },
+  primaryButton: {
+    flexDirection: 'row',
+    width: "100%",
+    height: 56,
+    borderRadius: Radius.button,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: Spacing.md,
+    ...Shadows.card,
+  },
+  buttonIcon: {
+    marginRight: Spacing.sm,
+  },
+  secondaryButton: {
+    flexDirection: 'row',
+    width: "100%",
+    height: 56,
+    borderRadius: Radius.button,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  footerContainer: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  dividerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    width: '80%',
+    marginBottom: Spacing.lg,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  divider: {
+    flex: 1,
+    height: 1,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  dividerText: {
+    paddingHorizontal: Spacing.md,
+  },
+  guestButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+  },
+  guestIcon: {
+    marginLeft: Spacing.xs,
+    marginTop: 2,
   },
 });
