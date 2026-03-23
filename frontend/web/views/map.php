@@ -12,6 +12,16 @@
 
 <section class="panel">
     <h2>Interactive Map</h2>
+    <div style="margin-bottom:12px;">
+        <label for="region-filter">Region Filter (placeholder): </label>
+        <select id="region-filter" style="min-width:120px;">
+            <option value="">All Regions</option>
+            <option value="LA">Louisiana</option>
+            <option value="TX">Texas</option>
+            <option value="MS">Mississippi</option>
+        </select>
+        <!-- TODO: Wire up region filter to backend queries -->
+    </div>
     <div id="risk-map-container" style="width:100%;height:480px;max-width:1000px;margin:0 auto 24px auto;background:#fff8ee;border-radius:12px;box-shadow:0 2px 12px rgba(18,34,49,0.08);overflow:hidden;">
         <div id="risk-map" style="width:100%;height:100%;position:relative;"></div>
         <div id="map-loading" style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.7);z-index:2;font-size:1.2rem;color:#b65c00;">Loading map data...</div>
@@ -52,7 +62,7 @@ function getSeverityColor(severity) {
     }
 }
 
-// Transform alert data to Plotly scatter points
+// Transform alert data to Plotly scatter points with interactivity
 function alertsToScatterTraces(alerts) {
     if (!Array.isArray(alerts)) return [];
     return alerts.filter(a => a.lat && a.lon).map(alert => ({
@@ -66,8 +76,9 @@ function alertsToScatterTraces(alerts) {
             opacity: 0.85,
             symbol: 'circle'
         },
-        text: `${alert.type || 'Alert'}<br>Severity: ${alert.severity || 'N/A'}`,
+        text: `${alert.type || 'Alert'}<br>Severity: ${alert.severity || 'N/A'}<br>Region: ${alert.region || 'N/A'}`,
         name: alert.type || 'Alert',
+        customdata: [alert],
         hoverinfo: 'text'
     }));
 }
@@ -115,6 +126,23 @@ function renderMap(alertsData, riskData) {
         showlegend: true
     };
     Plotly.newPlot('risk-map', traces, layout, {responsive: true});
+
+    // Add click event for tooltips/details
+    var riskMapDiv = document.getElementById('risk-map');
+    riskMapDiv.on('plotly_click', function(data) {
+        if (data && data.points && data.points.length > 0) {
+            const pt = data.points[0];
+            if (pt.customdata && pt.customdata[0]) {
+                const alert = pt.customdata[0];
+                alert("Alert Details:\n" +
+                    `Type: ${alert.type || 'N/A'}\n` +
+                    `Severity: ${alert.severity || 'N/A'}\n` +
+                    `Region: ${alert.region || 'N/A'}\n` +
+                    `Source: ${alert.source || 'N/A'}\n` +
+                    `Time: ${alert.generated_at || 'N/A'}`);
+            }
+        }
+    });
 }
 
 // Main execution
