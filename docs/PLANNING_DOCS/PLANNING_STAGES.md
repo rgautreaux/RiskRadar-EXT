@@ -320,3 +320,7 @@ Deliver an interactive, accessible, and robust risk map experience in the web ap
 1. If backend endpoints are unstable, mock data can be used for frontend development
 2. Performance optimizations (clustering, tiling) can be added after core features
 3. Future enhancements (predictive overlays, advanced filtering) should be documented for Stage 4
+
+## Web-App Security Documentation
+
+All web-app security controls, requirements, and verification steps are documented in docs/SecurityDocs/ and referenced in frontend/web/README.md. Controls include input validation, output escaping, CSRF, error handling, and safe API integration.

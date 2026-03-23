@@ -379,3 +379,7 @@ For each stage, update:
 - Key implementation outcomes
 - Validation evidence (tests, screenshots, demo notes)
 - Open risks and next actions
+
+## Web-App Security Documentation
+
+The RiskRadar web-app implements and documents security controls in docs/SecurityDocs/. All planning and verification steps reference these docs for compliance and evidence.

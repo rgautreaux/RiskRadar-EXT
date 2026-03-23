@@ -22,3 +22,16 @@ This directory contains security documentation for the RiskRadar Web Application
 - `backend/requirements.txt` — Backend dependencies
 - `docs/PLANNING_DOCS/` — Planning and implementation details
 - `README.md`, `STAGES.md` — Project-level documentation
+
+## Web-App Security Controls Summary
+
+The RiskRadar web-app implements robust security controls, including:
+- Input validation and output escaping (PHP service and template layers)
+- CSRF protection for all state-changing requests
+- Allowlist-based query/form parameter validation
+- Defensive error handling and fallback rendering
+- Secure API integration with safe handling of timeouts, non-2xx, and malformed responses
+- No secrets or credentials exposed in frontend code
+- All controls and requirements are documented in planning and implementation docs
+
+See also: frontend/web/README.md, api_client.php, docs/PLANNING_DOCS/PLANNING_STAGES.md, docs/STAGES.md

@@ -24,7 +24,6 @@
 • Led Stage 3 planning and documentation, including creation of API contract, verification evidence, and implementation spec for the interactive risk map extension.
 • Coordinated with Max on documentation synchronization and QA signoff for all major deliverables.
 • Assigned as primary owner for shared layout and CSS foundation work, with secondary ownership on page parity/signoff phases for integration support.
-• Led Stage 3 documentation and synchronization, ensuring all top-level docs (TRANSCRIPT, REFLECTION, AUTHORS, README) are up to date and in agreement.
 # CMPS 357 Final Project Authors
 
 ## **Max Compeaux** 
@@ -45,6 +44,7 @@
 • Led Stage 3 backend planning and review for risk map and visualization extensions.
 • Coordinated with Rebecca on documentation synchronization and QA signoff for all major deliverables.
 • Assigned as primary owner for page-template parity and QA/docs validation/signoff phases.
+ • Participated in Stage 3 documentation and synchronization, ensuring all top-level docs (TRANSCRIPT, REFLECTION, AUTHORS, README) are up to date and in agreement.
 
 ## **Rebecca Gautreaux**
 - ULID: C00460817
@@ -65,3 +65,14 @@
 • Led Stage 3 planning and documentation, including creation of API contract, verification evidence, and implementation spec for the interactive risk map extension.
 • Coordinated with Max on documentation synchronization and QA signoff for all major deliverables.
 • Assigned as primary owner for shared layout and CSS foundation work, with secondary ownership on page parity/signoff phases for integration support.
+ • Led Stage 3 documentation and synchronization, ensuring all top-level docs (TRANSCRIPT, REFLECTION, AUTHORS, README) are up to date and in agreement.
+
+## Project Contributors and Roles (as of 2026-03-23)
+
+- **Rebecca**: Project lead, documentation governance, security documentation, requirements analysis, and architecture review. Led the initiative to ensure web-app security documentation is complete and synchronized.
+- **Team 3 Members**: (Add names as appropriate)
+  - Backend development, API design, database integration, and security controls implementation.
+  - Frontend development (web/mobile), UI/UX, and secure API integration.
+  - Security research, SBOM and threat model creation, and compliance mapping (OWASP, NIST, GDPR).
+
+*Please update with individual names and specific contributions as the project progresses.*
