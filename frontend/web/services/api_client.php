@@ -1,3 +1,15 @@
+// Stage 3: Map Data API Client
+function rr_api_get_map_alerts(array $config, array $query = []): array
+{
+    // GET /api/v1/alerts/map
+    return rr_http_request($config, 'GET', 'alerts/map', $query);
+}
+
+function rr_api_get_map_risk_overlay(array $config, array $query = []): array
+{
+    // GET /api/v1/risk/map
+    return rr_http_request($config, 'GET', 'risk/map', $query);
+}
 <?php
 
 function rr_api_url(array $config, string $path, array $query = []): string
