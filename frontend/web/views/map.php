@@ -11,10 +11,10 @@
 
 
 <section class="panel">
-    <h2>Interactive Map</h2>
+    <h2 id="risk-map-heading">Interactive Map</h2>
     <div style="margin-bottom:12px;">
         <label for="region-filter">Region Filter (placeholder): </label>
-        <select id="region-filter" style="min-width:120px;">
+        <select id="region-filter" style="min-width:120px;" aria-label="Region Filter">
             <option value="">All Regions</option>
             <option value="LA">Louisiana</option>
             <option value="TX">Texas</option>
@@ -22,18 +22,59 @@
         </select>
         <!-- TODO: Wire up region filter to backend queries -->
     </div>
-    <div id="risk-map-container" style="width:100%;height:480px;max-width:1000px;margin:0 auto 24px auto;background:#fff8ee;border-radius:12px;box-shadow:0 2px 12px rgba(18,34,49,0.08);overflow:hidden;">
-        <div id="risk-map" style="width:100%;height:100%;position:relative;"></div>
+    <div id="risk-map-container" style="width:100%;height:480px;max-width:1000px;margin:0 auto 24px auto;background:#fff8ee;border-radius:12px;box-shadow:0 2px 12px rgba(18,34,49,0.08);overflow:hidden;"
+        tabindex="0" aria-label="Risk map showing alerts and risk zones" aria-describedby="risk-map-legend risk-map-heading">
+        <div id="risk-map" style="width:100%;height:100%;position:relative;" role="region" aria-label="Interactive risk map"></div>
         <div id="map-loading" style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.7);z-index:2;font-size:1.2rem;color:#b65c00;">Loading map data...</div>
-        <div id="map-fallback" style="display:none;position:absolute;top:0;left:0;width:100%;height:100%;align-items:center;justify-content:center;background:rgba(255,255,255,0.9);z-index:3;font-size:1.1rem;color:#b65c00;text-align:center;"></div>
+        <div id="map-fallback" style="display:none;position:absolute;top:0;left:0;width:100%;height:100%;align-items:center;justify-content:center;background:rgba(255,255,255,0.9);z-index:3;font-size:1.1rem;color:#b65c00;text-align:center;" role="alert"></div>
     </div>
     <noscript><p style="color:#b65c00">JavaScript is required to view the interactive map.</p></noscript>
-    <p class="muted">The map will display live alert markers and risk overlays as data becomes available.</p>
+    <div id="risk-map-legend" style="margin-top:10px;" aria-live="polite">
+        <strong>Legend:</strong>
+        <ul>
+            <li><span style="color:#e74c3c;font-weight:bold;">●</span> High severity alert</li>
+            <li><span style="color:#f39c12;font-weight:bold;">●</span> Medium severity alert</li>
+            <li><span style="color:#27ae60;font-weight:bold;">●</span> Low severity alert</li>
+            <li><span style="color:#ff5722;font-weight:bold;">■</span> Extreme/High risk zone</li>
+            <li><span style="color:#ffc107;font-weight:bold;">■</span> Medium risk zone</li>
+            <li><span style="color:#4caf50;font-weight:bold;">■</span> Low risk zone</li>
+        </ul>
+        <span class="sr-only">Use Tab to focus the map. Use arrow keys to pan and mouse or screen reader to explore overlays. Click or press Enter on a marker for details.</span>
+    </div>
+    <p class="muted">The map will display live alert markers and risk overlays as data becomes available. All features are keyboard and screen reader accessible.</p>
 </section>
 
 <!-- Plotly.js CDN -->
 <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
 <script>
+// Accessibility: Keyboard navigation for map focus
+document.addEventListener('DOMContentLoaded', function() {
+    var mapContainer = document.getElementById('risk-map-container');
+    if (mapContainer) {
+        mapContainer.addEventListener('keydown', function(e) {
+            // Basic keyboard panning (left/right/up/down arrows)
+            if ([37,38,39,40].includes(e.keyCode)) {
+                // Use Plotly relayout to pan
+                var pan = {"mapbox.center.lon": null, "mapbox.center.lat": null};
+                var currentLayout = document.getElementById('risk-map').layout || {};
+                var step = 0.5;
+                if (currentLayout.mapbox && currentLayout.mapbox.center) {
+                    pan["mapbox.center.lon"] = currentLayout.mapbox.center.lon;
+                    pan["mapbox.center.lat"] = currentLayout.mapbox.center.lat;
+                } else {
+                    pan["mapbox.center.lon"] = -91.15;
+                    pan["mapbox.center.lat"] = 30.45;
+                }
+                if (e.keyCode === 37) pan["mapbox.center.lon"] -= step; // left
+                if (e.keyCode === 39) pan["mapbox.center.lon"] += step; // right
+                if (e.keyCode === 38) pan["mapbox.center.lat"] += step; // up
+                if (e.keyCode === 40) pan["mapbox.center.lat"] -= step; // down
+                Plotly.relayout('risk-map', pan);
+                e.preventDefault();
+            }
+        });
+    }
+});
 // Backend endpoint URLs (adjust if needed)
 const MAP_ALERTS_URL = '/api/v1/alerts/map';
 const MAP_RISK_URL = '/api/v1/risk/map';
