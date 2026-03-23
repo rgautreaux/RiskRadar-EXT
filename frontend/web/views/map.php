@@ -47,14 +47,13 @@
 <!-- Plotly.js CDN -->
 <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
 <script>
+// --- Consolidated Map Logic: Modern, Accessible, Feature-Complete ---
 // Accessibility: Keyboard navigation for map focus
 document.addEventListener('DOMContentLoaded', function() {
     var mapContainer = document.getElementById('risk-map-container');
     if (mapContainer) {
         mapContainer.addEventListener('keydown', function(e) {
-            // Basic keyboard panning (left/right/up/down arrows)
             if ([37,38,39,40].includes(e.keyCode)) {
-                // Use Plotly relayout to pan
                 var pan = {"mapbox.center.lon": null, "mapbox.center.lat": null};
                 var currentLayout = document.getElementById('risk-map').layout || {};
                 var step = 0.5;
@@ -65,17 +64,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     pan["mapbox.center.lon"] = -91.15;
                     pan["mapbox.center.lat"] = 30.45;
                 }
-                if (e.keyCode === 37) pan["mapbox.center.lon"] -= step; // left
-                if (e.keyCode === 39) pan["mapbox.center.lon"] += step; // right
-                if (e.keyCode === 38) pan["mapbox.center.lat"] += step; // up
-                if (e.keyCode === 40) pan["mapbox.center.lat"] -= step; // down
+                if (e.keyCode === 37) pan["mapbox.center.lon"] -= step;
+                if (e.keyCode === 39) pan["mapbox.center.lon"] += step;
+                if (e.keyCode === 38) pan["mapbox.center.lat"] += step;
+                if (e.keyCode === 40) pan["mapbox.center.lat"] -= step;
                 Plotly.relayout('risk-map', pan);
                 e.preventDefault();
             }
         });
     }
 });
-// Backend endpoint URLs (adjust if needed)
+
 const MAP_ALERTS_URL = '/api/v1/alerts/map';
 const MAP_RISK_URL = '/api/v1/risk/map';
 
@@ -84,16 +83,12 @@ function showMapFallback(message) {
     document.getElementById('map-fallback').textContent = message;
     document.getElementById('map-loading').style.display = 'none';
 }
-
 function hideMapFallback() {
     document.getElementById('map-fallback').style.display = 'none';
 }
-
 function hideMapLoading() {
     document.getElementById('map-loading').style.display = 'none';
 }
-
-// Severity color mapping
 function getSeverityColor(severity) {
     switch ((severity || '').toLowerCase()) {
         case 'high': return '#e74c3c';
@@ -102,8 +97,17 @@ function getSeverityColor(severity) {
         default: return '#2980b9';
     }
 }
-
-// Transform alert data to Plotly scatter points with interactivity
+function getRiskLevelColor(level, alpha=1) {
+    let color;
+    switch ((level || '').toLowerCase()) {
+        case 'extreme': color = '255,0,0'; break;
+        case 'high': color = '255,87,34'; break;
+        case 'medium': color = '255,193,7'; break;
+        case 'low': color = '76,175,80'; break;
+        default: color = '33,150,243';
+    }
+    return `rgba(${color},${alpha})`;
+}
 function alertsToScatterTraces(alerts) {
     if (!Array.isArray(alerts)) return [];
     return alerts.filter(a => a.lat && a.lon).map(alert => ({
@@ -123,20 +127,16 @@ function alertsToScatterTraces(alerts) {
         hoverinfo: 'text'
     }));
 }
-
-// Render risk overlays (polygons or heatmap) for events/disasters
 function riskToOverlayTraces(riskZones) {
     if (!Array.isArray(riskZones) || riskZones.length === 0) return [];
-    // If riskZones have polygons (geojson-style), render as filled polygons
     const polygonTraces = [];
     riskZones.forEach(zone => {
         if (Array.isArray(zone.polygon) && zone.polygon.length > 2) {
-            // Assume polygon is array of [lat, lon] pairs
             const lats = zone.polygon.map(pt => pt[0]);
             const lons = zone.polygon.map(pt => pt[1]);
             polygonTraces.push({
                 type: 'scattermapbox',
-                lat: lats.concat([lats[0]]), // close polygon
+                lat: lats.concat([lats[0]]),
                 lon: lons.concat([lons[0]]),
                 mode: 'lines',
                 fill: 'toself',
@@ -149,23 +149,8 @@ function riskToOverlayTraces(riskZones) {
             });
         }
     });
-    // Optionally, add heatmap/density overlays for grid/cell data (not implemented here)
     return polygonTraces;
 }
-
-// Color by risk level (red/orange/yellow/green)
-function getRiskLevelColor(level, alpha=1) {
-    let color;
-    switch ((level || '').toLowerCase()) {
-        case 'extreme': color = '255,0,0'; break;
-        case 'high': color = '255,87,34'; break;
-        case 'medium': color = '255,193,7'; break;
-        case 'low': color = '76,175,80'; break;
-        default: color = '33,150,243'; // blue
-    }
-    return `rgba(${color},${alpha})`;
-}
-
 async function fetchMapData() {
     try {
         const [alertsRes, riskRes] = await Promise.all([
@@ -184,7 +169,6 @@ async function fetchMapData() {
         return null;
     }
 }
-
 function renderMap(alertsData, riskData) {
     const alertTraces = alertsToScatterTraces((alertsData && alertsData.alerts) || []);
     const riskTraces = riskToOverlayTraces((riskData && riskData.risk_zones) || []);
@@ -196,15 +180,13 @@ function renderMap(alertsData, riskData) {
     const layout = {
         mapbox: {
             style: 'open-street-map',
-            center: { lat: 30.45, lon: -91.15 }, // Example: Baton Rouge
+            center: { lat: 30.45, lon: -91.15 },
             zoom: 6
         },
         margin: { t: 0, b: 0, l: 0, r: 0 },
         showlegend: true
     };
     Plotly.newPlot('risk-map', traces, layout, {responsive: true});
-
-    // Add click event for tooltips/details (alerts and risk overlays)
     var riskMapDiv = document.getElementById('risk-map');
     riskMapDiv.on('plotly_click', function(data) {
         if (data && data.points && data.points.length > 0) {
@@ -228,120 +210,15 @@ function renderMap(alertsData, riskData) {
         }
     });
 }
-
-// Main execution
-fetchMapData().then(data => {
-    hideMapLoading();
-    if (!data || (!data.alerts && !data.risk)) {
-        showMapFallback('No map data available.');
-        return;
-    }
-    renderMap(data.alerts, data.risk);
-}).catch(() => {
-    showMapFallback('Error loading map data.');
-        return null;
-    }
-}
-
-function plotMap(alerts, risk) {
-    const mapDiv = document.getElementById('risk-map');
-    // Default center (Los Angeles)
-    let center = { lat: 34.0522, lon: -118.2437 };
-    let zoom = 7;
-
-    // Prepare alert markers
-    let alertMarkers = [];
-    if (alerts && alerts.alerts && Array.isArray(alerts.alerts) && alerts.alerts.length > 0) {
-        const lats = [], lons = [], texts = [], colors = [];
-        alerts.alerts.forEach(alert => {
-            if (typeof alert.latitude === 'number' && typeof alert.longitude === 'number') {
-                lats.push(alert.latitude);
-                lons.push(alert.longitude);
-                texts.push(`${alert.title || 'Alert'}<br>Severity: ${alert.severity || 'unknown'}`);
-                // Color by severity
-                let color = '#ef6f51';
-                if (alert.severity === 'high' || alert.severity === 'critical') color = '#b65c00';
-                else if (alert.severity === 'moderate') color = '#f2b441';
-                else if (alert.severity === 'low') color = '#1b8a89';
-                colors.push(color);
-            }
-        });
-        if (lats.length > 0) {
-            center = { lat: lats[0], lon: lons[0] };
-            alertMarkers.push({
-                type: 'scattermapbox',
-                lat: lats,
-                lon: lons,
-                mode: 'markers',
-                marker: { size: 16, color: colors, opacity: 0.85 },
-                text: texts,
-                hoverinfo: 'text',
-                name: 'Alerts',
-            });
-        }
-    }
-
-    // Prepare risk overlay (as polygons or heatmap)
-    let riskOverlay = [];
-    if (risk && risk.risk_zones && Array.isArray(risk.risk_zones) && risk.risk_zones.length > 0) {
-        // For simplicity, plot as scatter points at polygon centroids (upgrade to polygons later)
-        const lats = [], lons = [], scores = [], texts = [], colors = [];
-        risk.risk_zones.forEach(zone => {
-            if (zone.centroid && typeof zone.centroid.lat === 'number' && typeof zone.centroid.lon === 'number') {
-                lats.push(zone.centroid.lat);
-                lons.push(zone.centroid.lon);
-                scores.push(zone.risk_score || 0);
-                texts.push(`Risk: ${zone.risk_level || 'unknown'}<br>Score: ${zone.risk_score ?? ''}`);
-                // Color by risk level
-                let color = '#f2b441';
-                if (zone.risk_level === 'high') color = '#b65c00';
-                else if (zone.risk_level === 'moderate') color = '#ef6f51';
-                else if (zone.risk_level === 'low') color = '#1b8a89';
-                colors.push(color);
-            }
-        });
-        if (lats.length > 0) {
-            riskOverlay.push({
-                type: 'scattermapbox',
-                lat: lats,
-                lon: lons,
-                mode: 'markers',
-                marker: { size: 12, color: colors, opacity: 0.5, symbol: 'circle' },
-                text: texts,
-                hoverinfo: 'text',
-                name: 'Risk Zones',
-            });
-        }
-    }
-
-    // Compose all layers
-    const data = [...riskOverlay, ...alertMarkers];
-    if (data.length === 0) {
-        showMapFallback('No map data available for the selected region.');
-        return;
-    }
-    hideMapFallback();
-    hideMapLoading();
-    Plotly.newPlot(mapDiv, data, {
-        mapbox: {
-            style: 'open-street-map',
-            center: center,
-            zoom: zoom
-        },
-        margin: { t: 0, b: 0, l: 0, r: 0 },
-        showlegend: true,
-        legend: { orientation: 'h', x: 0, y: 1.02 },
-    }, {responsive: true, displayModeBar: false});
-}
-
 document.addEventListener('DOMContentLoaded', async function() {
     const mapDiv = document.getElementById('risk-map');
     if (!window.Plotly || !mapDiv) return;
     const mapData = await fetchMapData();
     hideMapLoading();
     if (!mapData) return;
-    plotMap(mapData.alerts, mapData.risk);
+    renderMap(mapData.alerts, mapData.risk);
 });
+// --- End Consolidated Map Logic ---
 </script>
 
 <?php rr_render_layout_end(); ?>
