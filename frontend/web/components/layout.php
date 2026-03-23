@@ -1,3 +1,17 @@
+
+/*
+====================================================
+ RiskRadar Web Layout Shell — Layout Lane
+ Author: Rebecca (Layout Lane)
+ Last Updated: 2026-03-23
+----------------------------------------------------
+ This file defines the shared shell, navigation, and
+ section hierarchy for all web pages. Only update this
+ file for global/layout changes. Page content is injected
+ via rr_render_layout_start and rr_render_layout_end.
+====================================================
+*/
+
 <?php
 
 function rr_render_layout_start(string $title, string $activePage): void
