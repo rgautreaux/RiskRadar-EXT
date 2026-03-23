@@ -382,6 +382,18 @@ Phase 1:
 - [ ] Hybrid icon classes implemented
 - [ ] Route smoke test passed
 
+## Reference Guides
+- See docs/PLANNING_DOCS/DESIGN_TOKENS_AND_SPACING.md for spacing and design tokens
+- See docs/PLANNING_DOCS/ACCESSIBILITY_AND_KEYBOARD_GUIDE.md for accessibility and keyboard navigation
+- See wireframe_icons/README.md for icon asset management
+
+## Known Gaps & Open Questions
+- [ ] Confirm final icon asset list for all navigation and dashboard regions
+- [ ] Clarify mobile breakpoint behavior for multi-row navigation
+- [ ] Review color contrast for new accent/background combinations
+- [ ] Accessibility: Are all icon alt texts descriptive enough for screen readers?
+- [ ] Any new shared utility classes needed for upcoming templates?
+
 Phase 2:
 - [ ] Dashboard parity
 - [ ] Alerts parity
