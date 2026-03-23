@@ -1,6 +1,13 @@
-from schemas.risk_score import MapRiskOverlayOut, MapRiskZone
-from db.models import Alert
+
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy.orm import Session
 from datetime import datetime
+from db.database import get_db
+from db.models import Alert, User
+from schemas.risk_score import RiskScoreOut, MapRiskOverlayOut, MapRiskZone
+from scoring import compute_risk_score
+
+router = APIRouter(prefix="/risk", tags=["Risk Scoring"])
 
 # Stage 3: Map Risk Overlay Endpoint
 @router.get("/map", response_model=MapRiskOverlayOut)
@@ -27,15 +34,6 @@ def map_risk_overlay(
         region=region_val,
         generated_at=datetime.utcnow().isoformat() + "Z",
     )
-from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.orm import Session
-
-from db.database import get_db
-from db.models import User
-from schemas.risk_score import RiskScoreOut
-from scoring import compute_risk_score
-
-router = APIRouter(prefix="/risk", tags=["Risk Scoring"])
 
 
 @router.get("/score/{user_id}", response_model=RiskScoreOut)

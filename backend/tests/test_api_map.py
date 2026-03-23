@@ -14,7 +14,7 @@ class TestMapEndpoints:
         assert resp.status_code == 200
         data = resp.json()
         assert isinstance(data, dict)
-        assert "zones" in data
-        assert isinstance(data["zones"], list)
+        assert "risk_zones" in data
+        assert isinstance(data["risk_zones"], list)
 
     # Optionally, add more tests with sample data if fixtures are available
