@@ -26,6 +26,22 @@ export type ThemedViewProps = ViewProps & {
   padding?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 };
 
+/**
+ * ThemedView is the base container primitive for RiskRadar mobile UI.
+ *
+ * Usage:
+ *   <ThemedView surface="card" elevated padding="md">...</ThemedView>
+ *   <ThemedView surface="background">...</ThemedView>
+ *
+ * Surface roles:
+ *   - background: App/page background
+ *   - card: Elevated card/surface
+ *   - surfaceMuted: Muted/secondary surface
+ *
+ * All color, elevation, and spacing values are sourced from theme tokens.
+ *
+ * See DESIGN_SYSTEM.md for full reference.
+ */
 export function ThemedView({
   style,
   surface = 'background',
