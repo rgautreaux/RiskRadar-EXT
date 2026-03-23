@@ -42,9 +42,44 @@ function hideMapLoading() {
     document.getElementById('map-loading').style.display = 'none';
 }
 
+// Severity color mapping
+function getSeverityColor(severity) {
+    switch ((severity || '').toLowerCase()) {
+        case 'high': return '#e74c3c';
+        case 'medium': return '#f39c12';
+        case 'low': return '#27ae60';
+        default: return '#2980b9';
+    }
+}
+
+// Transform alert data to Plotly scatter points
+function alertsToScatterTraces(alerts) {
+    if (!Array.isArray(alerts)) return [];
+    return alerts.filter(a => a.lat && a.lon).map(alert => ({
+        type: 'scattermapbox',
+        lat: [alert.lat],
+        lon: [alert.lon],
+        mode: 'markers',
+        marker: {
+            size: 13,
+            color: getSeverityColor(alert.severity),
+            opacity: 0.85,
+            symbol: 'circle'
+        },
+        text: `${alert.type || 'Alert'}<br>Severity: ${alert.severity || 'N/A'}`,
+        name: alert.type || 'Alert',
+        hoverinfo: 'text'
+    }));
+}
+
+// Placeholder for risk overlays (to be implemented)
+function riskToOverlayTraces(risk) {
+    // TODO: Implement risk zone overlays (polygons/heatmap)
+    return [];
+}
+
 async function fetchMapData() {
     try {
-        // Fetch alerts and risk overlay in parallel
         const [alertsRes, riskRes] = await Promise.all([
             fetch(MAP_ALERTS_URL),
             fetch(MAP_RISK_URL)
@@ -58,6 +93,40 @@ async function fetchMapData() {
         return { alerts: alertsData, risk: riskData };
     } catch (e) {
         showMapFallback('Network error while loading map data.');
+        return null;
+    }
+}
+
+function renderMap(alertsData, riskData) {
+    const alertTraces = alertsToScatterTraces((alertsData && alertsData.alerts) || []);
+    const riskTraces = riskToOverlayTraces((riskData && riskData.risk_zones) || []);
+    const traces = [...alertTraces, ...riskTraces];
+    if (traces.length === 0) {
+        showMapFallback('No valid map data to display.');
+        return;
+    }
+    const layout = {
+        mapbox: {
+            style: 'open-street-map',
+            center: { lat: 30.45, lon: -91.15 }, // Example: Baton Rouge
+            zoom: 6
+        },
+        margin: { t: 0, b: 0, l: 0, r: 0 },
+        showlegend: true
+    };
+    Plotly.newPlot('risk-map', traces, layout, {responsive: true});
+}
+
+// Main execution
+fetchMapData().then(data => {
+    hideMapLoading();
+    if (!data || (!data.alerts && !data.risk)) {
+        showMapFallback('No map data available.');
+        return;
+    }
+    renderMap(data.alerts, data.risk);
+}).catch(() => {
+    showMapFallback('Error loading map data.');
         return null;
     }
 }
