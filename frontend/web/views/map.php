@@ -1,5 +1,13 @@
 
-<?php rr_render_layout_start('Risk Map', 'map'); ?>
+
+<?php
+// Load config and build API URLs for JS
+$config = require __DIR__ . '/../config/app.php';
+require_once __DIR__ . '/../services/api_client.php';
+$alerts_url = rr_api_url($config, 'alerts/map');
+$risk_url = rr_api_url($config, 'risk/map');
+rr_render_layout_start('Risk Map', 'map');
+?>
 
 <section class="page-heading">
     <div>
@@ -44,9 +52,14 @@
     <p class="muted">The map will display live alert markers and risk overlays as data becomes available. All features are keyboard and screen reader accessible.</p>
 </section>
 
+
 <!-- Plotly.js CDN -->
 <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
 <script>
+// Inject config-driven API URLs from PHP
+const MAP_ALERTS_URL = <?php echo json_encode($alerts_url); ?>;
+const MAP_RISK_URL = <?php echo json_encode($risk_url); ?>;
+
 // --- Consolidated Map Logic: Modern, Accessible, Feature-Complete ---
 // Accessibility: Keyboard navigation for map focus
 document.addEventListener('DOMContentLoaded', function() {
@@ -74,9 +87,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
-const MAP_ALERTS_URL = '/api/v1/alerts/map';
-const MAP_RISK_URL = '/api/v1/risk/map';
 
 function showMapFallback(message) {
     document.getElementById('map-fallback').style.display = 'flex';
