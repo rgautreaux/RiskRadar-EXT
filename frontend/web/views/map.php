@@ -83,10 +83,46 @@ function alertsToScatterTraces(alerts) {
     }));
 }
 
-// Placeholder for risk overlays (to be implemented)
-function riskToOverlayTraces(risk) {
-    // TODO: Implement risk zone overlays (polygons/heatmap)
-    return [];
+// Render risk overlays (polygons or heatmap) for events/disasters
+function riskToOverlayTraces(riskZones) {
+    if (!Array.isArray(riskZones) || riskZones.length === 0) return [];
+    // If riskZones have polygons (geojson-style), render as filled polygons
+    const polygonTraces = [];
+    riskZones.forEach(zone => {
+        if (Array.isArray(zone.polygon) && zone.polygon.length > 2) {
+            // Assume polygon is array of [lat, lon] pairs
+            const lats = zone.polygon.map(pt => pt[0]);
+            const lons = zone.polygon.map(pt => pt[1]);
+            polygonTraces.push({
+                type: 'scattermapbox',
+                lat: lats.concat([lats[0]]), // close polygon
+                lon: lons.concat([lons[0]]),
+                mode: 'lines',
+                fill: 'toself',
+                fillcolor: getRiskLevelColor(zone.risk_level, 0.25),
+                line: { color: getRiskLevelColor(zone.risk_level, 1), width: 2 },
+                name: `Risk: ${zone.risk_level || 'N/A'}`,
+                text: `Risk: ${zone.risk_level || 'N/A'}<br>Score: ${zone.score || 'N/A'}`,
+                hoverinfo: 'text',
+                customdata: [zone]
+            });
+        }
+    });
+    // Optionally, add heatmap/density overlays for grid/cell data (not implemented here)
+    return polygonTraces;
+}
+
+// Color by risk level (red/orange/yellow/green)
+function getRiskLevelColor(level, alpha=1) {
+    let color;
+    switch ((level || '').toLowerCase()) {
+        case 'extreme': color = '255,0,0'; break;
+        case 'high': color = '255,87,34'; break;
+        case 'medium': color = '255,193,7'; break;
+        case 'low': color = '76,175,80'; break;
+        default: color = '33,150,243'; // blue
+    }
+    return `rgba(${color},${alpha})`;
 }
 
 async function fetchMapData() {
@@ -127,19 +163,26 @@ function renderMap(alertsData, riskData) {
     };
     Plotly.newPlot('risk-map', traces, layout, {responsive: true});
 
-    // Add click event for tooltips/details
+    // Add click event for tooltips/details (alerts and risk overlays)
     var riskMapDiv = document.getElementById('risk-map');
     riskMapDiv.on('plotly_click', function(data) {
         if (data && data.points && data.points.length > 0) {
             const pt = data.points[0];
             if (pt.customdata && pt.customdata[0]) {
-                const alert = pt.customdata[0];
-                alert("Alert Details:\n" +
-                    `Type: ${alert.type || 'N/A'}\n` +
-                    `Severity: ${alert.severity || 'N/A'}\n` +
-                    `Region: ${alert.region || 'N/A'}\n` +
-                    `Source: ${alert.source || 'N/A'}\n` +
-                    `Time: ${alert.generated_at || 'N/A'}`);
+                const d = pt.customdata[0];
+                if (d.type) {
+                    alert("Alert Details:\n" +
+                        `Type: ${d.type || 'N/A'}\n` +
+                        `Severity: ${d.severity || 'N/A'}\n` +
+                        `Region: ${d.region || 'N/A'}\n` +
+                        `Source: ${d.source || 'N/A'}\n` +
+                        `Time: ${d.generated_at || 'N/A'}`);
+                } else if (d.risk_level) {
+                    alert("Risk Zone Details:\n" +
+                        `Risk Level: ${d.risk_level || 'N/A'}\n` +
+                        `Score: ${d.score || 'N/A'}\n` +
+                        `Region: ${d.region || 'N/A'}`);
+                }
             }
         }
     });
