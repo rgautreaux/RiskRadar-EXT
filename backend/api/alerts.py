@@ -1,9 +1,15 @@
-from schemas.alert import MapAlertListOut
+
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from sqlalchemy.orm import Session
+from sqlalchemy import func
+from datetime import datetime
+from db.database import get_db
+from db.models import Alert, User
+from schemas.alert import AlertOut, AlertStats, PrioritizedAlertListOut, MapAlertListOut
+
+router = APIRouter(prefix="/alerts", tags=["Alerts"])
 
 # Stage 3: Map Alerts Endpoint
-from fastapi import Request
-from datetime import datetime
-
 @router.get("/map", response_model=MapAlertListOut)
 def map_alerts(
     region: str | None = None,
@@ -27,15 +33,6 @@ def map_alerts(
         region=region_val,
         generated_at=datetime.utcnow().isoformat() + "Z",
     )
-from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.orm import Session
-from sqlalchemy import func
-
-from db.database import get_db
-from db.models import Alert, User
-from schemas.alert import AlertOut, AlertStats, PrioritizedAlertListOut
-
-router = APIRouter(prefix="/alerts", tags=["Alerts"])
 
 
 @router.get("", response_model=list[AlertOut])

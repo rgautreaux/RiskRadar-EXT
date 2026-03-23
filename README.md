@@ -18,6 +18,21 @@ The implementation followed a locked policy and contract specification, with all
 
 ### Importance
 These developments transform RiskRadar from a simple alert aggregator into a personalized decision-support platform. Users now receive risk scores and prioritized alerts tailored to their sensitivities and context, improving relevance and actionability. The robust, deterministic backend logic and clear API contracts set a foundation for future extensions (e.g., interactive maps, predictive analytics, AI assistant) and ensure maintainability and grading clarity.
+
+## Stage 3: Data Visualization and User Experience Extensions
+
+### Implementation
+Stage 3 planning introduced an interactive risk map and enhanced user experience features. The backend and frontend were prepared for new geoJSON endpoints, map rendering logic, and responsive UX improvements. Planning documents (API contract, verification evidence, implementation spec) were created to lock requirements and guide development.
+
+### Functionality
+- **Interactive Risk Map:** Users will be able to view environmental risks on a map, with real-time overlays for AQI, wildfires, and weather alerts.
+- **Responsive UX Enhancements:** Improved mobile and web interfaces for better accessibility and usability.
+
+### Execution
+Stage 3 deliverables are planned and documented, with implementation to follow the locked contract and verification evidence. All planning artifacts are synchronized across top-level documentation for grading and onboarding clarity.
+
+### Importance
+Stage 3 will further elevate RiskRadar by providing spatial context and visual decision support, making risk information more actionable and accessible for all users.
 # CMPS 357 - Final Project - Group 3
 
 Due Date: May 6, 2026, 12:55 CST
