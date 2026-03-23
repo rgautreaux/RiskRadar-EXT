@@ -293,7 +293,21 @@ Deliver an interactive, accessible, and robust risk map experience in the web ap
 4. Map is responsive and accessible at all breakpoints
 5. Documentation and evidence are up to date
 
----
+
+### Stage 3 Final Verification Checklist
+
+- [ ] **Backend endpoints** `/api/v1/alerts/map` and `/api/v1/risk/map` return correct, CORS-enabled, Plotly-compatible data
+- [ ] **Automated tests** for map endpoints pass (pytest)
+- [ ] **Frontend map** loads live data and overlays from backend endpoints (alerts, risk zones)
+- [ ] **Interactive features**: zoom, pan, tooltips, toggles, and region filters work as intended
+- [ ] **Fallback UI**: map remains interactive and accessible if overlays fail or data is empty
+- [ ] **Responsiveness**: map and overlays display correctly at desktop, tablet, and mobile breakpoints
+- [ ] **Accessibility**: keyboard navigation, ARIA labels, and text alternatives for overlays/legends
+- [ ] **Documentation**: setup, usage, and known limitations are updated in the web README
+- [ ] **Evidence**: screenshots and notes are captured in `STAGE3_VERIFICATION_EVIDENCE.md`
+- [ ] **No regressions**: Stage 1 and 2 features remain functional
+
+**Tip:** Use this checklist to guide final testing, documentation, and evidence collection for Stage 3. Mark each item as completed before project submission.
 
 **Decisions**
 - Use Plotly for all map rendering and overlays
