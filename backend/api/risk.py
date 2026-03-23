@@ -1,3 +1,32 @@
+from schemas.risk_score import MapRiskOverlayOut, MapRiskZone
+from db.models import Alert
+from datetime import datetime
+
+# Stage 3: Map Risk Overlay Endpoint
+@router.get("/map", response_model=MapRiskOverlayOut)
+def map_risk_overlay(
+    region: str | None = None,
+    bbox: str | None = None,
+    risk_level: str | None = None,
+    db: Session = Depends(get_db),
+):
+    # For MVP, use alerts as risk proxies; real impl would use grid/polygon risk
+    alerts = db.query(Alert).filter(Alert.latitude != None, Alert.longitude != None).all()
+    risk_zones = []
+    for alert in alerts:
+        centroid = {"lat": alert.latitude, "lon": alert.longitude}
+        # Dummy risk_level: map severity to risk
+        sev = (alert.severity or "").lower()
+        if sev in ("high", "critical"): rl = "high"
+        elif sev == "moderate": rl = "moderate"
+        else: rl = "low"
+        risk_zones.append(MapRiskZone(centroid=centroid, risk_level=rl, risk_score=None))
+    region_val = region or "all"
+    return MapRiskOverlayOut(
+        risk_zones=risk_zones,
+        region=region_val,
+        generated_at=datetime.utcnow().isoformat() + "Z",
+    )
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 

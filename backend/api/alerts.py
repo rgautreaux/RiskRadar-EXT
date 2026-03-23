@@ -1,3 +1,32 @@
+from schemas.alert import MapAlertListOut
+
+# Stage 3: Map Alerts Endpoint
+from fastapi import Request
+from datetime import datetime
+
+@router.get("/map", response_model=MapAlertListOut)
+def map_alerts(
+    region: str | None = None,
+    bbox: str | None = None,
+    alert_type: str | None = None,
+    severity: str | None = None,
+    db: Session = Depends(get_db),
+    request: Request = None,
+):
+    q = db.query(Alert)
+    if alert_type:
+        q = q.filter(Alert.alert_type == alert_type)
+    if severity:
+        q = q.filter(Alert.severity == severity)
+    # Optionally filter by bbox/region (not implemented for MVP)
+    alerts = q.order_by(Alert.fetched_at.desc()).limit(500).all()
+    # Use region param or default
+    region_val = region or "all"
+    return MapAlertListOut(
+        alerts=alerts,
+        region=region_val,
+        generated_at=datetime.utcnow().isoformat() + "Z",
+    )
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func
