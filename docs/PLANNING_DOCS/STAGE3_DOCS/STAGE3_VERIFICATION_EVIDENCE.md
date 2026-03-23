@@ -24,6 +24,18 @@ This evidence file tracks Stage 3 verification checkpoints for:
 - Evidence source: screenshots and walkthroughs of risk map with overlays at various zoom levels
 - Validation: overlays match backend data, update on pan/zoom, and handle missing/invalid data gracefully
 
+#### Progress (as of 2026-03-23)
+- Backend endpoints and API client: complete
+- Frontend scaffold with Plotly.js, loading/fallback UI: complete
+- Dynamic rendering of overlays, tooltips, and interactivity: in progress
+- Accessibility and responsive layout: in progress
+
+#### Evidence To Add
+- [ ] Screenshot: map loads with live data (alerts/risk overlays)
+- [ ] Screenshot: fallback UI on error/empty data
+- [ ] Screenshot: overlays, tooltips, and toggles in use
+- [ ] Accessibility/keyboard navigation demo
+
 ### Geospatial accuracy
 - Evidence source: test cases with known alert/risk locations
 - Validation: map pins/overlays appear at correct coordinates; clustering/aggregation works as intended
@@ -32,9 +44,22 @@ This evidence file tracks Stage 3 verification checkpoints for:
 - Map UI is usable at 360px, 768px, and 1280px viewports
 - Keyboard navigation and screen reader support tested
 
+#### Progress
+- Responsive CSS for map container: complete
+- Accessibility features: in progress
+
 ## Performance and Fallback Validation
 - Map loads within 2 seconds for typical region queries
 - Fallback UI appears if overlays fail to load or return empty
 
+#### Progress
+- Loading and fallback UI: complete
+- Full error/fallback coverage: in progress
+
 ## Notes
 - This evidence will be updated as Stage 3 implementation progresses, with screenshots and test logs added for each verification checkpoint.
+
+**Next Steps:**
+- Complete dynamic Plotly rendering and overlays
+- Add accessibility and ARIA features
+- Capture and attach screenshots for each evidence item above

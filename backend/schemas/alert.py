@@ -1,20 +1,12 @@
-class MapAlertOut(BaseModel):
-    id: int
-    alert_type: str
-    severity: str
-    latitude: float
-    longitude: float
-    title: Optional[str] = None
-    description: Optional[str] = None
-    metadata: Optional[dict] = None
 
-
-class MapAlertListOut(BaseModel):
-    alerts: list[MapAlertOut]
-    region: Optional[str] = None  # or geo-bounds string/structure
-    generated_at: str
 from pydantic import BaseModel, ConfigDict
-from typing import Optional
+from typing import Any, Optional
+
+# Stage 3: Map Alert List Output
+class MapAlertListOut(BaseModel):
+    alerts: list["AlertOut"]
+    region: str | dict[str, Any]
+    generated_at: str
 
 
 class AlertOut(BaseModel):

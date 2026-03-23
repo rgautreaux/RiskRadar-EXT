@@ -161,10 +161,41 @@ If backend port `8000` is unavailable, set `RISKRADAR_API_BASE_URL` (for example
 
 - Stage 1 web-app extension requirements: implemented and integrated.
 - Stage 2 kickoff web integration: implemented for risk and prioritization read paths.
-- Stage 3 map: scaffolded page and UX placeholder.
+- Stage 3 interactive map: backend endpoints, API client, and frontend scaffold complete; dynamic Plotly rendering, overlays, and accessibility features in progress (see below).
 - Stage 4 forecast + assistant: scaffolded pages and UX placeholders.
 
 ## Related Docs
 
 - Top-level project docs: `README.md`, `docs/STAGES.md`, `docs/TODO.md`
 - Stage 1 verification notes: `docs/STAGE1_VERIFICATION_EVIDENCE.md`
+
+## Stage 3 Interactive Map (Current Progress & Usage)
+
+### What is Complete
+- Backend endpoints `/api/v1/alerts/map` and `/api/v1/risk/map` (CORS-enabled)
+- PHP API client helpers for map endpoints
+- Frontend scaffold in `views/map.php` with Plotly.js, loading/fallback UI, and AJAX fetch logic
+- Responsive CSS for map container and layout
+
+### What Remains
+- Transform backend data into Plotly overlays (scatter for alerts, polygons/heatmap for risk)
+- Render live alert markers with severity color
+- Add overlays (AQI, wildfire, etc.) and toggles
+- Implement region filters, tooltips, and click/hover interactions
+- Harden fallback/error handling for all map states
+- Add accessibility features (ARIA, keyboard nav, text alternatives)
+- Update documentation and add screenshots/evidence
+
+### How to Use the Map Feature
+1. Start backend and PHP server as usual (see above)
+2. Open `public/map.php` in your browser
+3. The map will attempt to load live data from `/api/v1/alerts/map` and `/api/v1/risk/map`
+4. If data loads, overlays will render (in progress); if not, fallback UI will display
+
+### Developer Notes
+- See `views/map.php` for JS logic and Plotly integration
+- See `services/api_client.php` for backend API helpers
+- See `docs/PLANNING_DOCS/STAGE3_DOCS/STAGE3_VERIFICATION_EVIDENCE.md` for verification checklist and evidence
+
+### Next Steps
+Follow the Stage 3 checklist in `PLANNING_STAGES.md` to complete dynamic rendering, overlays, accessibility, and documentation.

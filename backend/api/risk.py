@@ -1,8 +1,15 @@
 
-# Stage 3: Map risk overlay endpoint
-from schemas.risk_score import MapRiskOverlayOut, MapRiskZoneOut
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy.orm import Session
 from datetime import datetime
+from db.database import get_db
+from db.models import Alert, User
+from schemas.risk_score import RiskScoreOut, MapRiskOverlayOut, MapRiskZone
+from scoring import compute_risk_score
 
+router = APIRouter(prefix="/risk", tags=["Risk Scoring"])
+
+# Stage 3: Map Risk Overlay Endpoint
 @router.get("/map", response_model=MapRiskOverlayOut)
 def map_risk_overlay(
     region: str | None = None,
@@ -10,41 +17,23 @@ def map_risk_overlay(
     risk_level: str | None = None,
     db: Session = Depends(get_db),
 ):
-    # Dummy implementation: return a few hardcoded risk zones (replace with real logic)
-    risk_zones = [
-        MapRiskZoneOut(
-            centroid={"lat": 34.05, "lon": -118.25},
-            risk_level="high",
-            risk_score=85.0,
-            metadata={"label": "Downtown LA"},
-        ),
-        MapRiskZoneOut(
-            centroid={"lat": 34.15, "lon": -118.15},
-            risk_level="moderate",
-            risk_score=60.0,
-            metadata={"label": "Pasadena"},
-        ),
-        MapRiskZoneOut(
-            centroid={"lat": 33.94, "lon": -118.40},
-            risk_level="low",
-            risk_score=30.0,
-            metadata={"label": "LAX"},
-        ),
-    ]
+    # For MVP, use alerts as risk proxies; real impl would use grid/polygon risk
+    alerts = db.query(Alert).filter(Alert.latitude != None, Alert.longitude != None).all()
+    risk_zones = []
+    for alert in alerts:
+        centroid = {"lat": alert.latitude, "lon": alert.longitude}
+        # Dummy risk_level: map severity to risk
+        sev = (alert.severity or "").lower()
+        if sev in ("high", "critical"): rl = "high"
+        elif sev == "moderate": rl = "moderate"
+        else: rl = "low"
+        risk_zones.append(MapRiskZone(centroid=centroid, risk_level=rl, risk_score=None))
+    region_val = region or "all"
     return MapRiskOverlayOut(
         risk_zones=risk_zones,
-        region=region,
+        region=region_val,
         generated_at=datetime.utcnow().isoformat() + "Z",
     )
-from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.orm import Session
-
-from db.database import get_db
-from db.models import User
-from schemas.risk_score import RiskScoreOut
-from scoring import compute_risk_score
-
-router = APIRouter(prefix="/risk", tags=["Risk Scoring"])
 
 
 @router.get("/score/{user_id}", response_model=RiskScoreOut)

@@ -1,17 +1,17 @@
+# Stage 3: Map Risk Overlay Output
+from typing import Any
+from pydantic import BaseModel
 
-# For map overlays (Stage 3)
-from typing import Optional
-
-class MapRiskZoneOut(BaseModel):
-    # geo-polygon or grid cell, here simplified as centroid and risk info
-    centroid: dict  # {"lat": float, "lon": float}
+class MapRiskZone(BaseModel):
+    # For simplicity, use centroid and risk info; can extend to full polygon later
+    centroid: dict[str, float]  # {"lat": float, "lon": float}
     risk_level: str
-    risk_score: float
-    metadata: Optional[dict] = None
+    risk_score: float | None = None
+    # Optionally: polygon: list[dict[str, float]]
 
 class MapRiskOverlayOut(BaseModel):
-    risk_zones: list[MapRiskZoneOut]
-    region: Optional[str] = None  # or geo-bounds string/structure
+    risk_zones: list[MapRiskZone]
+    region: str | dict[str, Any]
     generated_at: str
 from pydantic import BaseModel
 
