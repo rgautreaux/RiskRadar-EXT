@@ -230,3 +230,79 @@ Deliver Stage 2 by implementing a deterministic, explainable personal risk-scori
   - **Mitigation:** Use documented defaults and deterministic fallback ranking path.
 - **Risk:** Documentation lag near deadline.
   - **Mitigation:** Attach evidence artifacts to weekly tracker updates, not only at finalization.
+
+---
+
+## Stage 3 Planning: Data Visualization and User Experience (Web App Only)
+
+**Context:** This section details the tactical execution plan for Stage 3 (Interactive Risk Map and Enhanced User Experience), focusing exclusively on the web frontend. Mobile frontend is intentionally excluded from this plan due to compatibility and scope decisions. This plan is aligned with the Stage 3 API contract, implementation spec, and verification evidence in `docs/PLANNING_DOCS/STAGE3_DOCS/`.
+
+### Objective
+Deliver an interactive, accessible, and robust risk map experience in the web app using Plotly, with live geospatial alert and risk data overlays, responsive UI, and fallback-safe error handling.
+
+### Scope Decisions (Confirmed)
+- **Visualization library:** Plotly (`scatter_mapbox`/`density_mapbox`) for all map rendering and overlays.
+- **Backend endpoints:** `/api/v1/alerts/map` and `/api/v1/risk/map` (CORS-enabled, optimized for payload size).
+- **Web app location:** `frontend/web/views/map.php` (UI), `frontend/web/services/api_client.php` (API), `frontend/web/public/assets/app.css` (styling).
+- **Fallback policy:** Map UI must remain interactive and accessible even if overlays fail to load or return empty.
+- **Mobile frontend:** Explicitly out of scope for Stage 3 implementation.
+
+### Stage 3 Implementation Steps (Web App Only)
+
+#### Phase 1: Dynamic Data Integration
+1. Implement JavaScript in `map.php` to fetch `/api/v1/alerts/map` and `/api/v1/risk/map` using AJAX (e.g., `fetch`).
+2. Use the PHP API client to provide config/endpoint URLs to the frontend as needed (e.g., via data attributes or inline JS).
+3. Transform backend responses into Plotly-compatible data (scatter points for alerts, polygons/heatmap for risk zones).
+4. Validate and handle missing/invalid geospatial data gracefully (skip or mark invalid points).
+
+#### Phase 2: Interactive Map Features
+5. Render live alert markers with severity color coding (e.g., color by alert severity).
+6. Add AQI and wildfire overlays (polygons or heatmap layers) using Plotly mapbox features.
+7. Implement region filters and layer toggles (UI controls for filtering map data and toggling overlays).
+8. Enable zoom, pan, and click/hover interactions for displaying alert/risk metadata (e.g., tooltips, popups).
+
+#### Phase 3: Fallback and Error Handling
+9. Show fallback UI if map data fails to load or is empty (display a message and keep map interactive).
+10. Ensure the map remains interactive even if overlays are missing (e.g., show base map with no overlays).
+
+#### Phase 4: Responsive and Accessible UI
+11. Test and refine map responsiveness at desktop, tablet, and mobile breakpoints (CSS and Plotly layout).
+12. Add keyboard navigation and screen reader support for map controls and overlays (ARIA labels, tab order).
+13. Provide text alternatives for overlays and legends (e.g., accessible legend descriptions).
+
+#### Phase 5: Documentation and Verification
+14. Update the web README with setup and usage instructions for the map feature.
+15. Capture screenshots and notes for verification evidence (for Stage 3 verification doc).
+16. Document any known limitations or future enhancements in the README or verification doc.
+
+---
+
+**Relevant files**
+- `frontend/web/views/map.php` — Map UI, JS integration, and Plotly rendering
+- `frontend/web/services/api_client.php` — API endpoint helpers
+- `frontend/web/public/assets/app.css` — Responsive and accessible map styling
+- `docs/PLANNING_DOCS/STAGE3_DOCS/STAGE3_VERIFICATION_EVIDENCE.md` — Evidence and verification notes
+- `frontend/web/README.md` — Setup and usage documentation
+
+---
+
+**Verification**
+1. Map loads live data and overlays from backend endpoints
+2. Interactive features (zoom, pan, tooltips, toggles) work as intended
+3. Fallback UI appears on error or empty data
+4. Map is responsive and accessible at all breakpoints
+5. Documentation and evidence are up to date
+
+---
+
+**Decisions**
+- Use Plotly for all map rendering and overlays
+- Prioritize robust fallback and accessibility
+- Defer mobile frontend until web is complete
+
+---
+
+**Further Considerations**
+1. If backend endpoints are unstable, mock data can be used for frontend development
+2. Performance optimizations (clustering, tiling) can be added after core features
+3. Future enhancements (predictive overlays, advanced filtering) should be documented for Stage 4

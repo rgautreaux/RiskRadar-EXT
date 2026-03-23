@@ -13,7 +13,9 @@
 - Implemented backend settings enhancements for security/integration readiness (JWT/auth and external API-key configuration updates in `backend/config/settings.py`, including OpenAQ placeholder support).
 - Added execution documentation support via `docs/PROGRAM_EXECUTION.md`.
 - Contributed branch work tied to settings/auth readiness and documentation baseline via commits such as: `cf9271d`, `5357ecb`, `15db5c9`, `2175f3d`.
-- Assigned in current wireframe execution plan as the primary owner for page-template parity and QA/docs validation/signoff phases.
+- Led Stage 2 backend scoring and prioritization implementation, including risk scoring engine, prioritization algorithm, and API integration.
+- Authored and updated Stage 2 planning, contract, and evidence documentation.
+- Assigned as primary owner for page-template parity and QA/docs validation/signoff phases.
 
 ## **Rebecca Gautreaux**
 - ULID: C00460817
@@ -24,11 +26,12 @@
 ### Project Contributions
 - Led project planning, milestone coordination, and scope control across Stage 1-4 documentation.
 - Created and continuously synchronized core project docs (`README.md`, `STAGES.md`, `TODO.md`, `PLANNING_STAGES.md`, `PROJECT_PROPOSAL.md`, `INSTRUCTIONS.md`, `PROJECT_DESCRIPTION.md`).
-- Maintained AI-usage audit artifacts by repeatedly updating and aligning `docs/TRANSCRIPT.md` and `docs/REFLECTION.md`.
-- Led Stage 1 web extension execution and verification work, including PHP frontend scaffolding, usability fixes, icon integration, and Stage 2-4 web page scaffolding prep.
+- Maintained AI-usage audit artifacts by updating and aligning `docs/TRANSCRIPT.md` and `docs/REFLECTION.md` for every major session.
+- Led Stage 1 web extension execution and verification, including PHP frontend scaffolding, usability fixes, icon integration, and Stage 2-4 web page scaffolding prep.
 - Diagnosed and resolved backend auth test breakage by aligning password hashing compatibility settings across app and tests, then validated the clean backend test suite.
-- Produced Stage 2 planning/contract/evidence documentation and synchronized those artifacts across README, STAGES, TODO, and planning indexes.
+- Produced and synchronized Stage 2 and Stage 3 planning/contract/evidence documentation across README, STAGES, TODO, and planning indexes.
 - Coordinated Git reliability cleanup, merge/conflict resolution, PR synchronization, and branch maintenance during active development.
 - Contributed to backend/database-aligned documentation and validation workflows to keep implementation status and evidence records accurate.
 - Delivered substantial branch implementation and synchronization work across docs and frontend scaffolding, reflected in recent commits including: `1065eb9`, `750ca00`, `f6f164d`, `97c5b00`, `8cbc463`, `46fcc73`, `51d3ac1`, `695daa2`, `c8a142e`, `40fe9b9`, `50b971f`, `c31cd81`.
-- Assigned in current wireframe execution plan as the primary owner for shared layout and CSS foundation work, with secondary ownership on page parity/signoff phases for integration support.
+- Led Stage 3 planning and documentation, including creation of API contract, verification evidence, and implementation spec for the interactive risk map extension.
+- Assigned as primary owner for shared layout and CSS foundation work, with secondary ownership on page parity/signoff phases for integration support.

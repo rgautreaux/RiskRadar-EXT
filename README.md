@@ -1,3 +1,23 @@
+---
+
+# Major Developments: Implementation, Functionality, Execution, and Importance
+
+## Stage 2: Environmental Risk Assessment and Alert Prioritization Extensions
+
+### Implementation
+Stage 2 introduced a deterministic personal risk scoring engine and a smart alert prioritization system. The backend was extended with new service modules for risk scoring and alert prioritization, new API endpoints for risk score and prioritized alerts, and updated schemas to support sensitivity and priority metadata. Web and mobile clients were updated to surface these new outputs, with fallback-safe integration and robust error handling.
+
+### Functionality
+- **Personal Risk Scoring:** Computes a 0-100 risk score for each user based on air quality, weather, wildfire, and pollution risks, weighted by user sensitivity factors.
+- **Smart Alert Prioritization:** Ranks alerts for each user using risk contribution, distance, severity, and sensitivity match, with urgency labels and deterministic tie-breaks.
+- **API Exposure:** New endpoints allow clients to fetch risk scores and prioritized alerts, while preserving Stage 1 contract stability.
+- **Cross-Client Parity:** Both web and mobile clients consume backend-prioritized ordering, ensuring consistent user experience.
+
+### Execution
+The implementation followed a locked policy and contract specification, with all formulas, thresholds, and normalization rules documented in the Stage 2 implementation spec. Verification included deterministic output tests, contract stability checks, and fallback behavior validation. Documentation, planning, and evidence artifacts were updated and synchronized across all top-level files.
+
+### Importance
+These developments transform RiskRadar from a simple alert aggregator into a personalized decision-support platform. Users now receive risk scores and prioritized alerts tailored to their sensitivities and context, improving relevance and actionability. The robust, deterministic backend logic and clear API contracts set a foundation for future extensions (e.g., interactive maps, predictive analytics, AI assistant) and ensure maintainability and grading clarity.
 # CMPS 357 - Final Project - Group 3
 
 Due Date: May 6, 2026, 12:55 CST
@@ -258,8 +278,32 @@ Recommended update order when progress changes:
 |---|---|---|---|---|---|
 | 1 | Web-App Extension | Completed | 2026-03-13 | **Required** | Stage 1 dashboard MVP, API integration layer, security/reliability controls, setup docs, and responsive/web-distinctness verification evidence are complete. See `docs/TODO.md`, `docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md`, and `docs/PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md`. |
 | 2 | Environmental Risk Assessment and Alert Prioritization Extensions | In Progress | 2026-03-17 | **Required** | Kickoff plan + policy lock are documented in `docs/PLANNING_DOCS/PLANNING_STAGES.md` and `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`; backend/web/mobile scaffolding is in place and S2-01/S2-05 are active. Target: Week of 2026-04-28. |
-| 3 | Data Visualization and User Experience Extensions | Not Started | 2026-03-10 | Optional/Stretch | Interactive Plotly-based risk map. Planned only if Stage 2 completes early. |
-| 4 | Predictive Analytics and AI-Driven Insights Extensions | Not Started | 2026-03-10 | Optional/Stretch | 24-48 hour forecasting + RiskRadar AI Assistant. Planned only if time permits after Stage 3. |
+| 3 | Data Visualization and User Experience Extensions | Not Started | 2026-03-23 | Optional/Stretch | Stage 3 planning documents (API contract, verification evidence, implementation spec) created. Interactive Plotly-based risk map planned for web/mobile. |
+| 4 | Predictive Analytics and AI-Driven Insights Extensions | Not Started | 2026-03-23 | Optional/Stretch | 24-48 hour forecasting + RiskRadar AI Assistant. Planned only if time permits after Stage 3. |
+---
+
+## Stage 3: Data Visualization and User Experience Extensions
+
+**Objective:** Add an interactive risk map experience to help users explore and understand environmental risk conditions spatially.
+
+**Implementation:**
+- Stage 3 planning documents have been created in `docs/PLANNING_DOCS/STAGE3_DOCS/`:
+	- `API_STAGE3_CONTRACT.md`: Defines the API contract for map and risk visualization endpoints, request/response schemas, and error handling.
+	- `STAGE3_VERIFICATION_EVIDENCE.md`: Outlines verification checkpoints for map rendering, geospatial accuracy, responsive UX, and fallback/performance validation.
+	- `STAGE3_IMPLEMENTATION_SPEC.md`: Details the implementation plan, policy lock, and step-by-step requirements for interactive risk map and user experience enhancements.
+
+**Functionality:**
+- New backend endpoints will provide geospatial alert and risk data for map rendering.
+- Web and mobile clients will display interactive maps with overlays, clustering, and risk-level visual encoding.
+- Fallbacks and error handling will keep the map UI interactive even if overlays fail to load.
+
+**Execution:**
+- The implementation will follow the contract and verification evidence, ensuring geospatial accuracy, responsive design, and accessibility.
+- Performance and payload validation will be performed for map data endpoints.
+
+**Importance:**
+- This extension will make environmental risk data more accessible and actionable for users by providing spatial context and interactive exploration.
+- It demonstrates advanced data visualization, geospatial API design, and user experience engineering, further differentiating the web extension from the mobile app.
 
 **Status Legend**
 - **Not Started**: Requirements are defined, but implementation has not begun.

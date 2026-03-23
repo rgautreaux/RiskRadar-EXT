@@ -37,6 +37,7 @@ Recommended sync order when updating progress:
 
 **Optional Stretch Goals (If Time Permits):**
 - **Stage 3**: Data Visualization and User Experience Extensions (contingent on Stage 2 completion)
+   - Stage 3 planning documents (API contract, verification evidence, implementation spec) created in `docs/PLANNING_DOCS/STAGE3_DOCS/`.
 - **Stage 4**: Predictive Analytics and AI-Driven Insights Extensions (contingent on Stage 3 completion)
 
 **Status Legend**
@@ -287,7 +288,7 @@ Reference: `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`
 - Documentation of visualization design choices
 
 ### Progress So Far
-⏳ **Not Started** - Planned: interactive Plotly-based risk map for web/mobile surfaces.
+⏳ **Not Started** - Stage 3 planning documents (API contract, verification evidence, implementation spec) created. Planned: interactive Plotly-based risk map for web/mobile surfaces.
 
 ---
 

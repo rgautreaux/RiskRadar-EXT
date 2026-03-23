@@ -1,4 +1,131 @@
+.icon-slot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(239, 111, 81, 0.08);
+    margin-right: 8px;
+}
+
+.icon-badge {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent-coral);
+    color: #fff;
+    font-size: 0.8rem;
+    text-align: center;
+    line-height: 18px;
+    font-family: 'IBM Plex Mono', monospace;
+    margin-left: 4px;
+}
+
+/* Responsive breakpoints for wireframe rhythm */
+@media (max-width: 900px) {
+    .app-shell, .page-shell {
+        padding: 12px;
+        gap: 12px;
+    }
+    .topbar {
+        flex-direction: column;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 600px) {
+    .app-shell, .page-shell {
+        padding: 4px;
+        gap: 6px;
+    }
+    .topbar {
+        flex-direction: column;
+        gap: 6px;
+    }
+    .topnav a {
+        font-size: 0.95rem;
+        padding: 8px 10px;
+    }
+    .nav-icon {
+        width: 16px;
+        height: 16px;
+    }
+}
+/*
+====================================================
+ RiskRadar Web Design System — Layout Lane Utilities
+ Author: Rebecca (Layout Lane)
+ Last Updated: 2026-03-23
+----------------------------------------------------
+ This file contains global CSS variables, utility classes,
+ and design system tokens for wireframe-accurate UI/UX.
+ Only update this file for global/shared changes.
+====================================================
+*/
 :root {
+    /*
+    ----------------------------------------------------
+     Spacing Rhythm Tokens
+     Use these for margin/padding to ensure consistent layout.
+     Example: var(--space-md) for 24px spacing.
+    ----------------------------------------------------
+    */
+    :root {
+        --space-xs: 4px;
+        --space-sm: 8px;
+        --space-md: 24px;
+        --space-lg: 40px;
+        --space-xl: 64px;
+    }
+    /*
+    ----------------------------------------------------
+     Typography Utility Classes
+    ----------------------------------------------------
+    */
+    .text-xs { font-size: 0.75rem; }
+    .text-sm { font-size: 0.92rem; }
+    .text-md { font-size: 1.1rem; }
+    .text-lg { font-size: 1.4rem; font-weight: 500; }
+    .text-xl { font-size: 2rem; font-weight: 700; }
+    /*
+    ----------------------------------------------------
+     Icon Slot Utility Classes
+     Use .icon-slot for icon backgrounds, .icon-badge for badges.
+    ----------------------------------------------------
+    */
+    /*
+    ----------------------------------------------------
+     Layout Utility Classes
+    ----------------------------------------------------
+    */
+    .flex-row { display: flex; flex-direction: row; gap: var(--space-sm); }
+    .flex-col { display: flex; flex-direction: column; gap: var(--space-sm); }
+    .align-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .gap-xs { gap: var(--space-xs); }
+    .gap-sm { gap: var(--space-sm); }
+    .gap-md { gap: var(--space-md); }
+    .gap-lg { gap: var(--space-lg); }
+    .gap-xl { gap: var(--space-xl); }
+    /*
+    ----------------------------------------------------
+     Color Utility Classes
+    ----------------------------------------------------
+    */
+    .bg-coral { background: var(--accent-coral); color: #fff; }
+    .bg-amber { background: var(--accent-amber); color: #fff; }
+    .bg-teal { background: var(--accent-teal); color: #fff; }
+    .bg-panel { background: var(--panel); }
+    .bg-panel-strong { background: var(--panel-strong); }
+    .text-muted { color: var(--muted); }
+    .text-ink { color: var(--ink); }
+    /*
+    ----------------------------------------------------
+     End of Layout Lane Utility Section
+    ----------------------------------------------------
+    */
     --bg: #f3efe5;
     --ink: #122231;
     --muted: #5f6b77;
@@ -73,11 +200,24 @@ a {
     border-radius: 999px;
     text-decoration: none;
     background: rgba(255, 255, 255, 0.48);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .topnav a.is-active {
     background: var(--ink);
     color: white;
+}
+
+.nav-icon {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    object-fit: contain;
+    margin-right: 6px;
+    vertical-align: middle;
+    filter: drop-shadow(0 1px 2px rgba(18,34,49,0.08));
 }
 
 .page-shell {

@@ -1,3 +1,47 @@
+
+# Stage 3: Map alerts endpoint
+from schemas.alert import MapAlertListOut, MapAlertOut
+from datetime import datetime
+
+@router.get("/map", response_model=MapAlertListOut)
+def map_alerts(
+    region: str | None = None,
+    bbox: str | None = None,
+    alert_type: str | None = None,
+    severity: str | None = None,
+    db: Session = Depends(get_db),
+):
+    # For now, fetch all alerts with lat/lon, filter by type/severity if given
+    q = db.query(Alert).filter(Alert.latitude.isnot(None), Alert.longitude.isnot(None))
+    if alert_type:
+        q = q.filter(Alert.alert_type == alert_type)
+    if severity:
+        q = q.filter(Alert.severity == severity)
+    # Optionally: filter by bbox (not implemented here)
+    alerts = q.order_by(Alert.fetched_at.desc()).limit(500).all()
+    map_alerts = [
+        MapAlertOut(
+            id=a.id,
+            alert_type=a.alert_type,
+            severity=a.severity,
+            latitude=a.latitude,
+            longitude=a.longitude,
+            title=a.title,
+            description=a.description,
+            metadata={
+                "source": a.source,
+                "location_name": a.location_name,
+                "event_start": a.event_start,
+                "event_end": a.event_end,
+            },
+        )
+        for a in alerts
+    ]
+    return MapAlertListOut(
+        alerts=map_alerts,
+        region=region,
+        generated_at=datetime.utcnow().isoformat() + "Z",
+    )
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func
