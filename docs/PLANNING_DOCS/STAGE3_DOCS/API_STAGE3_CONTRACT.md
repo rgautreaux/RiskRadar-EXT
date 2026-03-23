@@ -2,6 +2,12 @@
 
 This document defines the backend and frontend contracts for Stage 3, focused on interactive risk map visualization and enhanced user experience features.
 
+## Progress (as of 2026-03-23)
+- Backend endpoints `/api/v1/alerts/map` and `/api/v1/risk/map`: implemented and CORS-enabled
+- API client helpers: implemented in PHP
+- Frontend scaffold: implemented (fetch logic, loading/fallback UI)
+- Dynamic Plotly overlays, interactivity, and accessibility: in progress
+
 - Base URL: configured by each client runtime.
 - API prefix: `/api/v1`
 - Content type for write requests: `application/json`
@@ -52,3 +58,8 @@ This document defines the backend and frontend contracts for Stage 3, focused on
 - All endpoints must support CORS for web map embedding.
 - Map data should be optimized for reasonable payload size (e.g., clustering, tiling, or bounding box queries).
 - Fallbacks must keep the map UI interactive even if overlays fail to load.
+
+**Next Steps:**
+- Complete frontend dynamic rendering of overlays and interactivity
+- Add accessibility and fallback enhancements
+- Update contract and evidence docs as features are finalized
