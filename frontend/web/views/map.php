@@ -139,17 +139,17 @@ rr_render_layout_start('Risk Map', 'map');
                 Legend
             </button>
             <ul id="legend-list" style="margin-top:8px;transition:max-height 0.3s cubic-bezier(0.4,0,0.2,1);overflow:hidden;max-height:800px;">
-                <li><span style="color:#e74c3c;font-weight:bold;">●</span> High severity alert (contrast checked)</li>
-                <li><span style="color:#f39c12;font-weight:bold;">●</span> Medium severity alert (contrast checked)</li>
-                <li><span style="color:#27ae60;font-weight:bold;">●</span> Low severity alert (contrast checked)</li>
-                <li><span style="color:#ff5722;font-weight:bold;">■</span> Extreme/High risk zone (contrast checked)</li>
-                <li><span style="color:#ffc107;font-weight:bold;">■</span> Medium risk zone (contrast checked)</li>
-                <li><span style="color:#4caf50;font-weight:bold;">■</span> Low risk zone (contrast checked)</li>
-                <li><span style="font-weight:bold;">🌫️</span> AQI (Air Quality) overlay</li>
-                <li><span style="font-weight:bold;">🔥</span> Wildfire overlay</li>
-                <li><span style="font-weight:bold;">🌎</span> Earthquake overlay</li>
-                <li><span style="font-weight:bold;">⛈️</span> Weather overlay</li>
-                <li><span style="font-weight:bold;">☣️</span> Pollution overlay</li>
+                <li><span class="icon-slot" aria-label="High Alert" style="background:#fbe9e7;"><svg width="20" height="20" fill="none" stroke="#e74c3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/></svg></span> High severity alert (contrast checked)</li>
+                <li><span class="icon-slot" aria-label="Medium Alert" style="background:#fff8e1;"><svg width="20" height="20" fill="none" stroke="#f39c12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/></svg></span> Medium severity alert (contrast checked)</li>
+                <li><span class="icon-slot" aria-label="Low Alert" style="background:#e8f5e9;"><svg width="20" height="20" fill="none" stroke="#27ae60" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/></svg></span> Low severity alert (contrast checked)</li>
+                <li><span class="icon-slot" aria-label="Extreme/High Risk" style="background:#ffebee;"><svg width="20" height="20" fill="#ff5722" stroke="#ff5722" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="12" height="12" rx="3"/></svg></span> Extreme/High risk zone (contrast checked)</li>
+                <li><span class="icon-slot" aria-label="Medium Risk" style="background:#fffde7;"><svg width="20" height="20" fill="#ffc107" stroke="#ffc107" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="12" height="12" rx="3"/></svg></span> Medium risk zone (contrast checked)</li>
+                <li><span class="icon-slot" aria-label="Low Risk" style="background:#e8f5e9;"><svg width="20" height="20" fill="#4caf50" stroke="#4caf50" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="12" height="12" rx="3"/></svg></span> Low risk zone (contrast checked)</li>
+                <li><span class="icon-slot" aria-label="AQI Overlay" style="background:#ede7f6;"><svg width="20" height="20" fill="none" stroke="#7e57c2" stroke-width="2" aria-hidden="true"><path d="M4 16c4-8 8-8 12 0"/></svg></span> AQI (Air Quality) overlay</li>
+                <li><span class="icon-slot" aria-label="Wildfire Overlay" style="background:#fff3e0;"><svg width="20" height="20" fill="#ff7043" stroke="#ff7043" stroke-width="2" aria-hidden="true"><path d="M10 2C10 8 14 8 14 14C14 17 6 17 6 14C6 8 10 8 10 2Z"/></svg></span> Wildfire overlay</li>
+                <li><span class="icon-slot" aria-label="Earthquake Overlay" style="background:#e0f2f1;"><svg width="20" height="20" fill="none" stroke="#009688" stroke-width="2" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M2 10h16"/></svg></span> Earthquake overlay</li>
+                <li><span class="icon-slot" aria-label="Weather Overlay" style="background:#e3f2fd;"><svg width="20" height="20" fill="none" stroke="#1976d2" stroke-width="2" aria-hidden="true"><path d="M6 14a4 4 0 1 1 8 0"/><path d="M10 2v2"/><path d="M2 10h2"/><path d="M16 10h2"/><path d="M10 16v2"/></svg></span> Weather overlay</li>
+                <li><span class="icon-slot" aria-label="Pollution Overlay" style="background:#ffebee;"><svg width="20" height="20" fill="#c62828" stroke="#c62828" stroke-width="2" aria-hidden="true"><circle cx="10" cy="10" r="8"/><rect x="7" y="7" width="6" height="6"/></svg></span> Pollution overlay</li>
             </ul>
             <div id="personalized-legend-msg" style="margin-top:6px;color:#b65c00;font-size:0.98em;display:none;">
                 <strong>Personalized Mode:</strong> Risk zones reflect <u>your</u> personalized risk score at each location, based on your profile and health data.
