@@ -725,3 +725,39 @@ dd {
 .map-popup-card .popup-close:focus {
   outline: 2px solid var(--theme-accent, #ef6f51);
 }
+/* Responsive map container and popup */
+@media (max-width: 700px) {
+    #risk-map-container {
+        height: 320px !important;
+        min-height: 220px;
+        max-width: 100vw;
+        border-radius: 8px;
+        margin: 0 0 18px 0 !important;
+    }
+    .map-popup-card {
+        min-width: 90vw;
+        max-width: 98vw;
+        left: 50%;
+        top: 8%;
+        padding: 12px 8px 10px 8px;
+        font-size: 0.98rem;
+        border-radius: 8px;
+    }
+}
+@media (max-width: 480px) {
+    #risk-map-container {
+        height: 220px !important;
+        min-height: 120px;
+        border-radius: 6px;
+        margin: 0 0 10px 0 !important;
+    }
+    .map-popup-card {
+        min-width: 98vw;
+        max-width: 100vw;
+        left: 50%;
+        top: 4%;
+        padding: 8px 2px 8px 2px;
+        font-size: 0.93rem;
+        border-radius: 6px;
+    }
+}
