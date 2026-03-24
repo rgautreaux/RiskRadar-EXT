@@ -20,15 +20,20 @@ rr_render_layout_start('Risk Map', 'map');
 
 <section class="panel">
     <h2 id="risk-map-heading">Interactive Map</h2>
-    <div style="margin-bottom:12px;">
-        <label for="region-filter">Region Filter (placeholder): </label>
-        <select id="region-filter" style="min-width:120px;" aria-label="Region Filter">
-            <option value="">All Regions</option>
-            <option value="LA">Louisiana</option>
-            <option value="TX">Texas</option>
-            <option value="MS">Mississippi</option>
-        </select>
-        <!-- TODO: Wire up region filter to backend queries -->
+    <div style="margin-bottom:12px;display:flex;gap:24px;align-items:center;">
+        <div>
+            <label for="region-filter">Region Filter: </label>
+            <select id="region-filter" style="min-width:120px;" aria-label="Region Filter">
+                <option value="">All Regions</option>
+                <option value="LA">Louisiana</option>
+                <option value="TX">Texas</option>
+                <option value="MS">Mississippi</option>
+            </select>
+        </div>
+        <div>
+            <label><input type="checkbox" id="toggle-alerts" checked> Show Alerts</label>
+            <label style="margin-left:12px;"><input type="checkbox" id="toggle-risk" checked> Show Risk Zones</label>
+        </div>
     </div>
     <div id="risk-map-container" style="width:100%;height:480px;max-width:1000px;margin:0 auto 24px auto;background:#fff8ee;border-radius:12px;box-shadow:0 2px 12px rgba(18,34,49,0.08);overflow:hidden;"
         tabindex="0" aria-label="Risk map showing alerts and risk zones" aria-describedby="risk-map-legend risk-map-heading">
@@ -220,13 +225,50 @@ function renderMap(alertsData, riskData) {
         }
     });
 }
+let latestMapData = null;
+let currentRegion = '';
+let showAlerts = true;
+let showRisk = true;
+
+function filterByRegion(data, region) {
+    if (!region) return data;
+    if (Array.isArray(data)) {
+        return data.filter(item => (item.region || '').toUpperCase() === region.toUpperCase());
+    }
+    return data;
+}
+
+function renderFilteredMap() {
+    if (!latestMapData) return;
+    const region = currentRegion;
+    const alerts = showAlerts ? filterByRegion((latestMapData.alerts && latestMapData.alerts.alerts) || [], region) : [];
+    const risks = showRisk ? filterByRegion((latestMapData.risk && latestMapData.risk.risk_zones) || [], region) : [];
+    renderMap({alerts}, {risk_zones: risks});
+}
+
 document.addEventListener('DOMContentLoaded', async function() {
     const mapDiv = document.getElementById('risk-map');
     if (!window.Plotly || !mapDiv) return;
     const mapData = await fetchMapData();
     hideMapLoading();
     if (!mapData) return;
-    renderMap(mapData.alerts, mapData.risk);
+    latestMapData = mapData;
+    renderFilteredMap();
+
+    // Region filter
+    document.getElementById('region-filter').addEventListener('change', function(e) {
+        currentRegion = e.target.value;
+        renderFilteredMap();
+    });
+    // Overlay toggles
+    document.getElementById('toggle-alerts').addEventListener('change', function(e) {
+        showAlerts = e.target.checked;
+        renderFilteredMap();
+    });
+    document.getElementById('toggle-risk').addEventListener('change', function(e) {
+        showRisk = e.target.checked;
+        renderFilteredMap();
+    });
 });
 // --- End Consolidated Map Logic ---
 </script>
