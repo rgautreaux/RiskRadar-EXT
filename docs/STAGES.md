@@ -38,7 +38,6 @@ Recommended sync order when updating progress:
 **Optional Stretch Goals (If Time Permits):**
 - **Stage 3**: Data Visualization and User Experience Extensions (contingent on Stage 2 completion)
    - Stage 3 planning documents (API contract, verification evidence, implementation spec) created in `docs/PLANNING_DOCS/STAGE3_DOCS/`.
-   - **Phase 1 (Dynamic Data Integration for web map): Complete and verified as of 2026-03-24. The web map page fetches and renders live alert and risk data from backend endpoints.**
 - **Stage 4**: Predictive Analytics and AI-Driven Insights Extensions (contingent on Stage 3 completion)
 
 **Status Legend**
