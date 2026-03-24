@@ -177,13 +177,17 @@ function alertsToScatterTraces(alerts) {
         let icon = '●';
         let color = getSeverityColor(alert.severity);
         let type = (alert.type || alert.alert_type || 'Alert').toLowerCase();
+        let markerClass = '';
         // Custom icons/colors for overlays
         if (type.includes('air')) { icon = '🌫️'; color = getComputedStyle(document.documentElement).getPropertyValue('--overlay-aqi').trim() || '#7e57c2'; }
         else if (type.includes('wildfire') || type.includes('fire')) { icon = '🔥'; color = getComputedStyle(document.documentElement).getPropertyValue('--overlay-wildfire').trim() || '#ff7043'; }
         else if (type.includes('earthquake')) { icon = '🌎'; color = getComputedStyle(document.documentElement).getPropertyValue('--overlay-earthquake').trim() || '#009688'; }
         else if (type.includes('weather')) { icon = '⛈️'; color = getComputedStyle(document.documentElement).getPropertyValue('--overlay-weather').trim() || '#1976d2'; }
         else if (type.includes('pollution')) { icon = '☣️'; color = getComputedStyle(document.documentElement).getPropertyValue('--overlay-pollution').trim() || '#c62828'; }
-
+        // Add pulsing animation for high severity alerts
+        if ((alert.severity || '').toLowerCase() === 'high') {
+            markerClass = 'pulse-marker';
+        }
         let details = `<strong style='color:${color}'>${icon} ${alert.title || type}</strong><br>`;
         details += `Severity: <b>${alert.severity || 'N/A'}</b><br>`;
         if (type.includes('earthquake') && alert.magnitude) {
@@ -214,7 +218,7 @@ function alertsToScatterTraces(alerts) {
             },
             text: details,
             name: alert.type || alert.alert_type || 'Alert',
-            customdata: [alert],
+            customdata: [alert, markerClass],
             hoverinfo: 'text'
         };
     });
@@ -288,39 +292,71 @@ function renderMap(alertsData, riskData) {
         showlegend: true
     };
     Plotly.newPlot('risk-map', traces, layout, {responsive: true});
+    // Add marker animation class to high severity markers
+    setTimeout(() => {
+        const svgMarkers = document.querySelectorAll('#risk-map .scatterlayer .point');
+        svgMarkers.forEach((el, idx) => {
+            // Find the corresponding markerClass from customdata
+            let markerClass = '';
+            if (traces.length > 0 && traces[0].customdata && traces[0].customdata[idx] && traces[0].customdata[idx][1]) {
+                markerClass = traces[0].customdata[idx][1];
+            }
+            if (markerClass === 'pulse-marker') {
+                el.classList.add('pulse-marker');
+            }
+        });
+    }, 400);
+
     var riskMapDiv = document.getElementById('risk-map');
+    // Remove any existing popup
+    function removePopup() {
+        const existing = document.getElementById('map-popup-card');
+        if (existing) existing.remove();
+    }
     riskMapDiv.on('plotly_click', function(data) {
+        removePopup();
         if (data && data.points && data.points.length > 0) {
             const pt = data.points[0];
             if (pt.customdata && pt.customdata[0]) {
                 const d = pt.customdata[0];
                 if (d.type || d.alert_type) {
                     let type = (d.type || d.alert_type || '').toLowerCase();
-                    let msg = '';
-                    if (type.includes('air')) {
-                        msg += '🌫️ Air Quality Alert\n';
-                    } else if (type.includes('wildfire') || type.includes('fire')) {
-                        msg += '🔥 Wildfire Alert\n';
-                    } else {
-                        msg += 'Alert\n';
-                    }
-                    msg += `Title: ${d.title || type}\n`;
-                    msg += `Severity: ${d.severity || 'N/A'}\n`;
-                    if (d.description) msg += `${d.description}\n`;
-                    msg += `Region: ${d.region || d.location_name || 'N/A'}\n`;
-                    if (d.event_start) msg += `Observed: ${d.event_start}\n`;
-                    if (d.source) msg += `Source: ${d.source}\n`;
-                    alert(msg);
+                    let icon = '';
+                    if (type.includes('air')) icon = '🌫️';
+                    else if (type.includes('wildfire') || type.includes('fire')) icon = '🔥';
+                    else if (type.includes('earthquake')) icon = '🌎';
+                    else if (type.includes('weather')) icon = '⛈️';
+                    else if (type.includes('pollution')) icon = '☣️';
+                    let html = `<div class="map-popup-card" id="map-popup-card" tabindex="0" role="dialog" aria-modal="true">
+                        <button class="popup-close" aria-label="Close popup" onclick="this.parentNode.remove()">×</button>
+                        <div style="font-size:1.3em;margin-bottom:6px;">${icon} <strong>${d.title || type}</strong></div>
+                        <div><b>Severity:</b> ${d.severity || 'N/A'}</div>
+                        ${d.magnitude ? `<div><b>Magnitude:</b> ${d.magnitude}</div>` : ''}
+                        ${d.description ? `<div style='margin:6px 0;'>${d.description}</div>` : ''}
+                        <div><b>Region:</b> ${d.region || d.location_name || 'N/A'}</div>
+                        ${d.event_start ? `<div><b>Observed:</b> ${d.event_start}</div>` : ''}
+                        ${d.source ? `<div><b>Source:</b> ${d.source}</div>` : ''}
+                    </div>`;
+                    // Insert popup into map container
+                    document.getElementById('risk-map-container').insertAdjacentHTML('beforeend', html);
+                    setTimeout(() => {
+                        const popup = document.getElementById('map-popup-card');
+                        if (popup) popup.focus();
+                    }, 100);
                 } else if (d.risk_level) {
-                    let msg = "Risk Zone Details:\n" +
-                        `Risk Level: ${d.risk_level || 'N/A'}\n`;
-                    if (typeof d.risk_score !== 'undefined' && d.risk_score !== null) {
-                        msg += `Personalized Score: ${d.risk_score}\n`;
-                    } else if (typeof d.score !== 'undefined' && d.score !== null) {
-                        msg += `Score: ${d.score}\n`;
-                    }
-                    msg += `Region: ${d.region || 'N/A'}`;
-                    alert(msg);
+                    let html = `<div class="map-popup-card" id="map-popup-card" tabindex="0" role="dialog" aria-modal="true">
+                        <button class="popup-close" aria-label="Close popup" onclick="this.parentNode.remove()">×</button>
+                        <div style="font-size:1.2em;margin-bottom:6px;"><strong>Risk Zone Details</strong></div>
+                        <div><b>Risk Level:</b> ${d.risk_level || 'N/A'}</div>
+                        ${typeof d.risk_score !== 'undefined' && d.risk_score !== null ? `<div><b>Personalized Score:</b> ${d.risk_score}</div>` : ''}
+                        ${typeof d.score !== 'undefined' && d.score !== null ? `<div><b>Score:</b> ${d.score}</div>` : ''}
+                        <div><b>Region:</b> ${d.region || 'N/A'}</div>
+                    </div>`;
+                    document.getElementById('risk-map-container').insertAdjacentHTML('beforeend', html);
+                    setTimeout(() => {
+                        const popup = document.getElementById('map-popup-card');
+                        if (popup) popup.focus();
+                    }, 100);
                 }
             }
         }

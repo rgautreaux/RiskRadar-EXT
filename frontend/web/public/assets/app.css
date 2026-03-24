@@ -670,3 +670,58 @@ dd {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
+
+/* Marker Animation: Pulsing for active alerts */
+.pulse-marker {
+  position: relative;
+  z-index: 2;
+}
+.pulse-marker::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 24px;
+  height: 24px;
+  background: rgba(231, 76, 60, 0.25); /* fallback for high severity */
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  animation: pulse 1.2s infinite cubic-bezier(0.66, 0, 0, 1);
+  z-index: -1;
+}
+@keyframes pulse {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+  70% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
+  100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
+}
+
+/* Card-style popup for alert details */
+.map-popup-card {
+  position: absolute;
+  left: 50%;
+  top: 20%;
+  min-width: 260px;
+  max-width: 340px;
+  background: var(--theme-panel, #fffaf2);
+  color: var(--theme-ink, #122231);
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(18,34,49,0.13);
+  padding: 20px 18px 16px 18px;
+  z-index: 100;
+  transform: translate(-50%, 0);
+  font-size: 1rem;
+  outline: none;
+}
+.map-popup-card .popup-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: var(--theme-ink, #122231);
+  cursor: pointer;
+}
+.map-popup-card .popup-close:focus {
+  outline: 2px solid var(--theme-accent, #ef6f51);
+}
