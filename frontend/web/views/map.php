@@ -40,14 +40,62 @@ rr_render_layout_start('Risk Map', 'map');
             <label style="margin-left:12px;"><input type="checkbox" id="toggle-weather" aria-label="Weather Overlay"> Weather Overlay</label>
             <label style="margin-left:12px;"><input type="checkbox" id="toggle-pollution" aria-label="Pollution Overlay"> Pollution Overlay</label>
         </div>
-        <div style="margin-left:24px;">
+        <div style="margin-left:24px;display:flex;align-items:center;gap:16px;">
             <label><input type="checkbox" id="toggle-personalized" aria-label="Personalized Risk Map"> Personalized Risk Map</label>
+            <button id="help-btn" aria-haspopup="dialog" aria-controls="help-modal" aria-label="How to use this map" style="background:var(--accent-coral,#ef6f51);color:#fff;border:none;border-radius:6px;padding:7px 16px;font-size:1em;cursor:pointer;box-shadow:0 2px 8px rgba(18,34,49,0.08);font-weight:500;">Help</button>
         </div>
+    <!-- Help Modal -->
+    <div id="help-modal" role="dialog" aria-modal="true" aria-labelledby="help-modal-title" tabindex="-1" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(18,34,49,0.32);z-index:200;align-items:center;justify-content:center;">
+        <div style="background:#fffaf2;color:#122231;max-width:420px;width:92vw;padding:28px 22px 18px 22px;border-radius:14px;box-shadow:0 8px 40px rgba(18,34,49,0.18);position:relative;outline:none;">
+            <button id="help-close" aria-label="Close help" style="position:absolute;top:10px;right:14px;background:none;border:none;font-size:1.3em;color:#b65c00;cursor:pointer;">×</button>
+            <h2 id="help-modal-title" style="margin-top:0;font-size:1.25em;">How to Use This Map</h2>
+            <ul style="margin:14px 0 0 0;padding-left:18px;font-size:1em;">
+                <li>Pan and zoom the map with your mouse, touch, or keyboard arrows.</li>
+                <li>Click or tap markers for alert details.</li>
+                <li>Use the region filter and overlay toggles to customize what you see.</li>
+                <li>Keyboard: Tab to controls, Enter/Space to activate, arrows to pan.</li>
+                <li>All features are accessible and color contrast checked.</li>
+            </ul>
+            <div style="margin-top:16px;font-size:0.98em;color:#5f6b77;">Need more help? Contact support or see the full user guide.</div>
+        </div>
+    </div>
+    </section>
+
+    <script>
+    // Help modal logic
+    document.addEventListener('DOMContentLoaded', function() {
+        var helpBtn = document.getElementById('help-btn');
+        var helpModal = document.getElementById('help-modal');
+        var helpClose = document.getElementById('help-close');
+        if (helpBtn && helpModal && helpClose) {
+            helpBtn.addEventListener('click', function() {
+                helpModal.style.display = 'flex';
+                helpModal.focus();
+            });
+            helpClose.addEventListener('click', function() {
+                helpModal.style.display = 'none';
+                helpBtn.focus();
+            });
+            helpModal.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    helpModal.style.display = 'none';
+                    helpBtn.focus();
+                }
+            });
+        }
+    });
+    </script>
     </div>
     <div id="risk-map-container" style="width:100%;height:480px;max-width:1000px;margin:0 auto 24px auto;background:#fff8ee;border-radius:12px;box-shadow:0 2px 12px rgba(18,34,49,0.08);overflow:hidden;"
         tabindex="0" aria-label="Risk map showing alerts and risk zones. Use arrow keys to pan. Press Enter on a marker for details." aria-describedby="risk-map-legend risk-map-heading risk-map-instructions">
         <div id="risk-map" style="width:100%;height:100%;position:relative;" role="region" aria-label="Interactive risk map"></div>
-        <div id="map-loading" style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.7);z-index:2;font-size:1.2rem;color:#b65c00;">Loading map data...</div>
+        <div id="map-loading" style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.7);z-index:2;">
+            <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                <div id="map-loading-spinner" aria-label="Loading" role="status"></div>
+                <div style="margin-top:12px;text-align:center;font-size:1.1rem;color:#b65c00;">Loading map data...</div>
+                <div id="map-skeleton" style="margin-top:18px;width:90%;height:38px;"></div>
+            </div>
+        </div>
         <div id="map-fallback" style="display:none;position:absolute;top:0;left:0;width:100%;height:100%;align-items:center;justify-content:center;background:rgba(255,255,255,0.9);z-index:3;font-size:1.1rem;color:#b65c00;text-align:center;" role="alert" aria-live="assertive"></div>
         <span id="risk-map-instructions" class="sr-only">Use Tab to focus the map. Use arrow keys to pan. Press Enter or Space on a marker for details. All overlays and controls are accessible by keyboard and screen reader.</span>
     </div>

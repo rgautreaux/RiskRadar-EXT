@@ -1,3 +1,32 @@
+/* Skeleton shimmer for map overlays */
+#map-skeleton {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #f3efe5 25%, #f8f2e8 50%, #f3efe5 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.2s infinite linear;
+    border-radius: 12px;
+    opacity: 0.7;
+}
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+/* Modern loading spinner for map overlays */
+#map-loading-spinner {
+    width: 44px;
+    height: 44px;
+    border: 5px solid #f3efe5;
+    border-top: 5px solid var(--accent-coral, #ef6f51);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+    display: block;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 /* Sticky map legend for better usability */
 #risk-map-legend {
     position: sticky;
