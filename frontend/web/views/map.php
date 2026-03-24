@@ -55,6 +55,9 @@ rr_render_layout_start('Risk Map', 'map');
             <li><span style="color:#ffc107;font-weight:bold;">■</span> Medium risk zone</li>
             <li><span style="color:#4caf50;font-weight:bold;">■</span> Low risk zone</li>
         </ul>
+        <div id="personalized-legend-msg" style="margin-top:6px;color:#b65c00;font-size:0.98em;display:none;">
+            <strong>Personalized Mode:</strong> Risk zones reflect <u>your</u> personalized risk score at each location, based on your profile and health data.
+        </div>
         <span class="sr-only">Use Tab to focus the map. Use arrow keys to pan and mouse or screen reader to explore overlays. Click or press Enter on a marker for details.</span>
     </div>
     <p class="muted">The map will display live alert markers and risk overlays as data becomes available. All features are keyboard and screen reader accessible.</p>
@@ -206,6 +209,10 @@ function renderMap(alertsData, riskData) {
         showMapFallback('No valid map data to display.');
         return;
     }
+    // Show/hide personalized legend message
+    const persLegend = document.getElementById('personalized-legend-msg');
+    if (persLegend) persLegend.style.display = personalizedMode ? 'block' : 'none';
+
     const layout = {
         mapbox: {
             style: 'open-street-map',
@@ -230,10 +237,15 @@ function renderMap(alertsData, riskData) {
                         `Source: ${d.source || 'N/A'}\n` +
                         `Time: ${d.generated_at || 'N/A'}`);
                 } else if (d.risk_level) {
-                    alert("Risk Zone Details:\n" +
-                        `Risk Level: ${d.risk_level || 'N/A'}\n` +
-                        `Score: ${d.score || 'N/A'}\n` +
-                        `Region: ${d.region || 'N/A'}`);
+                    let msg = "Risk Zone Details:\n" +
+                        `Risk Level: ${d.risk_level || 'N/A'}\n`;
+                    if (typeof d.risk_score !== 'undefined' && d.risk_score !== null) {
+                        msg += `Personalized Score: ${d.risk_score}\n`;
+                    } else if (typeof d.score !== 'undefined' && d.score !== null) {
+                        msg += `Score: ${d.score}\n`;
+                    }
+                    msg += `Region: ${d.region || 'N/A'}`;
+                    alert(msg);
                 }
             }
         }
