@@ -200,12 +200,13 @@ function getCurrentUserId() {
 // Accessibility: Keyboard navigation for map focus and marker activation
 document.addEventListener('DOMContentLoaded', function() {
     var mapContainer = document.getElementById('risk-map-container');
-    if (mapContainer) {
+    var riskMap = document.getElementById('risk-map');
+    if (mapContainer && riskMap) {
         mapContainer.addEventListener('keydown', function(e) {
             // Arrow keys pan the map
             if ([37,38,39,40].includes(e.keyCode)) {
                 var pan = {"mapbox.center.lon": null, "mapbox.center.lat": null};
-                var currentLayout = document.getElementById('risk-map').layout || {};
+                var currentLayout = riskMap.layout || {};
                 var step = 0.5;
                 if (currentLayout.mapbox && currentLayout.mapbox.center) {
                     pan["mapbox.center.lon"] = currentLayout.mapbox.center.lon;
@@ -221,11 +222,63 @@ document.addEventListener('DOMContentLoaded', function() {
                 Plotly.relayout('risk-map', pan);
                 e.preventDefault();
             }
-            // Enter or Space triggers marker details if a marker is focused
-            if (e.key === 'Enter' || e.key === ' ') {
-                // Try to trigger marker details if focus is on a marker (future: add marker focus management)
-                // For now, focus is on map container, so no-op
+            // +/- keys for zoom
+            if (e.key === '+' || e.key === '=') {
+                var layout = riskMap.layout || {};
+                var zoom = layout.mapbox && layout.mapbox.zoom ? layout.mapbox.zoom + 0.5 : 6.5;
+                Plotly.relayout('risk-map', {"mapbox.zoom": zoom});
+                e.preventDefault();
             }
+            if (e.key === '-' || e.key === '_') {
+                var layout = riskMap.layout || {};
+                var zoom = layout.mapbox && layout.mapbox.zoom ? Math.max(1, layout.mapbox.zoom - 0.5) : 5.5;
+                Plotly.relayout('risk-map', {"mapbox.zoom": zoom});
+                e.preventDefault();
+            }
+            // Enter or Space triggers marker details if a marker is focused
+            // (future: add marker focus management)
+        });
+
+        // Touch gestures for pan/zoom
+        let lastTouch = null;
+        let lastDist = null;
+        riskMap.addEventListener('touchstart', function(e) {
+            if (e.touches.length === 1) {
+                lastTouch = {x: e.touches[0].clientX, y: e.touches[0].clientY};
+            } else if (e.touches.length === 2) {
+                let dx = e.touches[0].clientX - e.touches[1].clientX;
+                let dy = e.touches[0].clientY - e.touches[1].clientY;
+                lastDist = Math.sqrt(dx*dx + dy*dy);
+            }
+        });
+        riskMap.addEventListener('touchmove', function(e) {
+            var layout = riskMap.layout || {};
+            if (e.touches.length === 1 && lastTouch) {
+                let dx = e.touches[0].clientX - lastTouch.x;
+                let dy = e.touches[0].clientY - lastTouch.y;
+                let pan = {"mapbox.center.lon": null, "mapbox.center.lat": null};
+                if (layout.mapbox && layout.mapbox.center) {
+                    pan["mapbox.center.lon"] = layout.mapbox.center.lon - dx * 0.01;
+                    pan["mapbox.center.lat"] = layout.mapbox.center.lat + dy * 0.01;
+                    Plotly.relayout('risk-map', pan);
+                }
+                lastTouch = {x: e.touches[0].clientX, y: e.touches[0].clientY};
+            } else if (e.touches.length === 2 && lastDist) {
+                let dx = e.touches[0].clientX - e.touches[1].clientX;
+                let dy = e.touches[0].clientY - e.touches[1].clientY;
+                let dist = Math.sqrt(dx*dx + dy*dy);
+                let layout = riskMap.layout || {};
+                let zoom = layout.mapbox && layout.mapbox.zoom ? layout.mapbox.zoom : 6;
+                if (Math.abs(dist - lastDist) > 5) {
+                    let newZoom = zoom + (dist - lastDist) * 0.01;
+                    Plotly.relayout('risk-map', {"mapbox.zoom": Math.max(1, Math.min(20, newZoom))});
+                    lastDist = dist;
+                }
+            }
+        });
+        riskMap.addEventListener('touchend', function(e) {
+            lastTouch = null;
+            lastDist = null;
         });
     }
     // Add visible focus indicator for all focusable elements
