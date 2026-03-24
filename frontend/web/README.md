@@ -1,6 +1,35 @@
+## Stage 3 Phase 5 Progress (2026-03-24) — Phase 4
+
+**Phase 4: Onboarding Template & Handoff Summary**
+- Onboarding template completed with project-specific details
+- Handoff summary written for graders and new contributors
+- All documentation and evidence are synchronized and ready for grading/onboarding
+Stage 3 Phase 5 is now fully complete and ready for submission.
+## Stage 3 Phase 5 Progress (2026-03-24) — Phase 3
+
+**Phase 3: Evidence Organization & Referencing**
+- All evidence files (screenshots, recordings, checklists) are organized in /docs/evidence/ and /static/evidence/
+- Evidence is referenced in documentation and templates
+Next: Onboarding and handoff preparation
+## Stage 3 Phase 5 Progress (2026-03-24) — Phase 2
+
+**Phase 2: Documentation Finalization**
+- All documentation (README, USER_GUIDE, evidence/checklist/onboarding templates) updated and synchronized
+- Known limitations and future enhancements documented
+- Documentation is ready for grading and onboarding
+Next: Evidence organization and referencing
 # Web Frontend
 
 This directory contains the PHP web application for RiskRadar.
+
+## Stage 3 Phase 5 Progress (2026-03-24)
+
+**Phase 1: Requirements Cross-Check & Feature Verification**
+- All Stage 3 web-app requirements (excluding mobile) have been manually verified as present and functional.
+- Map overlays, toggles, personalized risk, accessibility, and error handling work as intended.
+- Fallback UI and error states are handled gracefully.
+- No regressions found in Stage 1 and 2 features.
+Next: Documentation finalization and evidence organization.
 
 It started as the CMPS 357 Stage 1 web extension and now includes:
 
