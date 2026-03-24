@@ -75,8 +75,37 @@ rr_render_layout_start('Risk Map', 'map');
         </div>
         <div style="margin-left:24px;display:flex;align-items:center;gap:16px;">
             <label><input type="checkbox" id="toggle-personalized" aria-label="Personalized Risk Map"> Personalized Risk Map</label>
+            <button id="darkmode-toggle" aria-label="Toggle dark mode" style="background:var(--panel-strong,#fff8ee);color:var(--accent-coral,#ef6f51);border:none;border-radius:6px;padding:7px 16px;font-size:1em;cursor:pointer;box-shadow:0 2px 8px rgba(18,34,49,0.08);font-weight:500;">🌙 Dark Mode</button>
             <button id="help-btn" aria-haspopup="dialog" aria-controls="help-modal" aria-label="How to use this map" style="background:var(--accent-coral,#ef6f51);color:#fff;border:none;border-radius:6px;padding:7px 16px;font-size:1em;cursor:pointer;box-shadow:0 2px 8px rgba(18,34,49,0.08);font-weight:500;">Help</button>
         </div>
+    <script>
+    // Dark mode toggle logic
+    document.addEventListener('DOMContentLoaded', function() {
+        var darkToggle = document.getElementById('darkmode-toggle');
+        if (!darkToggle) return;
+        // Set initial mode from localStorage or default to light
+        var theme = localStorage.getItem('riskradar-theme') || 'light';
+        if (theme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            darkToggle.textContent = '☀️ Light Mode';
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            darkToggle.textContent = '🌙 Dark Mode';
+        }
+        darkToggle.addEventListener('click', function() {
+            var current = document.documentElement.getAttribute('data-theme');
+            if (current === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('riskradar-theme', 'light');
+                darkToggle.textContent = '🌙 Dark Mode';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('riskradar-theme', 'dark');
+                darkToggle.textContent = '☀️ Light Mode';
+            }
+        });
+    });
+    </script>
     <!-- Help Modal -->
     <div id="help-modal" role="dialog" aria-modal="true" aria-labelledby="help-modal-title" tabindex="-1" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(18,34,49,0.32);z-index:200;align-items:center;justify-content:center;">
         <div style="background:#fffaf2;color:#122231;max-width:420px;width:92vw;padding:28px 22px 18px 22px;border-radius:14px;box-shadow:0 8px 40px rgba(18,34,49,0.18);position:relative;outline:none;">
