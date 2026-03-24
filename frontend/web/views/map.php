@@ -145,22 +145,31 @@ function hideMapLoading() {
 }
 function getSeverityColor(severity) {
     switch ((severity || '').toLowerCase()) {
-        case 'high': return '#e74c3c';
-        case 'medium': return '#f39c12';
-        case 'low': return '#27ae60';
+        case 'high': return getComputedStyle(document.documentElement).getPropertyValue('--alert-high').trim() || '#e74c3c';
+        case 'medium': return getComputedStyle(document.documentElement).getPropertyValue('--alert-medium').trim() || '#f39c12';
+        case 'low': return getComputedStyle(document.documentElement).getPropertyValue('--alert-low').trim() || '#27ae60';
         default: return '#2980b9';
     }
 }
 function getRiskLevelColor(level, alpha=1) {
-    let color;
+    let cssVar = '';
     switch ((level || '').toLowerCase()) {
-        case 'extreme': color = '255,0,0'; break;
-        case 'high': color = '255,87,34'; break;
-        case 'medium': color = '255,193,7'; break;
-        case 'low': color = '76,175,80'; break;
-        default: color = '33,150,243';
+        case 'extreme': cssVar = '--risk-extreme'; break;
+        case 'high': cssVar = '--risk-extreme'; break;
+        case 'medium': cssVar = '--risk-medium'; break;
+        case 'low': cssVar = '--risk-low'; break;
+        default: cssVar = '--risk-low';
     }
-    return `rgba(${color},${alpha})`;
+    let color = getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim();
+    // Convert hex to rgba
+    if (color.startsWith('#')) {
+        let bigint = parseInt(color.slice(1), 16);
+        let r = (bigint >> 16) & 255;
+        let g = (bigint >> 8) & 255;
+        let b = bigint & 255;
+        return `rgba(${r},${g},${b},${alpha})`;
+    }
+    return color;
 }
 function alertsToScatterTraces(alerts) {
     if (!Array.isArray(alerts)) return [];
@@ -169,11 +178,11 @@ function alertsToScatterTraces(alerts) {
         let color = getSeverityColor(alert.severity);
         let type = (alert.type || alert.alert_type || 'Alert').toLowerCase();
         // Custom icons/colors for overlays
-        if (type.includes('air')) { icon = '🌫️'; color = '#7e57c2'; }
-        else if (type.includes('wildfire') || type.includes('fire')) { icon = '🔥'; color = '#ff7043'; }
-        else if (type.includes('earthquake')) { icon = '🌎'; color = '#009688'; }
-        else if (type.includes('weather')) { icon = '⛈️'; color = '#1976d2'; }
-        else if (type.includes('pollution')) { icon = '☣️'; color = '#c62828'; }
+        if (type.includes('air')) { icon = '🌫️'; color = getComputedStyle(document.documentElement).getPropertyValue('--overlay-aqi').trim() || '#7e57c2'; }
+        else if (type.includes('wildfire') || type.includes('fire')) { icon = '🔥'; color = getComputedStyle(document.documentElement).getPropertyValue('--overlay-wildfire').trim() || '#ff7043'; }
+        else if (type.includes('earthquake')) { icon = '🌎'; color = getComputedStyle(document.documentElement).getPropertyValue('--overlay-earthquake').trim() || '#009688'; }
+        else if (type.includes('weather')) { icon = '⛈️'; color = getComputedStyle(document.documentElement).getPropertyValue('--overlay-weather').trim() || '#1976d2'; }
+        else if (type.includes('pollution')) { icon = '☣️'; color = getComputedStyle(document.documentElement).getPropertyValue('--overlay-pollution').trim() || '#c62828'; }
 
         let details = `<strong style='color:${color}'>${icon} ${alert.title || type}</strong><br>`;
         details += `Severity: <b>${alert.severity || 'N/A'}</b><br>`;
