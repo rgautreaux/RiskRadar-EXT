@@ -428,8 +428,8 @@ Recommended update order when progress changes:
 | Stage | Title | Status | Last Updated | Scope | Notes |
 |---|---|---|---|---|---|
 | 1 | Web-App Extension | Completed | 2026-03-13 | **Required** | Stage 1 dashboard MVP, API integration layer, security/reliability controls, setup docs, and responsive/web-distinctness verification evidence are complete. See `docs/TODO.md`, `docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md`, and `docs/PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md`. |
-| 2 | Environmental Risk Assessment and Alert Prioritization Extensions | In Progress | 2026-03-17 | **Required** | Kickoff plan + policy lock are documented in `docs/PLANNING_DOCS/PLANNING_STAGES.md` and `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`; backend/web/mobile scaffolding is in place and S2-01/S2-05 are active. Target: Week of 2026-04-28. |
-| 3 | Data Visualization and User Experience Extensions | Not Started | 2026-03-23 | Optional/Stretch | Stage 3 planning documents (API contract, verification evidence, implementation spec) created. Interactive Plotly-based risk map planned for web/mobile. |
+| 2 | Environmental Risk Assessment and Alert Prioritization Extensions | Completed | 2026-03-24 | **Required** | Personal risk scoring engine (`GET /api/v1/risk/score/{user_id}`) and smart alert prioritization (`GET /api/v1/alerts/prioritized/{user_id}`) are fully implemented and tested. Web and mobile clients surface risk scores and prioritized alerts with fallback-safe integration. See `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_VERIFICATION_EVIDENCE.md`. |
+| 3 | Data Visualization and User Experience Extensions | Completed | 2026-03-24 | Optional/Stretch | Interactive risk map implemented at `map.php` with live alert and risk overlays, personalized user overlays, region filters, keyboard/touch navigation, dark mode, and accessible legend. Backend map endpoints (`GET /api/v1/alerts/map`, `GET /api/v1/risk/map`, `GET /api/v1/risk/map/personalized/{user_id}`) implemented and CORS-enabled. See `docs/PLANNING_DOCS/STAGE3_DOCS/`. |
 | 4 | Predictive Analytics and AI-Driven Insights Extensions | Not Started | 2026-03-23 | Optional/Stretch | 24-48 hour forecasting + RiskRadar AI Assistant. Planned only if time permits after Stage 3. |
 ---
 
@@ -438,23 +438,28 @@ Recommended update order when progress changes:
 **Objective:** Add an interactive risk map experience to help users explore and understand environmental risk conditions spatially.
 
 **Implementation:**
-- Stage 3 planning documents have been created in `docs/PLANNING_DOCS/STAGE3_DOCS/`:
+- Stage 3 planning documents in `docs/PLANNING_DOCS/STAGE3_DOCS/`:
 	- `API_STAGE3_CONTRACT.md`: Defines the API contract for map and risk visualization endpoints, request/response schemas, and error handling.
 	- `STAGE3_VERIFICATION_EVIDENCE.md`: Outlines verification checkpoints for map rendering, geospatial accuracy, responsive UX, and fallback/performance validation.
 	- `STAGE3_IMPLEMENTATION_SPEC.md`: Details the implementation plan, policy lock, and step-by-step requirements for interactive risk map and user experience enhancements.
+- Backend map endpoints implemented and CORS-enabled: `GET /api/v1/alerts/map`, `GET /api/v1/risk/map`, `GET /api/v1/risk/map/personalized/{user_id}`.
+- Web frontend `map.php` fetches and renders live alert and risk overlay data from backend endpoints.
 
 **Functionality:**
-- New backend endpoints will provide geospatial alert and risk data for map rendering.
-- Web and mobile clients will display interactive maps with overlays, clustering, and risk-level visual encoding.
-- Fallbacks and error handling will keep the map UI interactive even if overlays fail to load.
+- Backend endpoints provide geospatial alert and risk data for map rendering.
+- Web frontend displays an interactive map with overlays for alerts, risk zones, and personalized user overlays.
+- Overlay toggles, region filters, legend, and tooltips are fully functional.
+- Keyboard/touch navigation, dark mode, and responsive layout are implemented.
+- Fallbacks and error handling keep the map UI interactive even if overlays fail to load.
 
 **Execution:**
-- The implementation will follow the contract and verification evidence, ensuring geospatial accuracy, responsive design, and accessibility.
-- Performance and payload validation will be performed for map data endpoints.
+- Implementation followed the contract and verification evidence, ensuring geospatial accuracy, responsive design, and accessibility.
+- All Stage 3 web-app requirements have been manually verified as present and functional.
+- Evidence organized in `/docs/evidence/` and `/static/evidence/`.
 
 **Importance:**
-- This extension will make environmental risk data more accessible and actionable for users by providing spatial context and interactive exploration.
-- It demonstrates advanced data visualization, geospatial API design, and user experience engineering, further differentiating the web extension from the mobile app.
+- This extension makes environmental risk data more accessible and actionable for users by providing spatial context and interactive exploration.
+- Demonstrates advanced data visualization, geospatial API design, and user experience engineering, further differentiating the web extension from the mobile app.
 
 **Status Legend**
 - **Not Started**: Requirements are defined, but implementation has not begun.
