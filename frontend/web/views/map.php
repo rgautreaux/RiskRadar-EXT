@@ -64,6 +64,10 @@ rr_render_layout_start('Risk Map', 'map');
             </select>
             <span id="region-filter-desc" class="sr-only">Select a region to filter map overlays. Use Tab to move to overlays and toggles.</span>
         </div>
+        <div style="margin-left:18px;">
+            <label for="user-id-input">User ID for Personalized Map: </label>
+            <input type="number" id="user-id-input" min="1" value="1" style="width:70px;" aria-label="User ID for Personalized Map" />
+        </div>
         <div role="group" aria-label="Overlay Toggles">
             <label><input type="checkbox" id="toggle-alerts" checked aria-checked="true" aria-label="Show Alerts"> Show Alerts</label>
             <label style="margin-left:12px;"><input type="checkbox" id="toggle-risk" checked aria-checked="true" aria-label="Show Risk Zones"> Show Risk Zones</label>
@@ -219,10 +223,11 @@ rr_render_layout_start('Risk Map', 'map');
 const MAP_ALERTS_URL = <?php echo json_encode($alerts_url); ?>;
 const MAP_RISK_URL = <?php echo json_encode($risk_url); ?>;
 const MAP_PERSONALIZED_RISK_URL = <?php echo json_encode(rr_api_url($config, 'risk/map/personalized/')); ?>; // Append user_id
-// Helper: Get current user ID (stub, replace with real auth/user logic)
+// Helper: Get current user ID from input
 function getCurrentUserId() {
-    // TODO: Replace with actual user session/auth logic
-    return window.RISKRADAR_USER_ID || 1; // Default to 1 for demo
+    var input = document.getElementById('user-id-input');
+    var val = input ? parseInt(input.value, 10) : 1;
+    return (val && val > 0) ? val : 1;
 }
 
 // --- Consolidated Map Logic: Modern, Accessible, Feature-Complete ---
@@ -629,6 +634,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Region filter
     document.getElementById('region-filter').addEventListener('change', function(e) {
         currentRegion = e.target.value;
+        renderFilteredMap();
+    });
+    // User ID input
+    document.getElementById('user-id-input').addEventListener('change', async function(e) {
+        document.getElementById('map-loading').style.display = 'flex';
+        const mapData = await fetchMapData(personalizedMode);
+        hideMapLoading();
+        if (!mapData) return;
+        latestMapData = mapData;
         renderFilteredMap();
     });
     // Overlay toggles
