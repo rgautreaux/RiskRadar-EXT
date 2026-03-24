@@ -176,6 +176,7 @@ If backend port `8000` is unavailable, set `RISKRADAR_API_BASE_URL` (for example
 - PHP API client helpers for map endpoints
 - Frontend scaffold in `views/map.php` with Plotly.js, loading/fallback UI, and AJAX fetch logic
 - Responsive CSS for map container and layout
+- **Config-driven API URLs:** The map page now injects API endpoint URLs from PHP config (see `config/app.php` and `services/api_client.php`), so no API URLs are hardcoded in JS. This ensures correct URL resolution in all environments (local, dev, prod).
 
 ### What Remains
 - Transform backend data into Plotly overlays (scatter for alerts, polygons/heatmap for risk)
@@ -189,12 +190,13 @@ If backend port `8000` is unavailable, set `RISKRADAR_API_BASE_URL` (for example
 ### How to Use the Map Feature
 1. Start backend and PHP server as usual (see above)
 2. Open `public/map.php` in your browser
-3. The map will attempt to load live data from `/api/v1/alerts/map` and `/api/v1/risk/map`
+3. The map will attempt to load live data from the config-driven API URLs (not hardcoded)
 4. If data loads, overlays will render (in progress); if not, fallback UI will display
 
 ### Developer Notes
 - See `views/map.php` for JS logic and Plotly integration
 - See `services/api_client.php` for backend API helpers
+- See `config/app.php` for environment and API URL configuration
 - See `docs/PLANNING_DOCS/STAGE3_DOCS/STAGE3_VERIFICATION_EVIDENCE.md` for verification checklist and evidence
 
 ### Next Steps

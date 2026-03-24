@@ -14,6 +14,23 @@ Stage 3 deliverables are planned and documented, with implementation to follow t
 
 ### Importance
 Stage 3 will further elevate RiskRadar by providing spatial context and visual decision support, making risk information more actionable and accessible for all users.
+
+---
+
+# Stage 3: Data Visualization and User Experience Extensions (Expanded)
+
+## Implementation
+Stage 3 focuses on adding an interactive risk map and user experience improvements. The backend and frontend are prepared for new geoJSON endpoints, map rendering logic, and responsive UX. Planning documents (API contract, verification evidence, implementation spec) are created and synchronized across all top-level documentation.
+
+## Functionality
+- **Interactive Risk Map:** Enables users to explore environmental risks spatially, with overlays for AQI, wildfires, and weather alerts.
+- **Responsive UX Enhancements:** Improves accessibility and usability for both web and mobile users.
+
+## Execution
+Implementation will follow the locked contract and verification evidence, ensuring geospatial accuracy, responsive design, and accessibility. All planning artifacts are kept in sync for grading and onboarding clarity.
+
+## Importance
+This extension provides spatial context and visual decision support, making risk information more actionable and accessible. It demonstrates advanced data visualization, geospatial API design, and user experience engineering, further differentiating the web extension from the mobile app.
 ---
 
 # Major Developments: Implementation, Functionality, Execution, and Importance
