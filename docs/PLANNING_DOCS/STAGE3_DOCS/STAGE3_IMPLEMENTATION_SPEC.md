@@ -49,6 +49,22 @@ This document defines the implementation plan and policy lock for Stage 3, focus
    - Provide accessibility-friendly text alternatives where feasible.
    *Status: In progress (responsive CSS in place, accessibility features next)*
 
+## Accessibility Features and Verification (Completed)
+
+- All map containers, overlays, and controls use ARIA roles and descriptive labels for screen reader compatibility.
+- Keyboard navigation is fully supported: Tab, Shift+Tab, Enter, Space, and Arrow keys for map panning.
+- Visually hidden instructions are provided for screen reader users.
+- Dynamic changes (overlays toggled, map data loaded) are announced using `aria-live` regions.
+- Overlay and marker colors have been checked for WCAG AA contrast; alternative patterns available on request.
+- All focusable elements have visible focus indicators.
+- Accessibility features verified by:
+  - Tab/Shift+Tab through all controls and overlays (focus indicators, logical order)
+  - Arrow keys pan the map
+  - Enter/Space on overlays/markers show details
+  - Screen reader (NVDA/JAWS/VoiceOver) announces ARIA labels, instructions, and live updates
+  - Color contrast validated with axe/Lighthouse
+  - Responsive accessibility confirmed at all viewport sizes
+
 ## Notes
 - This spec will be updated as Stage 3 implementation progresses and requirements are refined.
 - All changes to map data contracts or UI/UX patterns must be documented here for team alignment.
