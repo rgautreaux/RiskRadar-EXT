@@ -52,6 +52,13 @@ This guide documents the global spacing rhythm, breakpoints, and design tokens f
 - Typography: use `.text-xs`, `.text-sm`, `.text-md`, `.text-lg`, `.text-xl`
 - Icon slots: use `.icon-slot`, `.icon-badge` for consistent icon backgrounds
 
+## Iconography
+- For now, use open-source SVG icons (e.g., Heroicons, Feather, Bootstrap Icons) for all UI icon needs.
+- All icons should use `.icon-slot` and `.icon-badge` for consistent sizing and backgrounds.
+- Accessibility: Add `aria-label` or `title` for screen readers if not decorative; use `aria-hidden="true"` for decorative icons.
+- **Future:** Plan to implement custom SVG icons from `/wireframe_icons/svg` once the icon set is finalized and available.
+- Update this section and UI code to use custom SVGs when ready.
+
 ---
 
 ## Example

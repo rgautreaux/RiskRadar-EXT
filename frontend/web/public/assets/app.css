@@ -1,3 +1,57 @@
+/* --- Standardized UI Components --- */
+.btn {
+    display: inline-block;
+    font-family: inherit;
+    font-size: 1em;
+    font-weight: 500;
+    padding: 8px 20px;
+    border-radius: 6px;
+    border: none;
+    background: var(--accent-coral, #ef6f51);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(18,34,49,0.08);
+    cursor: pointer;
+    transition: background 0.15s, box-shadow 0.15s;
+}
+.btn:hover, .btn:focus-visible {
+    background: var(--accent-amber, #f2b441);
+    color: #122231;
+    outline: none;
+}
+.btn-secondary {
+    background: var(--panel-strong, #fff8ee);
+    color: var(--accent-coral, #ef6f51);
+    border: 1.5px solid var(--accent-coral, #ef6f51);
+}
+.btn-secondary:hover, .btn-secondary:focus-visible {
+    background: var(--accent-coral, #ef6f51);
+    color: #fff;
+}
+
+.input, input[type="text"], input[type="email"], input[type="password"], select {
+    font-family: inherit;
+    font-size: 1em;
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: 1.5px solid var(--line, #e0e0e0);
+    background: #fff;
+    color: var(--ink, #122231);
+    transition: border 0.15s, box-shadow 0.15s;
+}
+.input:focus, input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, select:focus {
+    border: 1.5px solid var(--accent-coral, #ef6f51);
+    box-shadow: 0 0 0 2px rgba(239,111,81,0.13);
+    outline: none;
+}
+
+.card {
+    background: var(--panel-strong, #fff8ee);
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(18,34,49,0.13);
+    padding: 22px 18px 18px 18px;
+    color: var(--ink, #122231);
+    margin-bottom: 18px;
+}
 /* Skeleton shimmer for map overlays */
 #map-skeleton {
     width: 100%;
