@@ -53,26 +53,52 @@ rr_render_layout_start('Risk Map', 'map');
     </div>
     <noscript><p style="color:#b65c00">JavaScript is required to view the interactive map.</p></noscript>
     <div id="risk-map-legend" style="margin-top:10px;" aria-live="polite">
-        <strong>Legend:</strong>
-        <ul>
-            <li><span style="color:#e74c3c;font-weight:bold;">●</span> High severity alert (contrast checked)</li>
-            <li><span style="color:#f39c12;font-weight:bold;">●</span> Medium severity alert (contrast checked)</li>
-            <li><span style="color:#27ae60;font-weight:bold;">●</span> Low severity alert (contrast checked)</li>
-            <li><span style="color:#ff5722;font-weight:bold;">■</span> Extreme/High risk zone (contrast checked)</li>
-            <li><span style="color:#ffc107;font-weight:bold;">■</span> Medium risk zone (contrast checked)</li>
-            <li><span style="color:#4caf50;font-weight:bold;">■</span> Low risk zone (contrast checked)</li>
-            <li><span style="font-weight:bold;">🌫️</span> AQI (Air Quality) overlay</li>
-            <li><span style="font-weight:bold;">🔥</span> Wildfire overlay</li>
-            <li><span style="font-weight:bold;">🌎</span> Earthquake overlay</li>
-            <li><span style="font-weight:bold;">⛈️</span> Weather overlay</li>
-            <li><span style="font-weight:bold;">☣️</span> Pollution overlay</li>
-        </ul>
-        <div id="personalized-legend-msg" style="margin-top:6px;color:#b65c00;font-size:0.98em;display:none;">
-            <strong>Personalized Mode:</strong> Risk zones reflect <u>your</u> personalized risk score at each location, based on your profile and health data.
-        </div>
-        <span class="sr-only">All map overlays and controls are accessible by keyboard and screen reader. Colors have been checked for sufficient contrast. If you have difficulty distinguishing overlays, contact support for alternative patterns.</span>
+            <button id="legend-toggle" aria-expanded="true" aria-controls="legend-list" style="background:none;border:none;font-weight:bold;font-size:1.08em;display:flex;align-items:center;gap:6px;cursor:pointer;outline:none;">
+                <span id="legend-toggle-icon" aria-hidden="true" style="font-size:1.2em;transition:transform 0.2s;">▼</span>
+                Legend
+            </button>
+            <ul id="legend-list" style="margin-top:8px;transition:max-height 0.3s cubic-bezier(0.4,0,0.2,1);overflow:hidden;max-height:800px;">
+                <li><span style="color:#e74c3c;font-weight:bold;">●</span> High severity alert (contrast checked)</li>
+                <li><span style="color:#f39c12;font-weight:bold;">●</span> Medium severity alert (contrast checked)</li>
+                <li><span style="color:#27ae60;font-weight:bold;">●</span> Low severity alert (contrast checked)</li>
+                <li><span style="color:#ff5722;font-weight:bold;">■</span> Extreme/High risk zone (contrast checked)</li>
+                <li><span style="color:#ffc107;font-weight:bold;">■</span> Medium risk zone (contrast checked)</li>
+                <li><span style="color:#4caf50;font-weight:bold;">■</span> Low risk zone (contrast checked)</li>
+                <li><span style="font-weight:bold;">🌫️</span> AQI (Air Quality) overlay</li>
+                <li><span style="font-weight:bold;">🔥</span> Wildfire overlay</li>
+                <li><span style="font-weight:bold;">🌎</span> Earthquake overlay</li>
+                <li><span style="font-weight:bold;">⛈️</span> Weather overlay</li>
+                <li><span style="font-weight:bold;">☣️</span> Pollution overlay</li>
+            </ul>
+            <div id="personalized-legend-msg" style="margin-top:6px;color:#b65c00;font-size:0.98em;display:none;">
+                <strong>Personalized Mode:</strong> Risk zones reflect <u>your</u> personalized risk score at each location, based on your profile and health data.
+            </div>
+            <span class="sr-only">All map overlays and controls are accessible by keyboard and screen reader. Colors have been checked for sufficient contrast. If you have difficulty distinguishing overlays, contact support for alternative patterns.</span>
     </div>
     <p class="muted">The map will display live alert markers and risk overlays as data becomes available. All features are keyboard and screen reader accessible. Focus indicators are visible for all controls.</p>
+    </section>
+
+    <script>
+    // Collapsible legend toggle
+    document.addEventListener('DOMContentLoaded', function() {
+        var legendToggle = document.getElementById('legend-toggle');
+        var legendList = document.getElementById('legend-list');
+        var legendIcon = document.getElementById('legend-toggle-icon');
+        if (legendToggle && legendList && legendIcon) {
+            legendToggle.addEventListener('click', function() {
+                var expanded = legendToggle.getAttribute('aria-expanded') === 'true';
+                legendToggle.setAttribute('aria-expanded', String(!expanded));
+                if (expanded) {
+                    legendList.style.maxHeight = '0px';
+                    legendIcon.style.transform = 'rotate(-90deg)';
+                } else {
+                    legendList.style.maxHeight = '800px';
+                    legendIcon.style.transform = 'rotate(0deg)';
+                }
+            });
+        }
+    });
+    </script>
 </section>
 
 
