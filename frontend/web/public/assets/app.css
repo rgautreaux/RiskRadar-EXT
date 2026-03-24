@@ -725,6 +725,40 @@ dd {
 .map-popup-card .popup-close:focus {
   outline: 2px solid var(--theme-accent, #ef6f51);
 }
+/* --- Map Interactivity: Hover & Focus Styles --- */
+/* Plotly map markers (SVG .point) */
+#risk-map .scatterlayer .point:hover,
+#risk-map .scatterlayer .point:focus-visible {
+    stroke: var(--accent-coral, #ef6f51);
+    stroke-width: 3px;
+    filter: drop-shadow(0 0 6px rgba(239,111,81,0.18));
+    cursor: pointer;
+}
+
+/* Overlay toggles and region filter */
+#risk-map-container input[type="checkbox"]:focus-visible,
+#risk-map-container select:focus-visible {
+    outline: 2px solid var(--accent-coral, #ef6f51);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px rgba(239,111,81,0.13);
+}
+#risk-map-container input[type="checkbox"]:hover,
+#risk-map-container select:hover {
+    box-shadow: 0 0 0 2px rgba(239,111,81,0.10);
+}
+
+/* Popup close button hover */
+.map-popup-card .popup-close:hover {
+    color: var(--accent-coral, #ef6f51);
+    background: rgba(239,111,81,0.08);
+    border-radius: 50%;
+}
+
+/* Optional: legend item hover if interactive in future */
+#risk-map-legend li:hover {
+    background: rgba(239,111,81,0.06);
+    border-radius: 6px;
+}
 /* Responsive map container and popup */
 @media (max-width: 700px) {
     #risk-map-container {
