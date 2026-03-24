@@ -35,6 +35,9 @@ rr_render_layout_start('Risk Map', 'map');
             <label style="margin-left:12px;"><input type="checkbox" id="toggle-risk" checked> Show Risk Zones</label>
             <label style="margin-left:12px;"><input type="checkbox" id="toggle-aqi"> AQI Overlay</label>
             <label style="margin-left:12px;"><input type="checkbox" id="toggle-wildfire"> Wildfire Overlay</label>
+            <label style="margin-left:12px;"><input type="checkbox" id="toggle-earthquake"> Earthquake Overlay</label>
+            <label style="margin-left:12px;"><input type="checkbox" id="toggle-weather"> Weather Overlay</label>
+            <label style="margin-left:12px;"><input type="checkbox" id="toggle-pollution"> Pollution Overlay</label>
         </div>
         <div style="margin-left:24px;">
             <label><input type="checkbox" id="toggle-personalized"> Personalized Risk Map</label>
@@ -56,6 +59,11 @@ rr_render_layout_start('Risk Map', 'map');
             <li><span style="color:#ff5722;font-weight:bold;">■</span> Extreme/High risk zone</li>
             <li><span style="color:#ffc107;font-weight:bold;">■</span> Medium risk zone</li>
             <li><span style="color:#4caf50;font-weight:bold;">■</span> Low risk zone</li>
+            <li><span style="font-weight:bold;">🌫️</span> AQI (Air Quality) overlay</li>
+            <li><span style="font-weight:bold;">🔥</span> Wildfire overlay</li>
+            <li><span style="font-weight:bold;">🌎</span> Earthquake overlay</li>
+            <li><span style="font-weight:bold;">⛈️</span> Weather overlay</li>
+            <li><span style="font-weight:bold;">☣️</span> Pollution overlay</li>
         </ul>
         <div id="personalized-legend-msg" style="margin-top:6px;color:#b65c00;font-size:0.98em;display:none;">
             <strong>Personalized Mode:</strong> Risk zones reflect <u>your</u> personalized risk score at each location, based on your profile and health data.
@@ -143,14 +151,25 @@ function alertsToScatterTraces(alerts) {
         let icon = '●';
         let color = getSeverityColor(alert.severity);
         let type = (alert.type || alert.alert_type || 'Alert').toLowerCase();
-        if (type.includes('air')) { icon = '🌫️'; }
-        if (type.includes('wildfire') || type.includes('fire')) { icon = '🔥'; }
+        // Custom icons/colors for overlays
+        if (type.includes('air')) { icon = '🌫️'; color = '#7e57c2'; }
+        else if (type.includes('wildfire') || type.includes('fire')) { icon = '🔥'; color = '#ff7043'; }
+        else if (type.includes('earthquake')) { icon = '🌎'; color = '#009688'; }
+        else if (type.includes('weather')) { icon = '⛈️'; color = '#1976d2'; }
+        else if (type.includes('pollution')) { icon = '☣️'; color = '#c62828'; }
+
         let details = `<strong style='color:${color}'>${icon} ${alert.title || type}</strong><br>`;
         details += `Severity: <b>${alert.severity || 'N/A'}</b><br>`;
-        if (type.includes('air')) {
+        if (type.includes('earthquake') && alert.magnitude) {
+            details += `Magnitude: <b>${alert.magnitude}</b><br>`;
+        }
+        if (type.includes('air') || type.includes('pollution')) {
             details += alert.description ? `${alert.description}<br>` : '';
         }
         if (type.includes('wildfire') || type.includes('fire')) {
+            details += alert.description ? `${alert.description}<br>` : '';
+        }
+        if (type.includes('weather')) {
             details += alert.description ? `${alert.description}<br>` : '';
         }
         details += `Region: ${alert.region || alert.location_name || 'N/A'}<br>`;
@@ -162,7 +181,7 @@ function alertsToScatterTraces(alerts) {
             lon: [alert.lon],
             mode: 'markers',
             marker: {
-                size: 13,
+                size: type.includes('earthquake') && alert.magnitude ? Math.max(13, Math.min(30, alert.magnitude * 4)) : 13,
                 color,
                 opacity: 0.85,
                 symbol: 'circle'
@@ -287,6 +306,9 @@ let showAlerts = true;
 let showRisk = true;
 let showAQI = false;
 let showWildfire = false;
+let showEarthquake = false;
+let showWeather = false;
+let showPollution = false;
 let personalizedMode = false;
 
 function filterByRegion(data, region) {
@@ -325,6 +347,21 @@ async function renderFilteredMap() {
         const wfAlerts = await fetchOverlayAlerts('wildfire');
         alerts = alerts.concat(filterByRegion(wfAlerts, region));
     }
+    // Add earthquake overlay alerts
+    if (showEarthquake) {
+        const eqAlerts = await fetchOverlayAlerts('earthquake');
+        alerts = alerts.concat(filterByRegion(eqAlerts, region));
+    }
+    // Add weather overlay alerts
+    if (showWeather) {
+        const wxAlerts = await fetchOverlayAlerts('weather');
+        alerts = alerts.concat(filterByRegion(wxAlerts, region));
+    }
+    // Add pollution overlay alerts
+    if (showPollution) {
+        const polAlerts = await fetchOverlayAlerts('pollution');
+        alerts = alerts.concat(filterByRegion(polAlerts, region));
+    }
     renderMap({alerts}, {risk_zones: risks});
 }
 
@@ -360,6 +397,18 @@ document.addEventListener('DOMContentLoaded', async function() {
         renderFilteredMap();
     });
     // Personalized Risk Map toggle
+    document.getElementById('toggle-earthquake').addEventListener('change', function(e) {
+        showEarthquake = e.target.checked;
+        renderFilteredMap();
+    });
+    document.getElementById('toggle-weather').addEventListener('change', function(e) {
+        showWeather = e.target.checked;
+        renderFilteredMap();
+    });
+    document.getElementById('toggle-pollution').addEventListener('change', function(e) {
+        showPollution = e.target.checked;
+        renderFilteredMap();
+    });
     document.getElementById('toggle-personalized').addEventListener('change', async function(e) {
         personalizedMode = e.target.checked;
         document.getElementById('map-loading').style.display = 'flex';
