@@ -76,3 +76,18 @@
   - Security research, SBOM and threat model creation, and compliance mapping (OWASP, NIST, GDPR).
 
 *Please update with individual names and specific contributions as the project progresses.*
+
+---
+
+## Team6 Backend Sync and Documentation Synchronization Session (2026-03-24)
+
+**Rebecca Gautreaux**
+- Led the backend comparison and merge planning with Team6’s repository.
+- Authored the actionable plan for merging improvements and updated BACKEND_REMOTE_UPDATE.md with findings, tables, and plans.
+- Coordinated the update and synchronization of all documentation files (TRANSCRIPT, REFLECTION, AUTHORS, README, etc.) to reflect the Team6 sync process and session results.
+- Ensured deduplication and agreement across all top-level documentation.
+
+**Max Compeaux**
+- Supported backend comparison and review of Team6’s improvements.
+- Reviewed merge recommendations and contributed to the documentation update plan.
+- Participated in the review and synchronization of all documentation files to ensure project traceability and grading clarity.
