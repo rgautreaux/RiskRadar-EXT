@@ -66,7 +66,8 @@ rr_render_layout_start('Risk Map', 'map');
         </div>
         <div style="margin-left:18px;">
             <label for="user-id-input">User ID for Personalized Map: </label>
-            <input type="number" id="user-id-input" min="1" value="1" style="width:70px;" aria-label="User ID for Personalized Map" />
+            <input type="number" id="user-id-input" min="1" value="1" style="width:70px;" aria-label="User ID for Personalized Map" aria-describedby="user-id-desc" />
+            <span id="user-id-desc" class="sr-only">Enter your numeric user ID to enable personalized risk overlays. This is required for personalized map mode.</span>
         </div>
         <div role="group" aria-label="Overlay Toggles">
             <label><input type="checkbox" id="toggle-alerts" checked aria-checked="true" aria-label="Show Alerts"> Show Alerts</label>
@@ -185,7 +186,7 @@ rr_render_layout_start('Risk Map', 'map');
                 <li><span class="icon-slot" aria-label="Pollution Overlay" style="background:#ffebee;"><svg width="20" height="20" fill="#c62828" stroke="#c62828" stroke-width="2" aria-hidden="true"><circle cx="10" cy="10" r="8"/><rect x="7" y="7" width="6" height="6"/></svg></span> Pollution overlay</li>
             </ul>
             <div id="personalized-legend-msg" style="margin-top:6px;color:#b65c00;font-size:0.98em;display:none;">
-                <strong>Personalized Mode:</strong> Risk zones reflect <u>your</u> personalized risk score at each location, based on your profile and health data.
+                <strong>Personalized Mode:</strong> Risk zones reflect <u>your</u> personalized risk score at each location, based on your profile and health data. Enter your user ID above and enable the toggle to view your own risk overlays. If you do not enter a user ID, a default demo user will be used.
             </div>
             <span class="sr-only">All map overlays and controls are accessible by keyboard and screen reader. Colors have been checked for sufficient contrast. If you have difficulty distinguishing overlays, contact support for alternative patterns.</span>
     </div>
