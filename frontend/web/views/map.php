@@ -34,6 +34,9 @@ rr_render_layout_start('Risk Map', 'map');
             <label><input type="checkbox" id="toggle-alerts" checked> Show Alerts</label>
             <label style="margin-left:12px;"><input type="checkbox" id="toggle-risk" checked> Show Risk Zones</label>
         </div>
+        <div style="margin-left:24px;">
+            <label><input type="checkbox" id="toggle-personalized"> Personalized Risk Map</label>
+        </div>
     </div>
     <div id="risk-map-container" style="width:100%;height:480px;max-width:1000px;margin:0 auto 24px auto;background:#fff8ee;border-radius:12px;box-shadow:0 2px 12px rgba(18,34,49,0.08);overflow:hidden;"
         tabindex="0" aria-label="Risk map showing alerts and risk zones" aria-describedby="risk-map-legend risk-map-heading">
@@ -64,6 +67,12 @@ rr_render_layout_start('Risk Map', 'map');
 // Inject config-driven API URLs from PHP
 const MAP_ALERTS_URL = <?php echo json_encode($alerts_url); ?>;
 const MAP_RISK_URL = <?php echo json_encode($risk_url); ?>;
+const MAP_PERSONALIZED_RISK_URL = <?php echo json_encode(rr_api_url($config, 'risk/map/personalized/')); ?>; // Append user_id
+// Helper: Get current user ID (stub, replace with real auth/user logic)
+function getCurrentUserId() {
+    // TODO: Replace with actual user session/auth logic
+    return window.RISKRADAR_USER_ID || 1; // Default to 1 for demo
+}
 
 // --- Consolidated Map Logic: Modern, Accessible, Feature-Complete ---
 // Accessibility: Keyboard navigation for map focus
@@ -166,11 +175,16 @@ function riskToOverlayTraces(riskZones) {
     });
     return polygonTraces;
 }
-async function fetchMapData() {
+async function fetchMapData(personalized = false) {
     try {
+        let riskUrl = MAP_RISK_URL;
+        if (personalized) {
+            const userId = getCurrentUserId();
+            riskUrl = MAP_PERSONALIZED_RISK_URL + userId;
+        }
         const [alertsRes, riskRes] = await Promise.all([
             fetch(MAP_ALERTS_URL),
-            fetch(MAP_RISK_URL)
+            fetch(riskUrl)
         ]);
         if (!alertsRes.ok && !riskRes.ok) {
             showMapFallback('Failed to load map data from the backend.');
@@ -229,6 +243,7 @@ let latestMapData = null;
 let currentRegion = '';
 let showAlerts = true;
 let showRisk = true;
+let personalizedMode = false;
 
 function filterByRegion(data, region) {
     if (!region) return data;
@@ -267,6 +282,16 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
     document.getElementById('toggle-risk').addEventListener('change', function(e) {
         showRisk = e.target.checked;
+        renderFilteredMap();
+    });
+    // Personalized Risk Map toggle
+    document.getElementById('toggle-personalized').addEventListener('change', async function(e) {
+        personalizedMode = e.target.checked;
+        document.getElementById('map-loading').style.display = 'flex';
+        const mapData = await fetchMapData(personalizedMode);
+        hideMapLoading();
+        if (!mapData) return;
+        latestMapData = mapData;
         renderFilteredMap();
     });
 });
