@@ -32,6 +32,21 @@ This guide documents the global spacing rhythm, breakpoints, and design tokens f
 
 ---
 
+## CSS Variable Mapping
+- All theme colors and spacing values are defined as CSS variables in theme_tokens.css and referenced in app.css.
+- Hardcoded values in CSS/HTML are being refactored to use these variables for consistency.
+- For new tokens, propose additions here before using in templates.
+
+## Design Tool Mapping
+- Figma/XD/Sketch inspect tool values for spacing, font sizes, and colors are cross-checked against these CSS variables.
+- Any mismatches are documented and flagged for correction or rationale.
+
+## UI Pattern Documentation
+- Standard UI patterns (buttons, cards, spacing, typography, icon usage) are listed here and in WIREFRAME_STYLE_IMPLEMENTATION.md.
+- Deviations from the wireframe are documented with annotated screenshots, rationale, date, and author.
+
+---
+
 ## Design Tokens
 - Colors: see `:root` in app.css for all color variables
 - Typography: use `.text-xs`, `.text-sm`, `.text-md`, `.text-lg`, `.text-xl`
