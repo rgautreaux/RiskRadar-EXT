@@ -49,7 +49,7 @@ RiskRadar currently follows a backend-centered architecture with scheduled inges
 				 ┌───────────────────────────┐
 				 │ Client Surfaces           │
 				 │ Mobile app + web extension│
-				 │ Stage 1 web complete      │
+				 │ Stages 1-3 web complete   │
 				 └───────────────────────────┘
 ```
 
@@ -71,12 +71,12 @@ RiskRadar currently follows a backend-centered architecture with scheduled inges
 
 ### Current CMPS 357 Extension Direction
 
-The architecture above is the active system baseline. CMPS 357 stage work extends this baseline by adding:
+The architecture above is the active system baseline. CMPS 357 stage work extends this baseline:
 
-- A distinct web-app interface (completed for Stage 1 baseline)
-- Personalized risk scoring + alert prioritization (planned)
-- Interactive risk map (planned)
-- Predictive analytics + assistant workflows (planned)
+- **Stage 1 (Completed):** Distinct web-app interface connected to backend APIs (dashboard, alerts, summaries, profile).
+- **Stage 2 (Completed):** Personalized risk scoring engine (`/api/v1/risk/score/{user_id}`) and smart alert prioritization (`/api/v1/alerts/prioritized/{user_id}`) with deterministic scoring and tie-break policy.
+- **Stage 3 (Completed):** Interactive risk map with geospatial overlays (`/api/v1/alerts/map`, `/api/v1/risk/map`, `/api/v1/risk/map/personalized/{user_id}`), personalized risk layers, overlay toggles, accessibility support, and responsive design.
+- **Stage 4 (Not Started):** Predictive analytics and AI-driven assistant workflows (planned if time permits).
 
 ---
 

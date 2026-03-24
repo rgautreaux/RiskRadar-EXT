@@ -39,16 +39,17 @@ Recommended sync order when updating progress:
 
 ## Scope and Timeline
 
-**Required Deliverables (Target: April 29, 2026):**
-- **Stage 1**: Web-App Extension (Priority 1)
-- **Stage 2**: Environmental Risk Assessment and Alert Prioritization Extensions (Priority 2)
+**Required Deliverables:**
+- **Stage 1**: Web-App Extension — ✅ Completed (2026-03-13)
+- **Stage 2**: Environmental Risk Assessment and Alert Prioritization Extensions — ✅ Completed (2026-03-24)
   - Step 1: Personal Risk Scoring Engine
   - Step 2: Smart Alert Prioritization System
 
-**Optional Stretch Goals (If Time Permits):**
-- **Stage 3**: Data Visualization and User Experience Extensions (contingent on Stage 2 completion)
-   - Stage 3 planning documents (API contract, verification evidence, implementation spec) created in `docs/PLANNING_DOCS/STAGE3_DOCS/`.
-- **Stage 4**: Predictive Analytics and AI-Driven Insights Extensions (contingent on Stage 3 completion)
+**Optional Stretch Goals:**
+- **Stage 3**: Data Visualization and User Experience Extensions — ✅ Completed (2026-03-24)
+   - Interactive risk map, personalized overlays, accessibility, and responsive UX implemented.
+   - Planning docs in `docs/PLANNING_DOCS/STAGE3_DOCS/`.
+- **Stage 4**: Predictive Analytics and AI-Driven Insights Extensions — ⏳ Not Started
 
 **Status Legend**
 - **Not Started**: Requirements are defined, but implementation has not begun.
@@ -147,7 +148,7 @@ Reference: `docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md`
 
 ## Stage 2: Environmental Risk Assessment and Alert Prioritization Extensions
 
-**Objective**: Extend backend intelligence by introducing personalized risk scoring and smart alert prioritization for both mobile and web clients. *(REQUIRED - Target Completion: Week of April 28, 2026)*
+**Objective**: Extend backend intelligence by introducing personalized risk scoring and smart alert prioritization for both mobile and web clients. *(REQUIRED — Completed)*
 
 ### Stage 2 Dedicated Artifacts
 
@@ -256,7 +257,7 @@ Reference: `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`
 
 ## Stage 3: Data Visualization and User Experience Extensions
 
-**Objective**: Add an interactive risk map experience that helps users explore and understand environmental risk conditions spatially. *(OPTIONAL STRETCH GOAL - Only if Stage 2 completes early)*
+**Objective**: Add an interactive risk map experience that helps users explore and understand environmental risk conditions spatially. *(OPTIONAL STRETCH GOAL — Completed)*
 
 ### Step 1: Interactive Risk Map (UI Extension)
 
@@ -298,7 +299,16 @@ Reference: `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`
 - Documentation of visualization design choices
 
 ### Progress So Far
-⏳ **Not Started** - Stage 3 planning documents (API contract, verification evidence, implementation spec) created. Planned: interactive Plotly-based risk map for web/mobile surfaces.
+✅ **Completed** - Interactive risk map implemented and all Stage 3 web-app requirements verified:
+
+- Backend map endpoints implemented and CORS-enabled: `GET /api/v1/alerts/map`, `GET /api/v1/risk/map`, `GET /api/v1/risk/map/personalized/{user_id}`.
+- Web frontend `map.php` fetches and renders live alert and risk overlay data from backend endpoints.
+- Dynamic overlays with overlay toggles, region filters, legend, tooltips, and personalized user overlays.
+- Keyboard/touch navigation, dark mode, and responsive layout implemented and verified.
+- Accessibility improvements (ARIA, keyboard navigation, color contrast) applied.
+- Fallback UI and error states handled gracefully; map remains interactive if overlays fail to load.
+- All evidence organized and referenced in planning docs. Onboarding template and handoff summary completed.
+See `docs/PLANNING_DOCS/STAGE3_DOCS/` for contract, verification evidence, and implementation spec.
 
 ---
 

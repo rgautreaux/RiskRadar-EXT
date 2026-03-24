@@ -9245,3 +9245,57 @@ Made changes.
 
 
 ---
+
+## Documentation Synchronization Session (2026-03-24)
+
+**User:**
+
+Review the documentation files (excluding docs in the "legacy_docs" directory) and make any updates needed to keep them up to date with the significant progress that has been made on this project.
+
+**GitHub Copilot:**
+
+I explored the repository to understand what had been implemented (Stages 1, 2, and 3 all complete for the web app) and compared that state against every relevant documentation file. The following updates were made across 8 files in a single commit:
+
+**README.md**
+- Stage status table: Stage 2 updated from "In Progress" to "Completed" (2026-03-24) with a note describing the live risk-scoring and prioritization endpoints; Stage 3 updated from "Not Started" to "Completed" (2026-03-24) with a note describing the interactive map, overlays, and personalized risk layers.
+- Stage 3 section rewritten from future tense ("will provide", "will display") to present/past tense reflecting actual completion.
+
+**USER_GUIDE.md**
+- "What You Can Do Right Now" updated to include Risk Score (Stage 2), Smart Alerts (Stage 2), and Interactive Map (Stage 3) as functional features; removed the stale note that Risk, Map, Forecast, and Assistant were all scaffolds for later stages.
+- Added Step G (Risk Score walkthrough: `risk.php`) and Step H (Smart Alerts walkthrough: `smart_alerts.php`) to the step-by-step section.
+- Renamed previous Step G (Interactive Map) to Step I to maintain ordering.
+- Updated Recommended First-Time Flow to include the new functional pages (steps 7 and 8).
+
+**docs/ARCHITECTURE.md**
+- Architecture diagram updated: "Stage 1 web complete" → "Stages 1-3 web complete".
+- "Current CMPS 357 Extension Direction" section rewritten from "planned" language to reflect Stages 1, 2, and 3 as completed, and Stage 4 as not started.
+
+**docs/PROGRAM_EXECUTION.md**
+- Section 4.6 (API endpoints): Added 6 previously undocumented endpoints: `GET /api/v1/alerts/map`, `GET /api/v1/alerts/prioritized/{user_id}`, `GET /api/v1/summaries/{summary_id}`, `GET /api/v1/risk/score/{user_id}`, `GET /api/v1/risk/map`, `GET /api/v1/risk/map/personalized/{user_id}`.
+- Section 5.5 (Web pages): Expanded from 4 entries to 13, covering all implemented routes plus Stage 4 scaffolds with explicit "not yet functional" annotations.
+
+**docs/STAGES.md**
+- Scope/Timeline section: Stages 1, 2, and 3 now show ✅ Completed with dates; Stage 4 remains ⏳ Not Started.
+- Stage 2 objective line updated from "Target Completion: Week of April 28, 2026" to "Completed".
+- Stage 3 "Progress So Far" updated from ⏳ Not Started to ✅ Completed with full implementation details including backend endpoints, overlay features, accessibility, and evidence location.
+
+**docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_VERIFICATION_EVIDENCE.md**
+- Title updated from "(In Progress)" to "(Completed)".
+- Stage 1 compatibility status changed from "in progress until Stage 2 route handlers are added" to "completed".
+- Status Summary updated to Completed; noted that both Stage 2 endpoint handlers are live and all backend tests pass.
+
+**docs/PLANNING_DOCS/STAGE2_DOCS/API_STAGE2_CONTRACT.md**
+- Contract status updated from "policy locked, backend route implementation is in progress" to "fully implemented".
+- Endpoint Matrix corrected to reflect actual as-built routes (`/api/v1/risk/score/{user_id}` and `/api/v1/alerts/prioritized/{user_id}`) which diverged from the original planned paths (`/api/v1/users/{user_id}/risk-score` and `/api/v1/alerts/prioritized?user_id=`).
+- Backend Source References updated to reflect implemented modules (`backend/scoring/__init__.py`, `backend/scoring/prioritization.py`) and new test files.
+- Implementation Status Note updated to reflect Stage 2 is fully implemented as of 2026-03-24.
+
+**docs/PLANNING_DOCS/STAGE3_DOCS/API_STAGE3_CONTRACT.md**
+- Progress note updated to reflect Stage 3 fully complete; removed "in progress" language about dynamic overlays and accessibility.
+- Client integration mapping table: fixed broken table row with extra content outside the table; corrected the web page reference from `risk_map.php` to `map.php`; added the `personalized/{user_id}` endpoint row.
+- Endpoint Matrix: added the `GET /api/v1/risk/map/personalized/{user_id}` endpoint row.
+- Notes section: changed from future obligations to factual statements; replaced "Next Steps" block with a completion statement.
+
+All changes are documentation-only (Markdown files). No source code was modified.
+
+---

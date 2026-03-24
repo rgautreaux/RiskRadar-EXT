@@ -16,12 +16,15 @@ This guide walks you through how to run and use the RiskRadar Web-Extension step
 The currently functional web experience includes:
 
 - Dashboard overview of alerts and latest summary
-- Alert browsing with filters
-- Summary browsing with filters
+- Alert browsing with filters and full detail view
+- Summary browsing with filters and full detail view
 - Account registration
 - Profile preference updates for an existing user
+- Personalized risk score and factor breakdown (Risk page — Stage 2)
+- Personalized prioritized alerts with urgency labels (Smart Alerts page — Stage 2)
+- Interactive risk map with live overlays, personalized risk layers, region filters, and accessibility support (Map page — Stage 3)
 
-Additional pages (`Risk`, `Map`, `Forecast`, `Assistant`) are scaffolded for later stages and currently display planned feature content.
+Pages for upcoming features (`Forecast`, `Assistant`) are scaffolded and currently display planned feature content.
 
 ---
 
@@ -168,7 +171,25 @@ Expected result: filtered alert cards with metadata and timestamps.
 
 Expected result: summary cards with type, generated time, region, model, and full text preview.
 
-### Step G: Interactive Map (Stage 3)
+### Step G: View Risk Score (Stage 2)
+
+1. Open `http://127.0.0.1:8080/risk.php`
+2. Enter your numeric **User ID**
+3. Review:
+   - Overall risk score (0-100) with tier label (Low / Medium / High)
+   - Component breakdown: proximity, severity, health sensitivity, alert density
+
+Expected result: personalized risk score with factor-level breakdown based on your location and health preferences.
+
+### Step H: View Smart Alerts (Stage 2)
+
+1. Open `http://127.0.0.1:8080/smart_alerts.php`
+2. Enter your numeric **User ID**
+3. Review the prioritized alert list ranked by urgency, proximity, and health sensitivity
+
+Expected result: alerts sorted by composite priority score with urgency labels (High / Medium / Low).
+
+### Step I: Interactive Map (Stage 3)
 
 Open `http://127.0.0.1:8080/map.php` to access the interactive risk map.
 
@@ -222,10 +243,11 @@ For a full first run:
 
 1. Start backend API
 2. Start PHP web server
-3. Register account
-4. Update preferences in Profile
-5. Check Dashboard
-6. Explore Alerts and Summaries
-7. Review scaffold pages for upcoming stages
+3. Register account (`/register.php`)
+4. Update preferences in Profile (`/profile.php`)
+5. Check Dashboard (`/index.php`)
+6. Explore Alerts and Summaries (`/alerts.php`, `/summaries.php`)
+7. View your Risk Score and Smart Alerts (`/risk.php`, `/smart_alerts.php`) using your user ID
+8. Explore the Interactive Map (`/map.php`) with live overlays and personalized risk layers
 
 You are now ready to use and demonstrate the current RiskRadar Web-Extension features.
