@@ -2,10 +2,11 @@
 
 This document defines the backend and frontend contracts for Stage 3, focused on interactive risk map visualization and enhanced user experience features.
 
-## Progress (as of 2026-03-23)
+
+## Progress (as of 2026-03-24)
 - Backend endpoints `/api/v1/alerts/map` and `/api/v1/risk/map`: implemented and CORS-enabled
 - API client helpers: implemented in PHP
-- Frontend scaffold: implemented (fetch logic, loading/fallback UI)
+- Web frontend: **Dynamic data integration (Phase 1) is complete. The map page fetches and renders live alert and risk data from backend endpoints.**
 - Dynamic Plotly overlays, interactivity, and accessibility: in progress
 
 - Base URL: configured by each client runtime.
@@ -26,7 +27,7 @@ This document defines the backend and frontend contracts for Stage 3, focused on
 
 | Client Surface         | Integration Module(s)                                   | Planned/Target Backend Routes                |
 |-----------------------|--------------------------------------------------------|----------------------------------------------|
-| Web risk map page     | `frontend/web/public/risk_map.php`, `api_client.php`    | `GET /api/v1/alerts/map`, `GET /api/v1/risk/map` |
+| Web risk map page     | `frontend/web/public/risk_map.php`, `api_client.php`    | `GET /api/v1/alerts/map`, `GET /api/v1/risk/map` | **Phase 1 complete: Live data integration and rendering implemented** |
 | Mobile risk map view  | `frontend/mobile/RiskRadar/screens/RiskMapScreen.tsx`   | `GET /api/v1/alerts/map`, `GET /api/v1/risk/map` |
 
 ## URL and Environment Configuration

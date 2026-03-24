@@ -36,6 +36,40 @@ def map_risk_overlay(
     )
 
 
+# New: Personalized Map Risk Overlay Endpoint
+@router.get("/map/personalized/{user_id}", response_model=MapRiskOverlayOut)
+def personalized_map_risk_overlay(
+    user_id: int,
+    region: str | None = None,
+    bbox: str | None = None,
+    db: Session = Depends(get_db),
+):
+    """Return a map overlay with user-personalized risk scores for each alert location."""
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    alerts = db.query(Alert).filter(Alert.latitude != None, Alert.longitude != None).all()
+    risk_zones = []
+    for alert in alerts:
+        centroid = {"lat": alert.latitude, "lon": alert.longitude}
+        # Compute personalized risk score for this alert location
+        # Temporarily override user location to alert location for scoring
+        orig_lat, orig_lon = user.latitude, user.longitude
+        user.latitude, user.longitude = alert.latitude, alert.longitude
+        risk_score_result = compute_risk_score(user, db)
+        user.latitude, user.longitude = orig_lat, orig_lon
+        risk_score = risk_score_result["overall_score"]
+        risk_level = risk_score_result["risk_level"]
+        risk_zones.append(MapRiskZone(centroid=centroid, risk_level=risk_level, risk_score=risk_score))
+    region_val = region or "all"
+    return MapRiskOverlayOut(
+        risk_zones=risk_zones,
+        region=region_val,
+        generated_at=datetime.utcnow().isoformat() + "Z",
+    )
+
+
 @router.get("/score/{user_id}", response_model=RiskScoreOut)
 def get_risk_score(
     user_id: int,

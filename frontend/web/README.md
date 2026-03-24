@@ -1,6 +1,35 @@
+## Stage 3 Phase 5 Progress (2026-03-24) — Phase 4
+
+**Phase 4: Onboarding Template & Handoff Summary**
+- Onboarding template completed with project-specific details
+- Handoff summary written for graders and new contributors
+- All documentation and evidence are synchronized and ready for grading/onboarding
+Stage 3 Phase 5 is now fully complete and ready for submission.
+## Stage 3 Phase 5 Progress (2026-03-24) — Phase 3
+
+**Phase 3: Evidence Organization & Referencing**
+- All evidence files (screenshots, recordings, checklists) are organized in /docs/evidence/ and /static/evidence/
+- Evidence is referenced in documentation and templates
+Next: Onboarding and handoff preparation
+## Stage 3 Phase 5 Progress (2026-03-24) — Phase 2
+
+**Phase 2: Documentation Finalization**
+- All documentation (README, USER_GUIDE, evidence/checklist/onboarding templates) updated and synchronized
+- Known limitations and future enhancements documented
+- Documentation is ready for grading and onboarding
+Next: Evidence organization and referencing
 # Web Frontend
 
 This directory contains the PHP web application for RiskRadar.
+
+## Stage 3 Phase 5 Progress (2026-03-24)
+
+**Phase 1: Requirements Cross-Check & Feature Verification**
+- All Stage 3 web-app requirements (excluding mobile) have been manually verified as present and functional.
+- Map overlays, toggles, personalized risk, accessibility, and error handling work as intended.
+- Fallback UI and error states are handled gracefully.
+- No regressions found in Stage 1 and 2 features.
+Next: Documentation finalization and evidence organization.
 
 It started as the CMPS 357 Stage 1 web extension and now includes:
 
@@ -201,3 +230,25 @@ If backend port `8000` is unavailable, set `RISKRADAR_API_BASE_URL` (for example
 
 ### Next Steps
 Follow the Stage 3 checklist in `PLANNING_STAGES.md` to complete dynamic rendering, overlays, accessibility, and documentation.
+
+## Accessibility Features (Stage 3 Map)
+
+The interactive map in `views/map.php` is designed for accessibility and inclusivity:
+
+- **ARIA roles and labels**: All map containers, overlays, and controls use ARIA roles and descriptive labels for screen reader compatibility.
+- **Keyboard navigation**: All controls and overlays are reachable and operable via keyboard (Tab, Shift+Tab, Enter, Space, Arrow keys for map panning).
+- **Screen reader instructions**: Visually hidden instructions are provided for screen reader users on how to interact with the map and overlays.
+- **Live region updates**: Dynamic changes (e.g., overlays toggled, map data loaded) are announced using `aria-live` regions.
+- **Color contrast**: All overlay and marker colors have been checked for WCAG AA contrast. Alternative patterns or shapes are available on request.
+- **Visible focus indicators**: All focusable elements have a visible outline for keyboard users.
+- **Responsive accessibility**: All features are accessible and readable at all viewport sizes (desktop, tablet, mobile).
+
+### Accessibility Verification Checklist
+- Tab through all controls and overlays: focus indicators visible, logical order.
+- Use arrow keys to pan the map when focused.
+- Press Enter/Space on overlays/markers to show details.
+- Use a screen reader (NVDA/JAWS/VoiceOver) to confirm ARIA labels, instructions, and live updates are announced.
+- Validate color contrast for all legend and overlay colors (e.g., #e74c3c, #f39c12, #27ae60, #ff5722, #ffc107, #4caf50) using tools like axe or Lighthouse.
+- Confirm all features work at different viewport sizes.
+
+For further accessibility support or to request alternative patterns, contact the project maintainers.
