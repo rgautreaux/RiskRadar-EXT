@@ -168,16 +168,20 @@ Expected result: filtered alert cards with metadata and timestamps.
 
 Expected result: summary cards with type, generated time, region, model, and full text preview.
 
-### Step G: Review Future-Stage Pages
+### Step G: Interactive Map (Stage 3)
 
-The following routes are available as scaffolds (non-final functionality):
+Open `http://127.0.0.1:8080/map.php` to access the interactive risk map.
 
-- `http://127.0.0.1:8080/risk.php` (Stage 2)
-- `http://127.0.0.1:8080/map.php` (Stage 3)
-- `http://127.0.0.1:8080/forecast.php` (Stage 4)
-- `http://127.0.0.1:8080/assistant.php` (Stage 4)
+**Personalized Map Workflow:**
+- Enter your numeric user ID in the "User ID for Personalized Map" field above the map controls.
+- Enable the "Personalized Risk Map" toggle to view risk overlays tailored to your profile and preferences.
+- If no user ID is entered, a default demo user will be used for overlays.
+- All map controls, overlays, and popups are accessible by keyboard and screen reader.
 
-They describe planned features but do not yet provide live Stage 2-4 workflows.
+**Features:**
+- Region filter, overlay toggles, and personalized risk overlays.
+- Keyboard navigation for map panning/zooming.
+- Accessible legend and tooltips explaining overlay meanings.
 
 ---
 

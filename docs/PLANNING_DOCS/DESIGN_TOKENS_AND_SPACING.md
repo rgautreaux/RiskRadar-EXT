@@ -3,7 +3,7 @@
 ## Session Summary: Stage 3 UI/UX and Documentation Synchronization (2026-04-27)
 
 This session completed the following major developments:
-- Implemented advanced map UI/UX features: keyboard/touch zoom/pan, dark mode toggle, responsive overlays, and accessible controls.
+- Implemented advanced map UI/UX features: keyboard/touch zoom/pan, dark mode toggle, responsive overlays, accessible controls, and user ID input for personalized overlays.
 - Synchronized all design tokens and spacing rules across theme_tokens.css and app.css, ensuring variable-driven, maintainable styling.
 - Updated documentation (TRANSCRIPT, REFLECTION, AUTHORS, README) to reflect all recent UI/UX, accessibility, and design system improvements.
 - Ensured all iconography, spacing, and color usage follows the documented design tokens and wireframe standards.
@@ -84,3 +84,4 @@ This guide documents the global spacing rhythm, breakpoints, and design tokens f
 ## Notes
 - Only update this guide and app.css for global changes.
 - For new spacing or token needs, propose additions here before using in templates.
+- Accessibility improvements: All map controls, overlays, and popups are keyboard and screen reader accessible. Personalized overlays require a user ID input above the map controls.

@@ -6,10 +6,13 @@
 ### Implementation
 Stage 3 introduced an interactive risk map and enhanced user experience features. The backend and frontend were prepared for new geoJSON endpoints, map rendering logic, and responsive UX improvements. Planning documents (API contract, verification evidence, implementation spec) were created to lock requirements and guide development.
 
-**Phase 1 (Dynamic Data Integration for the web map) is complete and verified. The map page now fetches and renders live alert and risk data from backend endpoints.**
+
+**Personalized Map Overlays:**
+- The map page includes a user ID input for personalized overlays. Enter your user ID and enable the personalized toggle to view your own risk zones. If no user ID is entered, a demo user is used.
 
 ### Functionality
 - **Interactive Risk Map:** Users can view environmental risks on a map, with real-time overlays for AQI, wildfires, and weather alerts.
+- **Personalized Overlays:** Enter your user ID to view risk overlays tailored to your profile.
 - **Responsive UX Enhancements:** Improved mobile and web interfaces for better accessibility and usability.
 - **Dark Mode:** Toggle-able dark mode for improved accessibility and user preference.
 - **Keyboard/Touch Navigation:** Full support for keyboard and touch-based map interaction.
