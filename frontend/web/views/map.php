@@ -1,3 +1,36 @@
+</section>
+
+<!-- Toast/Snackbar for user feedback -->
+<div id="toast" aria-live="polite" style="display:none;position:fixed;bottom:32px;left:50vw;transform:translateX(-50%);background:var(--accent-coral,#ef6f51);color:#fff;padding:13px 28px;border-radius:8px;box-shadow:0 4px 24px rgba(18,34,49,0.13);font-size:1.08em;z-index:300;min-width:160px;text-align:center;transition:opacity 0.2s;opacity:0;"></div>
+
+<script>
+// Toast/snackbar logic
+function showToast(msg, duration=2200) {
+    var toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.opacity = '1'; }, 10);
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => { toast.style.display = 'none'; }, 300);
+    }, duration);
+}
+// Example: feedback on overlay toggles
+document.addEventListener('DOMContentLoaded', function() {
+    [
+        'toggle-alerts','toggle-risk','toggle-aqi','toggle-wildfire','toggle-earthquake','toggle-weather','toggle-pollution','toggle-personalized'
+    ].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('change', function(e) {
+                var label = el.getAttribute('aria-label') || el.parentNode.textContent.trim();
+                showToast((e.target.checked ? 'Enabled ' : 'Disabled ') + label);
+            });
+        }
+    });
+});
+</script>
 
 
 <?php
@@ -210,6 +243,7 @@ function showMapFallback(message) {
     document.getElementById('map-fallback').style.display = 'flex';
     document.getElementById('map-fallback').textContent = message;
     document.getElementById('map-loading').style.display = 'none';
+    showToast(message, 4000);
 }
 function hideMapFallback() {
     document.getElementById('map-fallback').style.display = 'none';
