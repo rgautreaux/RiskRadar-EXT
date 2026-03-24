@@ -33,6 +33,8 @@ rr_render_layout_start('Risk Map', 'map');
         <div>
             <label><input type="checkbox" id="toggle-alerts" checked> Show Alerts</label>
             <label style="margin-left:12px;"><input type="checkbox" id="toggle-risk" checked> Show Risk Zones</label>
+            <label style="margin-left:12px;"><input type="checkbox" id="toggle-aqi"> AQI Overlay</label>
+            <label style="margin-left:12px;"><input type="checkbox" id="toggle-wildfire"> Wildfire Overlay</label>
         </div>
         <div style="margin-left:24px;">
             <label><input type="checkbox" id="toggle-personalized"> Personalized Risk Map</label>
@@ -137,22 +139,40 @@ function getRiskLevelColor(level, alpha=1) {
 }
 function alertsToScatterTraces(alerts) {
     if (!Array.isArray(alerts)) return [];
-    return alerts.filter(a => a.lat && a.lon).map(alert => ({
-        type: 'scattermapbox',
-        lat: [alert.lat],
-        lon: [alert.lon],
-        mode: 'markers',
-        marker: {
-            size: 13,
-            color: getSeverityColor(alert.severity),
-            opacity: 0.85,
-            symbol: 'circle'
-        },
-        text: `${alert.type || 'Alert'}<br>Severity: ${alert.severity || 'N/A'}<br>Region: ${alert.region || 'N/A'}`,
-        name: alert.type || 'Alert',
-        customdata: [alert],
-        hoverinfo: 'text'
-    }));
+    return alerts.filter(a => a.lat && a.lon).map(alert => {
+        let icon = '●';
+        let color = getSeverityColor(alert.severity);
+        let type = (alert.type || alert.alert_type || 'Alert').toLowerCase();
+        if (type.includes('air')) { icon = '🌫️'; }
+        if (type.includes('wildfire') || type.includes('fire')) { icon = '🔥'; }
+        let details = `<strong style='color:${color}'>${icon} ${alert.title || type}</strong><br>`;
+        details += `Severity: <b>${alert.severity || 'N/A'}</b><br>`;
+        if (type.includes('air')) {
+            details += alert.description ? `${alert.description}<br>` : '';
+        }
+        if (type.includes('wildfire') || type.includes('fire')) {
+            details += alert.description ? `${alert.description}<br>` : '';
+        }
+        details += `Region: ${alert.region || alert.location_name || 'N/A'}<br>`;
+        if (alert.event_start) details += `Observed: ${alert.event_start}<br>`;
+        if (alert.source) details += `Source: ${alert.source}<br>`;
+        return {
+            type: 'scattermapbox',
+            lat: [alert.lat],
+            lon: [alert.lon],
+            mode: 'markers',
+            marker: {
+                size: 13,
+                color,
+                opacity: 0.85,
+                symbol: 'circle'
+            },
+            text: details,
+            name: alert.type || alert.alert_type || 'Alert',
+            customdata: [alert],
+            hoverinfo: 'text'
+        };
+    });
 }
 function riskToOverlayTraces(riskZones) {
     if (!Array.isArray(riskZones) || riskZones.length === 0) return [];
@@ -229,13 +249,23 @@ function renderMap(alertsData, riskData) {
             const pt = data.points[0];
             if (pt.customdata && pt.customdata[0]) {
                 const d = pt.customdata[0];
-                if (d.type) {
-                    alert("Alert Details:\n" +
-                        `Type: ${d.type || 'N/A'}\n` +
-                        `Severity: ${d.severity || 'N/A'}\n` +
-                        `Region: ${d.region || 'N/A'}\n` +
-                        `Source: ${d.source || 'N/A'}\n` +
-                        `Time: ${d.generated_at || 'N/A'}`);
+                if (d.type || d.alert_type) {
+                    let type = (d.type || d.alert_type || '').toLowerCase();
+                    let msg = '';
+                    if (type.includes('air')) {
+                        msg += '🌫️ Air Quality Alert\n';
+                    } else if (type.includes('wildfire') || type.includes('fire')) {
+                        msg += '🔥 Wildfire Alert\n';
+                    } else {
+                        msg += 'Alert\n';
+                    }
+                    msg += `Title: ${d.title || type}\n`;
+                    msg += `Severity: ${d.severity || 'N/A'}\n`;
+                    if (d.description) msg += `${d.description}\n`;
+                    msg += `Region: ${d.region || d.location_name || 'N/A'}\n`;
+                    if (d.event_start) msg += `Observed: ${d.event_start}\n`;
+                    if (d.source) msg += `Source: ${d.source}\n`;
+                    alert(msg);
                 } else if (d.risk_level) {
                     let msg = "Risk Zone Details:\n" +
                         `Risk Level: ${d.risk_level || 'N/A'}\n`;
@@ -255,6 +285,8 @@ let latestMapData = null;
 let currentRegion = '';
 let showAlerts = true;
 let showRisk = true;
+let showAQI = false;
+let showWildfire = false;
 let personalizedMode = false;
 
 function filterByRegion(data, region) {
@@ -265,11 +297,34 @@ function filterByRegion(data, region) {
     return data;
 }
 
-function renderFilteredMap() {
+async function fetchOverlayAlerts(alertType) {
+    const url = MAP_ALERTS_URL + '?alert_type=' + encodeURIComponent(alertType);
+    try {
+        const res = await fetch(url);
+        if (!res.ok) return [];
+        const data = await res.json();
+        return (data && data.alerts) || [];
+    } catch {
+        return [];
+    }
+}
+
+async function renderFilteredMap() {
     if (!latestMapData) return;
     const region = currentRegion;
-    const alerts = showAlerts ? filterByRegion((latestMapData.alerts && latestMapData.alerts.alerts) || [], region) : [];
+    let alerts = showAlerts ? filterByRegion((latestMapData.alerts && latestMapData.alerts.alerts) || [], region) : [];
     const risks = showRisk ? filterByRegion((latestMapData.risk && latestMapData.risk.risk_zones) || [], region) : [];
+
+    // Add AQI overlay alerts
+    if (showAQI) {
+        const aqiAlerts = await fetchOverlayAlerts('air_quality');
+        alerts = alerts.concat(filterByRegion(aqiAlerts, region));
+    }
+    // Add wildfire overlay alerts
+    if (showWildfire) {
+        const wfAlerts = await fetchOverlayAlerts('wildfire');
+        alerts = alerts.concat(filterByRegion(wfAlerts, region));
+    }
     renderMap({alerts}, {risk_zones: risks});
 }
 
@@ -294,6 +349,14 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
     document.getElementById('toggle-risk').addEventListener('change', function(e) {
         showRisk = e.target.checked;
+        renderFilteredMap();
+    });
+    document.getElementById('toggle-aqi').addEventListener('change', function(e) {
+        showAQI = e.target.checked;
+        renderFilteredMap();
+    });
+    document.getElementById('toggle-wildfire').addEventListener('change', function(e) {
+        showWildfire = e.target.checked;
         renderFilteredMap();
     });
     // Personalized Risk Map toggle
