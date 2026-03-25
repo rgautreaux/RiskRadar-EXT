@@ -328,8 +328,10 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function showMapFallback(message) {
-    document.getElementById('map-fallback').style.display = 'flex';
-    document.getElementById('map-fallback').textContent = message;
+    var fallback = document.getElementById('map-fallback');
+    fallback.style.display = 'flex';
+    fallback.textContent = message;
+    fallback.setAttribute('aria-live', 'assertive');
     document.getElementById('map-loading').style.display = 'none';
     showToast(message, 4000);
 }
@@ -621,10 +623,14 @@ async function fetchOverlayAlerts(alertType) {
     const url = MAP_ALERTS_URL + '?alert_type=' + encodeURIComponent(alertType);
     try {
         const res = await fetch(url);
-        if (!res.ok) return [];
+        if (!res.ok) {
+            showMapFallback('Failed to load ' + alertType.replace('_', ' ') + ' overlay.');
+            return [];
+        }
         const data = await res.json();
         return (data && data.alerts) || [];
     } catch {
+        showMapFallback('Network error while loading ' + alertType.replace('_', ' ') + ' overlay.');
         return [];
     }
 }
