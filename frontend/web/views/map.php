@@ -515,6 +515,8 @@ function renderMap(alertsData, riskData) {
             const pt = data.points[0];
             if (pt.customdata && pt.customdata[0]) {
                 const d = pt.customdata[0];
+                let html = '';
+                let ariaLabel = '';
                 if (d.type || d.alert_type) {
                     let type = (d.type || d.alert_type || '').toLowerCase();
                     let icon = '';
@@ -523,7 +525,8 @@ function renderMap(alertsData, riskData) {
                     else if (type.includes('earthquake')) icon = '🌎';
                     else if (type.includes('weather')) icon = '⛈️';
                     else if (type.includes('pollution')) icon = '☣️';
-                    let html = `<div class="map-popup-card" id="map-popup-card" tabindex="0" role="dialog" aria-modal="true">
+                    ariaLabel = `${d.title || type} alert details popup. Severity: ${d.severity || 'N/A'}. Region: ${d.region || d.location_name || 'N/A'}.`;
+                    html = `<div class="map-popup-card" id="map-popup-card" tabindex="0" role="dialog" aria-modal="true" aria-label="${ariaLabel}">
                         <button class="popup-close" aria-label="Close popup" onclick="this.parentNode.remove()">×</button>
                         <div style="font-size:1.3em;margin-bottom:6px;">${icon} <strong>${d.title || type}</strong></div>
                         <div><b>Severity:</b> ${d.severity || 'N/A'}</div>
@@ -533,14 +536,9 @@ function renderMap(alertsData, riskData) {
                         ${d.event_start ? `<div><b>Observed:</b> ${d.event_start}</div>` : ''}
                         ${d.source ? `<div><b>Source:</b> ${d.source}</div>` : ''}
                     </div>`;
-                    // Insert popup into map container
-                    document.getElementById('risk-map-container').insertAdjacentHTML('beforeend', html);
-                    setTimeout(() => {
-                        const popup = document.getElementById('map-popup-card');
-                        if (popup) popup.focus();
-                    }, 100);
                 } else if (d.risk_level) {
-                    let html = `<div class="map-popup-card" id="map-popup-card" tabindex="0" role="dialog" aria-modal="true">
+                    ariaLabel = `Risk zone details popup. Risk Level: ${d.risk_level || 'N/A'}. Region: ${d.region || 'N/A'}.`;
+                    html = `<div class="map-popup-card" id="map-popup-card" tabindex="0" role="dialog" aria-modal="true" aria-label="${ariaLabel}">
                         <button class="popup-close" aria-label="Close popup" onclick="this.parentNode.remove()">×</button>
                         <div style="font-size:1.2em;margin-bottom:6px;"><strong>Risk Zone Details</strong></div>
                         <div><b>Risk Level:</b> ${d.risk_level || 'N/A'}</div>
@@ -548,13 +546,55 @@ function renderMap(alertsData, riskData) {
                         ${typeof d.score !== 'undefined' && d.score !== null ? `<div><b>Score:</b> ${d.score}</div>` : ''}
                         <div><b>Region:</b> ${d.region || 'N/A'}</div>
                     </div>`;
-                    document.getElementById('risk-map-container').insertAdjacentHTML('beforeend', html);
-                    setTimeout(() => {
-                        const popup = document.getElementById('map-popup-card');
-                        if (popup) popup.focus();
-                    }, 100);
                 }
+                // Insert popup into map container
+                document.getElementById('risk-map-container').insertAdjacentHTML('beforeend', html);
+                setTimeout(() => {
+                    const popup = document.getElementById('map-popup-card');
+                    if (popup) {
+                        popup.focus();
+                        // Trap focus inside popup
+                        popup.addEventListener('keydown', function(e) {
+                            if (e.key === 'Escape') {
+                                popup.remove();
+                            }
+                            // Trap Tab key
+                            if (e.key === 'Tab') {
+                                const focusable = popup.querySelectorAll('button, [tabindex]:not([tabindex="-1"])');
+                                if (focusable.length === 0) return;
+                                const first = focusable[0];
+                                const last = focusable[focusable.length - 1];
+                                if (e.shiftKey) {
+                                    if (document.activeElement === first) {
+                                        last.focus();
+                                        e.preventDefault();
+                                    }
+                                } else {
+                                    if (document.activeElement === last) {
+                                        first.focus();
+                                        e.preventDefault();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }, 100);
             }
+        }
+    });
+
+    // Keyboard: Enter/Space on focused marker triggers popup (simulate click)
+    riskMapDiv.addEventListener('keydown', function(e) {
+        if ((e.key === 'Enter' || e.key === ' ') && document.activeElement === riskMapDiv) {
+            // Find closest marker to center and trigger popup
+            // (Future: implement marker focus management for full accessibility)
+            // For now, simulate click at center
+            const bbox = riskMapDiv.getBoundingClientRect();
+            const x = bbox.width / 2;
+            const y = bbox.height / 2;
+            const evt = new MouseEvent('click', {clientX: x, clientY: y, bubbles: true});
+            riskMapDiv.dispatchEvent(evt);
+            e.preventDefault();
         }
     });
 }
