@@ -154,8 +154,8 @@ rr_render_layout_start('Risk Map', 'map');
     </script>
     </div>
     <div id="risk-map-container" style="width:100%;height:480px;max-width:1000px;margin:0 auto 24px auto;background:#fff8ee;border-radius:12px;box-shadow:0 2px 12px rgba(18,34,49,0.08);overflow:hidden;"
-        tabindex="0" aria-label="Risk map showing alerts and risk zones. Use arrow keys to pan. Press Enter on a marker for details." aria-describedby="risk-map-legend risk-map-heading risk-map-instructions">
-        <div id="risk-map" style="width:100%;height:100%;position:relative;" role="region" aria-label="Interactive risk map"></div>
+        tabindex="0" aria-label="Risk map showing alerts and risk zones. Use arrow keys to pan. Press Enter or Space on a marker for details." aria-describedby="risk-map-legend risk-map-heading risk-map-instructions" role="region">
+        <div id="risk-map" style="width:100%;height:100%;position:relative;" role="application" aria-label="Interactive risk map with overlays and markers" aria-describedby="risk-map-instructions"></div>
         <div id="map-loading" style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.7);z-index:2;">
             <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
                 <div id="map-loading-spinner" aria-label="Loading" role="status"></div>
@@ -164,7 +164,7 @@ rr_render_layout_start('Risk Map', 'map');
             </div>
         </div>
         <div id="map-fallback" style="display:none;position:absolute;top:0;left:0;width:100%;height:100%;align-items:center;justify-content:center;background:rgba(255,255,255,0.9);z-index:3;font-size:1.1rem;color:#b65c00;text-align:center;" role="alert" aria-live="assertive"></div>
-        <span id="risk-map-instructions" class="sr-only">Use Tab to focus the map. Use arrow keys to pan. Press Enter or Space on a marker for details. All overlays and controls are accessible by keyboard and screen reader.</span>
+        <span id="risk-map-instructions" class="sr-only">Use Tab to focus the map. Use arrow keys to pan. Press Enter or Space on a marker for details. All overlays and controls are accessible by keyboard and screen reader. Markers and overlays are announced to assistive technology.</span>
     </div>
     <noscript><p style="color:#b65c00">JavaScript is required to view the interactive map.</p></noscript>
     <div id="risk-map-legend" style="margin-top:10px;" aria-live="polite">
