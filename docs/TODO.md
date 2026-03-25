@@ -200,17 +200,19 @@ Add an interactive Plotly risk map for spatial understanding of risk conditions.
 ### Execution Checklist
 - [x] S3-01: Define map architecture and required geospatial fields.
 - [x] S3-02: Implement map data transformation and coordinate validation.
-- [ ] S3-03: Build interactive map component(s) with detail interactions (zoom, pan, click, overlays, legend, risk-level encoding).
-- [ ] S3-04: Integrate map with live backend risk/environment data (dynamic overlays, toggles, region filters).
-- [ ] S3-05: Verify responsiveness and accessibility-friendly behavior (ARIA, keyboard nav, color contrast, text alternatives).
-- [ ] S3-06: Collect test/demo evidence for map interactions (screenshots, recordings, accessibility demo).
+- [x] S3-03: Build interactive map component(s) with detail interactions (zoom, pan, click, overlays, legend, risk-level encoding).
+- [x] S3-04: Integrate map with live backend risk/environment data (dynamic overlays, toggles, region filters).
+- [x] S3-05: Verify responsiveness and accessibility-friendly behavior (ARIA, keyboard nav, color contrast, text alternatives).
+- [ ] S3-06: Collect test/demo evidence for map interactions (screenshots, recordings, accessibility demo).  
+	- Note: Screenshots and recordings must be collected manually for grading. See README and STAGE3_VERIFICATION_EVIDENCE.md.
 
 ### Verification Evidence
-- [ ] Zoom/pan/click behaviors work as expected.
-- [ ] Map reflects current backend risk data reliably.
-- [ ] UI remains usable on target screen sizes.
-- [ ] Accessibility features are present and verified.
-- [ ] Screenshots and recordings are collected for grading.
+- [x] Zoom/pan/click behaviors work as expected.
+- [x] Map reflects current backend risk data reliably.
+- [x] UI remains usable on target screen sizes.
+- [x] Accessibility features are present and verified.
+- [ ] Screenshots and recordings are collected for grading.  
+	- Note: Manual evidence collection required for grading. See checklist above.
 
 ## Stage 4 TODOs: Predictive Analytics and AI-Driven Insights
 
