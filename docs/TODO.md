@@ -242,3 +242,11 @@ Deliver 24-48 hour forecasting and a RiskRadar AI Assistant with clear safeguard
 - Keep stage naming and status vocabulary synchronized with `README.md` and `docs/STAGES.md`.
 - For completed tasks, include one concrete evidence artifact (test output, screenshot, demo note, or commit reference).
 - If any task slips by more than one target week, mark it in `Notes` with blocker reason and revised target week.
+
+## Automated Test Verification (Stages 1-3)
+All automated tests for backend endpoints, risk scoring, alert prioritization, scraper integration, and map overlays are passing as of 2026-03-25. See STAGE3_VERIFICATION_EVIDENCE.md for details.
+
+## Manual Evidence Collection (Assigned)
+- [ ] Stage 1: Responsive UI screenshots and demo notes — **Assigned: Max**
+- [ ] Stage 2: Risk scoring and prioritization UI evidence — **Assigned: Max**
+- [ ] Stage 3: Interactive map screenshots, overlays, accessibility demo — **Assigned: Max**

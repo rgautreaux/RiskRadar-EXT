@@ -1,4 +1,3 @@
-
 ## Phase 5 Progress Summary (2026-03-24) — Phase 4
 ## Stage 3 Documentation and Synchronization Session (2026-04-27)
 
@@ -71,6 +70,15 @@ See test source for details on geospatial field extraction and normalization:
 Manual map UI verification and screenshots are provided in the next section.
 
 Date: 2026-03-23
+
+## Automated Test Status (2026-03-25)
+All backend and integration tests for map endpoints, risk scoring, alert prioritization, and scraper logic are passing. See backend/tests/ for test source and results.
+
+## Manual Evidence Collection (Assigned)
+- [ ] Map UI screenshots, overlays, and accessibility demo — **Assigned: Max**
+- [ ] Responsive UI and fallback state screenshots — **Assigned: Max**
+
+Manual evidence is required for grading and onboarding. Automated verification is complete.
 
 ## Phase 5 Progress Summary (2026-03-24)
 
