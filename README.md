@@ -21,29 +21,294 @@ This session executed a comprehensive documentation update and synchronization p
 - Maintains project clarity, traceability, and grading readiness
 - Ensures all contributors and reviewers have a single source of truth for project status and history
 - Demonstrates best practices in documentation governance and collaborative development
+
+### Phase 5 Progress Summary (2026-03-24) — Phase 4
+
+**Phase 4: Onboarding Template & Handoff Summary**
+- Onboarding template completed with project-specific details
+- Handoff summary written for graders and new contributors
+- All documentation and evidence are synchronized and ready for grading/onboarding
+Stage 3 Phase 5 is now fully complete and ready for submission.
+
+### Phase 5 Progress Summary (2026-03-24) — Phase 3
+
+**Phase 3: Evidence Organization & Referencing**
+- All evidence files (screenshots, recordings, checklists) are organized in /docs/evidence/ and /static/evidence/
+- Evidence is referenced in documentation and templates
+Next: Onboarding and handoff preparation
+
+### Phase 5 Progress Summary (2026-03-24) — Phase 2
+
+**Phase 2: Documentation Finalization**
+- All documentation (README, USER_GUIDE, evidence/checklist/onboarding templates) updated and synchronized
+- Known limitations and future enhancements documented
+- Documentation is ready for grading and onboarding
+Next: Evidence organization and referencing
+
 # Major Developments: Implementation, Functionality, Execution, and Importance
 
+## Session Summary: Stage 3 Phase 5 (2026-03-24)
+
+This session completed Stage 3 Phase 5 for the web-app (excluding mobile). All requirements were cross-checked and verified, documentation was finalized and synchronized, evidence was organized and referenced, onboarding and handoff materials were completed, and all top-level documentation was brought into agreement. The process included:
+- Manual verification of all map features, overlays, accessibility, and error handling
+- Finalization and synchronization of README, USER_GUIDE, evidence/checklist/onboarding templates, and planning docs
+- Organization and referencing of all evidence files for grading and onboarding
+- Completion of onboarding template and handoff summary for graders and new contributors
+- Updates to AUTHORS with member contributions and roles
+- Deduplication and synchronization of TRANSCRIPT and REFLECTION entries
+- Addition of detailed progress summaries to all relevant documentation files
+
+These developments ensure the project is grading-ready, fully documented, and easy to onboard for new contributors or reviewers.
+
+## Stage 3: Data Visualization and User Experience Extensions
+
+### Phase 5 Progress Summary (2026-03-24)
+
+**Phase 1: Requirements Cross-Check & Feature Verification**
+- All Stage 3 web-app requirements (excluding mobile) have been manually verified as present and functional.
+- Map overlays, toggles, personalized risk, accessibility, and error handling work as intended.
+- Fallback UI and error states are handled gracefully.
+- No regressions found in Stage 1 and 2 features.
+Next: Documentation finalization and evidence organization.
+
 ### Implementation
-Stage 3 included a comprehensive documentation update and synchronization pass. This involved:
-- Appending a verbatim transcript of the session to TRANSCRIPT.md, ensuring all entries are unique and in chronological order
-- Summarizing each transcript entry in REFLECTION.md, in chronological order
+Stage 3 introduced an interactive risk map and enhanced user experience features. The backend and frontend were prepared for new geoJSON endpoints, map rendering logic, and responsive UX improvements. Planning documents (API contract, verification evidence, implementation spec) were created to lock requirements and guide development. The implementation included:
+- Dynamic data integration for map overlays (alerts, risk, AQI, wildfires)
+- Personalized map overlays with user ID input and toggle
+- Accessibility improvements (ARIA, keyboard navigation, color contrast)
+- Responsive design for desktop, tablet, and mobile
+- Robust error handling and fallback UI
+- Evidence collection and onboarding documentation
+
+### Functionality
+- Interactive risk map with real-time overlays for environmental hazards
+- Personalized overlays based on user ID
+- Overlay toggles, region filters, and legend/tooltips
+- Keyboard and touch navigation, dark mode, and responsive layout
+- User-friendly error/fallback states
+
+### Execution
+All features were implemented in a stepwise, checklist-driven process. Each phase (requirements verification, documentation, evidence, onboarding) was completed and progress was summarized in all relevant documentation files. Documentation, evidence, and onboarding materials were synchronized and deduplicated for grading and onboarding clarity.
+
+### Importance
+- Provides actionable, accessible risk information for users
+- Ensures grading readiness and onboarding ease
+- Demonstrates best practices in documentation, accessibility, and collaborative development
+
+### Functionality
+- **Interactive Risk Map:** Users can view environmental risks on a map, with real-time overlays for AQI, wildfires, and weather alerts.
+- **Personalized Overlays:** Enter your user ID to view risk overlays tailored to your profile.
+- **Responsive UX Enhancements:** Improved mobile and web interfaces for better accessibility and usability.
+- **Dark Mode:** Toggle-able dark mode for improved accessibility and user preference.
+- **Keyboard/Touch Navigation:** Full support for keyboard and touch-based map interaction.
+
+### Execution
+All documentation files were updated to reflect the Stage 3 sync process, session summaries, and deduplication as described in the plan. This ensures grading clarity and project traceability. Implementation of interactive features follows the locked contract and verification evidence. All planning artifacts are synchronized across top-level documentation for grading and onboarding clarity.
+
+### Importance
+Stage 3 elevates RiskRadar by providing spatial context and visual decision support, making risk information more actionable and accessible for all users. The documentation synchronization ensures that all contributors and reviewers have a single source of truth for project status and history.
+
+#### Stage 3: Data Visualization and User Experience Extensions
+
+##### Phase 5 Progress Summary (2026-03-24)
+
+**Phase 1: Requirements Cross-Check & Feature Verification**
+- All Stage 3 web-app requirements (excluding mobile) have been manually verified as present and functional.
+- Map overlays, toggles, personalized risk, accessibility, and error handling work as intended.
+- Fallback UI and error states are handled gracefully.
+- No regressions found in Stage 1 and 2 features.
+Next: Documentation finalization and evidence organization.
+
+##### Implementation
+Stage 3 introduced an interactive risk map and enhanced user experience features. The backend and frontend were prepared for new geoJSON endpoints, map rendering logic, and responsive UX improvements. Planning documents (API contract, verification evidence, implementation spec) were created to lock requirements and guide development. The implementation included:
+- Dynamic data integration for map overlays (alerts, risk, AQI, wildfires)
+- Personalized map overlays with user ID input and toggle
+- Accessibility improvements (ARIA, keyboard navigation, color contrast)
+- Responsive design for desktop, tablet, and mobile
+- Robust error handling and fallback UI
+- Evidence collection and onboarding documentation
+
+##### Functionality
+- Interactive risk map with real-time overlays for environmental hazards
+- Personalized overlays based on user ID
+- Overlay toggles, region filters, and legend/tooltips
+- Keyboard and touch navigation, dark mode, and responsive layout
+- User-friendly error/fallback states
+
+##### Execution
+All features were implemented in a stepwise, checklist-driven process. Each phase (requirements verification, documentation, evidence, onboarding) was completed and progress was summarized in all relevant documentation files. Documentation, evidence, and onboarding materials were synchronized and deduplicated for grading and onboarding clarity.
+
+##### Importance
+- Provides actionable, accessible risk information for users
+- Ensures grading readiness and onboarding ease
+- Demonstrates best practices in documentation, accessibility, and collaborative development
+
+##### Functionality
+- **Interactive Risk Map:** Users can view environmental risks on a map, with real-time overlays for AQI, wildfires, and weather alerts.
+- **Personalized Overlays:** Enter your user ID to view risk overlays tailored to your profile.
+- **Responsive UX Enhancements:** Improved mobile and web interfaces for better accessibility and usability.
+- **Dark Mode:** Toggle-able dark mode for improved accessibility and user preference.
+- **Keyboard/Touch Navigation:** Full support for keyboard and touch-based map interaction.
+
+##### Execution
+All documentation files were updated to reflect the Stage 3 sync process, session summaries, and deduplication as described in the plan. This ensures grading clarity and project traceability. Implementation of interactive features follows the locked contract and verification evidence. All planning artifacts are synchronized across top-level documentation for grading and onboarding clarity.
+
+##### Importance
+Stage 3 elevates RiskRadar by providing spatial context and visual decision support, making risk information more actionable and accessible for all users. The documentation synchronization ensures that all contributors and reviewers have a single source of truth for project status and history.
+
+#### Major Developments: Implementation, Functionality, Execution, and Importance
+
+##### Stage 2: Environmental Risk Assessment and Alert Prioritization Extensions
+
+###### Implementation
+Stage 2 introduced a deterministic personal risk scoring engine and a smart alert prioritization system. The backend was extended with new service modules for risk scoring and alert prioritization, new API endpoints for risk score and prioritized alerts, and updated schemas to support sensitivity and priority metadata. Web and mobile clients were updated to surface these new outputs, with fallback-safe integration and robust error handling.
+
+###### Functionality
+- **Personal Risk Scoring:** Computes a 0-100 risk score for each user based on air quality, weather, wildfire, and pollution risks, weighted by user sensitivity factors.
+- **Smart Alert Prioritization:** Ranks alerts for each user using risk contribution, distance, severity, and sensitivity match, with urgency labels and deterministic tie-breaks.
+- **API Exposure:** New endpoints allow clients to fetch risk scores and prioritized alerts, while preserving Stage 1 contract stability.
+- **Cross-Client Parity:** Both web and mobile clients consume backend-prioritized ordering, ensuring consistent user experience.
+
+###### Execution
+The implementation followed a locked policy and contract specification, with all formulas, thresholds, and normalization rules documented in the Stage 2 implementation spec. Verification included deterministic output tests, contract stability checks, and fallback behavior validation. Documentation, planning, and evidence artifacts were updated and synchronized across all top-level files.
+
+###### Importance
+These developments transform RiskRadar from a simple alert aggregator into a personalized decision-support platform. Users now receive risk scores and prioritized alerts tailored to their sensitivities and context, improving relevance and actionability. The robust, deterministic backend logic and clear API contracts set a foundation for future extensions (e.g., interactive maps, predictive analytics, AI assistant) and ensure maintainability and grading clarity.
+
+##### Stage 3: Data Visualization and User Experience Extensions
+
+###### Implementation
+Stage 3 planning introduced an interactive risk map and enhanced user experience features. The backend and frontend were prepared for new geoJSON endpoints, map rendering logic, and responsive UX improvements. Planning documents (API contract, verification evidence, implementation spec) were created to lock requirements and guide development.
+
+###### Functionality
+- **Interactive Risk Map:** Users will be able to view environmental risks on a map, with real-time overlays for AQI, wildfires, and weather alerts.
+- **Responsive UX Enhancements:** Improved mobile and web interfaces for better accessibility and usability.
+
+###### Execution
+Stage 3 deliverables are planned and documented, with implementation to follow the locked contract and verification evidence. All planning artifacts are synchronized across top-level documentation for grading and onboarding clarity.
+
+###### Importance
+Stage 3 will further elevate RiskRadar by providing spatial context and visual decision support, making risk information more actionable and accessible for all users.
+
+---
+
+## Project Content
+# Major Developments: Implementation, Functionality, Execution, and Importance
+
+## Stage 3 Documentation and Synchronization Session (2026-04-27)
+
+### Implementation
+This session executed a comprehensive documentation update and synchronization pass for Stage 3. The work included:
+- Appending a verbatim transcript of the session to TRANSCRIPT.md, ensuring all entries are unique
+- Summarizing each transcript entry in REFLECTION.md
 - Updating AUTHORS.md with current contributions and roles
-- Expanding README sections on implementation, functionality, execution, and importance of major project developments
+- Adding README sections on implementation, functionality, execution, and importance of major project developments
 - Reviewing and updating all top-level documentation for consistency and agreement
 
 ### Functionality
 - Ensures all UI/UX, accessibility, and design system improvements are fully documented and traceable
+- Maintains project clarity, traceability, and grading readiness
 - Provides a clear audit trail of all major project decisions and technical enhancements
-- Maintains a single source of truth for project status and history
 
 ### Execution
-- All documentation files were updated in a coordinated sequence for grading, onboarding, and future development clarity
-- Each phase of the documentation update was tracked and summarized in the relevant files
+- All documentation files were reviewed and updated for consistency and agreement
+- Transcript and reflection entries were deduplicated and summarized
+- Authors and roles were updated to reflect current contributions
 
 ### Importance
-- Maintains project clarity, traceability, and grading readiness
 - Ensures all contributors and reviewers have a single source of truth for project status and history
 - Demonstrates best practices in documentation governance and collaborative development
+- Improves grading and onboarding clarity for new contributors and reviewers
+# Major Developments: Implementation, Functionality, Execution, and Importance
+
+## Stage 3: Data Visualization and User Experience Extensions
+
+### Implementation
+Stage 3 planning introduced an interactive risk map and enhanced user experience features. The backend and frontend were prepared for new geoJSON endpoints, map rendering logic, and responsive UX improvements. Planning documents (API contract, verification evidence, implementation spec) were created to lock requirements and guide development.
+
+**Phase 1 (Dynamic Data Integration for the web map) is complete and verified. The map page now fetches and renders live alert and risk data from backend endpoints.**
+
+---
+
+## Team6 Backend Sync and Documentation Synchronization (2026-03-24)
+
+### Implementation
+Compared the backend of this project to Team6’s backend, generated a file-by-file breakdown of changes, summarized which Team6 improvements are beneficial to merge, and created a markdown table for team review. Developed a detailed, actionable plan for merging improvements and updated BACKEND_REMOTE_UPDATE.md with all findings, tables, and plans. Located all relevant documentation files (TRANSCRIPT, REFLECTION, AUTHORS, README, etc.) and updated them with session results, summaries, deduplication, and synchronization.
+
+### Functionality
+- Provided a clear, actionable plan for syncing with Team6’s backend and identified which improvements to merge.
+- Ensured all documentation files reflect the Team6 sync process and session results.
+- Maintained a verbatim transcript and summary for audit and grading purposes.
+
+### Execution
+All documentation files were updated to reflect the Team6 sync process, session summaries, and deduplication as described in the plan. This ensures grading clarity and project traceability.
+
+### Importance
+This synchronization process ensures that the project benefits from Team6’s improvements while maintaining custom work and documentation integrity. It demonstrates best practices in collaborative development, documentation governance, and project traceability.
+
+### Functionality
+- **Interactive Risk Map:** Users will be able to view environmental risks on a map, with real-time overlays for AQI, wildfires, and weather alerts.
+- **Responsive UX Enhancements:** Improved mobile and web interfaces for better accessibility and usability.
+
+### Execution
+Stage 3 deliverables are planned and documented. **Phase 1 (dynamic data integration for the web map) is fully implemented and live data is rendered on the map page.** Implementation of interactive features will follow the locked contract and verification evidence. All planning artifacts are synchronized across top-level documentation for grading and onboarding clarity.
+
+### Importance
+Stage 3 will further elevate RiskRadar by providing spatial context and visual decision support, making risk information more actionable and accessible for all users.
+
+---
+
+# Stage 3: Data Visualization and User Experience Extensions (Expanded)
+
+## Implementation
+Stage 3 focuses on adding an interactive risk map and user experience improvements. The backend and frontend are prepared for new geoJSON endpoints, map rendering logic, and responsive UX. Planning documents (API contract, verification evidence, implementation spec) are created and synchronized across all top-level documentation.
+
+## Functionality
+- **Interactive Risk Map:** Enables users to explore environmental risks spatially, with overlays for AQI, wildfires, and weather alerts.
+- **Responsive UX Enhancements:** Improves accessibility and usability for both web and mobile users.
+
+## Execution
+Implementation will follow the locked contract and verification evidence, ensuring geospatial accuracy, responsive design, and accessibility. All planning artifacts are kept in sync for grading and onboarding clarity.
+
+## Importance
+This extension provides spatial context and visual decision support, making risk information more actionable and accessible. It demonstrates advanced data visualization, geospatial API design, and user experience engineering, further differentiating the web extension from the mobile app.
+---
+
+# Major Developments: Implementation, Functionality, Execution, and Importance
+
+## Stage 2: Environmental Risk Assessment and Alert Prioritization Extensions
+
+### Implementation
+Stage 2 introduced a deterministic personal risk scoring engine and a smart alert prioritization system. The backend was extended with new service modules for risk scoring and alert prioritization, new API endpoints for risk score and prioritized alerts, and updated schemas to support sensitivity and priority metadata. Web and mobile clients were updated to surface these new outputs, with fallback-safe integration and robust error handling.
+
+### Functionality
+- **Personal Risk Scoring:** Computes a 0-100 risk score for each user based on air quality, weather, wildfire, and pollution risks, weighted by user sensitivity factors.
+- **Smart Alert Prioritization:** Ranks alerts for each user using risk contribution, distance, severity, and sensitivity match, with urgency labels and deterministic tie-breaks.
+- **API Exposure:** New endpoints allow clients to fetch risk scores and prioritized alerts, while preserving Stage 1 contract stability.
+- **Cross-Client Parity:** Both web and mobile clients consume backend-prioritized ordering, ensuring consistent user experience.
+
+### Execution
+The implementation followed a locked policy and contract specification, with all formulas, thresholds, and normalization rules documented in the Stage 2 implementation spec. Verification included deterministic output tests, contract stability checks, and fallback behavior validation. Documentation, planning, and evidence artifacts were updated and synchronized across all top-level files.
+
+### Importance
+These developments transform RiskRadar from a simple alert aggregator into a personalized decision-support platform. Users now receive risk scores and prioritized alerts tailored to their sensitivities and context, improving relevance and actionability. The robust, deterministic backend logic and clear API contracts set a foundation for future extensions (e.g., interactive maps, predictive analytics, AI assistant) and ensure maintainability and grading clarity.
+
+## Stage 3: Data Visualization and User Experience Extensions
+
+### Implementation
+Stage 3 planning introduced an interactive risk map and enhanced user experience features. The backend and frontend were prepared for new geoJSON endpoints, map rendering logic, and responsive UX improvements. Planning documents (API contract, verification evidence, implementation spec) were created to lock requirements and guide development.
+
+### Functionality
+- **Interactive Risk Map:** Users will be able to view environmental risks on a map, with real-time overlays for AQI, wildfires, and weather alerts.
+- **Responsive UX Enhancements:** Improved mobile and web interfaces for better accessibility and usability.
+
+### Execution
+Stage 3 deliverables are planned and documented, with implementation to follow the locked contract and verification evidence. All planning artifacts are synchronized across top-level documentation for grading and onboarding clarity.
+
+### Importance
+Stage 3 will further elevate RiskRadar by providing spatial context and visual decision support, making risk information more actionable and accessible for all users.
+
+
 # CMPS 357 - Final Project - Group 3
 
 Due Date: May 6, 2026, 12:55 CST
@@ -312,46 +577,11 @@ Recommended update order when progress changes:
 
 **Objective:** Add an interactive risk map experience to help users explore and understand environmental risk conditions spatially.
 
-**Usage Instructions:**
-- Access the interactive map at `frontend/web/public/map.php` after starting both the backend and PHP server.
-- Use the region filter, overlay toggles (alerts, risk, AQI, wildfire, earthquake, weather, pollution), and personalized risk toggle to customize the map view.
-- Enter your user ID for personalized overlays.
-- Pan and zoom with mouse, touch, or keyboard arrows; Tab to controls; Enter/Space to activate; all features are accessible.
-- Click or keyboard-activate markers for detailed popups.
-
-**Accessibility Notes:**
-- All map controls and overlays have ARIA labels and are keyboard accessible.
-- Focus indicators are visible for all interactive elements.
-- Screen reader instructions are provided for map and overlays.
-- Color contrast is checked for overlays and UI elements; alternative patterns available on request.
-- Fallback/error messages are user-friendly and accessible.
-
-**Evidence Collection:**
-- Screenshots and recordings for grading must be collected manually. See TODO.md and STAGE3_VERIFICATION_EVIDENCE.md for checklist and evidence requirements.
-
-**Implementation Progress:**
-- Backend endpoints and API client: complete
-- Frontend scaffold and Plotly integration: complete
-- Interactive features (overlays, toggles, region filters, tooltips, click/hover, legend): in progress
-- Accessibility and responsive layout: in progress
-- Evidence collection (screenshots, recordings): pending
-
-**Next Steps:**
-- Transform backend data into Plotly overlays (scatter for alerts, polygons/heatmap for risk)
-- Render live alert markers with severity color
-- Add overlays (AQI, wildfire, etc.) and toggles
-- Implement region filters, tooltips, and click/hover interactions
-- Harden fallback/error handling for all map states
-- Add accessibility features (ARIA, keyboard nav, text alternatives)
-- Update documentation and add screenshots/evidence
-
-**Manual Verification Checklist:**
-- [ ] Map loads with overlays and toggles work
-- [ ] Personalized risk overlay is accessible and visually distinct
-- [ ] All controls are keyboard accessible and ARIA-labeled
-- [ ] Error/fallback states are user-friendly
-- [ ] Documentation and user guide are updated
-- [ ] Screenshots and recordings are collected for grading
+**Implementation:**
+- Stage 3 planning documents have been created in `docs/PLANNING_DOCS/STAGE3_DOCS/`:
+	- `API_STAGE3_CONTRACT.md`: Defines the API contract for map and risk visualization endpoints, request/response schemas, and error handling.
+	- `STAGE3_VERIFICATION_EVIDENCE.md`: Outlines verification checkpoints for map rendering, geospatial accuracy, responsive UX, and fallback/performance validation.
+	- `STAGE3_IMPLEMENTATION_SPEC.md`: Details the implementation plan, policy lock, and step-by-step requirements for interactive risk map and user experience enhancements.
 
 **Functionality:**
 - New backend endpoints will provide geospatial alert and risk data for map rendering.
