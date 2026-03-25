@@ -197,27 +197,25 @@ Implement personalized risk scoring and smart alert prioritization.
 ### Objective
 Add an interactive Plotly risk map for spatial understanding of risk conditions.
 
-**OPTIONAL STRETCH GOAL - Only pursue if Stage 2 completes by end of Week of 2026-04-28.**
-
 ### Execution Checklist
-- [ ] S3-01: Define map architecture and required geospatial fields.
-- [ ] S3-02: Implement map data transformation and coordinate validation.
-- [ ] S3-03: Build interactive map component(s) with detail interactions.
-- [ ] S3-04: Integrate map with live backend risk/environment data.
-- [ ] S3-05: Verify responsiveness and accessibility-friendly behavior.
-- [ ] S3-06: Collect test/demo evidence for map interactions.
+- [x] S3-01: Define map architecture and required geospatial fields.
+- [x] S3-02: Implement map data transformation and coordinate validation.
+- [ ] S3-03: Build interactive map component(s) with detail interactions (zoom, pan, click, overlays, legend, risk-level encoding).
+- [ ] S3-04: Integrate map with live backend risk/environment data (dynamic overlays, toggles, region filters).
+- [ ] S3-05: Verify responsiveness and accessibility-friendly behavior (ARIA, keyboard nav, color contrast, text alternatives).
+- [ ] S3-06: Collect test/demo evidence for map interactions (screenshots, recordings, accessibility demo).
 
 ### Verification Evidence
 - [ ] Zoom/pan/click behaviors work as expected.
 - [ ] Map reflects current backend risk data reliably.
 - [ ] UI remains usable on target screen sizes.
+- [ ] Accessibility features are present and verified.
+- [ ] Screenshots and recordings are collected for grading.
 
 ## Stage 4 TODOs: Predictive Analytics and AI-Driven Insights
 
 ### Objective
 Deliver 24-48 hour forecasting and a RiskRadar AI Assistant with clear safeguards.
-
-**OPTIONAL STRETCH GOAL - Only pursue if Stage 3 completes and time remains.**
 
 ### Predictive Risk Checklist
 - [ ] S4-01: Define forecast targets, horizon, and assumptions.

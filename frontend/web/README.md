@@ -205,16 +205,24 @@ If backend port `8000` is unavailable, set `RISKRADAR_API_BASE_URL` (for example
 - PHP API client helpers for map endpoints
 - Frontend scaffold in `views/map.php` with Plotly.js, loading/fallback UI, and AJAX fetch logic
 - Responsive CSS for map container and layout
-- **Config-driven API URLs:** The map page now injects API endpoint URLs from PHP config (see `config/app.php` and `services/api_client.php`), so no API URLs are hardcoded in JS. This ensures correct URL resolution in all environments (local, dev, prod).
+- Config-driven API URLs
 
-### What Remains
-- Transform backend data into Plotly overlays (scatter for alerts, polygons/heatmap for risk)
-- Render live alert markers with severity color
-- Add overlays (AQI, wildfire, etc.) and toggles
-- Implement region filters, tooltips, and click/hover interactions
-- Harden fallback/error handling for all map states
-- Add accessibility features (ARIA, keyboard nav, text alternatives)
-- Update documentation and add screenshots/evidence
+### What Remains (Frontend Enhancements)
+- [ ] Transform backend data into Plotly overlays (scatter for alerts, polygons/heatmap for risk)
+- [ ] Render live alert markers with severity color
+- [ ] Add overlays (AQI, wildfire, etc.) and toggles
+- [ ] Implement region filters, tooltips, and click/hover interactions
+- [ ] Harden fallback/error handling for all map states
+- [ ] Add accessibility features (ARIA, keyboard nav, text alternatives)
+- [ ] Update documentation and add screenshots/evidence
+
+### Manual Verification Checklist
+- [ ] Map loads with overlays and toggles work
+- [ ] Personalized risk overlay is accessible and visually distinct
+- [ ] All controls are keyboard accessible and ARIA-labeled
+- [ ] Error/fallback states are user-friendly
+- [ ] Documentation and user guide are updated
+- [ ] Screenshots and recordings are collected for grading
 
 ### How to Use the Map Feature
 1. Start backend and PHP server as usual (see above)

@@ -312,11 +312,29 @@ Recommended update order when progress changes:
 
 **Objective:** Add an interactive risk map experience to help users explore and understand environmental risk conditions spatially.
 
-**Implementation:**
-- Stage 3 planning documents have been created in `docs/PLANNING_DOCS/STAGE3_DOCS/`:
-	- `API_STAGE3_CONTRACT.md`: Defines the API contract for map and risk visualization endpoints, request/response schemas, and error handling.
-	- `STAGE3_VERIFICATION_EVIDENCE.md`: Outlines verification checkpoints for map rendering, geospatial accuracy, responsive UX, and fallback/performance validation.
-	- `STAGE3_IMPLEMENTATION_SPEC.md`: Details the implementation plan, policy lock, and step-by-step requirements for interactive risk map and user experience enhancements.
+**Implementation Progress:**
+- Backend endpoints and API client: complete
+- Frontend scaffold and Plotly integration: complete
+- Interactive features (overlays, toggles, region filters, tooltips, click/hover, legend): in progress
+- Accessibility and responsive layout: in progress
+- Evidence collection (screenshots, recordings): pending
+
+**Next Steps:**
+- Transform backend data into Plotly overlays (scatter for alerts, polygons/heatmap for risk)
+- Render live alert markers with severity color
+- Add overlays (AQI, wildfire, etc.) and toggles
+- Implement region filters, tooltips, and click/hover interactions
+- Harden fallback/error handling for all map states
+- Add accessibility features (ARIA, keyboard nav, text alternatives)
+- Update documentation and add screenshots/evidence
+
+**Manual Verification Checklist:**
+- [ ] Map loads with overlays and toggles work
+- [ ] Personalized risk overlay is accessible and visually distinct
+- [ ] All controls are keyboard accessible and ARIA-labeled
+- [ ] Error/fallback states are user-friendly
+- [ ] Documentation and user guide are updated
+- [ ] Screenshots and recordings are collected for grading
 
 **Functionality:**
 - New backend endpoints will provide geospatial alert and risk data for map rendering.
