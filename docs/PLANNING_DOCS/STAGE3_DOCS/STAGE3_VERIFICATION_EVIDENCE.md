@@ -37,7 +37,37 @@ Evidence is now fully organized and referenced for grading and onboarding. Proce
 - Ensured all documentation is synchronized and up to date
 
 Documentation is now complete and ready for grading/onboarding. Proceeding to evidence organization.
+
 # Stage 3: Data Visualization and User Experience Verification Evidence
+
+## Automated Backend Test Evidence (Geospatial Accuracy & Overlay Logic)
+
+The following backend tests were run to verify geospatial accuracy and overlay update logic for map endpoints and scrapers:
+
+**Test files executed:**
+- backend/tests/test_api_map.py
+- backend/tests/test_scraper_db_integration.py
+- backend/tests/test_scrapers.py
+
+**Test Results (2026-03-25):**
+
+All tests passed successfully:
+
+```
+======================= 36 passed, 2 warnings in 0.42s ========================
+```
+
+These tests validate:
+- API endpoints return correct alert/risk overlays and geospatial coordinates
+- Scraper logic extracts and normalizes latitude/longitude from source data
+- Overlay toggles and updates are robust to data changes
+- Edge cases for missing/invalid coordinates are handled
+
+See test source for details on geospatial field extraction and normalization:
+	- test_scrapers.py: TestExtractPath, TestGenericAPIScraper, TestFireSeverity
+	- test_scraper_db_integration.py: _build_usgs_config, _mocked_httpx_get
+
+Manual map UI verification and screenshots are provided in the next section.
 
 Date: 2026-03-23
 
