@@ -312,6 +312,23 @@ Recommended update order when progress changes:
 
 **Objective:** Add an interactive risk map experience to help users explore and understand environmental risk conditions spatially.
 
+**Usage Instructions:**
+- Access the interactive map at `frontend/web/public/map.php` after starting both the backend and PHP server.
+- Use the region filter, overlay toggles (alerts, risk, AQI, wildfire, earthquake, weather, pollution), and personalized risk toggle to customize the map view.
+- Enter your user ID for personalized overlays.
+- Pan and zoom with mouse, touch, or keyboard arrows; Tab to controls; Enter/Space to activate; all features are accessible.
+- Click or keyboard-activate markers for detailed popups.
+
+**Accessibility Notes:**
+- All map controls and overlays have ARIA labels and are keyboard accessible.
+- Focus indicators are visible for all interactive elements.
+- Screen reader instructions are provided for map and overlays.
+- Color contrast is checked for overlays and UI elements; alternative patterns available on request.
+- Fallback/error messages are user-friendly and accessible.
+
+**Evidence Collection:**
+- Screenshots and recordings for grading must be collected manually. See TODO.md and STAGE3_VERIFICATION_EVIDENCE.md for checklist and evidence requirements.
+
 **Implementation Progress:**
 - Backend endpoints and API client: complete
 - Frontend scaffold and Plotly integration: complete
