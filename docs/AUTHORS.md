@@ -1,83 +1,24 @@
+
 # Stage 3 Documentation and Synchronization (2026-04-27)
 
-### Rebecca Gautreaux
-- Led project management, documentation, and web frontend implementation for Stage 3.
-- Coordinated and executed the documentation update and synchronization pass across all top-level files.
-- Implemented advanced map UI/UX features (keyboard/touch zoom/pan, dark mode, accessibility, responsive overlays).
-- Ensured all design tokens, iconography, and spacing rules are consistently applied and documented.
-
-### Max Compeaux
-- Contributed to backend planning, documentation, and QA for Stage 3.
-- Reviewed and verified documentation updates for accuracy and completeness.
-- Supported synchronization of planning, contract, and evidence documentation for Stage 3 deliverables.
-# Stage 3 Documentation and Synchronization (2026-04-27)
-
-### Rebecca Gautreaux
-- Led project management, documentation, and web frontend implementation for Stage 3.
-- Coordinated and executed the documentation update and synchronization pass across all top-level files.
-- Implemented advanced map UI/UX features (keyboard/touch zoom/pan, dark mode, accessibility, responsive overlays).
-- Ensured all design tokens, iconography, and spacing rules are consistently applied and documented.
-
-### Max Compeaux
-- Contributed to backend planning, documentation, and QA for Stage 3.
-- Reviewed and verified documentation updates for accuracy and completeness.
-- Supported synchronization of planning, contract, and evidence documentation for Stage 3 deliverables.
-# Stage 3 Phase 5 Completion Session (2026-03-24)
-# Stage 3 Documentation and Synchronization (2026-04-27)
-### Rebecca Gautreaux
-- Led project management, documentation, and web frontend implementation for Stage 3.
-- Coordinated and executed the documentation update and synchronization pass across all top-level files.
-- Implemented advanced map UI/UX features (keyboard/touch zoom/pan, dark mode, accessibility, responsive overlays).
-- Ensured all design tokens, iconography, and spacing rules are consistently applied and documented.
-
-### Max Compeaux
-- Contributed to backend planning, documentation, and QA for Stage 3.
-- Reviewed and verified documentation updates for accuracy and completeness.
-- Supported synchronization of planning, contract, and evidence documentation for Stage 3 deliverables.
-### Rebecca Gautreaux
+## Rebecca Gautreaux
 - Led project management, documentation, and web frontend implementation for Stage 3
 - Coordinated and executed the documentation update and synchronization pass across all top-level files for Phase 5
 - Implemented advanced map UI/UX features (keyboard/touch zoom/pan, dark mode, accessibility, responsive overlays)
 - Ensured all design tokens, iconography, and spacing rules are consistently applied and documented
 - Finalized onboarding and handoff materials for graders and new contributors
+- Brainstormed and scoped AI-assisted proposal direction for the final-project extension
+- Authored foundational project documentation files in the CMPS 357 workspace (`AUTHORS.md`, `EXAMPLES.md`, `INSTRUCTIONS.md`, `REFLECTION.md`, `STAGES.md`, `TRANSCRIPT.md`)
+- Updated project scheduling metadata in `README.md` during early planning alignment
 
-### Max Compeaux
+## Max Compeaux
 - Contributed to backend planning, documentation, and QA for Stage 3
 - Reviewed and verified documentation updates for accuracy and completeness
 - Supported synchronization of planning, contract, and evidence documentation for Stage 3 deliverables
 - Participated in Stage 3 Phase 5 documentation and evidence organization
 
-### Other Contributors
+## Other Contributors
 - See previous entries for additional roles and contributions
-
-## Stage 3 Documentation and Synchronization (2026-04-27)
-### Rebecca Gautreaux
-- Led project management, documentation, and web frontend implementation for Stage 3
-- Coordinated and executed the documentation update and synchronization pass across all top-level files
-- Implemented advanced map UI/UX features (keyboard/touch zoom/pan, dark mode, accessibility, responsive overlays)
-- Ensured all design tokens, iconography, and spacing rules are consistently applied and documented
-
-### Max Compeaux
-- Contributed to backend planning, documentation, and QA for Stage 3
-- Reviewed and verified documentation updates for accuracy and completeness
-- Supported synchronization of planning, contract, and evidence documentation for Stage 3 deliverables
-
-### Other Contributors
-- See previous entries for additional roles and contributions
-### Rebecca Gautreaux
-- Led project management, documentation, and web frontend implementation for Stage 3.
-- Coordinated and executed the documentation update and synchronization pass across all top-level files.
-- Implemented advanced map UI/UX features (keyboard/touch zoom/pan, dark mode, accessibility, responsive overlays).
-- Ensured all design tokens, iconography, and spacing rules are consistently applied and documented.
-
-### Max Compeaux
-- Contributed to backend planning, documentation, and QA for Stage 3.
-- Reviewed and verified documentation updates for accuracy and completeness.
-- Supported synchronization of planning, contract, and evidence documentation for Stage 3 deliverables.
-### Project Contributions
-• Brainstormed and scoped AI-assisted proposal direction for the final-project extension.
-• Authored foundational project documentation files in the CMPS 357 workspace (`AUTHORS.md`, `EXAMPLES.md`, `INSTRUCTIONS.md`, `REFLECTION.md`, `STAGES.md`, `TRANSCRIPT.md`).
-• Updated project scheduling metadata in `README.md` during early planning alignment.
 • Implemented backend settings enhancements for security/integration readiness (JWT/auth and external API-key configuration updates in `backend/config/settings.py`, including OpenAQ placeholder support).
 • Added execution documentation support via `docs/PROGRAM_EXECUTION.md`.
 • Contributed branch work tied to settings/auth readiness and documentation baseline via commits such as: `cf9271d`, `5357ecb`, `15db5c9`, `2175f3d`.
