@@ -3,6 +3,35 @@
 <!-- Toast/Snackbar for user feedback -->
 <div id="toast" aria-live="polite" style="display:none;position:fixed;bottom:32px;left:50vw;transform:translateX(-50%);background:var(--accent-coral,#ef6f51);color:#fff;padding:13px 28px;border-radius:8px;box-shadow:0 4px 24px rgba(18,34,49,0.13);font-size:1.08em;z-index:300;min-width:160px;text-align:center;transition:opacity 0.2s;opacity:0;"></div>
 
+<style>
+/* Responsive map container and controls */
+#risk-map-container {
+    width: 100%;
+    height: 480px;
+    max-width: 1000px;
+    margin: 0 auto 24px auto;
+    background: #fff8ee;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(18,34,49,0.08);
+    overflow: hidden;
+}
+@media (max-width: 1280px) {
+    #risk-map-container { max-width: 98vw; }
+}
+@media (max-width: 768px) {
+    #risk-map-container { height: 340px; }
+    .panel > div { flex-direction: column; gap: 12px !important; }
+}
+@media (max-width: 480px) {
+    #risk-map-container { height: 220px; }
+    .panel > div { flex-direction: column; gap: 8px !important; }
+}
+/* Focus indicator for all focusable elements */
+:focus {
+    outline: 2px solid #1976d2 !important;
+    outline-offset: 2px;
+}
+</style>
 <script>
 // Toast/snackbar logic
 function showToast(msg, duration=2200) {
