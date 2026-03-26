@@ -1,4 +1,8 @@
 /* --- Enhanced Mobile Responsiveness for Map UI --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import '../../../../../UI_UX_STYLE_FILES/styles/tailwind.css';
+@import '../../../../../UI_UX_STYLE_FILES/styles/theme.css';
+/* UI_UX_STYLE_FILES styles imported for unified design system */
 @media (max-width: 700px) {
     #risk-map-legend {
         position: static;
