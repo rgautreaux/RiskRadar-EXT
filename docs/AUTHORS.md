@@ -59,3 +59,15 @@
   - Contributed to frontend development and UI/UX research
   - Assisted with asset mapping, wireframe implementation, and component styling
   - Supported documentation, project planning, and QA
+
+---
+
+## Contributions and Roles (as of Mar 26, 2026)
+
+- **Qui Hu**: Project lead, backend architecture, database design, API development, code review, documentation.
+- **Rebecca Gautreaux**: Documentation lead, progress tracking, transcript management, UI/UX planning, test suite development, LLM integration, security and design contributions.
+- **Team Members**: Frontend development, API integration, database migration, scheduled job implementation, milestone tracking, and QA.
+
+All contributions are listed in chronological order and reflect the current state of the project. Roles are updated as of this session to ensure historical accuracy and auditability.
+
+---
