@@ -9,8 +9,18 @@
     <p class="muted">This page will surface 24-48 hour environmental risk forecasts and confidence/trend visuals.</p>
 </section>
 
+
 <section class="panel" style="background: var(--card); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 2rem 1.5rem; max-width: 700px; margin: 0 auto;">
     <h2 class="mb-2" style="color: var(--primary); font-family: 'Space Grotesk', Inter, Arial, sans-serif;">24–48 Hour Risk Forecast</h2>
+    <!-- Forecasted condition icons row (mock data) -->
+    <div class="flex items-center justify-between mb-2" style="gap: 0.5rem; max-width: 560px; margin: 0 auto 1.5rem auto;">
+        <img src="../UI_UX_STYLE_FILES/assets/svg/illustrations/weather.svg" alt="Weather" title="Weather" style="width: 38px; height: 38px;" />
+        <img src="../UI_UX_STYLE_FILES/assets/svg/illustrations/fire.svg" alt="Fire" title="Fire" style="width: 38px; height: 38px;" />
+        <img src="../UI_UX_STYLE_FILES/assets/svg/illustrations/air-quality.svg" alt="Air Quality" title="Air Quality" style="width: 38px; height: 38px;" />
+        <img src="../UI_UX_STYLE_FILES/assets/svg/illustrations/flood.svg" alt="Flood" title="Flood" style="width: 38px; height: 38px;" />
+        <img src="../UI_UX_STYLE_FILES/assets/svg/illustrations/pollen.svg" alt="Pollen" title="Pollen" style="width: 38px; height: 38px;" />
+        <img src="../UI_UX_STYLE_FILES/assets/svg/illustrations/earthquake.svg" alt="Earthquake" title="Earthquake" style="width: 38px; height: 38px;" />
+    </div>
     <svg width="100%" height="220" viewBox="0 0 560 220" aria-labelledby="forecastTitle forecastDesc" role="img" style="background: var(--accent); border-radius: var(--radius-md); box-shadow: var(--shadow-sm);">
         <title id="forecastTitle">Risk Forecast Timeline</title>
         <desc id="forecastDesc">Shows predicted risk levels and confidence bands for the next 48 hours</desc>
