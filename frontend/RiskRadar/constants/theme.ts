@@ -167,13 +167,3 @@ export const Shadows = {
     elevation: 4,
   },
 } as const;
-
-// See DESIGN_SYSTEM.md for a full reference of all tokens, palette roles, and usage.
-// All color, spacing, and typography values are sourced from this file for consistency.
-//
-// Usage example:
-//   import { Colors, Spacing, Radius, Typography } from '@/constants/theme';
-//
-//   <View style={{ backgroundColor: Colors.light.surface, borderRadius: Radius.card }} />
-//
-// For palette and variant details, see the documentation in /docs/DESIGN_SYSTEM.md.

@@ -41,60 +41,12 @@ class User(Base):
     ...existing code...
 ```
 
-
-## Detailed Migration Steps
-1. **Preparation**
-   - Backup the entire users table and verify restore procedures.
-   - Confirm all application code paths using the email field are identified and documented.
-   - Prepare a staging environment with anonymized user data for dry-run testing.
-
-2. **Schema Update**
-   - Add `encrypted_email` (Text/Binary) and `email_iv` (Text/Binary) columns to the users table (nullable at first).
-   - Optionally, add `email_hash` (Text, unique) if using non-deterministic encryption for uniqueness enforcement.
-
-3. **Batch Migration**
-   - For each user:
-     - Encrypt the plaintext email using AES-256-GCM with a unique IV.
-     - Store the encrypted email and IV in the new columns.
-     - If using a hash for uniqueness, compute and store the hash.
-   - Mark migrated rows for tracking (e.g., with a temporary migration_status column or migration log).
-
-4. **Validation**
-   - After each batch, verify:
-     - All encrypted_email values are non-null and decrypt correctly.
-     - No duplicate encrypted_email or email_hash values exist.
-     - User login and registration flows work as expected in staging.
-
-5. **Cutover**
-   - Update application logic to use encrypted_email for all authentication and lookup operations.
-   - Remove or restrict access to the plaintext email field in code.
-
-6. **Cleanup**
-   - Once validated in production, drop the old email column (or restrict access to admins only).
-   - Remove any temporary migration columns or flags.
-
-## Edge Cases & Rollback Notes
-- Users with duplicate emails (should be blocked by unique constraint, but validate before migration).
-- Emails with unusual/unicode characters (test encryption/decryption for all valid email formats).
-- Partial migration/interrupted batch (ensure idempotency and ability to resume or rollback safely).
-- If decryption fails during migration, log the error and skip the user (do not crash entire batch).
-- Rollback: To revert, restore the backup or use the rollback script to repopulate the email field from decrypted values, then drop encrypted_email/email_iv columns.
-
-## Integration Points & Open Questions
-- **Backend Integration:**
-  - Confirm encryption/decryption utilities and key management are implemented and tested by backend team before production migration.
-  - Ensure all API endpoints and authentication logic are updated to use encrypted_email.
-  - Coordinate with frontend for any changes in user profile/email display.
-- **Infra/DevOps:**
-  - Ensure secrets management (for encryption keys) is in place and documented.
-  - Plan for key rotation and recovery procedures.
-- **Open Questions:**
-  - Will deterministic encryption or a hash be used for uniqueness enforcement?
-  - What is the exact key management solution (env var, secrets manager, etc.)?
-  - Are there any legacy integrations or third-party systems that require plaintext email access?
-  - What is the user communication plan for this migration?
+## Notes
+- Do not remove the old email field until migration is complete and validated.
+- Document the encryption and migration logic for maintainers.
+- Coordinate with backend developers for integration.
 
 ## Next Steps
-- Review this plan with backend and security leads.
-- Finalize migration/rollback scripts and test in staging.
-- Document all procedures and update maintainers.
+- Review with backend team before implementation.
+- Draft migration scripts for schema changes.
+- Plan for rollback and backup before migration.

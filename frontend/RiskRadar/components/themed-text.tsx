@@ -113,28 +113,6 @@ function getTypographyStyle(
   }
 }
 
-/**
- * ThemedText is the base text primitive for RiskRadar mobile UI.
- *
- * Usage:
- *   <ThemedText type="title">Section Title</ThemedText>
- *   <ThemedText type="body" lightColor="#16324A">Body text</ThemedText>
- *
- * Variants:
- *   - hero: Screen hero titles (large, bold)
- *   - title: Section titles (large, bold)
- *   - subtitle: Section subtitles (semibold)
- *   - sectionTitle: Section headers (semibold)
- *   - cardTitle: Card headings (semibold)
- *   - eyebrow: Overline/metadata (semibold, all-caps)
- *   - body: Body text (regular)
- *   - meta: Metadata/caption (medium)
- *
- * All color and typography values are sourced from theme tokens.
- *
- * See DESIGN_SYSTEM.md for full reference.
- */
-
 const styles = StyleSheet.create({
   default: {
     textAlign: 'left',
