@@ -20,6 +20,27 @@ Next: Onboarding and handoff preparation
 Next: Evidence organization and referencing
 # Web Frontend
 
+## Asset & Style Integration (Wireframe-Accurate UI)
+
+### SVG Icons & Illustrations
+- All navigation and UI icons are now SVGs, located in `public/assets/icons/`.
+- Themed illustrations are in `public/assets/illustrations/`.
+- SVGs are referenced in `components/layout.php` and other shared components for navigation and UI.
+- For new icons, create SVGs matching the wireframe PNGs and place them in `public/assets/icons/`.
+
+### CSS & Design System
+- Unified styles are imported from `UI_UX_STYLE_FILES/styles/` into `public/assets/app.css`.
+- All color tokens, spacing, and typography are managed via `app.css` and `theme_tokens.css`.
+- Use utility classes and CSS variables for consistent layout and theming.
+
+### Usage Rules
+- Always use SVGs for icons in navigation and UI.
+- Add descriptive `alt` text for accessibility.
+- Do not use PNGs from `wireframe_icons` directly in production UI.
+- Update this README if new asset types or rules are added.
+
+---
+
 This directory contains the PHP web application for RiskRadar.
 
 ## Stage 3 Phase 5 Progress (2026-03-24)
@@ -205,16 +226,24 @@ If backend port `8000` is unavailable, set `RISKRADAR_API_BASE_URL` (for example
 - PHP API client helpers for map endpoints
 - Frontend scaffold in `views/map.php` with Plotly.js, loading/fallback UI, and AJAX fetch logic
 - Responsive CSS for map container and layout
-- **Config-driven API URLs:** The map page now injects API endpoint URLs from PHP config (see `config/app.php` and `services/api_client.php`), so no API URLs are hardcoded in JS. This ensures correct URL resolution in all environments (local, dev, prod).
+- Config-driven API URLs
 
-### What Remains
-- Transform backend data into Plotly overlays (scatter for alerts, polygons/heatmap for risk)
-- Render live alert markers with severity color
-- Add overlays (AQI, wildfire, etc.) and toggles
-- Implement region filters, tooltips, and click/hover interactions
-- Harden fallback/error handling for all map states
-- Add accessibility features (ARIA, keyboard nav, text alternatives)
-- Update documentation and add screenshots/evidence
+### What Remains (Frontend Enhancements)
+- [ ] Transform backend data into Plotly overlays (scatter for alerts, polygons/heatmap for risk)
+- [ ] Render live alert markers with severity color
+- [ ] Add overlays (AQI, wildfire, etc.) and toggles
+- [ ] Implement region filters, tooltips, and click/hover interactions
+- [ ] Harden fallback/error handling for all map states
+- [ ] Add accessibility features (ARIA, keyboard nav, text alternatives)
+- [ ] Update documentation and add screenshots/evidence
+
+### Manual Verification Checklist
+- [ ] Map loads with overlays and toggles work
+- [ ] Personalized risk overlay is accessible and visually distinct
+- [ ] All controls are keyboard accessible and ARIA-labeled
+- [ ] Error/fallback states are user-friendly
+- [ ] Documentation and user guide are updated
+- [ ] Screenshots and recordings are collected for grading
 
 ### How to Use the Map Feature
 1. Start backend and PHP server as usual (see above)
