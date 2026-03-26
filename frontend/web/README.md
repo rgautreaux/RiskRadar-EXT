@@ -20,6 +20,27 @@ Next: Onboarding and handoff preparation
 Next: Evidence organization and referencing
 # Web Frontend
 
+## Asset & Style Integration (Wireframe-Accurate UI)
+
+### SVG Icons & Illustrations
+- All navigation and UI icons are now SVGs, located in `public/assets/icons/`.
+- Themed illustrations are in `public/assets/illustrations/`.
+- SVGs are referenced in `components/layout.php` and other shared components for navigation and UI.
+- For new icons, create SVGs matching the wireframe PNGs and place them in `public/assets/icons/`.
+
+### CSS & Design System
+- Unified styles are imported from `UI_UX_STYLE_FILES/styles/` into `public/assets/app.css`.
+- All color tokens, spacing, and typography are managed via `app.css` and `theme_tokens.css`.
+- Use utility classes and CSS variables for consistent layout and theming.
+
+### Usage Rules
+- Always use SVGs for icons in navigation and UI.
+- Add descriptive `alt` text for accessibility.
+- Do not use PNGs from `wireframe_icons` directly in production UI.
+- Update this README if new asset types or rules are added.
+
+---
+
 This directory contains the PHP web application for RiskRadar.
 
 ## Stage 3 Phase 5 Progress (2026-03-24)
