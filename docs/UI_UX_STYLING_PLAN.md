@@ -10,14 +10,24 @@ Replace the Expo starter UI with a branded, wireframe-accurate RiskRadar mobile 
 
 ## Success Criteria
 
-- Main mobile screens visibly match the structure and branding direction of the wireframe.
-- Colors, typography, spacing, and iconography are centralized in reusable theme tokens.
-- Light Mode and Dark Mode tokens are both defined in `theme.ts` through the same semantic token system with no screen-level hard-coded color fallbacks. (Phase 1: `app.json` sets `userInterfaceStyle` to `"light"` — the UI is intentionally light-only for Phase 1. Phase 2 removes the `userInterfaceStyle` lock from `app.json` and hardens component-level contrast for dark surfaces.)
-- Navigation elements use RiskRadar-branded visuals instead of Expo starter defaults.
-- Screens render cleanly on both Android and iOS-sized layouts without overflow or broken alignment.
-- The app starts, navigates, and lints without introducing runtime or TypeScript issues.
+Main mobile screens visibly match the structure and branding direction of the wireframe.
+Colors, typography, spacing, and iconography are centralized in reusable theme tokens.
+App defaults to Light Mode on startup, with a visible toggle for users to switch between Light and Dark Mode. Remove hard lock in app.json; implement toggle in dashboard header or settings.
+All theme tokens and styling logic support both modes, with no screen-level hard-coded color overrides.
+Dashboard is the default landing page at app startup, not Login. Login is accessible from a card/tab/button on the Dashboard.
+Remove the "Latest Summary" tab/page. Add a summary dropdown menu on the Dashboard for summary selection—no separate summary screen.
+Add a Summary Search Bar to the Dashboard. Prompt users for topics of concern and display relevant summaries directly on the Dashboard (Quick Onboarding for info gathering).
+Onboarding is quick and topic-driven via Dashboard search bar and dropdown.
+Navigation elements use RiskRadar-branded visuals instead of Expo starter defaults.
+Screens render cleanly on both Android and iOS-sized layouts without overflow or broken alignment.
+The app starts, navigates, and lints without introducing runtime or TypeScript issues.
 
-## Planning Sync Snapshot (Mar 17, 2026)
+## Planning Sync Snapshot (Mar 18, 2026)
+
+- All Rebecca-owned UI/UX tasks (token hygiene, contrast validation, asset wiring, notification art polish) are complete and verified.
+- All color, typography, and spacing values are sourced from semantic tokens and palette roles in theme.ts.
+- Asset wiring and notification art polish in explore.tsx and modal.tsx match wireframe fidelity.
+- Documentation is current and synchronized with implementation state.
 
 - Primary planning docs in active use are `docs/TODO.md` (sprint/stage board) and this plan (`docs/UI_UX_STYLING_PLAN.md`).
 - There is currently no separate `STAGES` file under `docs/`; stage tracking is represented by sprint phases in `docs/TODO.md`.
@@ -403,7 +413,7 @@ Checklist:
 
 Purpose:
 
-- Rebuild the home screen to match the wireframe’s main dashboard layout.
+Rebuild the home screen to match the wireframe’s main dashboard layout.
 
 Checklist:
 
@@ -411,6 +421,9 @@ Checklist:
 - [ ] Add a branded header with RiskRadar logo treatment.
 - [ ] Add a top summary area for location/context and high-priority risk information.
 - [ ] Add wireframe-style data cards for weather, air quality, pollen, and hazard alerts.
+	- [ ] Weather card must display both the exact temperature and the "feels like" temperature (factoring in wind chill and other environmental conditions).
+	- [ ] Weather card should provide advice on how to dress and what to pack for travelers, based on current and forecasted conditions.
+	- [ ] Prompt users for their expected length of stay in the location and offer a packing guide tailored to the weather in the region.
 - [ ] Use hazard icons from the wireframe asset set instead of placeholder illustrations.
 - [ ] Ensure card spacing and hierarchy visually match the mobile wireframe.
 - [ ] Use a standard `ScrollView` layout, not `ParallaxScrollView`.
@@ -766,6 +779,17 @@ To keep the app efficient and stable while making it wireframe-accurate:
 
 ## Signature UX Details
 
+
+#### Dashboard Summary Drop-down UX (Assigned to Ben)
+
+- [ ] Add a drop-down or scrollable list UI element at the top or in a prominent dashboard section for summary selection.
+- [ ] Populate the drop-down/list with available summary titles or brief descriptions (fetched from API or placeholder data).
+- [ ] When a user selects a summary, display the full summary content below the drop-down/list, updating dynamically.
+- [ ] Ensure the user can scroll through available summaries, select one, and read its full content without navigating away from the dashboard.
+- [ ] Style the drop-down/list and summary display to match RiskRadar branding and maintain accessibility/contrast standards.
+- [ ] Test the summary selection and display flow for both mobile platforms.
+
+**Responsibility:** Ben (Home Dashboard route: `frontend/RiskRadar/app/(tabs)/index.tsx`)
 Purpose:
 
 - Operationalize small but intentional UI details so the app feels distinctly RiskRadar-owned rather than library-default.
