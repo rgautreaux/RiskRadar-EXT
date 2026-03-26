@@ -18,6 +18,16 @@ Summary:
 This ensures all top-level documentation is in sync for grading, onboarding, and future development.
 # RiskRadar CMPS 357 Execution TODO Tracker
 
+## Stage 4 Planning and Asset Integration Session (2026-03-26)
+
+Summary:
+- Stage 4 planning documents created and cross-linked: Implementation Spec, Verification Evidence, API Contract, and Golby Icon Plan.
+- Golby AI Assistant icon/visuals asset integration planned, referencing both ai-assistant.svg (SVG) and RiskRadar_Assistant_Icon.png (PNG) for use in the assistant UI.
+- All Stage 4 planning docs now include navigation links for easy cross-referencing.
+- Documentation synchronization and audit tasks updated for Stage 4 kickoff.
+- Weekly Check-In Log and Master Task Tracker updated to reflect new planning, asset integration, and documentation sync.
+
+
 This document tracks implementation tasks required to complete the CMPS 357 extension goals.
 
 ## Scope Alignment
@@ -91,6 +101,8 @@ Use this process during each weekly meeting:
 
 ## Weekly Check-In Log
 
+| 2026-03-26 | Stage 4 planning docs and asset integration completed; cross-linking and navigation added to all docs; Golby icon assets (ai-assistant.svg, RiskRadar_Assistant_Icon.png) referenced in planning and UI deliverables; documentation sync and audit tasks updated for Stage 4 kickoff | S4-01, S4-04, S4-05, DOC-01, DOC-02, DOC-03 | None | Confirm Stage 4 implementation kickoff and asset integration sequence | `docs/PLANNING_DOCS/STAGE4_DOCS/` | Begin S4-01 forecasting requirements and S4-04 assistant UI scaffolding |
+
 | Week Of | Completed Tasks | In Progress Tasks | Blockers | Decisions Needed | Evidence Added | Next Week Focus |
 |---|---|---|---|---|---|---|
 | 2026-03-10 | TODO tracker baseline created; frontend split confirmed (`frontend/mobile/` + `frontend/web/`) | S1-02, DOC-01, DOC-02, DOC-03 | Environment config template for web app not added yet | Confirm next Stage 1 implementation slice after scaffold | `docs/TODO.md`, `README.md`, `frontend/README.md`, `frontend/mobile/README.md`, `frontend/web/README.md` | Continue S1-02 and begin S1-01/S1-03 |
@@ -133,11 +145,13 @@ Use this process during each weekly meeting:
 | 4 | S4-02 | Build historical feature pipeline from scraper outputs | High | Not Started | Max | Week of 2026-05-19 | 2026-03-10 | S4-01 | TBD | **OPTIONAL/STRETCH**: Include lag/trend/seasonality features. |
 | 4 | S4-03 | Implement baseline forecasting module/service with confidence indicators | High | Not Started | Max | Week of 2026-05-26 | 2026-03-10 | S4-02 | TBD | **OPTIONAL/STRETCH**: Keep model transparent and testable. |
 | 4 | S4-04 | Expose forecast API endpoint(s) and integrate forecast visualizations | High | Not Started | Rebecca + Max | Week of 2026-05-26 | 2026-03-10 | S4-03 | TBD | **OPTIONAL/STRETCH**: Plot observed vs predicted with uncertainty range. |
+| 4 | S4-04a | Integrate Golby AI Assistant icon/visuals (ai-assistant.svg, RiskRadar_Assistant_Icon.png) into assistant UI and planning docs | High | Not Started | Rebecca | Week of 2026-05-26 | 2026-03-26 | S4-04 | `docs/PLANNING_DOCS/STAGE4_DOCS/GOLBY_ICON_PLAN.md` | Ensure accessibility and cross-format support. |
 | 4 | S4-05 | Define assistant scope, guardrails, and fallback policy | High | Not Started | Rebecca + Max | Week of 2026-05-26 | 2026-03-10 | S4-01 | TBD | **OPTIONAL/STRETCH**: Informational guidance only; no emergency replacement. |
 | 4 | S4-06 | Implement AI assistant backend prompt integration and response formatting | High | Not Started | Max | Week of 2026-06-02 | 2026-03-10 | S4-05 | TBD | **OPTIONAL/STRETCH**: Add token/error handling and robust fallbacks. |
 | 4 | S4-07 | Integrate assistant UI experience and evaluate quality/safety behavior | High | Not Started | Rebecca | Week of 2026-06-02 | 2026-03-10 | S4-06 | TBD | **OPTIONAL/STRETCH**: Test relevance, clarity, and missing-context behavior. |
 | 4 | S4-08 | Document predictive/assistant limitations and future improvements | High | Not Started | Rebecca | Week of 2026-06-02 | 2026-03-10 | S4-04, S4-07 | TBD | **OPTIONAL/STRETCH**: Include interpretation guidance for users. |
 | X | DOC-01 | Keep README stage-status table synchronized with completed tasks | High | In Progress | Rebecca | Weekly | 2026-03-10 | Ongoing | README commits | README remains status authority. |
+| X | DOC-04 | Synchronize and audit Stage 4 planning, asset integration, and documentation updates | High | In Progress | Rebecca | 2026-03-26 | 2026-03-26 | S4-01, S4-04, S4-05 | `docs/PLANNING_DOCS/STAGE4_DOCS/` | Ensure all planning docs, assets, and progress trackers are in sync. |
 | X | DOC-02 | Update STAGES/PROJECT docs when scope or stage progress changes | High | In Progress | Rebecca | Weekly | 2026-03-17 | Ongoing | `docs/PLANNING_DOCS/PLANNING_STAGES.md`, `docs/STAGES.md`, `README.md`, `docs/TODO.md` | Keep naming and status terms consistent. |
 | X | DOC-03 | Log AI-assisted sessions in TRANSCRIPT and reflect in REFLECTION | High | In Progress | Rebecca | Weekly | 2026-03-10 | Ongoing | Transcript/Reflection entries | Maintain continuity and auditability. |
 
