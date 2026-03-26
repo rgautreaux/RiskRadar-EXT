@@ -1,5 +1,10 @@
 # API_STAGE4_CONTRACT.md
 
+**Related Stage 4 Planning Documents:**
+- [Golby Icon Plan](GOLBY_ICON_PLAN.md)
+- [Stage 4 Implementation Spec](STAGE4_IMPLEMENTATION_SPEC.md)
+- [Stage 4 Verification Evidence](STAGE4_VERIFICATION_EVIDENCE.md)
+
 ## Purpose
 Defines the API contract for Stage 4 predictive analytics and AI assistant endpoints, including request/response schemas, error handling, and integration notes.
 
