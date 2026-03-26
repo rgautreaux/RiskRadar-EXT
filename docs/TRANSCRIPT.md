@@ -9417,3 +9417,239 @@ Professional Typography: Inter font family throughout
 Modern UI Colors: Clean backgrounds (#F8F9FB), subtle borders, proper contrast
 All assets are now production-ready with the same polished, modern aesthetic as shown in your wireframes!
 
+---
+
+
+User: Are there any PNG Icons that are missing an SVG Equivalent?  What UI/UX Elements are missing necessary CSS and/or SVG Files for frontend application to be complete?
+
+GitHub Copilot: Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/UI_UX_STYLE_FILES/wireframe_icons)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public/assets)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public/icons)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public/svg)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public/images)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public/assets)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/components)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/views)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/UI_UX_STYLE_FILES/wireframe_icons)
+
+Searched for text `.svg` (`**/frontend/web/public/assets`), 1 result
+
+Searched for text `.svg` (`**/UI_UX_STYLE_FILES/wireframe_icons`), no results
+
+Searched for text `.svg` (`**/frontend/web/public`), 1 result
+
+Searched for text `.png` (`**/frontend/web/public/assets`), no results
+
+Searched for text `.png` (`**/frontend/web/public`), no results
+
+Searched for text `.svg` (`**/frontend/web`), 25 results
+
+Searched for text `.png` (`**/UI_UX_STYLE_FILES/wireframe_icons`), no results
+
+Searched for text `.css` (`**/frontend/web/public`), 1 result
+
+Searched for text `.css` (`**/UI_UX_STYLE_FILES/wireframe_icons`), no results
+
+Searched for text `.css` (`**/UI_UX_STYLE_FILES/wireframe_icons`), no results
+
+Searched for text `.svg` (`**/UI_UX_STYLE_FILES/wireframe_icons`), no results
+
+Searched for text `.svg` (`**/frontend/web/public/assets`), 1 result
+
+Searched for text `.png` (`**/frontend/web/public/assets`), no results
+
+**Summary of findings:**
+
+1. **PNG Icons in wireframe_icons:**
+   - There are many PNG icons in UI_UX_STYLE_FILES/wireframe_icons (e.g., RiskRadar_AirQuality_Icon.png, RiskRadar_Pollen_Icon.png, RiskRadar_Weather_Icon.png, RiskRadar_Pollution_Icon.png, etc.).
+   - No SVG equivalents for these icons were found in the frontend/web/public/assets directory or anywhere else in the frontend.
+
+2. **SVG Usage in Frontend:**
+   - The only SVGs found in the codebase are inline SVG elements directly in PHP view files (e.g., map.php), not as standalone SVG files.
+   - No standalone SVG files matching the PNG icon names exist in the assets or public folders.
+
+3. **CSS Files:**
+   - Only app.css and theme_tokens.css exist in frontend/web/public/assets.
+   - No CSS files were found in the wireframe_icons directory.
+
+**Conclusion:**
+
+- **Missing SVG Equivalents:** All PNG icons in UI_UX_STYLE_FILES/wireframe_icons are missing standalone SVG equivalents in the frontend assets. The frontend currently uses inline SVG for some UI elements but does not provide SVG files for the wireframe PNG icons.
+- **Missing CSS/SVG for UI/UX Elements:** There are no dedicated CSS or SVG files for the custom wireframe icons. Only general CSS (app.css, theme_tokens.css) and inline SVGs for map overlays are present. If the frontend is to be "wireframe accurate," SVG versions of each PNG icon and possibly additional CSS for icon styling are needed.
+
+**Action Needed:**  
+- Convert each PNG icon in UI_UX_STYLE_FILES/wireframe_icons to an SVG file and place them in a frontend-accessible directory (e.g., frontend/web/public/assets/icons).
+- Add or update CSS to style these SVGs according to the wireframe's visual requirements.
+
+If you need a checklist of which PNGs need SVG equivalents or want a suggested directory structure for the new SVGs, let me know!
+
+User: Create a checklist for which PNGs still need SVG Equivalents so that the neccessary assets can be created and implemented
+
+GitHub Copilot: Here is a checklist of all PNG icons in UI_UX_STYLE_FILES/wireframe_icons that still need SVG equivalents for frontend implementation. Check off each item as you create its SVG version:
+
+---
+
+### **Wireframe Icon SVG Conversion Checklist**
+
+**UI_UX_STYLE_FILES/wireframe_icons**
+
+- [ ] RiskRadar_AirQuality_Icon.png
+- [ ] RiskRadar_ALERT_HomeBttn.png
+- [ ] RiskRadar_ALERT_Logo.png
+- [ ] RiskRadar_ALERT_NotifIcon.png
+- [ ] RiskRadar_ALERT_NotifWindow.png
+- [ ] RiskRadar_ALERT_Text.png
+- [ ] RiskRadar_Assistant_Icon.png
+- [ ] RiskRadar_DataHeader_Format.png
+- [ ] RiskRadar_DEST_Global_Icon.png
+- [ ] RiskRadar_GEN_Global_Icon.png
+- [ ] RiskRadar_GlobalEQ_Icon.png
+- [ ] RiskRadar_GlobalFire_Icon.png
+- [ ] RiskRadar_GlobalFlood_Icon.png
+- [ ] RiskRadar_GlobalWindEvent_Icon.png
+- [ ] RiskRadar_LocalEQ_Icon.png
+- [ ] RiskRadar_LocalFIre_Icon.png
+- [ ] RiskRadar_LocalFlood_Icon.png
+- [ ] RiskRadar_LocalWindEvent_Icon.png
+- [ ] RiskRadar_Local_Icon.png
+- [ ] RiskRadar_Pollen_Icon.png
+- [ ] RiskRadar_Pollution_Icon.png
+- [ ] RiskRadar_STND_HomeBttn.png
+- [ ] RiskRadar_STND_Logo.png
+- [ ] RiskRadar_STND_NotifIcon.png
+- [ ] RiskRadar_STND_NotifWIndow.png
+- [ ] RiskRadar_STND_Text.png
+- [ ] RiskRadar_Weather_Icon.png
+
+---
+
+**Instructions:**  
+- For each PNG, create a visually matching SVG file and place it in your frontend assets directory (e.g., frontend/web/public/assets/icons).
+- Mark each item as complete when the SVG is created and implemented.
+
+If you need a template for SVG file naming or want to track additional metadata (e.g., designer, date completed), let me know!
+
+User: Where will the existing SVG and CSS Files be implemented in the frontend?
+
+GitHub Copilot: **SVG and CSS Implementation in the Frontend**
+
+### 1. **SVG Files**
+- **Current State:**  
+  No standalone SVG files for icons exist in the frontend assets. The only SVGs in use are inline SVG elements directly embedded in PHP view files (e.g., in map.php).
+- **Where SVGs Will Be Implemented:**  
+  - **After conversion:** Place new SVG icon files in a dedicated directory such as `frontend/web/public/assets/icons/`.
+  - **Usage:**  
+    - Import or reference these SVGs in your PHP view files (e.g., dashboard.php, alerts.php, map.php, etc.).
+    - Use `<img src="/assets/icons/ICON_NAME.svg" ...>` or inline the SVG markup for advanced styling/accessibility.
+    - Replace current PNG `<img>` tags or inline SVG code with references to the new SVG files for consistency and scalability.
+
+### 2. **CSS Files**
+- **Current State:**  
+  - The main CSS files are app.css and theme_tokens.css.
+  - These files provide global styles, utility classes, color tokens, and some icon slot styling.
+- **Where CSS Will Be Implemented:**  
+  - **app.css:**
+    - Controls global layout, typography, color schemes, and reusable UI patterns.
+    - Contains classes for icon slots, panels, cards, and responsive design.
+    - Should be extended to include styles for SVG icons (e.g., sizing, color overrides, hover/focus effects).
+  - **theme_tokens.css:**
+    - Defines color variables and theme tokens for consistent styling.
+    - Should be referenced in SVGs (via CSS variables or inline styles) to ensure icons match the app’s color palette.
+
+### 3. **How to Implement**
+- **SVGs:**  
+  - Place SVG files in `frontend/web/public/assets/icons/`.
+  - Reference them in view files using `<img>` or as background images in CSS.
+  - For advanced UI, inline SVG markup directly in PHP files for dynamic coloring or accessibility.
+- **CSS:**  
+  - Add or update icon-related classes in app.css.
+  - Use CSS variables from theme_tokens.css for icon colors.
+  - Ensure all icon containers and slots are styled for alignment, spacing, and responsiveness.
+
+---
+
+**Summary Table**
+
+| Asset Type | File/Folder Location | Usage/Implementation Target |
+|------------|---------------------|----------------------------|
+| SVG Icons  | frontend/web/public/assets/icons/ | Referenced in all PHP view files for UI icons |
+| CSS        | frontend/web/public/assets/app.css, theme_tokens.css | Used globally for layout, icon styling, and theme consistency |
+
+If you need specific code snippets or want a mapping of which view files should use which SVGs, let me know!
+
+
+---
+
+## Icon Branding Agreement Adjustments
+
+**Rebecca:** Can you edit the Home Button, Notification Icon, Logo, and Notification Popup Window/Card to more closely resemble the attached PNGs for Branding Purposes?
+I'll update the branding assets to match the PNGs you provided. Let me create the logo, notification icon, home button, and notification card components with the globe and exclamation mark design.
+
+**FigmaMake:** Perfect! I've updated all the branding assets to match your PNG designs. Here's what has been created:
+
+Updated Branding Assets:
+Core Icons:
+
+✅ logo.svg - Red circle with globe (blue ocean, green continents) and white exclamation mark
+✅ home.svg - Green circle version of the logo for home button
+✅ notification.svg - Red circle with bell outline containing the globe with exclamation mark
+✅ notification-green.svg - Green circle version of the notification bell
+Radar Illustrations: 5. ✅ radar-green.svg - Green background with concentric circles, crosshairs, arrows, and central globe (400x200px) 6. ✅ radar-red.svg - Red-to-orange gradient version of the radar (400x200px)
+
+Notification Cards: 7. ✅ notification-card-red.svg - Red-to-orange gradient card with cream/beige content area and bell icon (600x100px) 8. ✅ notification-card-green.svg - Green gradient card with light green content area and bell icon (600x100px)
+
+Design Features Matching Your Branding:
+Globe Design: Blue ocean (#0EA5E9) with green continents (#4ADE80)
+Exclamation Mark: White, centered on the globe for alert/awareness symbol
+Bell Shape: White outline design containing the globe
+Color Schemes:
+Red version: #FF4444 (matches alert/warning state)
+Green version: #16A34A (matches safe/active state)
+Radar Elements: Concentric circles, crosshair guides, directional arrows, animated blips
+Notification Cards: Rounded corners, gradient backgrounds, cream/light content areas
+Shadows & Effects: Professional drop shadows and glows
+All assets are now ready to use in your RiskRadar app and perfectly match your brand identity!
+
+**Rebecca:** Can you create additional icons for Local and Global Alert Pages based on the attached PNGs?
+I'll create SVG icons for Local and Global Alert Pages based on the PNGs you provided. These will show the globe for global alerts and a house for local alerts, each with different disaster types.
+
+**FigmaMake:** Perfect! I've created all the Local and Global alert icons based on your PNGs. Here's the complete set:
+
+Global Alert Icons (Globe-based):
+✅ global-tornado.svg - Globe with blue tornado funnel, flying debris, motion lines
+✅ global-alert.svg - Globe with large white exclamation mark
+✅ global-earthquake.svg - Globe with earthquake crack, tilted buildings, falling debris
+✅ global-fire.svg - Globe with multiple fires on different continents
+✅ global-tsunami.svg - Partially submerged globe with large tsunami waves on both sides
+Local Alert Icons (House-based):
+✅ local-tornado.svg - House with approaching tornado, flying debris, bent tree
+✅ local-alert.svg - House with large white exclamation mark on roof
+✅ local-earthquake.svg - Tilted house with ground crack, surrounding damaged buildings, dust clouds
+✅ local-fire.svg - House engulfed in flames from multiple sides, smoke, embers
+✅ local-tsunami.svg - Partially flooded house with tsunami waves on both sides, bubbles, ripples
+Design Features Matching Your Brand:
+Globe Elements: Blue ocean (#0EA5E9), green continents (#4ADE80)
+House Design: Cream/beige walls (#FEF3C7), red roof (#DC2626), brown door, blue windows
+Disaster Effects:
+Tornado: Blue spiral with motion lines
+Fire: Red→orange→yellow gradient flames with glow
+Tsunami: Layered blue waves with foam and spray
+Earthquake: Dark gray cracks, tilted structures
+Alert: Clean white exclamation mark
+Filters & Effects: Drop shadows, glows, animations on fire embers
+Consistent Style: Flat, illustrative style matching the wireframe aesthetic
+All icons are production-ready and clearly distinguish between global (world-affecting) and local (community/home-affecting) alerts!
+
+---
