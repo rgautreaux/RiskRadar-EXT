@@ -1,6 +1,85 @@
 # Stage 1 Planning (Kickoff)
 
-**Context:** This document details the tactical execution plan for Stage 1 (Web-App Extension), which is a **REQUIRED** deliverable targeting completion by **Week of March 31, 2026** as part of the broader CMPS 357 project due April 29, 2026. See [STAGES.md](../STAGES.md) and [README.md](../../README.md) for overall timeline and scope alignment (Stages 1-2 required; Stages 3-4 optional/stretch).
+[...existing code...]
+## Stage 3 Planning (Kickoff)
+
+# Stage 4 Planning (Kickoff)
+
+**Context:** This section details the tactical execution plan for Stage 4 (Predictive Analytics & AI-Driven Insights), an optional/stretch deliverable. Stage 4 is split into two main tracks: Predictive Environmental Risk and RiskRadar AI Assistant. Each track is broken down into actionable phases, with clear dependencies and verification steps. See also `docs/STAGES.md`, `docs/TODO.md`, and `README.md` for status and assignments.
+
+### Phase 1: Predictive Environmental Risk
+1. **Define Forecasting Scope & Targets**
+	- Specify which risk metrics to forecast (overall, category-specific, etc.)
+	- Set forecast horizon (24–48h) and document data latency/freshness assumptions
+	- Deliverable: Forecasting requirements doc
+2. **Build Historical Feature Pipeline**
+	- Aggregate and clean historical data from scrapers
+	- Engineer features (lag, trend, seasonality)
+	- Validate data quality for modeling
+	- Deliverable: Feature pipeline scripts/notebooks, data quality report
+3. **Implement Forecasting Module/Service**
+	- Prototype baseline model (e.g., regression, moving average)
+	- Add confidence indicators to outputs
+	- Wrap model in backend service (API-ready)
+	- Deliverable: Forecasting backend module, test outputs
+4. **Create Forecast Visualizations**
+	- Plot predicted vs. observed risk trends, show uncertainty/confidence
+	- Design UI cards/charts for web/mobile
+	- Deliverable: Visualization mockups, frontend integration plan
+5. **Integrate Forecast Outputs**
+	- Expose forecast API endpoint(s)
+	- Integrate visualizations into app UI
+	- Handle fallback for missing/invalid forecasts
+	- Deliverable: API endpoint, UI integration, fallback logic
+
+### Phase 2: RiskRadar AI Assistant
+1. **Define Assistant Scope & Guardrails**
+	- Clarify assistant’s informational boundaries (no medical/emergency advice)
+	- Document fallback and error-handling policy
+	- Deliverable: Assistant requirements doc
+2. **Implement Backend Integration**
+	- Build prompt templates using user context + risk data
+	- Format responses for clarity/actionability
+	- Add error/token handling for robustness
+	- Deliverable: Assistant backend module, prompt templates
+3. **Add Assistant UI Experience**
+	- Design input box, prompt examples, and response rendering
+	- Implement loading/error states and response history
+	- Deliverable: UI mockups, frontend integration plan
+4. **Evaluate Quality & Safety**
+	- Test for relevance, clarity, and factual consistency
+	- Validate behavior for missing/empty context
+	- Document limitations and improvement areas
+	- Deliverable: Evaluation report, documentation
+
+### Phase 3: Documentation & Verification
+1. Update README, STAGES, TODO, and user/developer docs to reflect Stage 4 progress
+2. Log all AI-assisted sessions in TRANSCRIPT and REFLECTION
+3. Document limitations, usage guidance, and future improvements
+
+**Relevant files**
+- `docs/STAGES.md` — Stage 4 objectives, checklist, and progress
+- `docs/TODO.md` — Task assignments, dependencies, and status
+- `docs/PLANNING_DOCS/` — Stage 4 planning docs (to be created/updated)
+- `backend/` — Forecasting and assistant backend modules/services
+- `frontend/` — UI integration for forecast and assistant features
+- `README.md`, `USER_GUIDE.md` — Usage, feature, and limitation updates
+
+**Verification**
+1. Forecast API returns valid 24–48h predictions with schema
+2. Visualizations match model output and show uncertainty
+3. Assistant responses are context-aware, safe, and relevant
+4. Documentation is synchronized and up to date
+
+**Decisions**
+- Stage 4 is an optional/stretch goal, but all planning and scaffolding should be completed regardless of implementation depth
+- Rebecca leads UI, documentation, and assistant integration; Max leads model prototyping and backend forecasting
+- All features must include fallback/error handling and clear user guidance
+
+**Further Considerations**
+1. If time is limited, prioritize baseline forecast and assistant scaffolding over advanced modeling
+2. Coordinate with Max for backend API contracts and data pipeline handoff
+3. Ensure all new features are documented for both users and graders
 
 ---
 
