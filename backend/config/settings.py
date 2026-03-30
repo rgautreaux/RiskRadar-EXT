@@ -19,11 +19,12 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
 
-    # --- LLM ---
-    LLM_API_KEY: str = ""
-    LLM_PROVIDER: str = ""
+    # --- LLM (OpenRouter) ---
+    OPENROUTER_API_KEY: str = ""
     LLM_MODEL: str = ""
-    LLM_MAX_TOKENS: int = 2048
+    LLM_MODEL_GUEST: str = ""
+    LLM_MODEL_PREMIUM: str = ""
+
 
     # --- Scraper API Keys ---
     AIRNOW_API_KEY: str = ""
