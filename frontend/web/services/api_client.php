@@ -318,22 +318,6 @@ function rr_fetch_alerts(array $config, array $filters = []): array
     return rr_success_result($alerts, $result['status']);
 }
 
-function rr_fetch_prioritized_alerts(array $config, int $userId, int $limit = 10): array
-{
-    $filters = [
-        'user_id' => $userId,
-        'limit' => max(1, min(50, $limit)),
-    ];
-
-    $result = rr_http_request($config, 'GET', 'alerts/prioritized', $filters);
-    if (!$result['ok'] || !is_array($result['data'])) {
-        return rr_fallback_result([], 'Prioritized alerts are unavailable. Showing an empty list.', $result['status'] ?? null);
-    }
-
-    $alerts = array_map('rr_normalize_alert', $result['data']);
-    return rr_success_result($alerts, $result['status']);
-}
-
 function rr_fetch_user_risk_score(array $config, int $userId): array
 {
     $result = rr_http_request($config, 'GET', 'users/' . $userId . '/risk-score');
