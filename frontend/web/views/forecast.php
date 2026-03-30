@@ -13,9 +13,23 @@
 </section>
 
 
+
+<?php
+// Stage 4: Dynamic forecast data integration (planned)
+// This block will fetch forecast data from the backend once available.
+// Example usage:
+// $forecastResult = rr_api_get_forecast($config);
+// if ($forecastResult['ok']) {
+//     $forecastData = $forecastResult['data'];
+//     // Render dynamic forecast chart and details here
+// } else {
+//     // Render fallback or error message
+// }
+?>
 <section class="panel" style="background: var(--card); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 2rem 1.5rem; max-width: 700px; margin: 0 auto;">
     <h2 class="mb-2" style="color: var(--primary); font-family: 'Space Grotesk', Inter, Arial, sans-serif;">24–48 Hour Risk Forecast</h2>
-    <!-- Forecasted condition icons row (mock data) -->
+    <?php // TODO: Replace static mockup below with dynamic rendering when backend is ready ?>
+    <!-- Forecasted condition icons row (static for now) -->
     <div class="flex items-center justify-between mb-2" style="gap: 0.5rem; max-width: 560px; margin: 0 auto 1.5rem auto;">
         <img src="/assets/illustrations/weather.svg" alt="Weather" title="Weather" style="width: 38px; height: 38px;" />
         <img src="/assets/illustrations/fire.svg" alt="Fire" title="Fire" style="width: 38px; height: 38px;" />
@@ -30,9 +44,9 @@
         <!-- Axes -->
         <line x1="50" y1="180" x2="520" y2="180" stroke="var(--muted)" stroke-width="2" />
         <line x1="50" y1="40" x2="50" y2="180" stroke="var(--muted)" stroke-width="2" />
-        <!-- Confidence band -->
+        <!-- Confidence band (static for now) -->
         <polygon points="50,150 90,120 130,110 170,100 210,90 250,100 290,120 330,130 370,140 410,150 450,160 490,170 520,175 520,180 50,180" fill="var(--chart-1)" fill-opacity="0.18" />
-        <!-- Forecast line -->
+        <!-- Forecast line (static for now) -->
         <polyline points="50,150 90,120 130,110 170,100 210,90 250,100 290,120 330,130 370,140 410,150 450,160 490,170 520,175" fill="none" stroke="var(--primary)" stroke-width="3" />
         <!-- Trend arrow -->
         <polygon points="520,175 510,170 510,180" fill="var(--primary)" />

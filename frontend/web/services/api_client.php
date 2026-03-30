@@ -38,6 +38,11 @@ function rr_fallback_result(mixed $fallbackData, string $message, ?int $status =
         'data' => $fallbackData,
         'message' => $message,
     ];
+    function rr_api_get_forecast(array $config, array $query = []): array
+    {
+        // GET /api/v1/forecast
+        return rr_http_request($config, 'GET', 'forecast', $query);
+    }
 }
 
 function rr_success_result(mixed $data, ?int $status = null): array
