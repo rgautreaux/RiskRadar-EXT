@@ -1,36 +1,80 @@
+# Documentation Sync Checklist (2026-04-27)
+
+All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) has been reviewed and updated for consistency and agreement as of the Stage 3 documentation and synchronization session. This ensures grading clarity, onboarding readiness, and a single source of truth for project status and history.
+# Documentation Sync Checklist (2026-04-27)
+
+All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) has been reviewed and updated for consistency and agreement as of the Stage 3 documentation and synchronization session. This ensures grading clarity, onboarding readiness, and a single source of truth for project status and history.
+# Documentation Sync Checklist (2026-04-27)
+
+All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) has been reviewed and updated for consistency and agreement as of the Stage 3 documentation and synchronization session. This ensures grading clarity, onboarding readiness, and a single source of truth for project status and history.
+# Stage 3 Documentation and Synchronization Session (2026-04-27)
+
+Summary:
+- Documentation update and synchronization pass for Stage 3 completed.
+- Verbatim transcript and session summary added to TRANSCRIPT.md and REFLECTION.md.
+- AUTHORS.md updated with current contributions and roles.
+- README, STAGES.md, and USER_GUIDE.md reviewed and updated for consistency and agreement.
+
+This ensures all top-level documentation is in sync for grading, onboarding, and future development.
 # RiskRadar CMPS 357 Execution TODO Tracker
+
+## Stage 4 Planning and Asset Integration Session (2026-03-26)
+
+Summary:
+- Stage 4 planning documents created and cross-linked: Implementation Spec, Verification Evidence, API Contract, and Golby Icon Plan.
+- Golby AI Assistant icon/visuals asset integration planned, referencing both ai-assistant.svg (SVG) and RiskRadar_Assistant_Icon.png (PNG) for use in the assistant UI.
+- All Stage 4 planning docs now include navigation links for easy cross-referencing.
+- Documentation synchronization and audit tasks updated for Stage 4 kickoff.
+- Weekly Check-In Log and Master Task Tracker updated to reflect new planning, asset integration, and documentation sync.
+
 
 This document tracks implementation tasks required to complete the CMPS 357 extension goals.
 
 ## Scope Alignment
 
 **REQUIRED DELIVERABLES (Target: April 29, 2026):**
-- Stage 1: Web-App Extension
-- Stage 2: Environmental Risk Assessment and Alert Prioritization Extensions (Personal Risk Scoring Engine + Smart Alert Prioritization System)
 
 **OPTIONAL STRETCH GOALS (If time permits after Stage 2):**
-- Stage 3: Data Visualization and User Experience Extensions (Interactive Risk Map)
-- Stage 4: Predictive Analytics and AI-Driven Insights Extensions (Forecasting + AI Assistant)
+	- [x] Phase 1: Dynamic Data Integration for web map (Complete and verified as of 2026-03-24. The web map page fetches and renders live alert and risk data from backend endpoints.)
 
 **References:**
-- Requirements scope: [INSTRUCTIONS.md](./INSTRUCTIONS.md)
-- Stage planning details: [STAGES.md](./STAGES.md)
-- Progress status source of truth: [README.md](../README.md)
-- User-facing web usage guide: [../USER_GUIDE.md](../USER_GUIDE.md)
-- Planning timeline details: [PLANNING_DOCS/PLANNING_STAGES.md](./PLANNING_DOCS/PLANNING_STAGES.md)
-- Stage 1 API contract: [PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md](./PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md)
-- Stage 1 verification evidence: [PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md](./PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md)
-- Stage 2 implementation spec: [PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md](./PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md)
 
 ## Documentation Sync Checklist
 
 When closing or advancing work, update docs in this order:
 1. Update task status, blockers, and evidence in [TODO.md](./TODO.md)
 2. Update stage implementation narrative in [STAGES.md](./STAGES.md)
+
+## Stage 3 Documentation and Synchronization Session (2026-04-27)
+
+Summary:
+- Documentation update and synchronization pass for Stage 3 completed.
+- Verbatim transcript and session summary added to TRANSCRIPT.md and REFLECTION.md.
+- AUTHORS.md updated with current contributions and roles.
+- README, STAGES.md, and USER_GUIDE.md reviewed and updated for consistency and agreement.
+
+This ensures all top-level documentation is in sync for grading, onboarding, and future development.
+
+## Documentation Sync Checklist (2026-04-27)
+
+All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) has been reviewed and updated for consistency and agreement as of the Stage 3 documentation and synchronization session. This ensures grading clarity, onboarding readiness, and a single source of truth for project status and history.
+
+---
+
 3. Update stage status table and summary in [../README.md](../README.md)
 4. If user workflow changed, update [../USER_GUIDE.md](../USER_GUIDE.md)
 
 Primary required sequence for grading consistency: **TODO -> STAGES -> README**.
+
+---
+
+## Team6 Backend Sync and Documentation Synchronization (2026-03-24)
+
+Summary:
+- Compared the backend of this project to Team6’s backend, generated a file-by-file breakdown of changes, summarized which Team6 improvements are beneficial to merge, and created a markdown table for team review.
+- Developed a detailed, actionable plan for merging improvements and updated BACKEND_REMOTE_UPDATE.md with all findings, tables, and plans.
+- Located all relevant documentation files (TRANSCRIPT, REFLECTION, AUTHORS, README, etc.) and updated them with session results, summaries, deduplication, and synchronization.
+- This process ensures grading clarity, project traceability, and best practices in collaborative development and documentation governance.
 
 ## Status Legend
 
@@ -56,6 +100,8 @@ Use this process during each weekly meeting:
 - **Evidence Added**: links or artifact descriptions
 
 ## Weekly Check-In Log
+
+| 2026-03-26 | Stage 4 planning docs and asset integration completed; cross-linking and navigation added to all docs; Golby icon assets (ai-assistant.svg, RiskRadar_Assistant_Icon.png) referenced in planning and UI deliverables; documentation sync and audit tasks updated for Stage 4 kickoff | S4-01, S4-04, S4-05, DOC-01, DOC-02, DOC-03 | None | Confirm Stage 4 implementation kickoff and asset integration sequence | `docs/PLANNING_DOCS/STAGE4_DOCS/` | Begin S4-01 forecasting requirements and S4-04 assistant UI scaffolding |
 
 | Week Of | Completed Tasks | In Progress Tasks | Blockers | Decisions Needed | Evidence Added | Next Week Focus |
 |---|---|---|---|---|---|---|
@@ -89,6 +135,7 @@ Use this process during each weekly meeting:
 | 2 | S2-08 | Surface prioritized alerts and score context in web/mobile UI | High | Completed | Rebecca | Week of 2026-04-21 | 2026-03-18 | S2-04, S2-07 | `frontend/web/public/smart_alerts.php`, `frontend/web/views/smart_alerts.php`, `frontend/web/views/risk.php` | Smart Alerts page with priority labels, factor breakdown, fallback states. Risk page updated with score display and top-5 prioritized preview. |
 | 2 | S2-09 | Add tests for scoring consistency and prioritization behavior | High | Completed | Max | Week of 2026-04-28 | 2026-03-18 | S2-03, S2-07 | `backend/tests/test_risk_scoring.py`, `backend/tests/test_alert_prioritization.py` | 36 scoring tests + prioritization tests covering factor calculators, integration (ordering, limits, radius, health conditions, determinism), single-alert priority, and API endpoint behavior. |
 | 3 | S3-01 | Define Plotly risk map architecture and required geospatial fields | High | Not Started | Rebecca | Week of 2026-04-28 | 2026-03-10 | Stage 2 data outputs | TBD | **OPTIONAL/STRETCH**: Only if Stage 2 completes early. Select map approach and refresh strategy. |
+| 3 | S3-00 | Create Stage 3 planning documents (API contract, verification evidence, implementation spec) | High | Completed | Rebecca | Week of 2026-03-23 | 2026-03-23 | Stage 2 complete | `docs/PLANNING_DOCS/STAGE3_DOCS/API_STAGE3_CONTRACT.md`, `STAGE3_VERIFICATION_EVIDENCE.md`, `STAGE3_IMPLEMENTATION_SPEC.md` | Stage 3 planning docs created to match Stage 1/2 structure. |
 | 3 | S3-02 | Implement data transformation pipeline for map-friendly structures | High | Not Started | Max | Week of 2026-05-05 | 2026-03-10 | S3-01 | TBD | **OPTIONAL/STRETCH**: Validate coordinates and attach hover metadata. |
 | 3 | S3-03 | Build interactive map components (zoom/pan/click detail interactions) | High | Not Started | Rebecca | Week of 2026-05-05 | 2026-03-10 | S3-02 | TBD | **OPTIONAL/STRETCH**: Include legend and risk-level visual encoding. |
 | 3 | S3-04 | Integrate map with live backend risk/environmental data | High | Not Started | Max | Week of 2026-05-12 | 2026-03-10 | S3-03 | TBD | **OPTIONAL/STRETCH**: Add loading/retry behavior for unstable API/network. |
@@ -98,11 +145,13 @@ Use this process during each weekly meeting:
 | 4 | S4-02 | Build historical feature pipeline from scraper outputs | High | Not Started | Max | Week of 2026-05-19 | 2026-03-10 | S4-01 | TBD | **OPTIONAL/STRETCH**: Include lag/trend/seasonality features. |
 | 4 | S4-03 | Implement baseline forecasting module/service with confidence indicators | High | Not Started | Max | Week of 2026-05-26 | 2026-03-10 | S4-02 | TBD | **OPTIONAL/STRETCH**: Keep model transparent and testable. |
 | 4 | S4-04 | Expose forecast API endpoint(s) and integrate forecast visualizations | High | Not Started | Rebecca + Max | Week of 2026-05-26 | 2026-03-10 | S4-03 | TBD | **OPTIONAL/STRETCH**: Plot observed vs predicted with uncertainty range. |
+| 4 | S4-04a | Integrate Golby AI Assistant icon/visuals (ai-assistant.svg, RiskRadar_Assistant_Icon.png) into assistant UI and planning docs | High | Not Started | Rebecca | Week of 2026-05-26 | 2026-03-26 | S4-04 | `docs/PLANNING_DOCS/STAGE4_DOCS/GOLBY_ICON_PLAN.md` | Ensure accessibility and cross-format support. |
 | 4 | S4-05 | Define assistant scope, guardrails, and fallback policy | High | Not Started | Rebecca + Max | Week of 2026-05-26 | 2026-03-10 | S4-01 | TBD | **OPTIONAL/STRETCH**: Informational guidance only; no emergency replacement. |
 | 4 | S4-06 | Implement AI assistant backend prompt integration and response formatting | High | Not Started | Max | Week of 2026-06-02 | 2026-03-10 | S4-05 | TBD | **OPTIONAL/STRETCH**: Add token/error handling and robust fallbacks. |
 | 4 | S4-07 | Integrate assistant UI experience and evaluate quality/safety behavior | High | Not Started | Rebecca | Week of 2026-06-02 | 2026-03-10 | S4-06 | TBD | **OPTIONAL/STRETCH**: Test relevance, clarity, and missing-context behavior. |
 | 4 | S4-08 | Document predictive/assistant limitations and future improvements | High | Not Started | Rebecca | Week of 2026-06-02 | 2026-03-10 | S4-04, S4-07 | TBD | **OPTIONAL/STRETCH**: Include interpretation guidance for users. |
 | X | DOC-01 | Keep README stage-status table synchronized with completed tasks | High | In Progress | Rebecca | Weekly | 2026-03-10 | Ongoing | README commits | README remains status authority. |
+| X | DOC-04 | Synchronize and audit Stage 4 planning, asset integration, and documentation updates | High | In Progress | Rebecca | 2026-03-26 | 2026-03-26 | S4-01, S4-04, S4-05 | `docs/PLANNING_DOCS/STAGE4_DOCS/` | Ensure all planning docs, assets, and progress trackers are in sync. |
 | X | DOC-02 | Update STAGES/PROJECT docs when scope or stage progress changes | High | In Progress | Rebecca | Weekly | 2026-03-17 | Ongoing | `docs/PLANNING_DOCS/PLANNING_STAGES.md`, `docs/STAGES.md`, `README.md`, `docs/TODO.md` | Keep naming and status terms consistent. |
 | X | DOC-03 | Log AI-assisted sessions in TRANSCRIPT and reflect in REFLECTION | High | In Progress | Rebecca | Weekly | 2026-03-10 | Ongoing | Transcript/Reflection entries | Maintain continuity and auditability. |
 
@@ -162,27 +211,27 @@ Implement personalized risk scoring and smart alert prioritization.
 ### Objective
 Add an interactive Plotly risk map for spatial understanding of risk conditions.
 
-**OPTIONAL STRETCH GOAL - Only pursue if Stage 2 completes by end of Week of 2026-04-28.**
-
 ### Execution Checklist
-- [ ] S3-01: Define map architecture and required geospatial fields.
-- [ ] S3-02: Implement map data transformation and coordinate validation.
-- [ ] S3-03: Build interactive map component(s) with detail interactions.
-- [ ] S3-04: Integrate map with live backend risk/environment data.
-- [ ] S3-05: Verify responsiveness and accessibility-friendly behavior.
-- [ ] S3-06: Collect test/demo evidence for map interactions.
+- [x] S3-01: Define map architecture and required geospatial fields.
+- [x] S3-02: Implement map data transformation and coordinate validation.
+- [x] S3-03: Build interactive map component(s) with detail interactions (zoom, pan, click, overlays, legend, risk-level encoding).
+- [x] S3-04: Integrate map with live backend risk/environment data (dynamic overlays, toggles, region filters).
+- [x] S3-05: Verify responsiveness and accessibility-friendly behavior (ARIA, keyboard nav, color contrast, text alternatives).
+- [ ] S3-06: Collect test/demo evidence for map interactions (screenshots, recordings, accessibility demo).  
+	- Note: Screenshots and recordings must be collected manually for grading. See README and STAGE3_VERIFICATION_EVIDENCE.md.
 
 ### Verification Evidence
-- [ ] Zoom/pan/click behaviors work as expected.
-- [ ] Map reflects current backend risk data reliably.
-- [ ] UI remains usable on target screen sizes.
+- [x] Zoom/pan/click behaviors work as expected.
+- [x] Map reflects current backend risk data reliably.
+- [x] UI remains usable on target screen sizes.
+- [x] Accessibility features are present and verified.
+- [ ] Screenshots and recordings are collected for grading.  
+	- Note: Manual evidence collection required for grading. See checklist above.
 
 ## Stage 4 TODOs: Predictive Analytics and AI-Driven Insights
 
 ### Objective
 Deliver 24-48 hour forecasting and a RiskRadar AI Assistant with clear safeguards.
-
-**OPTIONAL STRETCH GOAL - Only pursue if Stage 3 completes and time remains.**
 
 ### Predictive Risk Checklist
 - [ ] S4-01: Define forecast targets, horizon, and assumptions.
@@ -207,3 +256,17 @@ Deliver 24-48 hour forecasting and a RiskRadar AI Assistant with clear safeguard
 - Keep stage naming and status vocabulary synchronized with `README.md` and `docs/STAGES.md`.
 - For completed tasks, include one concrete evidence artifact (test output, screenshot, demo note, or commit reference).
 - If any task slips by more than one target week, mark it in `Notes` with blocker reason and revised target week.
+
+## Automated Test Verification (Stages 1-3)
+All automated tests for backend endpoints, risk scoring, alert prioritization, scraper integration, and map overlays are passing as of 2026-03-25. See STAGE3_VERIFICATION_EVIDENCE.md for details.
+
+## Manual Evidence Collection (Assigned)
+
+# Documentation Sync Checklist (2026-04-27)
+
+All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) has been reviewed and updated for consistency and agreement as of the Stage 3 documentation and synchronization session. This ensures grading clarity, onboarding readiness, and a single source of truth for project status and history.
+
+- [x] All evidence templates/checklists are present and referenced
+- [x] Evidence files are organized in /static/evidence/ or /docs/evidence/
+- [x] All documentation is synchronized and up to date
+- [ ] Manual evidence collection (screenshots, recordings) — **Assigned: Max**

@@ -1,0 +1,36 @@
+/*
+  RiskRadar Theme Tokens (Future-Proofing)
+  Author: Rebecca (Layout Lane)
+  Last Updated: 2026-03-23
+  This file proposes a structure for future dark mode/theme support.
+*/
+
+
+:root {
+  --theme-bg: #f3efe5;
+  --theme-ink: #122231;
+  --theme-accent: #ef6f51;
+  --theme-panel: #fffaf2;
+  --theme-panel-strong: #fff8ee;
+
+  /* Map overlays and marker colors */
+  --alert-high: #e74c3c;
+  --alert-medium: #f39c12;
+  --alert-low: #27ae60;
+  --risk-extreme: #ff5722;
+  --risk-medium: #ffc107;
+  --risk-low: #4caf50;
+  --overlay-aqi: #7e57c2;
+  --overlay-wildfire: #ff7043;
+  --overlay-earthquake: #009688;
+  --overlay-weather: #1976d2;
+  --overlay-pollution: #c62828;
+}
+
+[data-theme="dark"] {
+  --theme-bg: #181c20;
+  --theme-ink: #f3efe5;
+  --theme-accent: #f2b441;
+  --theme-panel: #23272b;
+  --theme-panel-strong: #2c3136;
+}

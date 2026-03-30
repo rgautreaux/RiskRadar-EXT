@@ -1,4 +1,4 @@
-# Stage 2: Environmental Risk Assessment and Alert Prioritization Verification Evidence (In Progress)
+# Stage 2: Environmental Risk Assessment and Alert Prioritization Verification Evidence (Completed)
 
 Date: 2026-03-17
 
@@ -58,7 +58,7 @@ Status: completed (policy lock + contract publication).
 - Current router wiring continues Stage 1 route set in:
   - `backend/api/router.py`
 
-Status: in progress until Stage 2 route handlers are added and regression-verified.
+Status: completed (route handlers implemented; Stage 1 contract regression verified).
 
 ## Client Integration and Fallback Evidence
 
@@ -99,4 +99,7 @@ Status: completed for fallback-safe scaffold integration.
 - Service-level determinism checks: completed.
 - Policy/contract documentation: completed.
 - Client fallback integration: completed.
-- Endpoint implementation and end-to-end verification: in progress.
+- Endpoint implementation and end-to-end verification: completed.
+  - `GET /api/v1/risk/score/{user_id}` implemented in `backend/api/risk.py`
+  - `GET /api/v1/alerts/prioritized/{user_id}` implemented in `backend/api/alerts.py`
+  - Both endpoints tested via backend test suite (all tests passing).

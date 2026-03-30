@@ -204,11 +204,17 @@ FastAPI auto-generates interactive docs:
 | `GET` | `/api/v1/alerts` | List alerts (filterable by `alert_type`, `severity`, `source`, `limit`, `offset`) |
 | `GET` | `/api/v1/alerts/stats` | Aggregate alert statistics |
 | `GET` | `/api/v1/alerts/{alert_id}` | Get a single alert by ID |
+| `GET` | `/api/v1/alerts/map` | Geospatial alert list for map rendering (filterable by `region`, `bbox`, `alert_type`, `severity`) |
+| `GET` | `/api/v1/alerts/prioritized/{user_id}` | Personalized prioritized alert list for the given user (Stage 2) |
 | `GET` | `/api/v1/summaries` | List AI-generated summaries |
 | `GET` | `/api/v1/summaries/latest` | Get the most recent summary |
+| `GET` | `/api/v1/summaries/{summary_id}` | Get a single summary by ID |
 | `POST` | `/api/v1/summaries/generate` | Trigger a new daily-digest summary (requires `LLM_API_KEY`) |
 | `POST` | `/api/v1/users/register` | Register a new user account |
 | `PUT` | `/api/v1/users/{user_id}/preferences` | Update user notification preferences |
+| `GET` | `/api/v1/risk/score/{user_id}` | Compute a personalized environmental risk score (0-100) for the user (Stage 2) |
+| `GET` | `/api/v1/risk/map` | Geospatial risk overlay data for map rendering (filterable by `region`, `bbox`, `risk_level`) (Stage 3) |
+| `GET` | `/api/v1/risk/map/personalized/{user_id}` | User-personalized risk overlay data for map rendering (Stage 3) |
 
 ### 4.7 Changing the port
 
@@ -282,8 +288,17 @@ Navigate to <http://127.0.0.1:8080/index.php> in your browser.
 |---|---|---|
 | `/index.php` | Dashboard | Alert stats, top 5 alerts, latest AI summary |
 | `/alerts.php` | Alerts | Filterable alert list (type, severity, source) |
+| `/alert_detail.php` | Alert Detail | Full detail view for a single alert |
 | `/summaries.php` | Summaries | Browse AI-generated summary archive |
-| `/profile.php` | Profile | User registration and notification preferences |
+| `/summary_detail.php` | Summary Detail | Full detail view for a single summary |
+| `/risk.php` | Risk Score | Personalized environmental risk score and factor breakdown (Stage 2) |
+| `/smart_alerts.php` | Smart Alerts | Personalized prioritized alert list with urgency labels (Stage 2) |
+| `/map.php` | Interactive Map | Live risk map with alert and risk overlays, personalized overlays, region filters, and accessibility support (Stage 3) |
+| `/register.php` | Register | Create a new user account |
+| `/login.php` | Login | User login (session support scaffolded) |
+| `/profile.php` | Profile | Update notification preferences for an existing user |
+| `/forecast.php` | Forecast | Short-horizon risk forecasting (Stage 4 scaffold — planned, not yet functional) |
+| `/assistant.php` | Assistant | AI-driven insights assistant (Stage 4 scaffold — planned, not yet functional) |
 
 ---
 

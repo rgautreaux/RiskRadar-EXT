@@ -1,4 +1,287 @@
+/* --- Enhanced Mobile Responsiveness for Map UI --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import '../../../../../UI_UX_STYLE_FILES/styles/tailwind.css';
+@import '../../../../../UI_UX_STYLE_FILES/styles/theme.css';
+/* UI_UX_STYLE_FILES styles imported for unified design system */
+@media (max-width: 700px) {
+    #risk-map-legend {
+        position: static;
+        margin-bottom: 10px;
+        border-radius: 6px;
+        box-shadow: none;
+        padding-bottom: 2px;
+    }
+    #legend-list li {
+        font-size: 0.98em;
+        padding: 6px 2px;
+    }
+    .map-popup-card {
+        min-width: 96vw;
+        max-width: 99vw;
+        left: 50%;
+        top: 8%;
+        padding: 10px 4px 10px 4px;
+        font-size: 0.97rem;
+        border-radius: 7px;
+    }
+    #risk-map-container {
+        height: 260px !important;
+        min-height: 120px;
+        border-radius: 6px;
+        margin: 0 0 10px 0 !important;
+    }
+    .btn, .btn-secondary {
+        padding: 8px 12px;
+        font-size: 0.98em;
+    }
+    .input, input[type="text"], input[type="email"], input[type="password"], select {
+        font-size: 0.98em;
+        padding: 7px 8px;
+    }
+}
+@media (max-width: 480px) {
+    #risk-map-container {
+        height: 160px !important;
+        min-height: 80px;
+        border-radius: 5px;
+        margin: 0 0 6px 0 !important;
+    }
+    .map-popup-card {
+        min-width: 99vw;
+        max-width: 100vw;
+        left: 50%;
+        top: 2%;
+        padding: 6px 1px 6px 1px;
+        font-size: 0.93rem;
+        border-radius: 5px;
+    }
+    #legend-list li {
+        font-size: 0.95em;
+        padding: 4px 1px;
+    }
+}
+/* --- Standardized UI Components --- */
+.btn {
+    display: inline-block;
+    font-family: inherit;
+    font-size: 1em;
+    font-weight: 500;
+    padding: 8px 20px;
+    border-radius: 6px;
+    border: none;
+    background: var(--accent-coral, #ef6f51);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(18,34,49,0.08);
+    cursor: pointer;
+    transition: background 0.15s, box-shadow 0.15s;
+}
+.btn:hover, .btn:focus-visible {
+    background: var(--accent-amber, #f2b441);
+    color: #122231;
+    outline: none;
+}
+.btn-secondary {
+    background: var(--panel-strong, #fff8ee);
+    color: var(--accent-coral, #ef6f51);
+    border: 1.5px solid var(--accent-coral, #ef6f51);
+}
+.btn-secondary:hover, .btn-secondary:focus-visible {
+    background: var(--accent-coral, #ef6f51);
+    color: #fff;
+}
+
+.input, input[type="text"], input[type="email"], input[type="password"], select {
+    font-family: inherit;
+    font-size: 1em;
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: 1.5px solid var(--line, #e0e0e0);
+    background: #fff;
+    color: var(--ink, #122231);
+    transition: border 0.15s, box-shadow 0.15s;
+}
+.input:focus, input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, select:focus {
+    border: 1.5px solid var(--accent-coral, #ef6f51);
+    box-shadow: 0 0 0 2px rgba(239,111,81,0.13);
+    outline: none;
+}
+
+.card {
+    background: var(--panel-strong, #fff8ee);
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(18,34,49,0.13);
+    padding: 22px 18px 18px 18px;
+    color: var(--ink, #122231);
+    margin-bottom: 18px;
+}
+/* Skeleton shimmer for map overlays */
+#map-skeleton {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #f3efe5 25%, #f8f2e8 50%, #f3efe5 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.2s infinite linear;
+    border-radius: 12px;
+    opacity: 0.7;
+}
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+/* Modern loading spinner for map overlays */
+#map-loading-spinner {
+    width: 44px;
+    height: 44px;
+    border: 5px solid #f3efe5;
+    border-top: 5px solid var(--accent-coral, #ef6f51);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+    display: block;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+/* Sticky map legend for better usability */
+#risk-map-legend {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--panel-strong, #fff8ee);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(18,34,49,0.06);
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+}
+.icon-slot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(239, 111, 81, 0.08);
+    margin-right: 8px;
+}
+
+.icon-badge {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent-coral);
+    color: #fff;
+    font-size: 0.8rem;
+    text-align: center;
+    line-height: 18px;
+    font-family: 'IBM Plex Mono', monospace;
+    margin-left: 4px;
+}
+
+/* Responsive breakpoints for wireframe rhythm */
+@media (max-width: 900px) {
+    .app-shell, .page-shell {
+        padding: 12px;
+        gap: 12px;
+    }
+    .topbar {
+        flex-direction: column;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 600px) {
+    .app-shell, .page-shell {
+        padding: 4px;
+        gap: 6px;
+    }
+    .topbar {
+        flex-direction: column;
+        gap: 6px;
+    }
+    .topnav a {
+        font-size: 0.95rem;
+        padding: 8px 10px;
+    }
+    .nav-icon {
+        width: 16px;
+        height: 16px;
+    }
+}
+/*
+====================================================
+ RiskRadar Web Design System — Layout Lane Utilities
+ Author: Rebecca (Layout Lane)
+ Last Updated: 2026-03-23
+----------------------------------------------------
+ This file contains global CSS variables, utility classes,
+ and design system tokens for wireframe-accurate UI/UX.
+ Only update this file for global/shared changes.
+====================================================
+*/
 :root {
+    /*
+    ----------------------------------------------------
+     Spacing Rhythm Tokens
+     Use these for margin/padding to ensure consistent layout.
+     Example: var(--space-md) for 24px spacing.
+    ----------------------------------------------------
+    */
+    :root {
+        --space-xs: 4px;
+        --space-sm: 8px;
+        --space-md: 24px;
+        --space-lg: 40px;
+        --space-xl: 64px;
+    }
+    /*
+    ----------------------------------------------------
+     Typography Utility Classes
+    ----------------------------------------------------
+    */
+    .text-xs { font-size: 0.75rem; }
+    .text-sm { font-size: 0.92rem; }
+    .text-md { font-size: 1.1rem; }
+    .text-lg { font-size: 1.4rem; font-weight: 500; }
+    .text-xl { font-size: 2rem; font-weight: 700; }
+    /*
+    ----------------------------------------------------
+     Icon Slot Utility Classes
+     Use .icon-slot for icon backgrounds, .icon-badge for badges.
+    ----------------------------------------------------
+    */
+    /*
+    ----------------------------------------------------
+     Layout Utility Classes
+    ----------------------------------------------------
+    */
+    .flex-row { display: flex; flex-direction: row; gap: var(--space-sm); }
+    .flex-col { display: flex; flex-direction: column; gap: var(--space-sm); }
+    .align-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .gap-xs { gap: var(--space-xs); }
+    .gap-sm { gap: var(--space-sm); }
+    .gap-md { gap: var(--space-md); }
+    .gap-lg { gap: var(--space-lg); }
+    .gap-xl { gap: var(--space-xl); }
+    /*
+    ----------------------------------------------------
+     Color Utility Classes
+    ----------------------------------------------------
+    */
+    .bg-coral { background: var(--accent-coral); color: #fff; }
+    .bg-amber { background: var(--accent-amber); color: #fff; }
+    .bg-teal { background: var(--accent-teal); color: #fff; }
+    .bg-panel { background: var(--panel); }
+    .bg-panel-strong { background: var(--panel-strong); }
+    .text-muted { color: var(--muted); }
+    .text-ink { color: var(--ink); }
+    /*
+    ----------------------------------------------------
+     End of Layout Lane Utility Section
+    ----------------------------------------------------
+    */
     --bg: #f3efe5;
     --ink: #122231;
     --muted: #5f6b77;
@@ -73,11 +356,24 @@ a {
     border-radius: 999px;
     text-decoration: none;
     background: rgba(255, 255, 255, 0.48);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .topnav a.is-active {
     background: var(--ink);
     color: white;
+}
+
+.nav-icon {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    object-fit: contain;
+    margin-right: 6px;
+    vertical-align: middle;
+    filter: drop-shadow(0 1px 2px rgba(18,34,49,0.08));
 }
 
 .page-shell {
@@ -528,5 +824,130 @@ dd {
     .topnav {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Marker Animation: Pulsing for active alerts */
+.pulse-marker {
+  position: relative;
+  z-index: 2;
+}
+.pulse-marker::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 24px;
+  height: 24px;
+  background: rgba(231, 76, 60, 0.25); /* fallback for high severity */
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  animation: pulse 1.2s infinite cubic-bezier(0.66, 0, 0, 1);
+  z-index: -1;
+}
+@keyframes pulse {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+  70% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
+  100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
+}
+
+/* Card-style popup for alert details */
+.map-popup-card {
+  position: absolute;
+  left: 50%;
+  top: 20%;
+  min-width: 260px;
+  max-width: 340px;
+  background: var(--theme-panel, #fffaf2);
+  color: var(--theme-ink, #122231);
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(18,34,49,0.13);
+  padding: 20px 18px 16px 18px;
+  z-index: 100;
+  transform: translate(-50%, 0);
+  font-size: 1rem;
+  outline: none;
+}
+.map-popup-card .popup-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: var(--theme-ink, #122231);
+  cursor: pointer;
+}
+.map-popup-card .popup-close:focus {
+  outline: 2px solid var(--theme-accent, #ef6f51);
+}
+/* --- Map Interactivity: Hover & Focus Styles --- */
+/* Plotly map markers (SVG .point) */
+#risk-map .scatterlayer .point:hover,
+#risk-map .scatterlayer .point:focus-visible {
+    stroke: var(--accent-coral, #ef6f51);
+    stroke-width: 3px;
+    filter: drop-shadow(0 0 6px rgba(239,111,81,0.18));
+    cursor: pointer;
+}
+
+/* Overlay toggles and region filter */
+#risk-map-container input[type="checkbox"]:focus-visible,
+#risk-map-container select:focus-visible {
+    outline: 2px solid var(--accent-coral, #ef6f51);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px rgba(239,111,81,0.13);
+}
+#risk-map-container input[type="checkbox"]:hover,
+#risk-map-container select:hover {
+    box-shadow: 0 0 0 2px rgba(239,111,81,0.10);
+}
+
+/* Popup close button hover */
+.map-popup-card .popup-close:hover {
+    color: var(--accent-coral, #ef6f51);
+    background: rgba(239,111,81,0.08);
+    border-radius: 50%;
+}
+
+/* Optional: legend item hover if interactive in future */
+#risk-map-legend li:hover {
+    background: rgba(239,111,81,0.06);
+    border-radius: 6px;
+}
+/* Responsive map container and popup */
+@media (max-width: 700px) {
+    #risk-map-container {
+        height: 320px !important;
+        min-height: 220px;
+        max-width: 100vw;
+        border-radius: 8px;
+        margin: 0 0 18px 0 !important;
+    }
+    .map-popup-card {
+        min-width: 90vw;
+        max-width: 98vw;
+        left: 50%;
+        top: 8%;
+        padding: 12px 8px 10px 8px;
+        font-size: 0.98rem;
+        border-radius: 8px;
+    }
+}
+@media (max-width: 480px) {
+    #risk-map-container {
+        height: 220px !important;
+        min-height: 120px;
+        border-radius: 6px;
+        margin: 0 0 10px 0 !important;
+    }
+    .map-popup-card {
+        min-width: 98vw;
+        max-width: 100vw;
+        left: 50%;
+        top: 4%;
+        padding: 8px 2px 8px 2px;
+        font-size: 0.93rem;
+        border-radius: 6px;
     }
 }

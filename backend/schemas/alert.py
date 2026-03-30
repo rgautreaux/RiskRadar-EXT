@@ -1,5 +1,12 @@
+
 from pydantic import BaseModel, ConfigDict
-from typing import Optional
+from typing import Any, Optional
+
+# Stage 3: Map Alert List Output
+class MapAlertListOut(BaseModel):
+    alerts: list["AlertOut"]
+    region: str | dict[str, Any]
+    generated_at: str
 
 
 class AlertOut(BaseModel):

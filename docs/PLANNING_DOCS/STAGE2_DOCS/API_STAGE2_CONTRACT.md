@@ -6,8 +6,8 @@ This document defines the Stage 2 API contract targets for personal risk scoring
 
 - Base URL: configured by each client runtime.
 - API prefix: `/api/v1`
-- Contract status: policy locked and client scaffolding integrated; backend route implementation is in progress.
-- Compatibility requirement: Stage 1 `GET /api/v1/alerts` behavior must remain stable while Stage 2 adds dedicated metadata routes.
+- Contract status: **fully implemented** — route handlers are live, tested, and verified.
+- Compatibility requirement: Stage 1 `GET /api/v1/alerts` behavior is preserved; Stage 2 adds dedicated metadata routes.
 
 ## Stage 2 Architecture and Route Usage Flow
 
@@ -47,10 +47,12 @@ Example:
 
 ## Endpoint Matrix
 
-| Route | Method | Request Inputs | Target Success Response | Common Error Cases | Frontend/Mobile Fallback Expectation |
+> **Note:** Actual implemented routes differ slightly from the original planned paths. The table below reflects the as-built implementation.
+
+| Route | Method | Request Inputs | Response | Common Error Cases | Frontend/Mobile Fallback |
 |---|---|---|---|---|---|
-| `/api/v1/users/{user_id}/risk-score` | GET | Path: `user_id:int` | `RiskScoreOut` | `404` user not found, validation failure, timeout/non-2xx, malformed JSON | Return `null` score payload and render non-blocking "risk data unavailable" state. |
-| `/api/v1/alerts/prioritized` | GET | Query: `user_id:int`, `limit?` (recommended `1-50`) | `list[PrioritizedAlertOut]` | missing/invalid query params, timeout/non-2xx, malformed JSON | Return empty list and keep page/app interactive with safe message. |
+| `/api/v1/risk/score/{user_id}` | GET | Path: `user_id:int`, Query: `radius_km?` (default 150.0) | `RiskScoreOut` | `404` user not found, timeout/non-2xx, malformed JSON | Return `null` score payload and render non-blocking "risk data unavailable" state. |
+| `/api/v1/alerts/prioritized/{user_id}` | GET | Path: `user_id:int`, Query: `radius_km?`, `limit?` | `PrioritizedAlertListOut` | `404` user not found, timeout/non-2xx, malformed JSON | Return empty list and keep page/app interactive with safe message. |
 | `/api/v1/alerts` | GET | Existing Stage 1 query params (`alert_type?`, `severity?`, `source?`, `limit`, `offset`) | `list[AlertOut]` (unchanged Stage 1 contract) | existing Stage 1 error paths | Preserve Stage 1 behavior; no Stage 2 metadata requirement on this route. |
 
 ## Request/Response Schema Snapshot
@@ -87,11 +89,12 @@ These schema snapshots are Stage 2 target contracts derived from locked policy a
 ## Backend Source References
 
 - API prefix/router wiring: `backend/api/router.py`
-- Stage 2 scoring service scaffold: `backend/services/risk_scoring.py`
-- Stage 2 prioritization service scaffold: `backend/services/alert_prioritization.py`
-- Stage 2 scaffold tests: `backend/tests/test_stage2_scaffolding.py`
+- Risk scoring implementation: `backend/scoring/__init__.py`
+- Alert prioritization implementation: `backend/scoring/prioritization.py`
+- Stage 2 service modules: `backend/services/risk_scoring.py`, `backend/services/alert_prioritization.py`
+- Stage 2 tests: `backend/tests/test_stage2_scaffolding.py`, `backend/tests/test_risk_scoring.py`, `backend/tests/test_alert_prioritization.py`, `backend/tests/test_api_map.py`
 - Stage 2 policy lock: `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`
 
 ## Implementation Status Note
 
-As of 2026-03-17, Stage 2 client wrappers are integrated and service-level deterministic scaffolding exists. Route handlers for Stage 2 endpoints are tracked as in-progress and this contract is used as the implementation target.
+As of 2026-03-24, Stage 2 is fully implemented and verified. Backend route handlers for `/api/v1/risk/score/{user_id}` and `/api/v1/alerts/prioritized/{user_id}` are live. All backend tests pass. Web and mobile clients surface risk scores and prioritized alerts with fallback-safe integration.

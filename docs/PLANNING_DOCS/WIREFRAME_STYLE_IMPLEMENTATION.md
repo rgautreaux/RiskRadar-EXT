@@ -204,6 +204,37 @@ Gate A completion definition:
 | 2026-03-17 | Gate A artifact drafting started and consistency pass initiated | Rebecca | Open | Awaiting Max co-review and final approval |
 | 2026-03-17 | Rebecca completed Gate A assigned work and submitted review package | Rebecca | In Review | Ready-to-send review note prepared for Max |
 
+## Wireframe/UI/UX Accuracy Workflow (2026-03-24)
+
+### 1. Side-by-Side Screenshot Comparison
+- For each major page (Dashboard, Alerts, Summaries, Profile, Login, Register, Risk, Map, Forecast, Assistant, Alert Detail, Summary Detail):
+  - Open the implemented page and the corresponding wireframe (see wireframe_icons/RiskRadar_Web_Wireframes.png) side by side.
+  - Take screenshots of both and annotate any differences in layout, spacing, or visual hierarchy.
+  - Save annotated screenshots in a dedicated folder (e.g., docs/UI_COMPARISON_EVIDENCE/).
+  - Repeat after each major feature or sprint.
+
+### 2. Figma/XD/Sketch Inspect Tool Usage
+- Use inspect tools to extract spacing, font sizes, and color values from the wireframes.
+- Cross-check these values against CSS in app.css and theme_tokens.css.
+- Document mismatches and flag for correction or rationale.
+
+### 3. CSS Variables for Theme and Spacing
+- Ensure all theme colors and spacing values are defined as CSS variables in theme_tokens.css and referenced in app.css.
+- Refactor any hardcoded values to use variables.
+- Update DESIGN_TOKENS_AND_SPACING.md to document mapping between design tokens and CSS variables.
+
+### 4. Document UI Patterns and Deviations
+- Maintain this document and DESIGN_TOKENS_AND_SPACING.md with:
+  - Standard UI patterns (buttons, cards, spacing, typography, icon usage)
+  - Any deviations from the wireframe, with annotated screenshots, rationale, date, and author.
+- Update after each review or significant UI change.
+
+### 5. Verification
+- All major pages have up-to-date screenshot comparisons.
+- CSS variables are the single source of truth for theme and spacing.
+- Figma/XD/Sketch inspect tool values match implemented CSS.
+- UI patterns and deviations are documented and current.
+
 ## Execution Order by Role
 
 ## Phase 0: Kickoff and Mapping (All Roles)
@@ -381,6 +412,18 @@ Phase 1:
 - [ ] Global CSS foundation updated
 - [ ] Hybrid icon classes implemented
 - [ ] Route smoke test passed
+
+## Reference Guides
+- See docs/PLANNING_DOCS/DESIGN_TOKENS_AND_SPACING.md for spacing and design tokens
+- See docs/PLANNING_DOCS/ACCESSIBILITY_AND_KEYBOARD_GUIDE.md for accessibility and keyboard navigation
+- See wireframe_icons/README.md for icon asset management
+
+## Known Gaps & Open Questions
+- [ ] Confirm final icon asset list for all navigation and dashboard regions
+- [ ] Clarify mobile breakpoint behavior for multi-row navigation
+- [ ] Review color contrast for new accent/background combinations
+- [ ] Accessibility: Are all icon alt texts descriptive enough for screen readers?
+- [ ] Any new shared utility classes needed for upcoming templates?
 
 Phase 2:
 - [ ] Dashboard parity

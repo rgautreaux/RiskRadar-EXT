@@ -1,3 +1,17 @@
+
+/*
+====================================================
+ RiskRadar Web Layout Shell — Layout Lane
+ Author: Rebecca (Layout Lane)
+ Last Updated: 2026-03-23
+----------------------------------------------------
+ This file defines the shared shell, navigation, and
+ section hierarchy for all web pages. Only update this
+ file for global/layout changes. Page content is injected
+ via rr_render_layout_start and rr_render_layout_end.
+====================================================
+*/
+
 <?php
 
 function rr_render_layout_start(string $title, string $activePage): void
@@ -22,17 +36,36 @@ function rr_render_layout_start(string $title, string $activePage): void
                     <a class="brand" href="index.php">RiskRadar Web</a>
                 </div>
                 <nav class="topnav" aria-label="Primary navigation">
-                    <a class="<?php echo $activePage === 'dashboard' ? 'is-active' : ''; ?>" href="index.php">Dashboard</a>
-                    <a class="<?php echo $activePage === 'alerts' ? 'is-active' : ''; ?>" href="alerts.php">Alerts</a>
-                    <a class="<?php echo $activePage === 'smart_alerts' ? 'is-active' : ''; ?>" href="smart_alerts.php">Smart Alerts</a>
-                    <a class="<?php echo $activePage === 'summaries' ? 'is-active' : ''; ?>" href="summaries.php">Summaries</a>
-                    <a class="<?php echo $activePage === 'profile' ? 'is-active' : ''; ?>" href="profile.php">Profile</a>
-                    <a class="<?php echo $activePage === 'risk' ? 'is-active' : ''; ?>" href="risk.php">Risk</a>
-                    <a class="<?php echo $activePage === 'map' ? 'is-active' : ''; ?>" href="map.php">Map</a>
-                    <a class="<?php echo $activePage === 'forecast' ? 'is-active' : ''; ?>" href="forecast.php">Forecast</a>
-                    <a class="<?php echo $activePage === 'assistant' ? 'is-active' : ''; ?>" href="assistant.php">Assistant</a>
-                    <a class="<?php echo $activePage === 'login' ? 'is-active' : ''; ?>" href="login.php">Login</a>
-                    <a class="<?php echo $activePage === 'register' ? 'is-active' : ''; ?>" href="register.php">Register</a>
+                    <a class="<?php echo $activePage === 'dashboard' ? 'is-active' : ''; ?>" href="index.php">
+                        <img src="assets/icons/home.svg" alt="Dashboard Icon" class="nav-icon"> Dashboard
+                    </a>
+                    <a class="<?php echo $activePage === 'alerts' ? 'is-active' : ''; ?>" href="alerts.php">
+                        <img src="assets/icons/notification.svg" alt="Alerts Icon" class="nav-icon"> Alerts
+                    </a>
+                    <a class="<?php echo $activePage === 'summaries' ? 'is-active' : ''; ?>" href="summaries.php">
+                        <img src="assets/icons/chart.svg" alt="Summaries Icon" class="nav-icon"> Summaries
+                    </a>
+                    <a class="<?php echo $activePage === 'profile' ? 'is-active' : ''; ?>" href="profile.php">
+                        <img src="assets/icons/profile.svg" alt="Profile Icon" class="nav-icon"> Profile
+                    </a>
+                    <a class="<?php echo $activePage === 'risk' ? 'is-active' : ''; ?>" href="risk.php">
+                        <img src="assets/icons/warning.svg" alt="Risk Icon" class="nav-icon"> Risk
+                    </a>
+                    <a class="<?php echo $activePage === 'map' ? 'is-active' : ''; ?>" href="map.php">
+                        <img src="assets/icons/location-pin.svg" alt="Map Icon" class="nav-icon"> Map
+                    </a>
+                    <a class="<?php echo $activePage === 'forecast' ? 'is-active' : ''; ?>" href="forecast.php">
+                        <img src="assets/icons/weather.svg" alt="Forecast Icon" class="nav-icon"> Forecast
+                    </a>
+                    <a class="<?php echo $activePage === 'assistant' ? 'is-active' : ''; ?>" href="assistant.php">
+                        <img src="assets/icons/assistant.svg" alt="Assistant Icon" class="nav-icon"> Assistant
+                    </a>
+                    <a class="<?php echo $activePage === 'login' ? 'is-active' : ''; ?>" href="login.php">
+                        <img src="assets/icons/login.svg" alt="Login Icon" class="nav-icon"> Login
+                    </a>
+                    <a class="<?php echo $activePage === 'register' ? 'is-active' : ''; ?>" href="register.php">
+                        <img src="assets/icons/register.svg" alt="Register Icon" class="nav-icon"> Register
+                    </a>
                 </nav>
             </header>
             <main class="page-shell">

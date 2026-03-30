@@ -239,3 +239,94 @@ Please discuss and agree on:
 2. **If yes, which option do we use?** (Option B or C are recommended)
 3. **Who will perform the update and run tests?**
 4. **How often should we check for upstream changes going forward?**
+
+---
+
+# 2026 Team6 Backend Sync Review & Action Plan
+
+## Summary of Team6 Changes
+
+The Team6 backend has diverged significantly from this project, with major changes in:
+- API endpoints (alerts, location, risk)
+- Database models
+- Scrapers (NWS, AirNow, EPA, FIRMS, generic)
+- Services (alert prioritization, risk scoring)
+- Security/authentication
+- Configuration and templates
+- Test coverage
+
+**A full overwrite or subtree merge is NOT recommended.** The safest approach is targeted, file-by-file review and selective merging (Option B/C), as outlined below.
+
+---
+
+## Team6 Improvements: Merge Recommendation Table
+
+| File/Area                          | Likely Team6 Improvements                | Recommended Action for Merge/Update                | Notes/Feature Examples                        |
+|-------------------------------------|------------------------------------------|---------------------------------------------------|-----------------------------------------------|
+| backend/api/alerts.py               | Bug fixes, new endpoints, logic updates  | Review and merge relevant changes                 | Improved alert handling, new API features     |
+| backend/api/location.py             | New/updated location logic               | Merge if you need location-based features         | Geo features, location filtering              |
+| backend/api/risk.py                 | Risk calculation improvements            | Merge if risk logic is better or more robust      | More accurate risk scoring                    |
+| backend/db/models.py                | Schema changes, optimizations            | Merge if compatible with your DB and features     | New fields, better relationships              |
+| backend/services/alert_prioritization.py | Improved prioritization algorithms     | Merge logic improvements, test thoroughly         | More relevant alerts surfaced                 |
+| backend/services/risk_scoring.py    | Enhanced scoring logic                   | Merge if scoring is more accurate or flexible     | Customizable scoring, bug fixes               |
+| backend/scrapers/nws_scraper.py     | Scraper bug fixes, new data fields       | Merge for better data coverage                    | More robust NWS data                          |
+| backend/scrapers/airnow_scraper.py  | Scraper improvements                     | Merge for better air quality data                 | Expanded data, error handling                 |
+| backend/scrapers/epa_scraper.py     | Scraper improvements                     | Merge for better EPA data                         | New pollutants, better error handling         |
+| backend/scrapers/firms_scraper.py   | Scraper improvements                     | Merge for better wildfire data                    | More accurate fire alerts                     |
+| backend/scrapers/generic_api_scraper.py | API scraping improvements              | Merge if you use generic APIs                     | Broader data source support                   |
+| backend/llm/summarizer.py           | Summarization pipeline updates           | Merge for better summaries                        | Improved LLM prompts, summary quality         |
+| backend/config/settings.py          | New settings, bug fixes                  | Merge if settings are relevant                    | More flexible configuration                   |
+| backend/config/sources.yaml         | New/updated data sources                 | Merge for more/better data                        | Additional sources, updated endpoints         |
+| backend/auth/security.py            | Security patches, JWT, hashing           | Merge for improved security                       | Stronger auth, password handling              |
+| backend/templates/base.html         | UI/UX improvements                       | Merge if you use web frontend                     | Better user experience                        |
+| backend/templates/summaries.html    | UI/UX improvements                       | Merge if you use web frontend                     | Improved summary display                      |
+| backend/schemas/user.py             | User schema updates                      | Merge if you need new user features               | More user fields, validation                  |
+| backend/schemas/risk_score.py       | Risk score schema updates                | Merge if you use risk scoring                     | More detailed scoring                         |
+| backend/tests/                      | New/updated tests                        | Merge to improve test coverage                    | More robust regression testing                |
+
+---
+
+## Step-by-Step Plan: Team6 Backend Sync & Feature Adoption
+
+### Phase 1: Preparation & Prioritization
+1. Assign team members to review specific backend areas (API, scrapers, models, services, config, templates, security, tests).
+2. Commit and push all local changes to your branch.
+3. Fetch latest Team6 changes and generate a fresh diff:
+   - `git fetch team6`
+   - `git diff HEAD team6/main -- backend/ > backend_diff.txt`
+4. Use the markdown table above to prioritize files/areas with the most impactful or relevant changes.
+
+### Phase 2: File-by-File Review & Merge
+5. For each prioritized file/area:
+   - Open the diff for that file (e.g., `git diff HEAD team6/main -- backend/api/alerts.py`).
+   - Decide as a team whether to fully adopt, partially merge, or skip the upstream changes.
+   - If adopting/merging:
+     - Use `git checkout team6/main -- <file>` for full adoption.
+     - For partial merges, use a visual diff tool (VS Code, meld, etc.) to manually integrate changes.
+     - For single-commit bug fixes, use `git cherry-pick <commit-hash>`.
+   - Resolve merge conflicts, preserving CMPS 357-specific features.
+   - Document the decision and rationale for each file in a shared changelog (e.g., `docs/GIT_RELATED_DOCS/TEAM6_MERGE_LOG.md`).
+
+### Phase 3: Testing & Validation
+6. After each file or logical group of files is merged, run the backend test suite:
+   - `cd backend`
+   - `python -m pytest -v`
+7. If tests fail, debug and resolve issues before proceeding.
+8. Perform manual testing for features not covered by automated tests (e.g., UI, API endpoints).
+
+### Phase 4: Finalization & Documentation
+9. Once all desired changes are merged and tested, update project documentation to reflect new features or changes.
+10. Summarize improvements adopted from Team6 in a team meeting or shared doc.
+11. Push all changes to your remote branch and create a pull request for team review.
+12. Plan periodic future syncs (e.g., monthly) to keep up with upstream improvements.
+
+### Verification
+- All automated tests pass after each merge step.
+- Manual feature testing for new/changed endpoints, scrapers, and UI.
+- Changelog is up to date and reviewed by the team.
+- Team review and approval of the final merged branch.
+
+### Further Considerations
+- Assign a "merge lead" to coordinate the process and resolve disputes.
+- Consider feature branches for risky merges.
+- Schedule a team review meeting after major merges for shared understanding.

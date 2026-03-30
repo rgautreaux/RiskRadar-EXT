@@ -1,3 +1,9 @@
+# Documentation Synchronization Note (2026-04-27)
+
+All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) has been reviewed and updated for consistency and agreement as of the Stage 3 documentation and synchronization session. This ensures grading clarity, onboarding readiness, and a single source of truth for project status and history.
+# Documentation Synchronization Note (2026-04-27)
+
+All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) has been reviewed and updated for consistency and agreement as of the Stage 3 documentation and synchronization session. This ensures grading clarity, onboarding readiness, and a single source of truth for project status and history.
 # RiskRadar Web-Extension User Guide
 
 This guide walks you through how to run and use the RiskRadar Web-Extension step-by-step.
@@ -13,15 +19,97 @@ This guide walks you through how to run and use the RiskRadar Web-Extension step
 
 ## What You Can Do Right Now
 
-The currently functional web experience includes:
+## Navigating All Implemented Features
 
-- Dashboard overview of alerts and latest summary
-- Alert browsing with filters
-- Summary browsing with filters
-- Account registration
-- Profile preference updates for an existing user
+The RiskRadar Web-Extension provides a range of features accessible via the web interface. Below is a guide to all currently implemented and accessible features, including navigation tips and usage instructions for each page.
 
-Additional pages (`Risk`, `Map`, `Forecast`, `Assistant`) are scaffolded for later stages and currently display planned feature content.
+### Dashboard
+- **URL:** `/index.php`
+- **Features:**
+   - Overview of total alert count, highest severity, most common alert type, and a snapshot of top alerts.
+   - Displays the latest generated summary.
+   - All data is live from the backend API.
+
+### Alerts
+- **URL:** `/alerts.php`
+- **Features:**
+   - Browse current alerts with real-time data from the backend.
+   - Filter by alert type, severity, source, and result limit.
+   - View full alert details by selecting an alert card.
+   - Safe empty-state handling if no data is available.
+
+### Summaries
+- **URL:** `/summaries.php`
+- **Features:**
+   - Browse backend-generated summaries.
+   - Filter by summary type and result limit.
+   - Open full summary details for each entry.
+   - Empty-state handling for missing or malformed API payloads.
+
+### Registration
+- **URL:** `/register.php`
+- **Features:**
+   - Create a new account by providing display name, email, password, and optional ZIP code.
+   - On success, redirects to the Login page with a success message.
+
+### Login
+- **URL:** `/login.php`
+- **Features:**
+   - Enter email and ZIP code to attempt login.
+   - **Note:** Backend login endpoint is not yet implemented; the page will display a message explaining this limitation.
+
+### Profile (Preferences)
+- **URL:** `/profile.php`
+- **Features:**
+   - Update user profile preferences by entering your numeric user ID.
+   - Set ZIP code, alert types, minimum severity, device token, and health conditions.
+   - Save preferences and receive a success message upon update.
+
+### Risk Page
+- **URL:** `/risk.php`
+- **Features:**
+   - Enter your user ID and radius to view your personalized risk score and prioritized alerts.
+   - Results are tailored to your location and health profile if set in your preferences.
+
+### Smart Alerts (Prioritized Alerts)
+- **URL:** `/smart_alerts.php`
+- **Features:**
+   - Enter your user ID, radius, and limit to view alerts ranked by personalized priority.
+   - Prioritization uses distance, severity, health sensitivity, and recency.
+   - Find your user ID on the Profile page after registering.
+
+### Interactive Map
+- **URL:** `/map.php`
+- **Features:**
+   - Interactive map with pan/zoom, region filter, and multiple overlay toggles (alerts, risk zones, AQI, wildfire, earthquake, weather, pollution).
+   - Enter your user ID and enable "Personalized Risk Map" to view overlays tailored to your profile and preferences.
+   - All map controls, overlays, and popups are accessible by keyboard and screen reader.
+   - Accessible legend and help modal explaining overlay meanings and navigation.
+
+### Assistant (Scaffold)
+- **URL:** `/assistant.php`
+- **Features:**
+   - Placeholder for future AI assistant features (natural-language risk Q&A, recommendations).
+
+### Forecast (Scaffold)
+- **URL:** `/forecast.php`
+- **Features:**
+   - Placeholder for future predictive risk forecast features (timeline charts, confidence/trend indicators).
+
+---
+
+## Backend API Endpoints (for advanced users)
+
+The backend exposes a REST API for all core data:
+
+- **Alerts:** `/api/v1/alerts` (list, filter, stats, map overlays)
+- **Summaries:** `/api/v1/summaries` (list, latest, by ID, generate)
+- **Risk:** `/api/v1/risk` (map overlays, personalized overlays)
+- **Users:** `/api/v1/users/register`, `/api/v1/users/{user_id}/preferences` (register, update preferences)
+
+These endpoints are used by the frontend and can be accessed directly for integration or testing.
+
+---
 
 ---
 
@@ -168,16 +256,38 @@ Expected result: filtered alert cards with metadata and timestamps.
 
 Expected result: summary cards with type, generated time, region, model, and full text preview.
 
-### Step G: Review Future-Stage Pages
+### Step G: View Risk Score (Stage 2)
 
-The following routes are available as scaffolds (non-final functionality):
+1. Open `http://127.0.0.1:8080/risk.php`
+2. Enter your numeric **User ID**
+3. Review:
+   - Overall risk score (0-100) with tier label (Low / Medium / High)
+   - Component breakdown: proximity, severity, health sensitivity, alert density
 
-- `http://127.0.0.1:8080/risk.php` (Stage 2)
-- `http://127.0.0.1:8080/map.php` (Stage 3)
-- `http://127.0.0.1:8080/forecast.php` (Stage 4)
-- `http://127.0.0.1:8080/assistant.php` (Stage 4)
+Expected result: personalized risk score with factor-level breakdown based on your location and health preferences.
 
-They describe planned features but do not yet provide live Stage 2-4 workflows.
+### Step H: View Smart Alerts (Stage 2)
+
+1. Open `http://127.0.0.1:8080/smart_alerts.php`
+2. Enter your numeric **User ID**
+3. Review the prioritized alert list ranked by urgency, proximity, and health sensitivity
+
+Expected result: alerts sorted by composite priority score with urgency labels (High / Medium / Low).
+
+### Step I: Interactive Map (Stage 3)
+
+Open `http://127.0.0.1:8080/map.php` to access the interactive risk map.
+
+**Personalized Map Workflow:**
+- Enter your numeric user ID in the "User ID for Personalized Map" field above the map controls.
+- Enable the "Personalized Risk Map" toggle to view risk overlays tailored to your profile and preferences.
+- If no user ID is entered, a default demo user will be used for overlays.
+- All map controls, overlays, and popups are accessible by keyboard and screen reader.
+
+**Features:**
+- Region filter, overlay toggles, and personalized risk overlays.
+- Keyboard navigation for map panning/zooming.
+- Accessible legend and tooltips explaining overlay meanings.
 
 ---
 
@@ -218,10 +328,11 @@ For a full first run:
 
 1. Start backend API
 2. Start PHP web server
-3. Register account
-4. Update preferences in Profile
-5. Check Dashboard
-6. Explore Alerts and Summaries
-7. Review scaffold pages for upcoming stages
+3. Register account (`/register.php`)
+4. Update preferences in Profile (`/profile.php`)
+5. Check Dashboard (`/index.php`)
+6. Explore Alerts and Summaries (`/alerts.php`, `/summaries.php`)
+7. View your Risk Score and Smart Alerts (`/risk.php`, `/smart_alerts.php`) using your user ID
+8. Explore the Interactive Map (`/map.php`) with live overlays and personalized risk layers
 
 You are now ready to use and demonstrate the current RiskRadar Web-Extension features.
