@@ -22,3 +22,13 @@ Prepare a staging environment for safe testing of email encryption migration, ro
 - Do not use real user data in staging unless anonymized.
 - Review staging setup and test results with backend team before production.
 - Document all procedures for future maintainers.
+
+---
+## TODOs / Checklist for Final Implementation
+
+- [ ] Set up staging database with anonymized/dummy data
+- [ ] Apply migration and rollback scripts in staging
+- [ ] Validate migration, rollback, and logging procedures
+- [ ] Test monitoring/alerting tools in staging
+- [ ] Document all test results, issues, and resolutions
+- [ ] Review staging setup and test results with backend team

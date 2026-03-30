@@ -33,3 +33,13 @@ class MigrationLog(Base):
 - Review log format and storage location with backend team.
 - Do not store sensitive data in logs.
 - Validate logging in staging before production.
+
+---
+## TODOs / Checklist for Final Implementation
+
+- [ ] Review and finalize migration logging logic with backend/security leads
+- [ ] Implement migration_log table in staging
+- [ ] Test logging of all migration actions and errors in staging
+- [ ] Ensure alerts trigger on failed or partial migrations
+- [ ] Confirm no sensitive data is stored in logs
+- [ ] Document all logging procedures and test results
