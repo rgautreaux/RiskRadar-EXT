@@ -1,4 +1,7 @@
 
+
+<link rel="stylesheet" href="/assets/app.css">
+<link rel="stylesheet" href="/assets/theme.css">
 <?php rr_render_layout_start('Forecast', 'forecast'); ?>
 
 <section class="page-heading">
@@ -14,12 +17,12 @@
     <h2 class="mb-2" style="color: var(--primary); font-family: 'Space Grotesk', Inter, Arial, sans-serif;">24–48 Hour Risk Forecast</h2>
     <!-- Forecasted condition icons row (mock data) -->
     <div class="flex items-center justify-between mb-2" style="gap: 0.5rem; max-width: 560px; margin: 0 auto 1.5rem auto;">
-        <img src="../UI_UX_STYLE_FILES/assets/svg/illustrations/weather.svg" alt="Weather" title="Weather" style="width: 38px; height: 38px;" />
-        <img src="../UI_UX_STYLE_FILES/assets/svg/illustrations/fire.svg" alt="Fire" title="Fire" style="width: 38px; height: 38px;" />
-        <img src="../UI_UX_STYLE_FILES/assets/svg/illustrations/air-quality.svg" alt="Air Quality" title="Air Quality" style="width: 38px; height: 38px;" />
-        <img src="../UI_UX_STYLE_FILES/assets/svg/illustrations/flood.svg" alt="Flood" title="Flood" style="width: 38px; height: 38px;" />
-        <img src="../UI_UX_STYLE_FILES/assets/svg/illustrations/pollen.svg" alt="Pollen" title="Pollen" style="width: 38px; height: 38px;" />
-        <img src="../UI_UX_STYLE_FILES/assets/svg/illustrations/earthquake.svg" alt="Earthquake" title="Earthquake" style="width: 38px; height: 38px;" />
+        <img src="/assets/illustrations/weather.svg" alt="Weather" title="Weather" style="width: 38px; height: 38px;" />
+        <img src="/assets/illustrations/fire.svg" alt="Fire" title="Fire" style="width: 38px; height: 38px;" />
+        <img src="/assets/illustrations/air-quality.svg" alt="Air Quality" title="Air Quality" style="width: 38px; height: 38px;" />
+        <img src="/assets/illustrations/flood.svg" alt="Flood" title="Flood" style="width: 38px; height: 38px;" />
+        <img src="/assets/illustrations/pollen.svg" alt="Pollen" title="Pollen" style="width: 38px; height: 38px;" />
+        <img src="/assets/illustrations/earthquake.svg" alt="Earthquake" title="Earthquake" style="width: 38px; height: 38px;" />
     </div>
     <svg width="100%" height="220" viewBox="0 0 560 220" aria-labelledby="forecastTitle forecastDesc" role="img" style="background: var(--accent); border-radius: var(--radius-md); box-shadow: var(--shadow-sm);">
         <title id="forecastTitle">Risk Forecast Timeline</title>
