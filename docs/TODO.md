@@ -60,7 +60,8 @@ Week-by-week sprint board for tracking delivery to the goal of having most imple
 ### In Progress
 
 - [ ] 🟡 User Email & Password Security: Implementation of preparatory work (scripts, migration/rollback plans, documentation) is in progress by Rebecca. All actions are staged, reversible, and pending backend/security lead review before any production changes. No overlap or destructive actions.
-- [ ] 🟡 User Email & Password Security: Implementation of final tasks (migration/rollback script review, staging environment testing, migration logging, documentation, compliance, and handoff) is in progress by Rebecca. All actions are staged/testing-only and pending backend/security lead review before any production changes. No overlap or destructive actions.
+ - [x] 🟢 User Email & Password Security: Phase 1 (preparatory and planning tasks) complete — all work documented, reviewed, and ready for staging/testing (Mar 30, 2026).
+ - [ ] 🟡 User Email & Password Security: Phase 2 (staging environment setup, migration/rollback script testing, validation, and documentation) is in progress by Rebecca. All actions are staged/testing-only and pending backend/security lead review before any production changes. No overlap or destructive actions.
 
 ### Done
  [x] 🟢 MVP scope locked, user stories and ownership defined (see milestone and planning docs)

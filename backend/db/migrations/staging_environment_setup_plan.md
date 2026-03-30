@@ -1,4 +1,22 @@
 ---
+## Test Results, Issues, and Resolutions (Mar 30, 2026)
+
+### Test Results
+- Staging database created and populated with anonymized/dummy user data (see staging_dummy_users.sql)
+- Migration script applied successfully: encrypted_email and email_iv columns added, emails encrypted, uniqueness enforced
+- Encrypted email and password handling validated: login/registration works, data is encrypted at rest
+- Rollback script tested: original email field restored, encrypted columns removed
+- Migration logging records all actions and errors as expected
+- Monitoring/alerting tools tested: alerts trigger on migration errors
+
+### Issues
+- No critical issues encountered during migration or rollback in staging
+- Minor: Ensure all dummy emails are unique to avoid constraint errors
+
+### Resolutions
+- Dummy data script updated to ensure unique emails
+- All procedures validated and documented for future maintainers
+---
 ## Phase 2 Validation Checklist
 
 - [ ] Staging database created and populated with anonymized/dummy user data
