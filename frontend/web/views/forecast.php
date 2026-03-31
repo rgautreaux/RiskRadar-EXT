@@ -1,4 +1,9 @@
 
+
+<link rel="stylesheet" href="/assets/app.css">
+<link rel="stylesheet" href="/assets/theme.css">
+
+<script src="/assets/forecast-location.js"></script>
 <?php rr_render_layout_start('Forecast', 'forecast'); ?>
 
 <section class="page-heading">
@@ -9,17 +14,40 @@
     <p class="muted">This page will surface 24-48 hour environmental risk forecasts and confidence/trend visuals.</p>
 </section>
 
+<section class="panel" style="background: var(--card); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 1.5rem; max-width: 700px; margin: 0 auto 2rem auto;">
+    <form id="forecast-location-form" class="flex items-center gap-2" style="margin-bottom: 0.5rem;">
+        <input id="forecast-location-input" type="text" placeholder="Enter ZIP or City, State" style="flex:1; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--muted); font-size: 1rem;" />
+        <button type="submit" style="padding: 0.5rem 1rem; border-radius: 6px; background: var(--primary); color: #fff; border: none; font-weight: 600;">Go</button>
+        <button type="button" id="use-my-location-btn" style="padding: 0.5rem 1rem; border-radius: 6px; background: var(--accent); color: var(--primary); border: none; font-weight: 600;">Use My Location</button>
+    </form>
+    <div id="forecast-location-status" style="font-size: 0.95rem; color: var(--muted-foreground); margin-bottom: 0.5rem;"></div>
+</section>
 
+
+
+<?php
+// Stage 4: Dynamic forecast data integration (planned)
+// This block will fetch forecast data from the backend once available.
+// Example usage:
+// $forecastResult = rr_api_get_forecast($config);
+// if ($forecastResult['ok']) {
+//     $forecastData = $forecastResult['data'];
+//     // Render dynamic forecast chart and details here
+// } else {
+//     // Render fallback or error message
+// }
+?>
 <section class="panel" style="background: var(--card); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 2rem 1.5rem; max-width: 700px; margin: 0 auto;">
     <h2 class="mb-2" style="color: var(--primary); font-family: 'Space Grotesk', Inter, Arial, sans-serif;">24–48 Hour Risk Forecast</h2>
-    <!-- Forecasted condition icons row (mock data) -->
+    <?php // TODO: Replace static mockup below with dynamic rendering when backend is ready ?>
+    <!-- Forecasted condition icons row (static for now) -->
     <div class="flex items-center justify-between mb-2" style="gap: 0.5rem; max-width: 560px; margin: 0 auto 1.5rem auto;">
-        <img src="../UI_UX_STYLE_FILES/assets/svg/illustrations/weather.svg" alt="Weather" title="Weather" style="width: 38px; height: 38px;" />
-        <img src="../UI_UX_STYLE_FILES/assets/svg/illustrations/fire.svg" alt="Fire" title="Fire" style="width: 38px; height: 38px;" />
-        <img src="../UI_UX_STYLE_FILES/assets/svg/illustrations/air-quality.svg" alt="Air Quality" title="Air Quality" style="width: 38px; height: 38px;" />
-        <img src="../UI_UX_STYLE_FILES/assets/svg/illustrations/flood.svg" alt="Flood" title="Flood" style="width: 38px; height: 38px;" />
-        <img src="../UI_UX_STYLE_FILES/assets/svg/illustrations/pollen.svg" alt="Pollen" title="Pollen" style="width: 38px; height: 38px;" />
-        <img src="../UI_UX_STYLE_FILES/assets/svg/illustrations/earthquake.svg" alt="Earthquake" title="Earthquake" style="width: 38px; height: 38px;" />
+        <img src="/assets/illustrations/weather.svg" alt="Weather" title="Weather" style="width: 38px; height: 38px;" />
+        <img src="/assets/illustrations/fire.svg" alt="Fire" title="Fire" style="width: 38px; height: 38px;" />
+        <img src="/assets/illustrations/air-quality.svg" alt="Air Quality" title="Air Quality" style="width: 38px; height: 38px;" />
+        <img src="/assets/illustrations/flood.svg" alt="Flood" title="Flood" style="width: 38px; height: 38px;" />
+        <img src="/assets/illustrations/pollen.svg" alt="Pollen" title="Pollen" style="width: 38px; height: 38px;" />
+        <img src="/assets/illustrations/earthquake.svg" alt="Earthquake" title="Earthquake" style="width: 38px; height: 38px;" />
     </div>
     <svg width="100%" height="220" viewBox="0 0 560 220" aria-labelledby="forecastTitle forecastDesc" role="img" style="background: var(--accent); border-radius: var(--radius-md); box-shadow: var(--shadow-sm);">
         <title id="forecastTitle">Risk Forecast Timeline</title>
@@ -27,9 +55,9 @@
         <!-- Axes -->
         <line x1="50" y1="180" x2="520" y2="180" stroke="var(--muted)" stroke-width="2" />
         <line x1="50" y1="40" x2="50" y2="180" stroke="var(--muted)" stroke-width="2" />
-        <!-- Confidence band -->
+        <!-- Confidence band (static for now) -->
         <polygon points="50,150 90,120 130,110 170,100 210,90 250,100 290,120 330,130 370,140 410,150 450,160 490,170 520,175 520,180 50,180" fill="var(--chart-1)" fill-opacity="0.18" />
-        <!-- Forecast line -->
+        <!-- Forecast line (static for now) -->
         <polyline points="50,150 90,120 130,110 170,100 210,90 250,100 290,120 330,130 370,140 410,150 450,160 490,170 520,175" fill="none" stroke="var(--primary)" stroke-width="3" />
         <!-- Trend arrow -->
         <polygon points="520,175 510,170 510,180" fill="var(--primary)" />
