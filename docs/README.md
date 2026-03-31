@@ -1,3 +1,15 @@
+# Stage 4 Forecast UI Completion & Documentation Update Session (2026-03-31)
+
+This session marks the completion of the Forecast UI and a comprehensive documentation update for Stage 4. The work included:
+- Completing the Forecast UI: supports local location default, manual input, risk-type grouping, personalized advice, and user profile integration for sensitivities/preferences.
+- User profile UI now allows updating health sensitivities/preferences, which are used for tailored advice and recommendations.
+- Backend and frontend are fully integrated for roundtrip updates.
+- All documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) updated and synchronized for grading, onboarding, and historical accuracy.
+- Verbatim transcript of this session added to TRANSCRIPT.md; REFLECTION.md updated with session summary and per-entry summaries.
+- AUTHORS.md updated with member contributions and roles for this session.
+- README.md and USER_GUIDE.md expanded with new Forecast UI and personalization features, implementation details, and importance.
+
+This ensures all top-level documentation is in sync and the Forecast UI is fully implemented and documented for Stage 4.
 ### Stage 3 Documentation and Synchronization Session (2026-03-31)
 
 This session executed a comprehensive documentation update and synchronization pass for Stage 3. The work included:

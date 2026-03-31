@@ -1,3 +1,35 @@
+# Stage 4 Forecast UI Completion & Documentation Update Session (2026-03-31)
+
+Rebecca: Verify if the implementation of the Forecast UI is complete, and IF SO, perform the following Documentation Updates for Rebecca now:
+
+- Add a summary of all developments of this session to all relevant files whlie preserving the existing formatting/style of the document (maintain chronological order and stage categorization)
+- Update TODO, STAGES, and all progress-tracking documentation
+- Add an entry in TRANSCRIPT with a verbatim, word-for-word, exact transcript of this session in its correct chronological place for historical accuracy
+- Run a pass and eliminate all duplicate TRANSCRIPT entries so that all entries are unique/distinct and are listed in the correct chronological order for historical accuracy
+- Update REFLECTION with a summary of this session, the developments made, why they were made, and how it betters the project all within its correct chronological place for historical accuracy
+- Update REFLECTION so it contains a summary of each TRANSCRIPT entry and are listed in the correct chronological order for historical accuracy
+- Run a pass and update all top-level documetation so that they are all in sync and agreement
+- Update AUTHORS with each member's contributions to the project so far and the roles they have assumed within project development in the correct chronological order for historical accuracy
+- Add sections to README regarding the implementation, functionality, execution, and importance of the major developments for this project and are listed in the correct chronological order and stage categorization for historical accuracy
+
+GitHub Copilot: The Forecast UI implementation is complete based on the requirements and the codebase review:
+- Local location is the default for forecasts.
+- Manual location input (ZIP, City+State) is supported.
+- All risk types are displayed and grouped.
+- Personalized advice is generated based on user sensitivities/preferences.
+- User profile UI allows updating sensitivities/preferences, which are used for tailored advice.
+- Backend and frontend are fully integrated for roundtrip updates.
+
+I will now proceed with the requested documentation updates:
+- Add a session summary to all relevant files, preserving formatting and order.
+- Update TODO, STAGES, and all progress-tracking docs.
+- Add a verbatim transcript of this session to TRANSCRIPT, ensuring uniqueness and correct order.
+- Update REFLECTION with a summary and per-TRANSCRIPT entry summaries, in order.
+- Sync all top-level documentation.
+- Update AUTHORS with member contributions and roles.
+- Add README sections on the new developments, with correct order and stage categorization.
+
+I will begin by updating the TODO and STAGES documentation.
 
 ## Stage 3 Documentation and Synchronization Session (2026-03-31)
 
