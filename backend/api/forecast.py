@@ -43,7 +43,11 @@ def get_forecast(
         if sev in ("high", "critical"): rl = "high"
         elif sev == "moderate": rl = "moderate"
         else: rl = "low"
-        risk_zones.append(MapRiskZone(centroid=centroid, risk_level=rl, risk_score=None))
+        # Add alert_type for frontend grouping/advice
+        zone = MapRiskZone(centroid=centroid, risk_level=rl, risk_score=None)
+        zone_dict = zone.dict()
+        zone_dict["alert_type"] = getattr(alert, "alert_type", None)
+        risk_zones.append(zone_dict)
     region_val = location or (f"{lat},{lon}" if lat and lon else "all")
     return MapRiskOverlayOut(
         risk_zones=risk_zones,

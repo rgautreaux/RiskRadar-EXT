@@ -104,18 +104,122 @@ function renderForecast(data, locationLabel) {
     svg += '</svg>';
     timelineDiv.innerHTML = svg;
 
-    // Travel advice (per type if high risk, else general)
-    let advice = '';
-    let highTypes = Object.entries(riskTypes).filter(([_, c]) => c.high > 0).map(([t]) => t);
-    if (highTypes.length > 0) {
-        advice += '⚠️ <b>High risk detected for: ' + highTypes.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(', ') + '.</b> ';
-        advice += 'Consider postponing travel or taking extra precautions for these risks. Pack emergency supplies, weather-appropriate clothing, and stay updated on alerts.';
-    } else if (riskCounts.moderate > 0) {
-        advice += '🛈 <b>Moderate risk.</b> Prepare for possible disruptions. Bring rain gear, masks (for air quality), and check local advisories.';
-    } else {
-        advice += '✅ <b>Low risk.</b> Conditions are generally safe. Pack as usual, but check for updates before travel.';
-    }
-    timelineDiv.innerHTML += `<div style=\"margin-top:1rem;font-size:1.05em;color:var(--primary)\">${advice}</div>`;
+
+    // Travel advice (risk-type and severity specific)
+    const adviceTemplates = {
+        weather: {
+            high: {
+                icon: '🌩️',
+                text: 'Severe weather expected. Pack rain gear, waterproof shoes, and check for local warnings. Delay travel if possible.'
+            },
+            moderate: {
+                icon: '🌦️',
+                text: 'Weather may be unsettled. Bring a light jacket or umbrella.'
+            },
+            low: {
+                icon: '☀️',
+                text: 'Weather is favorable. Standard travel preparations are sufficient.'
+            }
+        },
+        fire: {
+            high: {
+                icon: '🔥',
+                text: 'Wildfire risk is high. Pack N95 masks, check evacuation routes, and monitor local alerts.'
+            },
+            moderate: {
+                icon: '🔥',
+                text: 'Fire risk present. Avoid outdoor burning and stay alert.'
+            },
+            low: {
+                icon: '🔥',
+                text: 'Fire risk is low. No special precautions needed.'
+            }
+        },
+        flood: {
+            high: {
+                icon: '🌊',
+                text: 'Flooding possible. Avoid low-lying areas, pack waterproof bags, and check evacuation plans.'
+            },
+            moderate: {
+                icon: '🌊',
+                text: 'Flood risk moderate. Monitor weather and avoid risky routes.'
+            },
+            low: {
+                icon: '🌊',
+                text: 'Flood risk is low.'
+            }
+        },
+        'air quality': {
+            high: {
+                icon: '😷',
+                text: 'Air quality is poor. Limit outdoor activity, wear a mask, and keep windows closed.'
+            },
+            moderate: {
+                icon: '😷',
+                text: 'Air quality is moderate. Sensitive groups should take precautions.'
+            },
+            low: {
+                icon: '😷',
+                text: 'Air quality is good.'
+            }
+        },
+        pollen: {
+            high: {
+                icon: '🌾',
+                text: 'High pollen count. Take allergy medication and limit outdoor exposure.'
+            },
+            moderate: {
+                icon: '🌾',
+                text: 'Moderate pollen. Sensitive individuals should prepare.'
+            },
+            low: {
+                icon: '🌾',
+                text: 'Low pollen count.'
+            }
+        },
+        earthquake: {
+            high: {
+                icon: '🌎',
+                text: 'Earthquake risk is elevated. Review emergency plans and secure loose items.'
+            },
+            moderate: {
+                icon: '🌎',
+                text: 'Some seismic activity possible. Stay alert.'
+            },
+            low: {
+                icon: '🌎',
+                text: 'Earthquake risk is low.'
+            }
+        },
+        Other: {
+            high: { icon: '⚠️', text: 'High risk detected. Take extra precautions.' },
+            moderate: { icon: '🛈', text: 'Moderate risk. Prepare for possible disruptions.' },
+            low: { icon: '✅', text: 'Low risk. Standard preparations are sufficient.' }
+        }
+    };
+
+    let adviceHtml = '<div style="margin-top:1rem;font-size:1.05em;color:var(--primary)"><b>Travel Advice:</b><ul style="margin:0;padding-left:1.2em;">';
+    Object.entries(riskTypes).forEach(([type, counts]) => {
+        let sev = 'low';
+        if (counts.high > 0) sev = 'high';
+        else if (counts.moderate > 0) sev = 'moderate';
+        const tpl = (adviceTemplates[type.toLowerCase()] || adviceTemplates.Other)[sev];
+        adviceHtml += `<li>${tpl.icon} <b>${type.charAt(0).toUpperCase() + type.slice(1)}</b>: ${tpl.text}`;
+        // Example checklist for high risk
+        if (sev === 'high') {
+            adviceHtml += '<ul style="margin:0.3em 0 0.5em 1.2em;font-size:0.97em;">';
+            if (type.toLowerCase() === 'fire') adviceHtml += '<li>Pack N95 mask</li><li>Check evacuation routes</li><li>Monitor local alerts</li>';
+            if (type.toLowerCase() === 'weather') adviceHtml += '<li>Pack rain gear</li><li>Delay travel if possible</li>';
+            if (type.toLowerCase() === 'flood') adviceHtml += '<li>Avoid low-lying areas</li><li>Pack waterproof bags</li>';
+            if (type.toLowerCase() === 'air quality') adviceHtml += '<li>Wear a mask</li><li>Limit outdoor activity</li>';
+            if (type.toLowerCase() === 'pollen') adviceHtml += '<li>Take allergy medication</li>';
+            if (type.toLowerCase() === 'earthquake') adviceHtml += '<li>Review emergency plans</li><li>Secure loose items</li>';
+            adviceHtml += '</ul>';
+        }
+        adviceHtml += '</li>';
+    });
+    adviceHtml += '</ul></div>';
+    timelineDiv.innerHTML += adviceHtml;
 }
     // Travel advice (simple rules based on risk)
     let advice = '';
