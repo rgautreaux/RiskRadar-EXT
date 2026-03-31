@@ -13,6 +13,7 @@ import {
   ActivityIndicator,
   Alert
 } from 'react-native';
+import PrimaryButton from '@/components/ui/PrimaryButton';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/theme';
@@ -185,13 +186,12 @@ export default function RegistrationScreen() {
               </Text>
             </View>
 
-            <TouchableOpacity style={styles.registerButton} onPress={handleRegister} activeOpacity={0.8} disabled={isSubmitting}>
-              {isSubmitting ? (
-                <ActivityIndicator color={palette.white} />
-              ) : (
-                <Text style={styles.registerButtonText}>Create Account</Text>
-              )}
-            </TouchableOpacity>
+            <PrimaryButton
+              label={isSubmitting ? '...' : 'Create Account'}
+              onPress={handleRegister}
+              disabled={isSubmitting}
+              loading={isSubmitting}
+            />
           </View>
 
           <View style={styles.footerContainer}>
