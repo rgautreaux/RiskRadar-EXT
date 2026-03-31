@@ -1,4 +1,10 @@
-<?php rr_render_layout_start('Register', 'register'); ?>
+<?php
+// Route guard: Only allow access if coming from login.php (via HTTP_REFERER)
+if (!isset($_SERVER['HTTP_REFERER']) || strpos($_SERVER['HTTP_REFERER'], 'login.php') === false) {
+    header('Location: login.php');
+    exit();
+}
+rr_render_layout_start('Register', 'register'); ?>
 
 <section class="auth-wrap">
     <article class="auth-panel panel">

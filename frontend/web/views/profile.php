@@ -22,7 +22,6 @@
                 <p class="eyebrow">Write path</p>
                 <h2>Update preferences</h2>
             </div>
-            <a href="register.php">Need an account? Register</a>
         </div>
         <form method="post" action="profile.php" class="form-stack">
             <input type="hidden" name="csrf_token" value="<?php echo e(rr_csrf_token()); ?>">

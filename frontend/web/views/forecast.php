@@ -2,6 +2,8 @@
 
 <link rel="stylesheet" href="/assets/app.css">
 <link rel="stylesheet" href="/assets/theme.css">
+
+<script src="/assets/forecast-location.js"></script>
 <?php rr_render_layout_start('Forecast', 'forecast'); ?>
 
 <section class="page-heading">
@@ -10,6 +12,15 @@
         <h1>Predictive Risk Forecast</h1>
     </div>
     <p class="muted">This page will surface 24-48 hour environmental risk forecasts and confidence/trend visuals.</p>
+</section>
+
+<section class="panel" style="background: var(--card); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 1.5rem; max-width: 700px; margin: 0 auto 2rem auto;">
+    <form id="forecast-location-form" class="flex items-center gap-2" style="margin-bottom: 0.5rem;">
+        <input id="forecast-location-input" type="text" placeholder="Enter ZIP or City, State" style="flex:1; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--muted); font-size: 1rem;" />
+        <button type="submit" style="padding: 0.5rem 1rem; border-radius: 6px; background: var(--primary); color: #fff; border: none; font-weight: 600;">Go</button>
+        <button type="button" id="use-my-location-btn" style="padding: 0.5rem 1rem; border-radius: 6px; background: var(--accent); color: var(--primary); border: none; font-weight: 600;">Use My Location</button>
+    </form>
+    <div id="forecast-location-status" style="font-size: 0.95rem; color: var(--muted-foreground); margin-bottom: 0.5rem;"></div>
 </section>
 
 

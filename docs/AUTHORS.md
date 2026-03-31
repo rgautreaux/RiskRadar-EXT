@@ -1,3 +1,19 @@
+## Stage 3 Documentation and Synchronization Session (2026-03-31)
+
+### Rebecca Gautreaux
+- Led project management, documentation, and web frontend implementation for Stage 3
+- Coordinated and executed the documentation update and synchronization pass across all top-level files for Phase 5
+- Implemented advanced map UI/UX features (keyboard/touch zoom/pan, dark mode, accessibility, responsive overlays)
+- Ensured all design tokens, iconography, and spacing rules are consistently applied and documented
+- Finalized onboarding and handoff materials for graders and new contributors
+- Authored foundational project documentation files in the CMPS 357 workspace (`AUTHORS.md`, `EXAMPLES.md`, `INSTRUCTIONS.md`, `REFLECTION.md`, `STAGES.md`, `TRANSCRIPT.md`)
+- Updated project scheduling metadata in `README.md` during early planning alignment
+
+### Max Compeaux
+- Contributed to backend planning, documentation, and QA for Stage 3
+- Reviewed and verified documentation updates for accuracy and completeness
+- Supported synchronization of planning, contract, and evidence documentation for Stage 3 deliverables
+- Participated in Stage 3 Phase 5 documentation and evidence organization
 
 
 # Stage 4 Planning and Asset Integration Session (2026-03-26)

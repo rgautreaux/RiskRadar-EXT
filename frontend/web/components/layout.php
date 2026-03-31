@@ -63,9 +63,6 @@ function rr_render_layout_start(string $title, string $activePage): void
                     <a class="<?php echo $activePage === 'login' ? 'is-active' : ''; ?>" href="login.php">
                         <img src="assets/icons/profile.svg" alt="Login Icon" class="nav-icon"> Login
                     </a>
-                    <a class="<?php echo $activePage === 'register' ? 'is-active' : ''; ?>" href="register.php">
-                        <img src="assets/icons/plus.svg" alt="Register Icon" class="nav-icon"> Register
-                    </a>
                 </nav>
             </header>
             <main class="page-shell">
