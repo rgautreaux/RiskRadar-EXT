@@ -162,12 +162,26 @@ function rr_validate_preferences(array $post): array
     }));
     $alertTypes = array_values(array_unique($alertTypes));
 
+    // Health conditions: allow only known keys
+    $allowedHealth = [
+        'asthma', 'copd', 'allergies', 'heart', 'elderly', 'pregnant', 'children', 'immunocompromised'
+    ];
+    $healthConditions = $post['health_conditions'] ?? [];
+    if (!is_array($healthConditions)) {
+        $healthConditions = [];
+    }
+    $healthConditions = array_values(array_filter($healthConditions, function ($value) use ($allowedHealth) {
+        return is_string($value) && in_array($value, $allowedHealth, true);
+    }));
+    $healthConditions = array_values(array_unique($healthConditions));
+
     $data = [
         'user_id' => filter_var($post['user_id'] ?? null, FILTER_VALIDATE_INT),
         'zip_code' => trim((string) ($post['zip_code'] ?? '')),
         'alert_types' => $alertTypes,
         'notify_severity' => trim((string) ($post['notify_severity'] ?? '')),
         'device_token' => trim((string) ($post['device_token'] ?? '')),
+        'health_conditions' => $healthConditions,
     ];
     $errors = [];
 

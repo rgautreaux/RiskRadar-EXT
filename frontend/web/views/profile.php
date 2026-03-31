@@ -61,6 +61,31 @@
                 <span>Device token</span>
                 <input type="text" name="device_token" maxlength="255" value="<?php echo e((string) ($preferencesForm['device_token'] ?? '')); ?>">
             </label>
+            <fieldset>
+                <legend>Health sensitivities/preferences</legend>
+                <div class="checkbox-grid">
+                    <?php
+                    // Define available health conditions (should match backend logic)
+                    $healthConditions = [
+                        'asthma' => 'Asthma',
+                        'copd' => 'COPD',
+                        'allergies' => 'Allergies',
+                        'heart' => 'Heart Disease',
+                        'elderly' => 'Elderly',
+                        'pregnant' => 'Pregnant',
+                        'children' => 'Children',
+                        'immunocompromised' => 'Immunocompromised',
+                    ];
+                    $selectedHealth = $preferencesForm['health_conditions'] ?? [];
+                    ?>
+                    <?php foreach ($healthConditions as $key => $label) : ?>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="health_conditions[]" value="<?php echo e($key); ?>" <?php echo in_array($key, $selectedHealth, true) ? 'checked' : ''; ?>>
+                            <span><?php echo e($label); ?></span>
+                        </label>
+                    <?php endforeach; ?>
+                </div>
+            </fieldset>
             <button class="button-primary" type="submit">Save preferences</button>
         </form>
 
