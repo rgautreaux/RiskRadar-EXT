@@ -1,0 +1,1 @@
+import('./ai-assistant-widget.jsx');

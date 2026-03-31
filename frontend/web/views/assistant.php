@@ -1,10 +1,10 @@
-
 <?php rr_render_layout_start('AI Assistant', 'assistant'); ?>
 
 <!-- RiskRadar AI Assistant Widget Assets -->
 <link rel="stylesheet" href="/public/assets/index.css">
 <link rel="modulepreload" href="/public/assets/index-CbcLeLl0.js">
 <script type="module" src="/public/assets/index-CbcLeLl0.js" defer></script>
+<script type="module" src="/public/assets/ai-assistant-widget.js" defer></script>
 
 <section class="page-heading">
     <div>
