@@ -17,6 +17,7 @@ import { Colors, Spacing, Radius, Shadows } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 // Import notification panel art
 const alertNotifArt = require('@/assets/icons/navigation/RiskRadar_ALERT_NotifWindow.png');
+const standardNotifArt = require('@/assets/icons/navigation/RiskRadar_STND_NotifWIndow.png');
 
 /**
  * ModalScreen presents a branded notification details surface.
@@ -85,10 +86,10 @@ export default function ModalScreen() {
               {/* Alert Icon and Title */}
               <View style={styles.alertHeader}>
                 <View style={styles.alertIconArtContainer}>
-                  <img
-                    src={alertNotifArt}
-                    alt="Alert Notification Art"
-                    style={{ width: 56, height: 56, objectFit: 'contain', borderRadius: Radius.md }}
+                  {/* Use alertNotifArt for critical, standardNotifArt for non-critical (future-proof) */}
+                  <Image
+                    source={alertNotifArt}
+                    style={{ width: 56, height: 56, borderRadius: Radius.md, resizeMode: 'contain' }}
                   />
                 </View>
                 <View style={styles.alertTitleContainer}>
@@ -233,6 +234,7 @@ export default function ModalScreen() {
                 type="cardTitle"
                 lightColor={palette.white}
                 darkColor={palette.white}
+                style={{ fontWeight: '700' }}
               >
                 Acknowledge
               </ThemedText>
