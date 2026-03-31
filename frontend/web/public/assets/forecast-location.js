@@ -1,3 +1,5 @@
+// Optionally set this if user is logged in
+let CURRENT_USER_ID = null; // e.g., set by server-side template or login logic
 // forecast-location.js
 // Handles geolocation and manual location input for forecast UI
 
@@ -45,16 +47,34 @@ document.addEventListener('DOMContentLoaded', function() {
 function fetchForecastByCoords(lat, lon) {
     const statusDiv = document.getElementById('forecast-location-status');
     statusDiv.textContent = `Loading forecast for your location (${lat.toFixed(2)}, ${lon.toFixed(2)})...`;
-    fetch(`/api/v1/forecast?lat=${lat}&lon=${lon}`)
+    let url = `/api/v1/forecast?lat=${lat}&lon=${lon}`;
+    if (CURRENT_USER_ID) {
+        url = `/api/v1/forecast/personalized/${CURRENT_USER_ID}?lat=${lat}&lon=${lon}`;
+    }
+    fetch(url)
         .then(res => res.json())
-        .then(data => renderForecast(data, `Your Location (${lat.toFixed(2)}, ${lon.toFixed(2)})`))
+        .then(data => renderForecast(data, `Your Location (${lat.toFixed(2)}, ${lon.toFixed(2)})`, !!CURRENT_USER_ID))
+        .catch(() => {
+            statusDiv.textContent = 'Failed to load forecast.';
+        });
+}
+function fetchForecastByLocation(location) {
+    const statusDiv = document.getElementById('forecast-location-status');
+    statusDiv.textContent = `Loading forecast for ${location}...`;
+    let url = `/api/v1/forecast?location=${encodeURIComponent(location)}`;
+    if (CURRENT_USER_ID) {
+        url = `/api/v1/forecast/personalized/${CURRENT_USER_ID}?location=${encodeURIComponent(location)}`;
+    }
+    fetch(url)
+        .then(res => res.json())
+        .then(data => renderForecast(data, location, !!CURRENT_USER_ID))
         .catch(() => {
             statusDiv.textContent = 'Failed to load forecast.';
         });
 }
 
 
-function renderForecast(data, locationLabel) {
+function renderForecast(data, locationLabel, isPersonalized) {
     const statusDiv = document.getElementById('forecast-location-status');
     const timelineDivId = 'forecast-timeline';
     let timelineDiv = document.getElementById(timelineDivId);
@@ -78,7 +98,7 @@ function renderForecast(data, locationLabel) {
         if (!riskTypes[type]) riskTypes[type] = { high: 0, moderate: 0, low: 0 };
         if (z.risk_level in riskTypes[type]) riskTypes[type][z.risk_level]++;
     });
-    statusDiv.innerHTML = `Forecast for <b>${locationLabel}</b>:<br>
+    statusDiv.innerHTML = `${isPersonalized ? '<span style="color:var(--primary);font-weight:600">Personalized for you</span><br>' : ''}Forecast for <b>${locationLabel}</b>:<br>
         High risk: <b>${riskCounts.high}</b> | Moderate: <b>${riskCounts.moderate}</b> | Low: <b>${riskCounts.low}</b><br>
         <span style='font-size:0.95em;color:var(--muted-foreground)'>Updated: ${data.generated_at}</span>`;
 
