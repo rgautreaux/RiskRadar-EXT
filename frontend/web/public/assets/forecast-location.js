@@ -43,15 +43,39 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function fetchForecastByCoords(lat, lon) {
-    // TODO: Implement AJAX call to backend with lat/lon
-    // Example: /api/forecast?lat=...&lon=...
-    document.getElementById('forecast-location-status').textContent = `Showing forecast for your location (${lat.toFixed(2)}, ${lon.toFixed(2)})`;
-    // TODO: Render forecast data
+    const statusDiv = document.getElementById('forecast-location-status');
+    statusDiv.textContent = `Loading forecast for your location (${lat.toFixed(2)}, ${lon.toFixed(2)})...`;
+    fetch(`/api/v1/forecast?lat=${lat}&lon=${lon}`)
+        .then(res => res.json())
+        .then(data => renderForecast(data, `Your Location (${lat.toFixed(2)}, ${lon.toFixed(2)})`))
+        .catch(() => {
+            statusDiv.textContent = 'Failed to load forecast.';
+        });
 }
 
 function fetchForecastByLocation(location) {
-    // TODO: Implement AJAX call to backend with location string
-    // Example: /api/forecast?location=...
-    document.getElementById('forecast-location-status').textContent = `Showing forecast for ${location}`;
-    // TODO: Render forecast data
+    const statusDiv = document.getElementById('forecast-location-status');
+    statusDiv.textContent = `Loading forecast for ${location}...`;
+    fetch(`/api/v1/forecast?location=${encodeURIComponent(location)}`)
+        .then(res => res.json())
+        .then(data => renderForecast(data, location))
+        .catch(() => {
+            statusDiv.textContent = 'Failed to load forecast.';
+        });
+}
+
+function renderForecast(data, locationLabel) {
+    const statusDiv = document.getElementById('forecast-location-status');
+    if (!data || !data.risk_zones || data.risk_zones.length === 0) {
+        statusDiv.textContent = `No forecast data available for ${locationLabel}.`;
+        return;
+    }
+    // Summarize risk levels
+    const riskCounts = { high: 0, moderate: 0, low: 0 };
+    data.risk_zones.forEach(z => {
+        if (z.risk_level in riskCounts) riskCounts[z.risk_level]++;
+    });
+    statusDiv.innerHTML = `Forecast for <b>${locationLabel}</b>:<br>
+        High risk: <b>${riskCounts.high}</b> | Moderate: <b>${riskCounts.moderate}</b> | Low: <b>${riskCounts.low}</b><br>
+        <span style='font-size:0.95em;color:var(--muted-foreground)'>Updated: ${data.generated_at}</span>`;
 }
