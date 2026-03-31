@@ -22,6 +22,8 @@ export interface RiskCardProps {
   onPress?: () => void;
   /** Custom container style */
   style?: ViewStyle;
+  /** SD4: Freshness meta/timestamp string */
+  meta?: string;
 }
 
 /**
@@ -46,6 +48,7 @@ export function RiskCard({
   unit,
   onPress,
   style,
+  meta,
 }: RiskCardProps) {
   const scheme = useColorScheme() ?? 'light';
   const palette = Colors[scheme];
@@ -110,6 +113,21 @@ export function RiskCard({
       >
         {title}
       </Text>
+
+      {/* SD4: Freshness Meta Pattern */}
+      {meta && (
+        <Text
+          style={{
+            color: palette.textSecondary,
+            fontFamily: Fonts.sans,
+            fontWeight: '500',
+            fontSize: 12,
+            marginBottom: 2,
+          }}
+        >
+          {meta}
+        </Text>
+      )}
 
       {/* Description */}
       {description && (

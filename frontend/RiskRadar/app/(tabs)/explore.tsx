@@ -196,6 +196,18 @@ export default function AlertsScreen() {
                 hazardIconMap[typeKey] ||
                 hazardIconMap[alert.alert_type?.toLowerCase()] ||
                 hazardIconMap.default;
+              // SD4: Format freshness meta
+              const formatTime = (dateStr: string) => {
+                const date = new Date(dateStr);
+                const now = new Date();
+                const diffMs = now.getTime() - date.getTime();
+                const diffMins = Math.floor(diffMs / 60000);
+                if (diffMins < 60) return `${diffMins}m ago`;
+                const diffHrs = Math.floor(diffMins / 60);
+                if (diffHrs < 24) return `${diffHrs}h ago`;
+                const diffDays = Math.floor(diffHrs / 24);
+                return `${diffDays}d ago`;
+              };
               return (
                 <RiskCard
                   key={alert.id}
@@ -208,6 +220,7 @@ export default function AlertsScreen() {
                   unit={undefined}
                   onPress={undefined}
                   style={{ marginBottom: Spacing.sm }}
+                  meta={formatTime(alert.fetched_at || alert.created_at)}
                 />
               );
             })}
