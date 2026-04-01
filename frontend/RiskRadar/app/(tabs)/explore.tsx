@@ -13,6 +13,7 @@ import { ThemedText } from '@/components/themed-text';
 import { Colors, Spacing, Radius, Shadows } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { apiFetch } from '@/utils/api';
+import { StateView } from '@/components/ui/state-view';
 
 interface AlertItem {
   id: number;
@@ -86,10 +87,7 @@ export default function AlertsScreen() {
   if (loading) {
     return (
       <ThemedView style={[styles.container, styles.centered]}>
-        <ActivityIndicator size="large" color={palette.primary} />
-        <ThemedText type="body" style={{ marginTop: Spacing.md }}>
-          Loading alerts...
-        </ThemedText>
+        <StateView state="loading" loadingText="Loading alerts..." />
       </ThemedView>
     );
   }
@@ -115,29 +113,13 @@ export default function AlertsScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={palette.primary} />
         }
       >
-        {error ? (
-          <View style={styles.emptyContainer}>
-            <ThemedText type="sectionTitle" style={styles.emptyTitle}>
-              Connection Error
-            </ThemedText>
-            <ThemedText
-              type="body"
-              lightColor={palette.textSecondary}
-              darkColor={palette.textSecondary}
-              style={styles.emptySubtitle}
-            >
-              {error}
-            </ThemedText>
-            <TouchableOpacity
-              style={[styles.retryButton, { backgroundColor: palette.primary }]}
-              onPress={fetchAlerts}
-            >
-              <ThemedText type="cardTitle" lightColor={palette.white} darkColor={palette.white}>
-                Retry
-              </ThemedText>
-            </TouchableOpacity>
-          </View>
-        ) : alerts.length > 0 ? (
+        <StateView
+          state={error ? 'error' : alerts.length > 0 ? 'success' : 'empty'}
+          emptyText="No active alerts"
+          emptyIcon="notifications-off-outline"
+          errorText={error || 'Failed to load alerts'}
+          onRetry={fetchAlerts}
+        >
           <View style={styles.alertsContainer}>
             {alerts.map((alert) => (
               <AlertCard
@@ -149,21 +131,7 @@ export default function AlertsScreen() {
               />
             ))}
           </View>
-        ) : (
-          <View style={styles.emptyContainer}>
-            <ThemedText type="sectionTitle" style={styles.emptyTitle}>
-              No Active Alerts
-            </ThemedText>
-            <ThemedText
-              type="body"
-              lightColor={palette.textSecondary}
-              darkColor={palette.textSecondary}
-              style={styles.emptySubtitle}
-            >
-              You're all set! Pull down to refresh.
-            </ThemedText>
-          </View>
-        )}
+        </StateView>
       </ScrollView>
     </ThemedView>
   );
