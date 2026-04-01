@@ -69,3 +69,5 @@ Thumbs.db
 .vscode/
 *.swp
 
+# Development docs and notes
+.workspace_docs
