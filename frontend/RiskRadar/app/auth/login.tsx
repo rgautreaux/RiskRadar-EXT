@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   Alert
 } from 'react-native';
+import PrimaryButton from '@/components/ui/PrimaryButton';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/theme';
@@ -116,13 +117,12 @@ export default function LoginScreen() {
             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.loginButton} onPress={handleLogin} activeOpacity={0.8} disabled={isSubmitting}>
-            {isSubmitting ? (
-              <ActivityIndicator color={palette.white} />
-            ) : (
-              <Text style={styles.loginButtonText}>Log In</Text>
-            )}
-          </TouchableOpacity>
+          <PrimaryButton
+            label={isSubmitting ? '...' : 'Log In'}
+            onPress={handleLogin}
+            disabled={isSubmitting}
+            loading={isSubmitting}
+          />
         </View>
 
         <View style={styles.footerContainer}>
