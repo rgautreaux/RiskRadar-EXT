@@ -176,7 +176,7 @@ export default function WeatherReport() {
   );
 }
 
-function getStyles(palette: typeof Colors.light) {
+function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
   return StyleSheet.create({
     safeArea: {
       flex: 1,
