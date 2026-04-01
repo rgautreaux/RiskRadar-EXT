@@ -1,489 +1,344 @@
+---
 
-# Group6-Senior-Project
 
-This repository contains the code and documentation for Group 6's Senior Project. The primary objective is to resolve environmental problems thruogh Data Analytics.
+## Major Developments & Implementation Highlights (as of Mar 30, 2026)
 
-The project focuses on developing a mobile app called **RiskRadar** to help residents and travelers identify and manage potential environmental risks.
+### 1. User Security Plan & Safe Migration
+- Comprehensive User Security Plan implemented (encryption, key management, audit logging planned)
+- All preparatory work (migration scripts, rollback, logging, monitoring, staging setup) completed in test/staging environments
+- Documentation-driven approach ensures all changes are safe, reversible, and fully auditable
+
+### 2. Automated Data Retention & Cleanup
+- Scheduled archive and deletion system keeps the database performant and compliant
+- Retention jobs (nightly/weekly) archive and delete old data, with full logging and dry-run safety
+- All retention logic, migrations, and tests are documented and validated
+
+### 3. End-to-End Testing & Validation
+- Full backend pytest suite (78/78 passing) covers API, database, scrapers, and retention logic
+- Integration tests ensure scraper-to-database pipeline is robust and reliable
+- CI/local pre-push checklist ensures code quality and reproducibility
+
+### 4. Frontend UI/UX & Wireframe Accuracy
+- Mobile app UI/UX plan finalized and mapped to wireframe assets
+- Implementation checklist and asset mapping ensure efficient, brand-accurate styling
+- All frontend components are structured for maintainability and scalability
+
+### 5. Documentation & Team Alignment
+- All major sessions and developments are logged in REBECCA-TRANSCRIPT.md and GROUP_PROGRESS_LOG
+- AUTHORS.md details each member's contributions and roles
+- README, TODO, and all top-level docs are kept in sync for auditability and onboarding
 
 ---
 
-# Project Purpose
-RiskRadar is designed to help users identify and manage potential environmental conditions and risks they may encounter whilst traveling or their day-to-day activities. The app provides features such as real-time alerts, climate data statistics, and user-friendly 5-Minute Summaries.
+## Implementation, Functionality, and Execution
+
+### Implementation
+- The backend is built with Python (FastAPI), using SQLAlchemy ORM and MariaDB/SQLite for data persistence.
+- The frontend is a React Native (Expo) mobile app, styled with a centralized theme token system and wireframe-accurate UI/UX.
+- Scrapers collect data from government APIs (NWS, AirNow, EPA, NASA FIRMS, USGS) and store alerts in the database.
+- AI-powered summaries are generated daily using LLM APIs (DeepSeek, OpenAI, Anthropic).
+- Automated data retention and cleanup jobs keep the database performant and compliant.
+- All major developments are documented and validated with end-to-end tests and integration coverage.
+
+### Functionality
+- Real-time environmental risk alerts and air quality data for US locations.
+- AI-generated daily digests and summaries for at-a-glance risk awareness.
+- User authentication, profile management, and notification preferences.
+- Mobile app with branded, wireframe-accurate UI, supporting both Light and Dark Mode.
+- Scheduled jobs for data scraping, retention, and cleanup.
+- Full test suite and CI-ready validation for backend and frontend.
+
+### Execution
+- All preparatory work is completed in test/staging environments before production rollout.
+- Documentation-driven approach ensures all changes are safe, reversible, and auditable.
+- Team roles and contributions are clearly defined in AUTHORS.md.
+- Progress and major sessions are logged in GROUP_PROGRESS_LOG and REBECCA-TRANSCRIPT.md.
+- All top-level documentation is kept in sync after each major session.
 
 ---
 
-# Team Members, Roles, Responsibilities, and Contributions
+## Importance of Major Developments
 
-| Qui                           | Back-end development, Jira                                                                 | (Contributions) |
-
-
-| Noah                           | Security analyst, database                                                                  | (Contributions) |
-
-
-| Celeste                           | Research analyst, front-end                                                                  | (Contributions) |
-
-
-| Ben                           | Front-end/ UI development, Jira                                                                  | (Contributions) |
-
-
-| Max                           | Back-end/Front-end                                                                | (Contributions) |
-
-
-| Rebecca                           | Database development, Wireframes | (Contributions) |
+- **Security:** User Security Plan ensures data protection, auditability, and compliance.
+- **Performance:** Automated retention and cleanup keep the system fast and scalable.
+- **Reliability:** End-to-end tests and integration coverage prevent regressions and ensure correctness.
+- **Usability:** Wireframe-accurate UI/UX delivers a polished, user-friendly experience.
+- **Transparency:** Comprehensive documentation and progress logs keep the team aligned and the project audit-ready.
 
 ---
 
-# RiskRadar Backend
+## Why These Developments Matter
 
-Environmental alert monitoring and AI-powered summarization platform.
+- **Security:** Ensures user data is protected, auditable, and compliant with best practices
+- **Performance:** Automated cleanup and retention keep the system fast and scalable
+- **Reliability:** End-to-end tests and integration coverage prevent regressions and ensure correctness
+- **Usability:** Wireframe-accurate UI/UX delivers a polished, user-friendly experience
+- **Transparency:** Comprehensive documentation and progress logs keep the team aligned and the project audit-ready
 
-RiskRadar scrapes real-time data from government APIs and websites (weather, air quality, wildfires, pollution, earthquakes), stores alerts in a local database, and uses LLMs to generate human-readable daily digests.
+---
+# RiskRadar — Group 6 Senior Project
+
+Environmental risk monitoring mobile app with real-time alerts, air quality data, and AI-powered summaries.
+
+RiskRadar helps residents and travelers identify environmental risks by scraping government APIs (NWS weather, AirNow air quality, NASA wildfires, EPA pollution, USGS earthquakes), storing alerts in a database, and generating AI daily digests.
 
 ---
 
-## Architecture Overview
+## Prerequisites
 
-```
-                         +---------------------+
-                         |   Web Frontend       |
-                         |  (Jinja2 templates)  |
-                         +----------+----------+
-                                    |
-                         localStorage JWT token
-                              fetch() calls
-                                    |
-                         +----------v----------+
-                         |    FastAPI Server    |
-                         |     (main.py)        |
-                         +----+-----+-----+----+
-                              |     |     |
-               +--------------+     |     +---------------+
-               |                    |                     |
-      +--------v-------+  +--------v--------+  +---------v--------+
-      |  /api/v1/alerts |  | /api/v1/summaries|  | /api/v1/users   |
-      |  (alerts.py)    |  | (summaries.py)   |  | (users.py)      |
-      +--------+-------+  +--------+---------+  +---------+-------+
-               |                    |                      |
-               +----------+---------+-----+----------------+
-                          |               |
-                 +--------v--------+  +---v-------------+
-                 |    SQLAlchemy    |  | auth/security.py|
-                 |   ORM Layer     |  | bcrypt + JWT    |
-                 +--------+--------+  +-----------------+
-                          |
-                 +--------v--------+
-                 |   SQLite DB     |
-                 | (riskradar.db)  |
-                 +-----------------+
-```
+Before you start, make sure you have these installed on your machine:
+
+| Tool | Version | How to check | How to install |
+|------|---------|--------------|----------------|
+| **Python** | 3.10+ | `py --version` | [python.org/downloads](https://www.python.org/downloads/) — check "Add to PATH" during install |
+| **Node.js** | 18+ | `node --version` | [nodejs.org](https://nodejs.org/) — LTS version recommended |
+| **npm** | 9+ | `npm --version` | Comes with Node.js |
+| **Git** | any | `git --version` | [git-scm.com](https://git-scm.com/) |
+
+> **Windows users:** Use `py` instead of `python3`. If `py` doesn't work, reinstall Python from [python.org](https://www.python.org/downloads/) and check **"Add Python to PATH"** during installation.
 
 ---
 
-## How the Frontend Connects to the Backend
+## Quick Start (Run the Whole App)
 
-The web frontend is built with **Jinja2 HTML templates** served by FastAPI. Here is the connection flow:
+### Step 1: Clone the repo
 
-```
-1. User opens http://localhost:8000 -> sees login page (templates/login.html)
-
-2. User submits login form:
-   Browser JS -> POST /api/v1/users/login { email, password }
-   Backend (api/users.py) -> verify_password(password, user.password_hash)
-                           -> create_access_token({ sub: user.id })
-                           -> returns { access_token: "eyJ...", token_type: "bearer" }
-   Browser JS -> localStorage.setItem('riskradar_token', token)
-              -> redirect to /dashboard
-
-3. All subsequent API calls include the JWT:
-   Browser JS -> fetch('/api/v1/alerts', {
-                   headers: { 'Authorization': 'Bearer eyJ...' }
-                 })
-   Backend (auth/security.py) -> decode JWT -> load User from DB
-                               -> return data if valid
-                               -> return 401 if expired/invalid
-
-4. If 401 received -> clear token -> redirect to login
-```
-
-### Key Files for Frontend-Backend Connection
-
-| File | Purpose |
-|------|---------|
-| `templates/base.html` | Shared layout + `apiFetch()` JS helper that adds JWT to all requests |
-| `templates/login.html` | Login form -> calls POST `/api/v1/users/login` |
-| `templates/register.html` | Registration form -> calls POST `/api/v1/users/register` |
-| `templates/dashboard.html` | Alerts view -> calls GET `/api/v1/alerts` + `/alerts/stats` |
-| `templates/summaries.html` | Summary view -> calls GET/POST `/api/v1/summaries` |
-| `templates/settings.html` | Settings -> calls GET `/api/v1/users/me` + PUT `/preferences` |
-| `auth/security.py` | Password hashing (bcrypt) + JWT create/verify + `get_current_user` dependency |
-| `config/settings.py` | JWT_SECRET_KEY, JWT_ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES |
-| `static/css/style.css` | All frontend styling |
-
----
-
-## Scraper Pipeline
-
-Every scraper follows the same fetch-normalize-dedup-store pipeline defined in `BaseScraper`:
-
-```
-  +------------------+
-  | External Source   |    NWS API, AirNow, EPA, NASA FIRMS,
-  | (API / Website)   |    USGS, config-driven sources
-  +---------+--------+
-            |
-            v
-  +---------+--------+
-  | fetch_raw_data() |    Hit API or scrape website
-  | Returns raw JSON  |    (httpx GET/POST, Firecrawl)
-  +---------+--------+
-            |
-            v
-  +---------+--------+
-  |   normalize()    |    Map raw fields to Alert schema
-  |  per raw item     |    Compute severity, extract coords
-  +---------+--------+
-            |
-            v
-  +---------+--------+
-  | Deduplication     |    Check (source, source_id) unique
-  | Skip if exists    |    constraint in DB
-  +---------+--------+
-            |
-            v
-  +---------+--------+
-  |  Store in DB      |    INSERT new Alert rows
-  |  + ScrapeLog      |    Log fetch count, duration, status
-  +------------------+
+```bash
+git clone https://github.com/your-org/Team6Project.git
+cd Team6Project
 ```
 
-### Three Types of Scrapers
+### Step 2: Set up environment variables
 
-| Type | When to Use | How to Add |
-|------|-------------|------------|
-| **Legacy** | Complex parsing logic | Write a Python file, register in `registry.py` |
-| **GenericAPI** | Standard REST APIs | Add YAML entry to `sources.yaml` |
-| **WebScraper** | Arbitrary websites | Add YAML entry to `sources.yaml` |
+```bash
+copy .env.example .env
+```
 
----
-
-## API Endpoints
-
-### Authentication
-## MariaDB (MySQL) Schema Breakdown
-
-RiskRadar supports MariaDB/MySQL in addition to SQLite. For scraper ingestion, the operational tables are:
-
-- `alerts` — one row per normalized alert from any source
-  - Primary key: `id`
-  - Dedup key: `UNIQUE(source, source_id)`
-  - Core fields: `source`, `source_id`, `alert_type`, `severity`, `title`, `description`
-  - Geo/time fields: `latitude`, `longitude`, `location_name`, `event_start`, `event_end`
-  - Metadata: `raw_data`, `fetched_at`, `created_at`, `updated_at`
-
-- `scrape_log` — one row per scraper run
-  - Primary key: `id`
-  - Run tracking: `source`, `status`, `alerts_fetched`, `alerts_new`, `duration_ms`
-  - Diagnostics: `error_message`, `started_at`, `completed_at`
-
-- `summaries` — generated digest records from LLM output
-  - Primary key: `id`
-  - Core fields: `title`, `content`, `summary_type`, `alert_ids`, `region`
-  - Metadata: `generated_at`, `model_used`, `token_count`, `created_at`
-
-- `users` — profile + alert preference records
-  - Primary key: `id`
-  - Identity/preference fields: `email` (unique), `display_name`, `zip_code`, `alert_types`, `notify_severity`
-  - Device/location fields: `device_token`, `latitude`, `longitude`
-  - Metadata: `created_at`, `updated_at`
-
-MariaDB migration used for scraper compatibility:
-
-- `backend/db/migrations/2026-03-03_mariadb_scraper_alignment.sql`
-
-Set DB runtime connection in `.env`:
+Open `.env` in a text editor and fill in at minimum:
 
 ```env
-DATABASE_URL=mysql+pymysql://riskradar_user:your_password@127.0.0.1:3306/riskradar_db
+# REQUIRED — generate with: py -c "import secrets; print(secrets.token_hex(32))"
+JWT_SECRET_KEY=paste-your-random-secret-here
+
+# REQUIRED for AI summaries (get a key from https://platform.deepseek.com/)
+LLM_PROVIDER=deepseek
+LLM_MODEL=deepseek-chat
+LLM_API_KEY=your-deepseek-api-key
+
+# OPTIONAL — for air quality data (free key from https://docs.airnowapi.org/account/request/)
+AIRNOW_API_KEY=your-airnow-key
 ```
 
+### Step 3: Start the Backend
+
+Open a terminal (Command Prompt or PowerShell):
+
+```bash
+cd backend
+py -m pip install -r requirements.txt
+py -m uvicorn main:app --host 0.0.0.0 --port 8000
+```
+
+You should see:
+
+```
+INFO:     Uvicorn running on http://0.0.0.0:8000
+```
+
+> **Leave this terminal open.** The backend must stay running.
+
+Verify it works by opening http://localhost:8000/docs in your browser — you should see the Swagger API docs.
+
+### Step 4: Start the Frontend (Mobile App)
+
+Open a **second terminal**:
+
+```bash
+cd frontend\RiskRadar
+npm install
+npx expo start
+```
+
+Then press:
+- **`w`** to open in your web browser
+- **Scan the QR code** with the Expo Go app on your phone (same WiFi network)
+
+> **Important:** The mobile app automatically detects your computer's IP address so it can reach the backend. Both devices must be on the same WiFi network.
+
 ---
 
-## Database-Scraper Connection
+## Team Members
 
-Scrapers and database persistence are connected through `BaseScraper.run()`:
-
-1. `fetch_raw_data()` pulls source data (NWS, EPA, FIRMS, AirNow, Generic API, or Web source).
-2. `normalize()` maps each raw record into the `alerts` table shape.
-3. Dedup checks `alerts` by `(source, source_id)`.
-4. New alerts are inserted; duplicates are skipped.
-5. Each run writes a `scrape_log` row with fetched/new counts, duration, and status.
-
-This means database troubleshooting should focus on:
-
-- schema compatibility with `alerts` and `scrape_log`
-- valid `DATABASE_URL`
-- scraper-specific external API response shape
-
----
-
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| POST | `/api/v1/users/register` | Public | Create account (bcrypt hashes password) |
-| POST | `/api/v1/users/login` | Public | Authenticate -> returns JWT token |
-
-### Alerts
-
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/api/v1/alerts` | Public | List alerts (paginated, filterable) |
-| GET | `/api/v1/alerts/stats` | Public | Count by type and severity |
-| GET | `/api/v1/alerts/{id}` | Public | Get single alert |
-
-**Query params:** `alert_type`, `severity`, `source`, `limit` (default 50), `offset` (default 0)
-
-### Summaries
-
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/api/v1/summaries` | Public | List summaries |
-| GET | `/api/v1/summaries/latest` | Public | Most recent summary |
-| POST | `/api/v1/summaries/generate` | Public | Generate daily digest via LLM |
-
-### Users (Protected - requires Bearer token)
-
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/api/v1/users/me` | JWT | Get current user profile |
-| GET | `/api/v1/users/{id}/preferences` | JWT | Get user preferences |
-| PUT | `/api/v1/users/{id}/preferences` | JWT | Update preferences |
-| GET | `/api/v1/users/notifications` | JWT | Get notification settings |
-| PUT | `/api/v1/users/notifications` | JWT | Update notification settings |
-
-### System
-
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/api/v1/health` | Public | Health check + DB stats |
-| POST | `/api/v1/scrape/trigger` | JWT | Manually trigger all scrapers |
+| Name | Role |
+|------|------|
+| Qui | Back-end development, Jira |
+| Noah | Security analyst, database |
+| Celeste | Research analyst, front-end |
+| Ben | Front-end / UI development, Jira |
+| Max | Back-end / Front-end |
+| Rebecca | Database development, Wireframes |
 
 ---
 
 ## Project Structure
 
 ```
-backend/
-  main.py                       # FastAPI app + lifespan (startup/shutdown)
-  requirements.txt
-  pytest.ini
-  riskradar.db                  # SQLite database (auto-created)
-
-  auth/                         # NEW - Authentication module
-    security.py                 # bcrypt hashing, JWT create/verify, get_current_user
-
-  api/
-    router.py                   # Mounts all sub-routers under /api/v1
-    alerts.py                   # GET /alerts, /alerts/stats, /alerts/{id}
-    summaries.py                # GET/POST /summaries
-    users.py                    # POST /register, /login, GET /me, preferences, notifications
-    system.py                   # GET /health, POST /scrape/trigger
-
-  db/
-    database.py                 # SQLAlchemy engine + SessionLocal + Base
-    init_db.py                  # create_all() on startup
-    models.py                   # Alert, Summary, User, ScrapeLog
-
-  config/
-    settings.py                 # Pydantic BaseSettings (.env loader) - includes JWT config
-    sources.yaml                # Config-driven scraper definitions
-
-  schemas/
-    alert.py                    # AlertOut, AlertStats Pydantic models
-    summary.py                  # SummaryOut
-    user.py                     # UserCreate, UserLogin, TokenOut, UserOut, etc.
-
-  scrapers/
-    base_scraper.py             # Abstract base: fetch -> normalize -> dedup -> store
-    scheduler.py                # APScheduler job registration
-    registry.py                 # Loads legacy + YAML-configured scrapers
-    nws_scraper.py              # NOAA National Weather Service
-    airnow_scraper.py           # EPA AirNow (air quality)
-    epa_scraper.py              # EPA Envirofacts (TRI facilities)
-    firms_scraper.py            # NASA FIRMS (wildfires)
-    generic_api_scraper.py      # Config-driven REST API scraper
-    web_scraper.py              # Firecrawl + LLM web scraper
-
-  llm/
-    summarizer.py               # Daily digest + breaking alert generation
-    prompts.py                  # System/user prompt templates
-
-  frontend/                     # NEW - HTML frontend routes
-    routes.py                   # Jinja2 page routes (/, /dashboard, /summaries, /settings)
-
-  templates/                    # NEW - Jinja2 HTML templates
-    base.html                   # Shared layout + apiFetch() JS helper
-    login.html                  # Login page
-    register.html               # Registration page
-    dashboard.html              # Alerts dashboard
-    summaries.html              # AI summaries page
-    settings.html               # User settings page
-
-  static/                       # NEW - Static assets
-    css/style.css               # Main stylesheet
-
-  tests/
-    conftest.py                 # Shared fixtures (in-memory DB, test client)
-    test_models.py              # ORM model tests
-    test_api_alerts.py          # Alert endpoint tests
-    test_api_summaries.py       # Summary endpoint tests
-    test_api_users.py           # User endpoint tests
-    test_scrapers.py            # Scraper logic tests
-    test_registry.py            # Registry loader tests
+Team6Project/
+├── .env.example              # Template for environment variables
+├── .env                      # Your local config (not committed)
+│
+├── backend/                  # Python FastAPI server
+│   ├── main.py               # App entry point
+│   ├── requirements.txt      # Python dependencies
+│   ├── riskradar.db          # SQLite database (auto-created)
+│   │
+│   ├── api/                  # REST API endpoints
+│   │   ├── router.py         # Mounts all routes under /api/v1
+│   │   ├── alerts.py         # GET /alerts, /alerts/stats
+│   │   ├── summaries.py      # GET/POST /summaries
+│   │   ├── users.py          # POST /register, /login + user profile
+│   │   ├── location.py       # GET /location/alerts — on-demand fetch by zip code
+│   │   └── system.py         # GET /health, POST /scrape/trigger
+│   │
+│   ├── auth/security.py      # Password hashing (bcrypt) + JWT tokens
+│   ├── config/settings.py    # All app settings loaded from .env
+│   ├── config/sources.yaml   # Config-driven scraper definitions
+│   │
+│   ├── db/                   # Database layer
+│   │   ├── database.py       # SQLAlchemy engine + session
+│   │   ├── models.py         # Alert, Summary, User, ScrapeLog tables
+│   │   └── init_db.py        # Creates tables on startup
+│   │
+│   ├── scrapers/             # Data collection from external APIs
+│   │   ├── nws_scraper.py    # NOAA weather alerts
+│   │   ├── airnow_scraper.py # EPA air quality
+│   │   ├── epa_scraper.py    # EPA toxic releases
+│   │   ├── firms_scraper.py  # NASA wildfire data
+│   │   └── scheduler.py      # Runs scrapers every 30 minutes
+│   │
+│   ├── llm/summarizer.py     # AI-powered daily digest generation
+│   └── tests/                # pytest test suite
+│
+└── frontend/
+    └── RiskRadar/            # React Native (Expo) mobile app
+        ├── package.json      # Node.js dependencies
+        ├── app/              # Screens (Expo Router file-based routing)
+        │   ├── _layout.tsx   # Root layout
+        │   ├── login.tsx     # Login screen
+        │   ├── register.tsx  # Registration screen
+        │   └── main/         # Authenticated screens
+        │       ├── home.tsx          # Home — search by zip code
+        │       ├── weather-report.tsx # Weather + alerts for a location
+        │       ├── settings.tsx      # User preferences
+        │       └── _layout.tsx       # Tab navigation
+        ├── utils/api.ts      # API client (auto-adds JWT token)
+        ├── constants/api.ts  # Backend URL config (auto-detects IP)
+        └── contexts/auth-context.tsx  # Login/logout state management
 ```
 
 ---
 
-## Quick Start
+## How the Frontend Connects to the Backend
 
-### 1. Install dependencies
-**For Mac**:
-```bash
-cd backend
-python3 -m venv ../.venv
-source ../.venv/bin/activate      # Linux/Mac
-# ..\.venv\Scripts\activate       # Windows
-
-pip install -r requirements.txt
+```
+┌──────────────────────────┐
+│   React Native App       │
+│   (Expo on phone/web)    │
+└───────────┬──────────────┘
+            │  HTTP requests to http://<your-ip>:8000/api/v1/...
+            │  JWT token in Authorization header
+            │
+┌───────────▼──────────────┐
+│   FastAPI Backend        │
+│   (Python on your PC)    │
+├──────────────────────────┤
+│ /api/v1/users/login      │ → returns JWT token
+│ /api/v1/users/register   │ → creates account
+│ /api/v1/alerts           │ → list all alerts from DB
+│ /api/v1/location/alerts  │ → fetch fresh alerts for a zip code
+│ /api/v1/summaries/latest │ → latest AI summary
+│ /api/v1/health           │ → server status
+└───────────┬──────────────┘
+            │
+┌───────────▼──────────────┐
+│   SQLite Database        │
+│   (riskradar.db)         │
+└──────────────────────────┘
 ```
 
-**For Windows (Powershell)**:
-```bash
-cd backend
-python -m venv ../.venv
-source ../.venv/Scripts/Activate.ps1
-pip install -r requirements.txt
-```
+**Key connection files:**
 
-### 2. Configure environment
-
-Copy the example env file and fill in your keys:
-
-```bash
-cp .env.example .env
-# Then edit .env with your values
-```
-
-**Minimum required settings:**
-
-```env
-# Generate a secret: python -c "import secrets; print(secrets.token_hex(32))"
-JWT_SECRET_KEY=your-random-secret-here
-
-# For summary generation (pick one provider):
-LLM_PROVIDER=deepseek
-LLM_MODEL=deepseek-chat
-LLM_API_KEY=your-llm-api-key
-```
-
-See `.env.example` for all available settings.
-
-### 3. Run the server
-
-```bash
-cd backend
-python -m uvicorn main:app --reload --port 8000
-```
-
-The server will:
-1. Create the SQLite database (`riskradar.db`)
-2. Start background scrapers on staggered intervals
-3. Serve the **Web Frontend** at `http://localhost:8000`
-4. Serve the **REST API** at `http://localhost:8000/api/v1/`
-5. Show **Swagger docs** at `http://localhost:8000/docs`
-
-### 4. Use the web frontend
-
-1. Open `http://localhost:8000` in your browser
-2. Click "Register here" to create an account
-3. Log in with your email and password
-4. Browse alerts on the dashboard, view AI summaries, update settings
-
-### 5. Use the API directly (curl examples)
-
-```bash
-# Register a new user
-curl -X POST http://localhost:8000/api/v1/users/register \
-  -H "Content-Type: application/json" \
-  -d '{"display_name": "Test User", "email": "test@example.com", "password": "secret123"}'
-
-# Login - get a JWT token
-curl -X POST http://localhost:8000/api/v1/users/login \
-  -H "Content-Type: application/json" \
-  -d '{"email": "test@example.com", "password": "secret123"}'
-# Response: { "access_token": "eyJ...", "token_type": "bearer" }
-
-# Use the token for protected endpoints
-TOKEN="eyJ..."
-curl http://localhost:8000/api/v1/users/me \
-  -H "Authorization: Bearer $TOKEN"
-
-# Get alerts (public)
-curl http://localhost:8000/api/v1/alerts?limit=10
-
-# Check system health
-curl http://localhost:8000/api/v1/health
-```
+| File | What it does |
+|------|-------------|
+| `frontend/RiskRadar/constants/api.ts` | Builds the backend URL — auto-detects your PC's IP from Expo |
+| `frontend/RiskRadar/utils/api.ts` | `apiFetch()` helper — adds JWT token to every request |
+| `frontend/RiskRadar/contexts/auth-context.tsx` | Manages login/logout, stores JWT token |
+| `backend/auth/security.py` | Verifies passwords and JWT tokens |
 
 ---
 
-## Connecting a React Native / Mobile Frontend
+## API Endpoints
 
-If building a mobile app instead of using the web frontend:
+### Authentication (Public)
 
-1. **Base URL**: Set your API base URL to `http://<your-ip>:8000`
-2. **Login**: POST to `/api/v1/users/login` with `{ email, password }`
-3. **Store token**: Save the `access_token` from the response using `expo-secure-store`
-4. **Attach to requests**: Add `Authorization: Bearer <token>` header to all API calls
-5. **Handle 401**: If any call returns 401, clear the stored token and redirect to login
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/users/register` | Create account |
+| POST | `/api/v1/users/login` | Login → returns JWT token |
 
-```typescript
-// Example: services/api.ts
-const API_BASE = 'http://192.168.1.100:8000';
+### Alerts (Public)
 
-async function apiFetch(path: string, options: RequestInit = {}) {
-  const token = await SecureStore.getItemAsync('jwt_token');
-  const headers = {
-    'Content-Type': 'application/json',
-    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-    ...options.headers,
-  };
-  const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
-  if (res.status === 401) {
-    await SecureStore.deleteItemAsync('jwt_token');
-    // Navigate to login screen
-  }
-  return res;
-}
-```
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/alerts` | List alerts (filterable by `alert_type`, `severity`, `source`) |
+| GET | `/api/v1/alerts/stats` | Count alerts by type and severity |
+| GET | `/api/v1/alerts/{id}` | Get a single alert |
+
+### Location (Public — on-demand fetch)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/location/alerts?zip_code=70506` | Fetch fresh NWS + AirNow alerts for any US zip code |
+| GET | `/api/v1/location/info?zip_code=70506` | Get city, state, and coordinates for a zip code |
+
+### Summaries (Public)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/summaries` | List all summaries |
+| GET | `/api/v1/summaries/latest` | Most recent AI summary |
+| POST | `/api/v1/summaries/generate` | Generate a new daily digest (requires LLM API key) |
+
+### Users (Protected — requires JWT)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/users/me` | Get current user profile |
+| GET | `/api/v1/users/{id}/preferences` | Get user preferences |
+| PUT | `/api/v1/users/{id}/preferences` | Update preferences |
+
+### System
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/health` | Health check + DB stats |
+| POST | `/api/v1/scrape/trigger` | Manually trigger all scrapers (JWT required) |
 
 ---
 
-## Adding a New Data Source
+## Environment Variables
 
-### Option A: REST API (no code needed)
+Copy `.env.example` to `.env` and fill in your values.
 
-Edit `config/sources.yaml` and add an entry under `api_sources`.
-
-### Option B: Website (no code needed)
-
-Add an entry under `web_sources` in `config/sources.yaml`.
-Requires `FIRECRAWL_API_KEY` and `LLM_API_KEY` in `.env`.
-
-### Option C: Custom scraper (Python)
-
-1. Create `scrapers/my_scraper.py` extending `BaseScraper`
-2. Register in `scrapers/registry.py`
-
-See existing scrapers (nws, airnow, epa) for examples.
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `JWT_SECRET_KEY` | **Yes** | Secret for signing login tokens |
+| `LLM_API_KEY` | For summaries | DeepSeek, OpenAI, or Anthropic API key |
+| `LLM_PROVIDER` | No | `deepseek` (default), `openai`, or `anthropic` |
+| `AIRNOW_API_KEY` | For air quality | Free key from [airnowapi.org](https://docs.airnowapi.org/account/request/) |
+| `NASA_FIRMS_MAP_KEY` | For wildfires | Key from [NASA FIRMS](https://firms.modaps.eosdis.nasa.gov/api/area/) |
+| `FIRECRAWL_API_KEY` | For web scraping | Key from [firecrawl.dev](https://firecrawl.dev) |
+| `DEFAULT_ZIP_CODE` | No | Default location ZIP (default: 90001) |
 
 ---
 
@@ -491,130 +346,26 @@ See existing scrapers (nws, airnow, epa) for examples.
 
 ```bash
 cd backend
-source ../.venv/bin/activate
-pip install pytest pytest-mock
-
-# Run all tests
-python -m pytest -v
-
-# Run specific test file
-python -m pytest tests/test_api_alerts.py -v
+py -m pip install -r requirements.txt
+py -m pytest -q --tb=short
 ```
 
-Tests use an in-memory SQLite database and mock all external calls. No API keys needed.
-
-### Troubleshooting DB-Scraper
-
-Use this exact command from the project root to run the dedicated scraper/database integration tests:
-
-```bash
-cd backend
-python -m pytest tests/test_scraper_db_integration.py -v --tb=short
-```
-
-What common failures usually mean:
-
-- `OperationalError` / connection refused
-  - `DATABASE_URL` is incorrect or MariaDB is not running.
-
-- `ModuleNotFoundError: pymysql`
-  - MariaDB driver is missing in environment; install backend requirements.
-
-- assertion failures on alert counts
-  - Dedup key conflict or schema mismatch (`alerts` not aligned with model fields).
-
-- failures writing `scrape_log`
-  - `scrape_log` columns/constraints do not match expected schema.
-
-- failures in live scrape script but test passes
-  - external API/auth/network issue (integration test mocks external HTTP).
-
-
-# MariaDB Migration Notes
-
-Use `2026-03-03_mariadb_scraper_alignment.sql` to align an existing MariaDB schema with the backend ORM models used by scrapers.
-
-**What it fixes:**
-
-- `alerts` shape and nullability to match `db.models.Alert`
-- `scrape_log` shape to match `db.models.ScrapeLog`
-- `summaries.reigon` typo to `summaries.region`
-- `users` shape to match `db.models.User`
-- Removes constraints/indexes that block recurring scraper inserts
-
-## Apply MariaDB Migrations
-
-```sql
-SOURCE backend/db/migrations/2026-03-03_mariadb_scraper_alignment.sql;
-```
-
-## Runtime configuration for MariaDB Migrations
-
-Set `DATABASE_URL` in `.env` to run backend against MariaDB.
-
-Example:
-
-```env
-DATABASE_URL=mysql+pymysql://riskradar_user:your_password@127.0.0.1:3306/riskradar_db
-```
-
-If `DATABASE_URL` is not set, backend continues using local SQLite (`DB_PATH`).
+Expected: `78 passed`. Tests use an in-memory database and mock all external APIs — no API keys needed.
 
 ---
 
-### MariaDB Quick Verify
+## Common Issues
 
-After running a scraper or the integration test, use these SQL checks:
-
-```sql
--- 1) Confirm database and table access
-SELECT DATABASE() AS active_db;
-SHOW TABLES LIKE 'alerts';
-SHOW TABLES LIKE 'scrape_log';
-
--- 2) Check latest scrape runs
-SELECT id, source, status, alerts_fetched, alerts_new, duration_ms, completed_at
-FROM scrape_log
-ORDER BY id DESC
-LIMIT 10;
-
--- 3) Check newest alerts inserted
-SELECT id, source, source_id, alert_type, severity, LEFT(title, 120) AS title
-FROM alerts
-ORDER BY id DESC
-LIMIT 10;
-
--- 4) Verify dedup key behavior (should return at most 1 row per pair)
-SELECT source, source_id, COUNT(*) AS c
-FROM alerts
-GROUP BY source, source_id
-HAVING COUNT(*) > 1;
-```
-
-Expected results:
-
-- `scrape_log` has new rows for each run with `status='success'` (or `failure` with `error_message`).
-- `alerts` row count increases only for new source records.
-- dedup query returns zero rows.
-
----
-
-## Environment Variables
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `JWT_SECRET_KEY` | **Yes** | Secret for signing JWT tokens |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | No | Token lifetime (default: 60) |
-| `LLM_API_KEY` | For summaries | OpenAI, Anthropic, or DeepSeek API key |
-| `LLM_PROVIDER` | No | `deepseek` (default), `openai`, or `anthropic` |
-| `LLM_MODEL` | No | `deepseek-chat` (default) |
-| `AIRNOW_API_KEY` | For air quality | AirNow API key |
-| `NASA_FIRMS_MAP_KEY` | For FIRMS | NASA FIRMS MAP key |
-| `FIRECRAWL_API_KEY` | For web scraping | Firecrawl API key |
-| `SCRAPE_INTERVAL_MINUTES` | No | Default interval (30) |
-| `DEFAULT_ZIP_CODE` | No | Default location ZIP (90001) |
-| `DEFAULT_LAT` | No | Default latitude (34.0522) |
-| `DEFAULT_LON` | No | Default longitude (-118.2437) |
+| Problem | Solution |
+|---------|----------|
+| `'py' is not recognized` | Install Python from [python.org](https://www.python.org/downloads/), check "Add to PATH" |
+| `'uvicorn' is not recognized` | Use `py -m uvicorn` instead of `uvicorn` directly |
+| Backend says `402 Insufficient Balance` | Your LLM API key (DeepSeek) has no credits — add funds or skip summary generation |
+| Weather report shows wrong location | Make sure you're entering a valid 5-digit US zip code |
+| Frontend can't connect to backend | Both devices must be on the same WiFi; backend must be running with `--host 0.0.0.0` |
+| `ModuleNotFoundError` | Run `py -m pip install -r requirements.txt` in the backend folder |
+| Expo QR code won't scan | Press `w` to test on web first; make sure Expo Go app is installed on phone |
+| Registration fails silently | Check the backend terminal for error messages |
 
 ---
 
@@ -622,14 +373,41 @@ Expected results:
 
 | Layer | Technology |
 |-------|------------|
-| Framework | FastAPI + Uvicorn |
+| Mobile App | React Native + Expo Router |
+| Backend API | Python FastAPI + Uvicorn |
 | Database | SQLite + SQLAlchemy ORM |
-| Authentication | bcrypt (passlib) + JWT (python-jose) |
-| Frontend | Jinja2 templates + vanilla JS |
-| Scheduler | APScheduler |
-| HTTP Client | httpx |
-| Web Scraping | Firecrawl API |
-| LLM | OpenAI / Anthropic / DeepSeek |
-| Validation | Pydantic |
-| Config | YAML + python-dotenv |
-| Testing | pytest + pytest-mock |
+| Authentication | bcrypt + JWT tokens |
+| Data Sources | NWS, AirNow, EPA, NASA FIRMS, USGS |
+| AI Summaries | DeepSeek / OpenAI / Anthropic |
+| Background Jobs | APScheduler |
+| Web Scraping | Firecrawl |
+
+---
+
+## Scheduled Archive and Deletion System
+
+RiskRadar includes a scheduled job system that automatically archives and deletes out-of-date alerts, summaries, and scrape logs to keep the database clean and performant.
+
+### How It Works
+- The backend scheduler registers two retention jobs:
+  - **Nightly job:** Archives and deletes old scrape logs.
+  - **Weekly job:** Archives and deletes old alerts and summaries, as well as scrape logs.
+- Each job:
+  - Moves eligible records to archive tables (e.g., `AlertArchive`, `SummaryArchive`, `ScrapeLogArchive`).
+  - Deletes the original records from the main tables.
+  - Logs the cleanup run in the `CleanupRun` table for auditing.
+- Jobs run in batches and can be configured for dry-run mode (no data is deleted, only estimated).
+
+### Configuration
+- Retention periods, batch sizes, and schedule times are set in `config/settings.py`.
+- The system is enabled/disabled via the `RETENTION_ENABLED` setting.
+
+### Why This Matters
+This system ensures that the backend database does not grow indefinitely, improves performance, and maintains historical data in archive tables for future reference.
+
+---
+
+For more details, see:
+- [backend/scrapers/scheduler.py](backend/scrapers/scheduler.py)
+- [backend/db/retention.py](backend/db/retention.py)
+- [backend/db/models.py](backend/db/models.py)

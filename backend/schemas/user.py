@@ -1,13 +1,8 @@
-"""
-Pydantic schemas for the User resource.
+from pydantic import BaseModel, ConfigDict
 
-These schemas validate request bodies and shape response payloads
-for the /api/v1/users/* endpoints.
-"""
 
-from pydantic import BaseModel
 from typing import Optional
-
+from datetime import datetime
 
 # --- Request schemas -------------------------------------------------------
 
@@ -18,12 +13,10 @@ class UserCreate(BaseModel):
     password: str
     zip_code: Optional[str] = None
 
-
 class UserLogin(BaseModel):
     """POST /users/login — email + password to get a JWT back."""
     email: str
     password: str
-
 
 class UserPrefsUpdate(BaseModel):
     """PUT /users/{id}/preferences — all fields optional, only set what changes."""
@@ -34,12 +27,10 @@ class UserPrefsUpdate(BaseModel):
     notify_severity: Optional[str] = None
     device_token: Optional[str] = None
 
-
 class NotificationSettingsUpdate(BaseModel):
     """PUT /users/notifications — notification preferences."""
     notify_severity: Optional[str] = None
     device_token: Optional[str] = None
-
 
 # --- Response schemas ------------------------------------------------------
 
@@ -47,7 +38,6 @@ class TokenOut(BaseModel):
     """Response from POST /users/login — the JWT access token."""
     access_token: str
     token_type: str = "bearer"
-
 
 class UserOut(BaseModel):
     """Standard user response — never expose password_hash."""
@@ -57,18 +47,18 @@ class UserOut(BaseModel):
     zip_code: Optional[str] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
+    display_name: Optional[str] = None
+    email: Optional[str] = None
+    zip_code: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
     alert_types: Optional[str] = None
     notify_severity: Optional[str] = None
-    created_at: str
-
-    class Config:
-        from_attributes = True
-
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
 
 class NotificationSettingsOut(BaseModel):
     """Response for GET /users/notifications."""
     notify_severity: Optional[str] = None
     device_token: Optional[str] = None
-
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

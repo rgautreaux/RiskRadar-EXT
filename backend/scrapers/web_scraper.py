@@ -63,6 +63,7 @@ class WebScraper(BaseScraper):
     def fetch_raw_data(self) -> list[dict]:
         from firecrawl import FirecrawlApp
 
+        from config.settings import settings
         firecrawl = FirecrawlApp(api_key=settings.FIRECRAWL_API_KEY)
 
         scrape_params = {"formats": ["markdown"]}
@@ -157,7 +158,7 @@ class WebScraper(BaseScraper):
             "severity": raw.get("severity", "moderate"),
             "title": raw.get("title", f"{self.source_name} alert"),
             "description": raw.get("description", ""),
-            "raw_data": json.dumps(raw),
+            "raw_data": raw,
             "latitude": _safe_float(raw.get("latitude")),
             "longitude": _safe_float(raw.get("longitude")),
             "location_name": raw.get("location_name", ""),
