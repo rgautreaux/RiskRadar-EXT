@@ -6,14 +6,20 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
+  Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 
+
 import { ThemedText } from '@/components/themed-text';
+import PrimaryButton from '@/components/ui/PrimaryButton';
 import { ThemedView } from '@/components/themed-view';
 import { Colors, Spacing, Radius, Shadows } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+// Import notification panel art
+const alertNotifArt = require('@/assets/icons/navigation/RiskRadar_ALERT_NotifWindow.png');
+// const standardNotifArt = require('@/assets/icons/navigation/RiskRadar_STND_NotifWIndow.png');
 
 /**
  * ModalScreen presents a branded notification details surface.
@@ -81,17 +87,11 @@ export default function ModalScreen() {
             >
               {/* Alert Icon and Title */}
               <View style={styles.alertHeader}>
-                <View
-                  style={[
-                    styles.alertIcon,
-                    { backgroundColor: palette.danger, opacity: 0.15 },
-                  ]}
-                >
-                  <View
-                    style={[
-                      styles.iconIndicator,
-                      { backgroundColor: palette.danger },
-                    ]}
+                <View style={styles.alertIconArtContainer}>
+                  {/* Use alertNotifArt for critical, standardNotifArt for non-critical (future-proof) */}
+                  <Image
+                    source={alertNotifArt}
+                    style={{ width: 56, height: 56, borderRadius: Radius.md, resizeMode: 'contain' }}
                   />
                 </View>
                 <View style={styles.alertTitleContainer}>
@@ -224,22 +224,7 @@ export default function ModalScreen() {
             </ThemedView>
 
             {/* Action Button */}
-            <TouchableOpacity
-              style={[
-                styles.actionButton,
-                { backgroundColor: palette.primary },
-              ]}
-              onPress={handleClose}
-              activeOpacity={0.8}
-            >
-              <ThemedText
-                type="cardTitle"
-                lightColor={palette.white}
-                darkColor={palette.white}
-              >
-                Acknowledge
-              </ThemedText>
-            </TouchableOpacity>
+            <PrimaryButton label="Acknowledge" onPress={handleClose} />
           </ScrollView>
         </SafeAreaView>
       </Modal>
@@ -287,18 +272,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: Spacing.lg,
   },
-  alertIcon: {
+  alertIconArtContainer: {
     width: 56,
     height: 56,
     borderRadius: Radius.md,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: Spacing.md,
-  },
-  iconIndicator: {
-    width: 28,
-    height: 28,
-    borderRadius: Radius.sm,
+    overflow: 'hidden',
   },
   alertTitleContainer: {
     flex: 1,

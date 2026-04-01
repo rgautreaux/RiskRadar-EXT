@@ -100,12 +100,20 @@ export default function Home() {
           <Text style={styles.greeting}>Welcome, {displayName}</Text>
           <Text style={styles.headerSubtitle}>Stay ahead of the weather</Text>
         </View>
-        <TouchableOpacity
-          style={styles.profileButton}
-          onPress={() => !isLoggedIn ? router.replace('/auth/login') : console.log('Profile')}
-        >
-          <Ionicons name={!isLoggedIn ? 'log-in-outline' : 'person-circle-outline'} size={28} color={palette.primary} />
-        </TouchableOpacity>
+        <View style={styles.headerActions}>
+          <TouchableOpacity
+            style={styles.settingsButton}
+            onPress={() => router.push('/main/settings')}
+          >
+            <Ionicons name="settings-outline" size={24} color={palette.textSecondary} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.profileButton}
+            onPress={() => !isLoggedIn ? router.replace('/auth/login') : console.log('Profile')}
+          >
+            <Ionicons name={!isLoggedIn ? 'log-in-outline' : 'person-circle-outline'} size={28} color={palette.primary} />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
@@ -233,7 +241,7 @@ export default function Home() {
   );
 }
 
-function getStyles(palette: typeof Colors.light) {
+function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
   return StyleSheet.create({
     safeArea: {
       flex: 1,
@@ -259,6 +267,17 @@ function getStyles(palette: typeof Colors.light) {
       fontSize: 14,
       color: palette.textSecondary,
       marginTop: 2,
+    },
+    headerActions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    settingsButton: {
+      width: 44,
+      height: 44,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginRight: 8,
     },
     profileButton: {
       width: 44,

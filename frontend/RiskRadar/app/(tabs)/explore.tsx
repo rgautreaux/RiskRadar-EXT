@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
+
 import {
   ScrollView,
   View,
   StyleSheet,
-  TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
+
 
 import { ThemedView } from '@/components/themed-view';
 import { ThemedText } from '@/components/themed-text';
@@ -14,6 +15,23 @@ import { Colors, Spacing, Radius, Shadows } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { apiFetch } from '@/utils/api';
 import { StateView } from '@/components/ui/state-view';
+import { RiskCard } from '@/components/risk-card';
+import { SectionHeader } from '@/components/section-header';
+import { HazardChip } from '@/components/hazard-chip';
+// Map alert_type or hazard type to icon asset
+const hazardIconMap: Record<string, any> = {
+  weather: require('@/assets/icons/hazards/RiskRadar_Weather_Icon.png'),
+  'air quality': require('@/assets/icons/hazards/RiskRadar_AirQuality_Icon.png'),
+  airquality: require('@/assets/icons/hazards/RiskRadar_AirQuality_Icon.png'),
+  pollen: require('@/assets/icons/hazards/RiskRadar_Pollen_Icon.png'),
+  pollution: require('@/assets/icons/hazards/RiskRadar_Pollution_Icon.png'),
+  earthquake: require('@/assets/icons/hazards/RiskRadar_LocalEQ_Icon.png'),
+  flood: require('@/assets/icons/hazards/RiskRadar_LocalFlood_Icon.png'),
+  wind: require('@/assets/icons/hazards/RiskRadar_LocalWindEvent_Icon.png'),
+  fire: require('@/assets/icons/hazards/RiskRadar_LocalFIre_Icon.png'),
+  // fallback
+  default: require('@/assets/icons/hazards/RiskRadar_Weather_Icon.png'),
+};
 
 interface AlertItem {
   id: number;
@@ -57,32 +75,37 @@ export default function AlertsScreen() {
     fetchAlerts();
   };
 
-  const getSeverityColor = (severity: string) => {
+
+  const getSeverityLevel = (severity: string): 'low' | 'moderate' | 'high' | 'critical' => {
     switch (severity.toLowerCase()) {
       case 'critical':
       case 'extreme':
       case 'hazardous':
-        return palette.danger;
+        return 'critical';
       case 'warning':
       case 'severe':
       case 'unhealthy':
-        return palette.warning;
+        return 'high';
+      case 'moderate':
+        return 'moderate';
+      case 'low':
+      case 'info':
       default:
-        return palette.primary;
+        return 'low';
     }
   };
 
-  const formatTime = (dateStr: string) => {
-    const date = new Date(dateStr);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    if (diffMins < 60) return `${diffMins}m ago`;
-    const diffHrs = Math.floor(diffMins / 60);
-    if (diffHrs < 24) return `${diffHrs}h ago`;
-    const diffDays = Math.floor(diffHrs / 24);
-    return `${diffDays}d ago`;
-  };
+  // const formatTime = (dateStr: string) => {
+  //   const date = new Date(dateStr);
+  //   const now = new Date();
+  //   const diffMs = now.getTime() - date.getTime();
+  //   const diffMins = Math.floor(diffMs / 60000);
+  //   if (diffMins < 60) return `${diffMins}m ago`;
+  //   const diffHrs = Math.floor(diffMins / 60);
+  //   if (diffHrs < 24) return `${diffHrs}h ago`;
+  //   const diffDays = Math.floor(diffHrs / 24);
+  //   return `${diffDays}d ago`;
+  // };
 
   if (loading) {
     return (
@@ -92,17 +115,46 @@ export default function AlertsScreen() {
     );
   }
 
+
+  // Example hazard chips (static for now, could be dynamic)
+  const hazardChips = [
+    { hazardType: 'weather', label: 'Weather', icon: hazardIconMap.weather },
+    { hazardType: 'airquality', label: 'Air Quality', icon: hazardIconMap.airquality },
+    { hazardType: 'pollen', label: 'Pollen', icon: hazardIconMap.pollen },
+    { hazardType: 'pollution', label: 'Pollution', icon: hazardIconMap.pollution },
+    { hazardType: 'earthquake', label: 'Earthquake', icon: hazardIconMap.earthquake },
+    { hazardType: 'flood', label: 'Flood', icon: hazardIconMap.flood },
+    { hazardType: 'wind', label: 'Wind', icon: hazardIconMap.wind },
+    { hazardType: 'fire', label: 'Fire', icon: hazardIconMap.fire },
+  ];
+
   return (
     <ThemedView style={styles.container}>
-      {/* Header Section */}
-      <View style={styles.header}>
-        <ThemedText type="title" style={styles.headerTitle}>
-          Alerts
-        </ThemedText>
-        <ThemedText type="body" lightColor={palette.textSecondary} darkColor={palette.textSecondary}>
-          {alerts.length} active alert{alerts.length !== 1 ? 's' : ''}
-        </ThemedText>
-      </View>
+      {/* Branded Section Header */}
+      <SectionHeader
+        title="Alerts"
+        subtitle={`${alerts.length} active alert${alerts.length !== 1 ? 's' : ''}`}
+        style={styles.sectionHeader}
+      />
+
+      {/* Hazard Chips Row */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.hazardChipsRow}
+        style={{ marginBottom: Spacing.md }}
+      >
+        {hazardChips.map((chip) => (
+          <HazardChip
+            key={chip.hazardType}
+            hazardType={chip.hazardType}
+            label={chip.label}
+            iconSource={chip.icon}
+            isActive={false}
+            style={{ marginRight: Spacing.sm }}
+          />
+        ))}
+      </ScrollView>
 
       {/* Alerts List */}
       <ScrollView
@@ -120,97 +172,86 @@ export default function AlertsScreen() {
           errorText={error || 'Failed to load alerts'}
           onRetry={fetchAlerts}
         >
+        {error ? (
+          <View style={styles.emptyContainer}>
+            <ThemedText type="sectionTitle" style={styles.emptyTitle}>
+              Connection Error
+            </ThemedText>
+            <ThemedText
+              type="body"
+              lightColor={palette.textSecondary}
+              darkColor={palette.textSecondary}
+              style={styles.emptySubtitle}
+            >
+              {error}
+            </ThemedText>
+            <View style={[styles.retryButton, { backgroundColor: palette.primary }]}
+            >
+              <ThemedText type="cardTitle" lightColor={palette.white} darkColor={palette.white} onPress={fetchAlerts}>
+                Retry
+              </ThemedText>
+            </View>
+          </View>
+        ) : alerts.length > 0 ? (
           <View style={styles.alertsContainer}>
-            {alerts.map((alert) => (
-              <AlertCard
-                key={alert.id}
-                alert={alert}
-                severityColor={getSeverityColor(alert.severity)}
-                palette={palette}
-                formatTime={formatTime}
-              />
-            ))}
+            {alerts.map((alert) => {
+              // Map alert_type to icon asset
+              const typeKey = (alert.alert_type || '').toLowerCase().replace(/[^a-z]/g, '');
+              const iconSource =
+                hazardIconMap[typeKey] ||
+                hazardIconMap[alert.alert_type?.toLowerCase()] ||
+                hazardIconMap.default;
+              // SD4: Format freshness meta
+              const formatTime = (dateStr: string) => {
+                const date = new Date(dateStr);
+                const now = new Date();
+                const diffMs = now.getTime() - date.getTime();
+                const diffMins = Math.floor(diffMs / 60000);
+                if (diffMins < 60) return `${diffMins}m ago`;
+                const diffHrs = Math.floor(diffMins / 60);
+                if (diffHrs < 24) return `${diffHrs}h ago`;
+                const diffDays = Math.floor(diffHrs / 24);
+                return `${diffDays}d ago`;
+              };
+              return (
+                <RiskCard
+                  key={alert.id}
+                  riskType={alert.alert_type}
+                  title={alert.title}
+                  severity={getSeverityLevel(alert.severity)}
+                  iconSource={iconSource}
+                  description={alert.description ?? `${alert.alert_type} alert from ${alert.source}`}
+                  value={undefined}
+                  unit={undefined}
+                  onPress={undefined}
+                  style={{ marginBottom: Spacing.sm }}
+                  meta={formatTime(alert.fetched_at || alert.created_at)}
+                />
+              );
+            })}
           </View>
         </StateView>
+        ) : (
+          <View style={styles.emptyContainer}>
+            <ThemedText type="sectionTitle" style={styles.emptyTitle}>
+              No Active Alerts
+            </ThemedText>
+            <ThemedText
+              type="body"
+              lightColor={palette.textSecondary}
+              darkColor={palette.textSecondary}
+              style={styles.emptySubtitle}
+            >
+              You&apos;re all set! Pull down to refresh.
+            </ThemedText>
+          </View>
+        )}
       </ScrollView>
     </ThemedView>
   );
 }
 
-function AlertCard({
-  alert,
-  severityColor,
-  palette,
-  formatTime,
-}: {
-  alert: AlertItem;
-  severityColor: string;
-  palette: typeof Colors.light;
-  formatTime: (d: string) => string;
-}) {
-  return (
-    <TouchableOpacity
-      style={[
-        styles.alertCard,
-        { backgroundColor: palette.card, borderLeftColor: severityColor },
-      ]}
-      activeOpacity={0.7}
-    >
-      <View style={styles.alertCardContent}>
-        <View style={styles.alertLeft}>
-          <View
-            style={[
-              styles.iconBackground,
-              { backgroundColor: severityColor, opacity: 0.15 },
-            ]}
-          >
-            <View
-              style={[
-                styles.iconPlaceholder,
-                { backgroundColor: severityColor },
-              ]}
-            />
-          </View>
 
-          <View style={styles.alertTextContent}>
-            <ThemedText type="cardTitle" numberOfLines={1}>
-              {alert.title}
-            </ThemedText>
-            <ThemedText
-              type="eyebrow"
-              lightColor={severityColor}
-              darkColor={severityColor}
-              numberOfLines={1}
-              style={styles.alertSeverity}
-            >
-              {alert.severity.toUpperCase()}
-            </ThemedText>
-            <ThemedText
-              type="meta"
-              lightColor={palette.textSecondary}
-              darkColor={palette.textSecondary}
-              numberOfLines={2}
-              style={styles.alertDescription}
-            >
-              {alert.description ?? `${alert.alert_type} alert from ${alert.source}`}
-            </ThemedText>
-          </View>
-        </View>
-
-        <View style={styles.alertRight}>
-          <ThemedText
-            type="meta"
-            lightColor={palette.textSecondary}
-            darkColor={palette.textSecondary}
-            style={styles.alertTimestamp}
-          >
-            {formatTime(alert.created_at)}
-          </ThemedText>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -220,13 +261,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  header: {
-    paddingHorizontal: Spacing.md,
-    paddingTop: Spacing.lg,
-    paddingBottom: Spacing.sm,
+  sectionHeader: {
+    paddingBottom: 0,
   },
-  headerTitle: {
-    marginBottom: Spacing.xs,
+  hazardChipsRow: {
+    paddingHorizontal: Spacing.md,
+    paddingBottom: Spacing.sm,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   scrollView: {
     flex: 1,
