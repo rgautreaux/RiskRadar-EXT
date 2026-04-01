@@ -11,6 +11,7 @@ import {
   StatusBar,
   ActivityIndicator,
 } from 'react-native';
+import EmptyState from '@/components/ui/EmptyState';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/theme';
@@ -190,6 +191,13 @@ export default function Home() {
               </Text>
             </View>
           </StateView>
+          ) : (
+            <EmptyState
+              title={zipCode.length === 5 ? `Results for ${zipCode}` : 'Awaiting Zip Code...'}
+              subtitle={zipCode.length === 5 ? 'Tap to view full weather summary.' : 'Enter a zip code above.'}
+              style={styles.placeholderBox}
+            />
+          )}
         </TouchableOpacity>
 
         {/* Risk Assessment Card */}
@@ -235,6 +243,13 @@ export default function Home() {
               ))}
             </View>
           </StateView>
+          ) : (
+            <EmptyState
+              title="No data available"
+              subtitle="Make sure the backend is running."
+              style={styles.placeholderContent}
+            />
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
