@@ -1,3 +1,27 @@
+# User Credential Handling Audit (April 2026)
+
+## Summary
+- User emails and password hashes are stored in the User model (backend/db/models.py).
+- Registration and login endpoints in backend/api/users.py handle email and password processing, using bcrypt for password hashing.
+- Password hashing and verification are implemented in backend/auth/security.py using CryptContext (bcrypt).
+- JWT tokens are used for authentication, with user ID as the subject.
+
+## Files Involved
+- backend/db/models.py: User model, email and password_hash fields
+- backend/api/users.py: /register and /login endpoints, password hashing and verification
+- backend/auth/security.py: hash_password, verify_password, JWT token creation/verification
+
+## Readiness for Encryption/Hashing Upgrades
+- All user emails and passwords are processed through a central model and API endpoints, making upgrades straightforward.
+- Passwords are already hashed (bcrypt). Email encryption can be added to the User model and related API logic.
+- Migration and rollback can be managed via migration scripts and the MigrationLog table.
+
+## Next Steps
+- Proceed to update the user model for AES-encrypted emails.
+- Implement encryption/decryption logic and migration scripts.
+
+---
+
 # Documentation Synchronization Note (Mar 30, 2026)
 
 This TODO board is in sync with README.md, GROUP_PROGRESS_LOG, AUTHORS.md, REBECCA-TRANSCRIPT.md, and UI_UX_STYLING_PLAN.md as of Mar 30, 2026. All planning, progress, and status tracking reflects the current project state and major developments. All transcript entries are unique and in correct chronological order. Progress logs and documentation are fully synchronized for auditability.

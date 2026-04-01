@@ -13,6 +13,7 @@ import {
   Alert
 } from 'react-native';
 import PrimaryButton from '@/components/ui/PrimaryButton';
+import { BrandHeader } from '@/components/brand-header';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/theme';
@@ -55,6 +56,7 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <BrandHeader style={{ paddingTop: 12, paddingBottom: 8 }} />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.container}
@@ -67,9 +69,6 @@ export default function LoginScreen() {
         </TouchableOpacity>
 
         <View style={styles.headerContainer}>
-          <View style={styles.iconContainer}>
-            <Ionicons name="shield-checkmark" size={40} color={palette.primary} />
-          </View>
           <Text style={styles.title}>Welcome Back</Text>
           <Text style={styles.subtitle}>Sign in to continue to RiskRadar</Text>
         </View>
