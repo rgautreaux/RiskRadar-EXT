@@ -62,11 +62,15 @@
 
 ---
 
-## Contributions and Roles (as of Mar 26, 2026)
 
-- **Qui Hu**: Project lead, backend architecture, database design, API development, code review, documentation.
-- **Rebecca Gautreaux**: Documentation lead, progress tracking, transcript management, UI/UX planning, test suite development, LLM integration, security and design contributions.
-- **Team Members**: Frontend development, API integration, database migration, scheduled job implementation, milestone tracking, and QA.
+## Contributions and Roles (as of Mar 30, 2026)
+
+- **Qui Huynh**: Project lead, backend architecture, database design, API development, code review, documentation. Led backend API endpoint design, database models, and integration with MariaDB/SQLite. Supported API testing, troubleshooting, and documentation.
+- **Noah Benoit**: Security lead, authentication, compliance, and risk mitigation. Led User Security Plan, implemented authentication (JWT, bcrypt), user management, and security audits. Oversaw compliance and contributed to documentation.
+- **Ben Manuel**: Frontend developer, UI/UX implementation, and mobile app integration. Developed React Native mobile app, implemented UI components, navigation, and onboarding flows. Integrated frontend with backend API and contributed to summary dashboard features.
+- **Max Compeaux**: AI backend developer, LLM integration, and backend support. Developed AI-powered summarization module, implemented daily digest generation, prompt engineering, and supported backend integration and documentation.
+- **Rebecca Gautreaux**: Documentation lead, database administrator, and progress tracking. Led database schema design, migration planning, and test/staging setup. Implemented and documented User Security Plan preparatory work, maintained project documentation, progress logs, and transcripts. Supported backend test coverage, validation, and documentation synchronization.
+- **Celeste George**: Frontend developer, UI/UX research, and QA. Contributed to frontend development, asset mapping, wireframe implementation, and component styling. Supported documentation, project planning, and QA.
 
 All contributions are listed in chronological order and reflect the current state of the project. Roles are updated as of this session to ensure historical accuracy and auditability.
 
