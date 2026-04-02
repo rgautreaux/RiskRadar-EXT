@@ -8305,3 +8305,26 @@ If you are experiencing actual errors in your code, tests, or build (not just wa
 ---
 
 
+User: Explain this line of doce in EmptyState
+
+GitHub Copilot: The line:
+
+const radarIcon = require('@/assets/icons/navigation/RiskRadar_STND_Logo.png');
+
+is importing an image file (RiskRadar_STND_Logo.png) from the specified path into the `radarIcon` variable using CommonJS `require`. This allows the image to be used as a source for the React Native `<Image />` component later in the file. The `@/assets/...` path is likely an alias for the project's assets directory, making the import path cleaner and easier to manage.
+
+User: The new asset path points to @/assets/icons/navigation/RiskRadar_STND_Logo.png, but that file doesn’t exist under assets/icons/navigation/ (only STND_HomeBttn/NotifIcon/etc.). 
+
+This will fail bundling at runtime. Update the require() to an existing logo asset under assets/icons/branding/
+
+GitHub Copilot: Searched for files matching `**/frontend/RiskRadar/assets/icons/branding/*`, 5 matches
+
+Generating patch (7 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6Project/frontend/RiskRadar/components/ui/EmptyState.tsx)
+
+
+```
+
+```
+The image import in EmptyState now uses the correct path: it requires the logo from assets/icons/branding/RiskRadar_STND_Logo.png, which exists in your project. This will prevent runtime bundling errors.
+
+Made changes.
