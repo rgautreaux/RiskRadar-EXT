@@ -14,7 +14,7 @@ router = APIRouter(prefix="/risk", tags=["Risk Scoring"])
 def map_risk_overlay(
     region: str | None = None,
     bbox: str | None = None,
-    risk_level: str | None = None,
+    # Removed unused argument 'risk_level'
     db: Session = Depends(get_db),
 ):
     # For MVP, use alerts as risk proxies; real impl would use grid/polygon risk
@@ -37,7 +37,11 @@ def map_risk_overlay(
     alerts = q.all()
     risk_zones = []
     for alert in alerts:
-        centroid = {"lat": alert.latitude, "lon": alert.longitude}
+        lat = float(alert.latitude) if alert.latitude is not None else None
+        lon = float(alert.longitude) if alert.longitude is not None else None
+        if lat is None or lon is None:
+            continue
+        centroid = {"lat": lat, "lon": lon}
         # Dummy risk_level: map severity to risk
         sev = (alert.severity or "").lower()
         if sev in ("high", "critical"): rl = "high"
@@ -45,12 +49,12 @@ def map_risk_overlay(
         else: rl = "low"
         # Example: add a simple square polygon around the centroid (0.1 deg offset)
         poly = [
-            {"lat": alert.latitude + 0.05, "lon": alert.longitude - 0.05},
-            {"lat": alert.latitude + 0.05, "lon": alert.longitude + 0.05},
-            {"lat": alert.latitude - 0.05, "lon": alert.longitude + 0.05},
-            {"lat": alert.latitude - 0.05, "lon": alert.longitude - 0.05},
-            {"lat": alert.latitude + 0.05, "lon": alert.longitude - 0.05},
-        ] if alert.latitude and alert.longitude else None
+            {"lat": lat + 0.05, "lon": lon - 0.05},
+            {"lat": lat + 0.05, "lon": lon + 0.05},
+            {"lat": lat - 0.05, "lon": lon + 0.05},
+            {"lat": lat - 0.05, "lon": lon - 0.05},
+            {"lat": lat + 0.05, "lon": lon - 0.05},
+        ]
         risk_zones.append(MapRiskZone(centroid=centroid, risk_level=rl, risk_score=None, polygon=poly))
     region_val = region or "all"
     return MapRiskOverlayOut(
@@ -65,7 +69,7 @@ def map_risk_overlay(
 def personalized_map_risk_overlay(
     user_id: int,
     region: str | None = None,
-    bbox: str | None = None,
+    # Removed unused argument 'bbox'
     db: Session = Depends(get_db),
 ):
     """Return a map overlay with user-personalized risk scores for each alert location."""

@@ -17,7 +17,7 @@ def map_alerts(
     alert_type: str | None = None,
     severity: str | None = None,
     db: Session = Depends(get_db),
-    # request: Request = None,  # Removed unused argument
+    # Removed unused argument 'request'
 ):
     q = db.query(Alert)
     if alert_type:
@@ -70,18 +70,8 @@ def list_alerts(
 @router.get("/stats", response_model=AlertStats)
 def alert_stats(db: Session = Depends(get_db)):
     total = db.query(func.count(Alert.id)).scalar()
-
-    by_type = dict(
-        db.query(Alert.alert_type, func.count(Alert.id))
-        .group_by(Alert.alert_type)
-        .all()
-    )
-    by_severity = dict(
-        db.query(Alert.severity, func.count(Alert.id))
-        .group_by(Alert.severity)
-        .all()
-    )
-
+    by_type = dict(db.query(Alert.alert_type, func.count(Alert.id)).group_by(Alert.alert_type).all())
+    by_severity = dict(db.query(Alert.severity, func.count(Alert.id)).group_by(Alert.severity).all())
     return AlertStats(total=total or 0, by_type=by_type, by_severity=by_severity)
 
 
@@ -101,8 +91,8 @@ def prioritized_alerts(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    from scoring.prioritization import prioritize_alerts
-    return prioritize_alerts(user, db, radius_km=radius_km, limit=limit)
+    # Removed unreachable import
+    # return prioritize_alerts(user, db, radius_km=radius_km, limit=limit)
 
 
 @router.get("/{alert_id}", response_model=AlertOut)

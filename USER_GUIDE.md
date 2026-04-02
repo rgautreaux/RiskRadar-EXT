@@ -1,4 +1,3 @@
-
 # Documentation Synchronization Note
 
 All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) has been reviewed and updated for consistency and agreement as of the Stage 3 documentation and synchronization session. This ensures grading clarity, onboarding readiness, and a single source of truth for project status and history.
@@ -358,10 +357,8 @@ Summary:
 - README.md and USER_GUIDE.md expanded with new Forecast UI and personalization features, implementation details, and importance.
 
 This ensures all top-level documentation is in sync and the Forecast UI is fully implemented and documented for Stage 4.
-# Documentation Synchronization Note (2026-04-27)
 
-All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) has been reviewed and updated for consistency and agreement as of the Stage 3 documentation and synchronization session. This ensures grading clarity, onboarding readiness, and a single source of truth for project status and history.
-
+---
 
 # Stage 4 Documentation Synchronization & Progress Update Session (2026-04-02)
 
@@ -374,3 +371,11 @@ Summary:
 - Expanded README.md and USER_GUIDE.md with new Forecast UI and personalization features, implementation details, and importance.
 
 This ensures all documentation is in sync, the Forecast UI is fully documented, and the project is ready for grading and onboarding.
+
+---
+
+## AI Assistant & Forecast Limitations
+- The AI Assistant is for informational purposes only and does not provide emergency or real-time alerts.
+- Forecasts are based on available data and may not capture sudden changes or rare events.
+- Always consult official sources for critical decisions.
+- Accessibility and language support are being improved in future updates.

@@ -23,3 +23,8 @@ Document the design, implementation, and integration plan for the "Golby" AI Ass
 - Updated UI mockups/wireframes
 - Frontend integration code
 - Accessibility and usage documentation
+
+## Status Update (2026-04-02)
+- Golby icon (SVG and PNG) is now integrated in the assistant UI (web).
+- Alt text, contrast, and keyboard accessibility are implemented.
+- Usage guidelines and accessibility compliance are documented in UI and code comments.
