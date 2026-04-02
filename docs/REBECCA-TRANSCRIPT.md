@@ -8333,3 +8333,158 @@ Made changes.
 ---
 
 
+User: Initial Implementation
+
+Cloud: I’m looking into email_hmac and its use of keys without normalizing emails, which could lead to duplicates. I want to verify existing conventions and check if they lowercase emails. I’ll use tools like search_dir for that. In migration scripts, the import paths might be incorrect, and I need to check the use of SessionLocal against get_db. Also, I’m concerned about using hooks incorrectly in explore.tsx, as it's a significant issue. I need to address that and recommend moving the code into a separate component. **Reviewing modal, imports, and documentation**
+
+In app/modal.tsx, I noticed that Animated is imported separately, even though it could’ve been included in the first import from react-native, but it's not a major bug. There's also a trailing whitespace issue in SafeAreaView on line 66. I need to make sure animations are cleaned on unmount, which seems fine. I should verify the path for the EmptyState icon to confirm the asset. Additionally, there’s a discrepancy in documentation regarding encryption—it mentions a future update, but it’s already done, so I need to comment on that. **Assessing security issues in auth and user creation**
+
+In backend/auth/security.py, I'm seeing that having a static IV and reusing the JWT secret for encryption and HMAC is a security issue. If the JWT secret is shorter than 32 bytes, it could raise a ValueError, so I need to check the length of the JWT_SECRET_KEY in the config. The _EMAIL_AES_IV is incorrectly counted as 17 bytes instead of 16 due to the exclamation mark, which could also raise an error. Additionally, in backend/api/users.py, an email_encrypted property is declared but not correctly referenced. I need to comment on these critical bugs. **Examining user model validation and indentation issues**
+
+It looks like user validation is using UserOut.model_validate(user), but I need to confirm if the email field is included in the schema output. I’ll check schemas/user for that. Additionally, there's an import for decrypt_email that doesn’t seem to be utilized yet. 
+
+In login_user, I found that lines 79-91 are improperly indented by 8 spaces, which could lead to an IndentationError because the first statement should be a docstring at 4 spaces. I'll need to address this critical indentation issue, and I should also check the docstring in register_user for proper indentation. **Checking email_hmac implementation**
+
+I noticed that the email_hmac is queried, but it has a unique index in the model, allowing multiple null values due to being nullable, which is acceptable. However, I should compute email_hmac using a normalized version of the email—lowercased and stripped—to ensure consistency. I need to check the previous code for login and registration to see how this is handled. I'll start by exploring the repository structure and opening the relevant files to get a better understanding.It looks like the asset exists, but there’s a difference in the paths I need to consider. The EmptyState is using the navigation folder, while the brand-header refers to the branding folder. I’m wondering if there’s a potential missing file here. I think I should go ahead and check the assets directories. Maybe I can make a list of what’s there to clarify what I need.I need to note that the No RiskRadar_STND_Logo.png is not in navigation, which means the required path will fail. It's located in the branding folder, so I need to update EmptyState with the correct path accordingly. Also, I noticed the risk radar notification window file might have a capital "I" in "NotifWindow," but it doesn't appear in the diff. Now, I need to inspect the backend/auth/security.py for IV length and read the exact string. I'll store that comment and verify the changed lines as needed. I'll use read_code for a full file review in the diff region.I noticed that there are hooks inside a map, which is a violation that definitely needs fixing. I should also store a comment about this critical bug. Additionally, it's worth noting that they removed StateView, which might reduce error handling, but that may not be necessary. Next, I’ll check modal.tsx for any trailing whitespace, and I’ll review relevant lines to see if there are any missing closing tags. I think I’ll focus on the changed block.I’m thinking about whether the closing tag should be after PrimaryButton or after ThemedView. It seems like the intention is to animate just the panel, not the entire scroll view. However, the current setup has Animated.View wrapping ThemedView without a proper closing, which will lead to an error in React. The excerpt doesn’t show a closing tag, so I’ll need to check further lines, probably looking for `</Animated.View>` somewhere after line 249.I realize there’s a missing closing tag, which is a critical issue. I need to store a comment in the changed region around lines 100 to 253. Also, I noticed there's an unused import for useState. Next, I have to check the import paths in the backend migration script to confirm the existing import style. Lastly, I should list out the other migrations for good measure. It's quite the task, but I’ll get it done!I need to inspect the draft scripts to check for conventions and ensure that the new script stays consistent. I should pay special attention to whether they already have encryption key management and the random IV plan included. So, I'll start by reading the draft_email_encryption_migration.py file to see what’s been implemented there. It’s crucial to maintain coherence and follow best practices throughout the new developments!I’m looking into the draft that suggests using AES-GCM with a random IV and separate keys, noticing my current implementation doesn’t follow that. During the code review, I can highlight these issues. I should store a comment in security.py regarding the concerns with the static IV, key length, and other elements. I need to verify the JWT_SECRET_KEY length in the config settings, even though it’s not a guaranteed solution. I’ll read the configuration settings soon.I noticed that the migration script is using a naive datetime with utcnow, while the model uses a timezone-aware default for _now. This isn’t critical, but since the column timestamp is set to timezone=True, passing a naive datetime might cause confusion. It might make sense to prefer a timezone-aware datetime like `datetime.now(timezone.utc)`. On the other hand, using just naive datetime could lead to warnings. I should check other uses of MigrationLog to be sure.I noticed the user model uses `email_encrypted`, but the API refers to it as `encrypted_email`, which seems like a mismatch. I'll need to check the documentation for properties like "readiness" since it might require updating. I should moderate any comments on this. It's also essential to review `schemas.user` and `UserOut` to understand the email field and configuration better. Let's dive into that and clarify everything.I need to think through the email encryption process. It seems there's a unique constraint issue; if we switch to a random IV, it could fail. Currently, email_hmac is unique for lookups, so maybe the uniqueness should only apply to email_hmac, and not the email_encrypted field. There's a security concern too since deterministic encryption can leak information about equality.
+
+I should also check the documentation regarding this, especially to clarify discrepancies with the PR description. I’ll craft some comments and store them as per the rules. **Reviewing code comments**
+
+I need to identify the exact line numbers in the code after the current changes. The diff provided those line numbers, and they seem to correspond to the after state. For example, in EmptyState, I’ll comment on line 6. I need to confirm that read_code starts line numbers at 1, which helps.
+
+In Explore.tsx, I'll focus on lines 193-228, specifically around the useRef and useEffect inside the map from lines 212-228, marking this as a critical bug.
+
+For Modal.tsx, I notice a missing closing tag for </Animated.View>, and I should comment around lines 100-106 and near the end while keeping line counts limited to five. **Commenting on security issues**
+
+I need to address several security concerns in the IV length and key derivation process. The IV length is 17 bytes, and using a static IV, along with potential key slicing issues, raises critical security risks. It might make sense to combine these comments for runtime and security concerns, especially since the IV length bug is critical.
+
+Next, in backend/api/users.py, I notice an IndentationError in login_user that needs commenting on lines 77-91. I’ll also note that using `encrypted_email` doesn't match the model field `email_encrypted` on lines 60-66, and the API endpoints returning email as None due to failing to decrypt requires attention too. **Addressing model uniqueness**
+
+I need to clarify some points about uniqueness constraints in backend/db/models.py, particularly regarding the use of email_encrypted. While a unique constraint with a random IV could prevent duplicates, the current deterministic approach doesn’t support that and also doesn't add an index. This seems more like a design issue. 
+
+I should comment on lines 57-62, noting that using a fixed IV leaks equality and that email_hmac ensures lookup uniqueness. I'll also address some concerns in security.py and add notes about the migration script using the right attributes while filtering for email fields. **Organizing comments on code issues**
+
+I need to handle multiple comments related to the codebase. There’s a concern about the migration script re-encrypting data without checking if email_encrypted is already set, which could lead to issues, but it may be okay since it filters out emails that are None.
+
+In backend/db/models.py, I'll address uniqueness constraints for email fields, noting that unique constraints on email_encrypted are problematic if encryption uses a random IV.
+
+In backend/api/users.py, I'll comment on the incorrect indentation in login_user and mention that the decrypted email isn’t returned properly, suggesting updates to how the system handles email fields and responses. Finally, I’ll provide comments on various other code sections to ensure clarity and improve functionality. **Addressing code issues and comments**
+
+I’ve identified several concerns that need commenting on. In users.py, the issue of emails returning as None appears to be a moderate bug.
+
+In models.py, there are unique constraints that could affect maintainability and API design—it seems like adding uniqueness here isn’t appropriate and might break with future improvements in encryption.
+
+I should also note a moderate documentation issue in the TODO files. Now, it’s time to store these comments to ensure clarity and maintainability in the codebase!Alright, I need to make sure that all changes are reviewed carefully. I see there's a list of files in the diff. I’ll quickly read through each changed file to look for potential issues.  
+First up is the `frontend/RiskRadar/components/tab-bar-icon.tsx`. I'll check through it for any problems or concerns that might need addressing. It’s essential to catch everything!I'm working on the frontend, specifically in `login.tsx`. I encountered a task where I need to read the code around `BrandHeader` and remove the icon. It seems straightforward enough, but I want to make sure it’s done correctly without impacting other parts of the code. I'll pay special attention to how this change affects the overall user experience on the login page. Alright, let’s get to it!I need to create a table of changed files with descriptions, including 1-3 bullet points for the changes. The backend needs to mention encrypted email storage and migration, while the frontend will highlight the branding header and animations. I should ensure that I don’t mention the narrative unless necessary and focus on the PR overview and approval status. I wonder about storing the asset path for logos, but it might not be needed. I need to check backend codebase tests as well. **Checking test coverage**
+
+I see there's a backend directory with tests, but I’m concerned that the new functionality might not have tests. I know there’s no time to write them right now, especially since the PR adds a major security feature. I should have tests for that, but I can only comment on test coverage if there are existing tests in the same file. I wonder if there are tests for the user endpoints, so I’ll check the backend tests list quickly.I’m thinking that if the tests exist but haven’t been updated, that means they're not really covering things. It sounds like I could be looking at failing tests instead. However, since I can't run the tests, I can check the test file to see if it's asserting on email. I’ll need to inspect that quickly to figure out what's going on. Let's see what I can find!## PR Overview
+This PR aims to improve backend credential privacy by migrating user email storage from plaintext to encrypted-at-rest plus HMAC-based lookup, while also polishing frontend UX with branded auth headers and animated UI transitions.
+
+**Changes:**
+- Backend: add encrypted email storage + HMAC lookup utilities, update register/login to query by HMAC, and add an email migration script.
+- Frontend: add brand header to auth screens, animate the notification modal panel, and add staggered animations for alert cards.
+- Docs: add an audit-oriented summary of credential handling.
+
+### Reviewed Changes
+| File | Description |
+| ---- | ----------- |
+| frontend/RiskRadar/components/ui/EmptyState.tsx | Updates EmptyState logo asset reference for branding consistency. |
+| frontend/RiskRadar/components/tab-bar-icon.tsx | Adds explanatory comments for focused/unfocused icon mapping. |
+| frontend/RiskRadar/app/modal.tsx | Adds fade/slide animation for the notification panel. |
+| frontend/RiskRadar/app/auth/registration.tsx | Adds `BrandHeader` to the registration screen. |
+| frontend/RiskRadar/app/auth/login.tsx | Adds `BrandHeader` and removes the prior icon header block. |
+| frontend/RiskRadar/app/(tabs)/explore.tsx | Replaces StateView loading UI and adds staggered animations to alert cards. |
+| docs/TODO.md | Adds “User Credential Handling Audit (April 2026)” section. |
+| backend/db/models.py | Adds `email_encrypted` and `email_hmac` fields and deprecates plaintext `email`. |
+| backend/db/migrations/migrate_email_encryption.py | Introduces a migration script to populate encrypted email + HMAC and log actions. |
+| backend/auth/security.py | Adds AES email encrypt/decrypt and email HMAC helpers. |
+| backend/api/users.py | Updates registration/login to use HMAC-based lookup and encrypted email storage. |
+
+User: Enhancing user credential security and experience
+
+Cloud: Start agent firewall
+
+Start 'playwright' MCP server
+
+Clone repository QuiHu/Team6Project
+
+Start 'github-mcp-server' MCP server
+
+Ran terminal command: $ cd /home/runner/work/Team6Project/Team6Project && git --no-pager log --oneline -15
+
+Ran terminal command: $ find /home/runner/work/Team6Project/Team6Project/frontend/RiskRadar/assets -name "*.png" | head -40
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6Project/frontend/RiskRadar/components/ui/EmptyState.tsx)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6Project/frontend/RiskRadar/app/%28tabs%29/explore.tsx)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6Project/backend/api/users.py)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6Project/backend/schemas/user.py)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6Project/backend/db/models.py)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6Project/backend/auth/security.py)
+
+- [x] Fix EmptyState.tsx asset path (already resolved in commit 9d83ef97)
+- [ ] Fix explore.tsx: extract AnimatedAlertCard component (hooks called inside map() violates Rules of Hooks)
+- [ ] Fix backend/api/users.py: ensure `email` is populated (decrypted) when returning UserOut from /me, /preferences endpoints
+
+Edit [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6Project/frontend/RiskRadar/app/%28tabs%29/explore.tsx)
+
+Edit [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6Project/frontend/RiskRadar/app/%28tabs%29/explore.tsx)
+
+Edit [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6Project/backend/api/users.py)
+
+Edit [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6Project/backend/api/users.py)
+
+Edit [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6Project/backend/api/users.py)
+
+Edit [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6Project/backend/api/users.py)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6Project/backend/api/users.py)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6Project/frontend/RiskRadar/app/%28tabs%29/explore.tsx), lines 1 to 110
+
+Ran terminal command: $ cd /home/runner/work/Team6Project/Team6Project/backend && python -c "import api.users; print('OK')" 2>&1
+
+Ran terminal command: $ cd /home/runner/work/Team6Project/Team6Project/frontend/RiskRadar && npx tsc --noEmit --skipLibCheck 2>&1 | head -30
+
+Ran terminal command: $ cd /home/runner/work/Team6Project/Team6Project/frontend/RiskRadar && npx tsc --noEmit --skipLibCheck 2>&1 | grep explore
+
+Ran terminal command: $ cd /home/runner/work/Team6Project/Team6Project/backend && python -m py_compile api/users.py 2>&1 && echo "Syntax OK"
+
+code_review
+
+Edit [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6Project/frontend/RiskRadar/app/%28tabs%29/explore.tsx)
+
+Edit [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6Project/frontend/RiskRadar/app/%28tabs%29/explore.tsx)
+
+Edit [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6Project/frontend/RiskRadar/app/%28tabs%29/explore.tsx)
+
+Edit [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6Project/frontend/RiskRadar/app/%28tabs%29/explore.tsx)
+
+Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/Team6Project/frontend/RiskRadar/app/%28tabs%29/explore.tsx), lines 1 to 100
+
+codeql_checker
+
+- [x] Fix EmptyState.tsx asset path (already resolved in commit 9d83ef97)
+- [x] Fix explore.tsx: extract `AnimatedAlertCard` component — moves `useRef`/`useEffect` out of `alerts.map()` to fix Rules of Hooks violation; use `ImageSourcePropType` for icon prop; add `index` to effect dependency array
+- [x] Fix backend/api/users.py: add `_user_out_with_email()` helper that decrypts `email_encrypted`; update `/me`, GET/PUT `/{id}/preferences` endpoints to return decrypted email instead of `null`
+
+Here's a summary of all changes made:
+
+## Summary
+
+### `frontend/RiskRadar/app/(tabs)/explore.tsx`
+- **Rules of Hooks fix**: Extracted `AnimatedAlertCard` as a standalone React component. Previously, `useRef` and `useEffect` were called inside `alerts.map(...)` — a direct violation of the Rules of Hooks that causes undefined behavior. Now all hooks are called at the top level of `AnimatedAlertCard`.
+- **Type safety**: Replaced `any` with `ImageSourcePropType` for the `iconSource` prop and `hazardIconMap` type.
+- **Dependency array**: Added `index` to the `useEffect` dependency array since it's used in the staggered delay calculation.
+
+### `backend/api/users.py`
+- **`email: null` fix**: Added `_user_out_with_email()` helper that builds a `UserOut` with the email decrypted from `email_encrypted` (falling back to the legacy `email` field for un-migrated records). Updated `GET /me`, `GET /{id}/preferences`, and `PUT /{id}/preferences` to use this helper, so authenticated users no longer receive `email: null` in responses.
+
+### `frontend/RiskRadar/components/ui/EmptyState.tsx`
+- Already fixed in a prior commit (`9d83ef97`) — the asset path correctly points to `@/assets/icons/branding/RiskRadar_STND_Logo.png`.
+
+
+---
