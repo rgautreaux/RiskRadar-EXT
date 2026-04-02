@@ -2,10 +2,10 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from datetime import datetime
-from db.database import get_db
-from db.models import Alert, User
-from schemas.risk_score import RiskScoreOut, MapRiskOverlayOut, MapRiskZone
-from scoring import compute_risk_score
+from ..db.database import get_db
+from ..db.models import Alert, User
+from ..schemas.risk_score import RiskScoreOut, MapRiskOverlayOut, MapRiskZone
+from ..scoring import compute_risk_score
 
 router = APIRouter(prefix="/risk", tags=["Risk Scoring"])
 
@@ -18,12 +18,26 @@ def map_risk_overlay(
     db: Session = Depends(get_db),
 ):
     # For MVP, use alerts as risk proxies; real impl would use grid/polygon risk
-    alerts = db.query(Alert).filter(Alert.latitude != None, Alert.longitude != None).all()
+    q = db.query(Alert).filter(Alert.latitude != None, Alert.longitude != None)
+    # Region filtering (example: filter by location_name or custom logic)
+    if region and region.lower() != "all":
+        q = q.filter(Alert.location_name.ilike(f"%{region}%"))
+    # BBox filtering: bbox="minLon,minLat,maxLon,maxLat"
+    if bbox:
+        try:
+            minlon, minlat, maxlon, maxlat = map(float, bbox.split(","))
+            q = q.filter(
+                Alert.latitude >= minlat,
+                Alert.latitude <= maxlat,
+                Alert.longitude >= minlon,
+                Alert.longitude <= maxlon,
+            )
+        except ValueError:
+            pass  # Ignore invalid bbox
+    alerts = q.all()
     risk_zones = []
     for alert in alerts:
-        lat = float(alert.latitude) if alert.latitude is not None else None
-        lon = float(alert.longitude) if alert.longitude is not None else None
-        centroid = {"lat": lat, "lon": lon} if lat is not None and lon is not None else None
+        centroid = {"lat": alert.latitude, "lon": alert.longitude}
         # Dummy risk_level: map severity to risk
         sev = (alert.severity or "").lower()
         if sev in ("high", "critical"): rl = "high"
@@ -31,12 +45,12 @@ def map_risk_overlay(
         else: rl = "low"
         # Example: add a simple square polygon around the centroid (0.1 deg offset)
         poly = [
-            {"lat": lat + 0.05, "lon": lon - 0.05},
-            {"lat": lat + 0.05, "lon": lon + 0.05},
-            {"lat": lat - 0.05, "lon": lon + 0.05},
-            {"lat": lat - 0.05, "lon": lon - 0.05},
-            {"lat": lat + 0.05, "lon": lon - 0.05},
-        ] if lat is not None and lon is not None else None
+            {"lat": alert.latitude + 0.05, "lon": alert.longitude - 0.05},
+            {"lat": alert.latitude + 0.05, "lon": alert.longitude + 0.05},
+            {"lat": alert.latitude - 0.05, "lon": alert.longitude + 0.05},
+            {"lat": alert.latitude - 0.05, "lon": alert.longitude - 0.05},
+            {"lat": alert.latitude + 0.05, "lon": alert.longitude - 0.05},
+        ] if alert.latitude and alert.longitude else None
         risk_zones.append(MapRiskZone(centroid=centroid, risk_level=rl, risk_score=None, polygon=poly))
     region_val = region or "all"
     return MapRiskOverlayOut(

@@ -134,6 +134,18 @@ rr_render_layout_start('Risk Map', 'map');
 <section class="panel">
     <h2 id="risk-map-heading">Interactive Map</h2>
     <div style="margin-bottom:12px;display:flex;gap:24px;align-items:center;">
+            </div>
+            <div id="risk-map-container"></div>
+            <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+            <script src="/assets/plotly-map.js"></script>
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Use PHP-injected URLs for backend endpoints
+                var alertsUrl = <?php echo json_encode($alerts_url); ?>;
+                var riskUrl = <?php echo json_encode($risk_url); ?>;
+                window.renderRiskMap(alertsUrl, riskUrl, 'risk-map-container');
+            });
+            </script>
         <div>
             <label for="region-filter">Region Filter: </label>
             <select id="region-filter" style="min-width:120px;" aria-label="Region Filter" aria-describedby="region-filter-desc">

@@ -3,9 +3,9 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from datetime import datetime
-from db.database import get_db
-from db.models import Alert, User
-from schemas.alert import AlertOut, AlertStats, PrioritizedAlertListOut, MapAlertListOut
+from ..db.database import get_db
+from ..db.models import Alert, User
+from ..schemas.alert import AlertOut, AlertStats, PrioritizedAlertListOut, MapAlertListOut
 
 router = APIRouter(prefix="/alerts", tags=["Alerts"])
 
@@ -17,7 +17,7 @@ def map_alerts(
     alert_type: str | None = None,
     severity: str | None = None,
     db: Session = Depends(get_db),
-    request: Request = None,
+    request: Request = None,  # Unused, can be removed if not needed
 ):
     q = db.query(Alert)
     if alert_type:
@@ -37,7 +37,7 @@ def map_alerts(
                 Alert.longitude >= minlon,
                 Alert.longitude <= maxlon,
             )
-        except Exception:
+        except ValueError:
             pass  # Ignore invalid bbox
     alerts = q.order_by(Alert.fetched_at.desc()).limit(500).all()
     region_val = region or "all"
