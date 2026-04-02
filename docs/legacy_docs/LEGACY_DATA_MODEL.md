@@ -56,7 +56,7 @@ Stores scraped articles from external sources.
 **Unique constraint:** (`source_id`, `category_id`)
 
 ### `sources`
-Defines external data sources that RiskRadar scrapes.
+Defines the external data sources that RiskRadar scrapes.
 
 | Column | Type | Description |
 |---|---|---|
@@ -68,7 +68,7 @@ Defines external data sources that RiskRadar scrapes.
 | `created_at` | `TIMESTAMP` | Record creation timestamp |
 
 ### `categories`
-Classifies articles into topic categories.
+Classifies articles into topical categories.
 
 | Column | Type | Description |
 |---|---|---|
@@ -77,7 +77,7 @@ Classifies articles into topic categories.
 | `description` | `TEXT` | Category description |
 
 ### `tags`
-Freeform labels applied to articles.
+Freeform labels are applied to articles.
 
 | Column | Type | Description |
 |---|---|---|
@@ -85,7 +85,7 @@ Freeform labels applied to articles.
 | `tag_name` | `VARCHAR(50)` | Tag label |
 
 ### `article_tags`
-Junction table linking articles to tags (many-to-many).
+Junction table linking articles to tags (many-to-many relationship).
 
 | Column | Type | Description |
 |---|---|---|
@@ -97,7 +97,7 @@ Junction table linking articles to tags (many-to-many).
 ## User Tables
 
 ### `users`
-Stores registered user accounts and preferences.
+Stores registered user accounts and their preferences.
 
 | Column | Type | Description |
 |---|---|---|

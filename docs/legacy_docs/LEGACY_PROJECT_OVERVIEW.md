@@ -56,7 +56,7 @@ The app scrapes real-time data from government APIs and websites, stores alerts 
 
 ### Secondary Audience
 
-**General Public** — everyday users who want quick, reliable risk and weather information for their area. Expanding fully to serve the general public significantly increases scope; the MVP was scoped to one or two primary audiences first.
+**General Public** — everyday users who want quick, reliable risk and weather information for their area. Expanding fully to serve the general public would significantly increase the scope; the MVP was scoped to one or two primary audiences first.
 
 ### Audience-Driven Design Decisions
 
@@ -89,9 +89,9 @@ The following were the unresolved questions and action items from initial projec
 
 **Open questions at project start:**
 
-1. **User Privacy** — Only ask users for ZIP/area code. No cookies for tracking. No user accounts (this changed; accounts were added for preferences/notifications).
+1. **User Privacy** — Only ask users for ZIP/area code. No cookies for tracking. No user accounts (this changed; accounts were later added for preferences/notifications).
 2. **Self-Sustainability** — One-time payment vs. subscription model considered but not decided. Both require some form of user record-keeping.
-3. **Target Audience** — Narrowed to travelers, truckers, and industry owners; general public acknowledged as too broad for MVP.
+3. **Target Audience** — Narrowed to travelers, truckers, and industry owners; the general public was acknowledged as too broad for the MVP.
 
 **Initial action items:**
 1. Narrow scope, write user stories

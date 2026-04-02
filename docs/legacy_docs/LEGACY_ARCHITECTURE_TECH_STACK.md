@@ -72,7 +72,7 @@ Cross-platform mobile application targeting iOS and Android. Delivered via React
 | Background scheduler | APScheduler — 30-minute scrape interval |
 | Password hashing | SHA-256 (current) — **must be upgraded before production** |
 | Auth mechanism | JWT (JSON Web Tokens) |
-| Message queue | Not implemented — RabbitMQ under consideration |
+| Message queue | Not implemented — RabbitMQ is under consideration |
 
 ### Database
 
@@ -110,7 +110,7 @@ Cross-platform mobile application targeting iOS and Android. Delivered via React
 
 ### Hosting
 
-AWS (confirmed). Specific services (EC2, Lambda, RDS, etc.) are TBD.
+AWS (confirmed). Specific services (EC2, Lambda, RDS, etc.) are to be determined.
 
 ---
 
