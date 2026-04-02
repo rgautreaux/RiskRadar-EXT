@@ -15,8 +15,22 @@ def _now_utc() -> datetime:
 def run_monitoring() -> int:
     db = SessionLocal()
     try:
-        threshold = int(os.getenv("MIGRATION_ERROR_THRESHOLD", "1"))
+        raw_threshold = os.getenv("MIGRATION_ERROR_THRESHOLD", "1")
+        try:
+            threshold = int(raw_threshold)
+        except ValueError:
+            print(
+                f"Invalid MIGRATION_ERROR_THRESHOLD value {raw_threshold!r}; "
+                "defaulting to 1"
+            )
+            threshold = 1
 
+        if threshold <= 0:
+            print(
+                f"Non-positive MIGRATION_ERROR_THRESHOLD value {threshold!r}; "
+                "defaulting to 1"
+            )
+            threshold = 1
         error_count = (
             db.query(MigrationLog)
             .filter(MigrationLog.status.in_(["error", "failed"]))
