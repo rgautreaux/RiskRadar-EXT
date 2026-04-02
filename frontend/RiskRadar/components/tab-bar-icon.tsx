@@ -30,6 +30,9 @@ export function TabBarIcon({
   size = 30,
   style,
 }: TabBarIconProps) {
+  // SD10: Tab Bar Ownership Detail
+  // Mapping rationale: When the tab is focused (active), use the branded PNG asset for the focused state (e.g., green for Home, red for Alerts) as per wireframe intent.
+  // When unfocused, use the standard PNG asset for the inactive state. This ensures the tab bar always reflects RiskRadar's brand color logic and matches the design system.
   const iconSource = focused ? sourceFocused : sourceUnfocused;
 
   return (
