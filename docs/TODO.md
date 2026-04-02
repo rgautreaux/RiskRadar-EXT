@@ -20,14 +20,14 @@ All UI/UX, planning, and progress-tracking docs are in sync as of April 1, 2026.
 - backend/api/users.py: /register and /login endpoints, password hashing and verification
 - backend/auth/security.py: hash_password, verify_password, JWT token creation/verification
 
-## Readiness for Encryption/Hashing Upgrades
-- All user emails and passwords are processed through a central model and API endpoints, making upgrades straightforward.
-- Passwords are already hashed (bcrypt). Email encryption can be added to the User model and related API logic.
-- Migration and rollback can be managed via migration scripts and the MigrationLog table.
+## Encryption/Hashing Status
+- All user emails and passwords are processed through a central model and API endpoints, making upgrades and audits straightforward.
+- Passwords are hashed with bcrypt, and user email addresses are now stored encrypted at rest in the User model using the project’s encryption utilities.
+- Existing plaintext email records are migrated by the email-encryption database migration, which is executed as part of the standard database migration step during deployment (staging before production), with progress recorded in the MigrationLog table.
 
 ## Next Steps
-- Proceed to update the user model for AES-encrypted emails.
-- Implement encryption/decryption logic and migration scripts.
+- Verify that the email-encryption migration has been applied successfully in all environments (local, staging, production) and document the run/rollback procedures in the operations runbook.
+- Monitor authentication and user-related endpoints for any encryption/decryption regressions and plan follow-up work for key rotation and additional security hardening as needed.
 
 ---
 
