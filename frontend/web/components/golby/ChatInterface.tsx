@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { fetchUserGuide, searchDocForAnswer } from './docSearch';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GolbyIcon } from './GolbyIcon';
 import { ChatBubble } from './ChatBubble';
@@ -44,7 +45,12 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose }: Cha
 	]);
 	const [inputValue, setInputValue] = useState('');
 	const [isTyping, setIsTyping] = useState(false);
+	const [userGuide, setUserGuide] = useState<string | null>(null);
 	const messagesEndRef = useRef<HTMLDivElement>(null);
+	// Fetch USER_GUIDE.md on mount
+	useEffect(() => {
+		fetchUserGuide().then(setUserGuide).catch(() => setUserGuide(null));
+	}, []);
 
 	const scrollToBottom = () => {
 		messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -54,8 +60,17 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose }: Cha
 		scrollToBottom();
 	}, [messages, isTyping]);
 
-	const getGolbyResponse = (userMessage: string): string => {
+
+	// Async: Try to answer from docs, else fallback to static
+	const getGolbyResponse = async (userMessage: string): Promise<string> => {
 		const lowerMessage = userMessage.toLowerCase();
+		// Try documentation if loaded and not a joke/greeting
+		if (userGuide && !lowerMessage.includes('joke') && !lowerMessage.includes('hello') && !lowerMessage.includes('hi')) {
+			const docAnswer = searchDocForAnswer(userGuide, userMessage);
+			if (!docAnswer.startsWith("Sorry")) {
+				return docAnswer;
+			}
+		}
 		if (lowerMessage.includes('joke')) {
 			return golbyResponses['joke'];
 		}
@@ -77,7 +92,7 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose }: Cha
 		return golbyResponses['default'];
 	};
 
-	const handleSendMessage = (text: string) => {
+	const handleSendMessage = async (text: string) => {
 		if (!text.trim()) return;
 		// Add user message
 		const userMessage: Message = {
@@ -90,16 +105,15 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose }: Cha
 		setInputValue('');
 		// Simulate Golby typing
 		setIsTyping(true);
-		setTimeout(() => {
-			setIsTyping(false);
-			const golbyMessage: Message = {
-				id: (Date.now() + 1).toString(),
-				text: getGolbyResponse(text),
-				isGolby: true,
-				timestamp: new Date()
-			};
-			setMessages(prev => [...prev, golbyMessage]);
-		}, 1000 + Math.random() * 1000);
+		const response = await getGolbyResponse(text);
+		setIsTyping(false);
+		const golbyMessage: Message = {
+			id: (Date.now() + 1).toString(),
+			text: response,
+			isGolby: true,
+			timestamp: new Date()
+		};
+		setMessages(prev => [...prev, golbyMessage]);
 	};
 
 	const handleSuggestionClick = (suggestion: string) => {
