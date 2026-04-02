@@ -2,11 +2,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from datetime import datetime
-from backend.db.database import get_db
-from backend.db.models import Alert, User
-from backend.schemas.risk_score import RiskScoreOut, MapRiskOverlayOut, MapRiskZone
-from backend.scoring import compute_risk_score
-from backend.scrapers.registry import load_all_scrapers
+from db.database import get_db
+from db.models import Alert, User
+from schemas.risk_score import RiskScoreOut, MapRiskOverlayOut, MapRiskZone
+from scoring import compute_risk_score
+from scrapers.registry import load_all_scrapers
 
 router = APIRouter(prefix="/risk", tags=["Risk Scoring"])
 

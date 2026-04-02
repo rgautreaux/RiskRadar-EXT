@@ -3,9 +3,9 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from datetime import datetime
-from backend.db.database import get_db
-from backend.db.models import Alert, User
-from backend.schemas.alert import AlertOut, AlertStats, PrioritizedAlertListOut, MapAlertListOut
+from db.database import get_db
+from db.models import Alert, User
+from schemas.alert import AlertOut, AlertStats, PrioritizedAlertListOut, MapAlertListOut
 
 router = APIRouter(prefix="/alerts", tags=["Alerts"])
 
@@ -92,7 +92,7 @@ def prioritized_alerts(
         raise HTTPException(status_code=404, detail="User not found")
 
     # Removed unreachable import
-    # return prioritize_alerts(user, db, radius_km=radius_km, limit=limit)
+    raise HTTPException(status_code=501, detail="Prioritized alerts endpoint is not implemented")
 
 
 @router.get("/{alert_id}", response_model=AlertOut)
