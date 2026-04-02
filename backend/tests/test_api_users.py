@@ -1,8 +1,7 @@
 """Tests for user API endpoints."""
 
-from passlib.context import CryptContext
+from auth.security import decrypt_email, hash_email, verify_password
 
-_pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 
 class TestRegisterUser:
@@ -10,7 +9,7 @@ class TestRegisterUser:
         resp = test_client.post("/api/v1/users/register", json={
             "display_name": "Alice",
             "email": "alice@test.com",
-            "password": "secret123",
+            "password": "Secret123!Aa",
         })
         assert resp.status_code == 200
         data = resp.json()
@@ -23,11 +22,20 @@ class TestRegisterUser:
         resp = test_client.post("/api/v1/users/register", json={
             "display_name": "Bob",
             "email": "bob@test.com",
-            "password": "pass",
+            "password": "BobSecure123!",
             "zip_code": "90210",
         })
         assert resp.status_code == 200
         assert resp.json()["zip_code"] == "90210"
+
+    def test_register_rejects_weak_password(self, test_client):
+        resp = test_client.post("/api/v1/users/register", json={
+            "display_name": "Weak",
+            "email": "weak@test.com",
+            "password": "pass",
+        })
+        assert resp.status_code == 400
+        assert "Password must be at least" in resp.json()["detail"]
 
     def test_password_is_hashed(self, test_client, db_session):
         from db.models import User
@@ -35,11 +43,12 @@ class TestRegisterUser:
         test_client.post("/api/v1/users/register", json={
             "display_name": "Carol",
             "email": "carol@test.com",
-            "password": "mypassword",
+            "password": "CarolPass123!",
         })
-        user = db_session.query(User).filter(User.email == "carol@test.com").first()
+        user = db_session.query(User).filter(User.email_lookup_hash == hash_email("carol@test.com")).first()
         assert user is not None
-        assert _pwd_context.verify("mypassword", user.password_hash)
+        assert verify_password("CarolPass123!", user.password_hash)
+        assert decrypt_email(user.email) == "carol@test.com"
 
     def test_email_normalized_to_lowercase(self, test_client, db_session):
         from db.models import User
@@ -47,23 +56,24 @@ class TestRegisterUser:
         resp = test_client.post("/api/v1/users/register", json={
             "display_name": "Dave",
             "email": "Dave@Test.COM",
-            "password": "pass",
+            "password": "DavePass123!",
         })
         assert resp.status_code == 200
         assert resp.json()["email"] == "dave@test.com"
-        user = db_session.query(User).filter(User.email == "dave@test.com").first()
+        user = db_session.query(User).filter(User.email_lookup_hash == hash_email("dave@test.com")).first()
         assert user is not None
+        assert decrypt_email(user.email) == "dave@test.com"
 
     def test_duplicate_email_case_insensitive(self, test_client):
         test_client.post("/api/v1/users/register", json={
             "display_name": "Eve",
             "email": "eve@test.com",
-            "password": "pass",
+            "password": "EvePass123!Aa",
         })
         resp = test_client.post("/api/v1/users/register", json={
             "display_name": "Eve2",
             "email": "EVE@TEST.COM",
-            "password": "pass",
+            "password": "EvePass456!Bb",
         })
         assert resp.status_code == 400
         assert "Email already registered" in resp.json()["detail"]
@@ -72,7 +82,7 @@ class TestRegisterUser:
         resp = test_client.post("/api/v1/users/register", json={
             "display_name": "Duplicate",
             "email": "test@example.com",
-            "password": "pass",
+            "password": "Duplicate123!Aa",
         })
         assert resp.status_code == 400
         assert "Email already registered" in resp.json()["detail"]

@@ -327,7 +327,7 @@ class TestRiskScoreAPI:
         user = User(
             display_name="Radius Test",
             email="radius@test.com",
-            password_hash=pwd.hash("pass"),
+            password_hash=pwd.hash("RadiusPass123!"),
             latitude=34.05,
             longitude=-118.24,
             created_at=NOW,
@@ -348,7 +348,7 @@ class TestRiskScoreAPI:
         resp = test_client.post("/api/v1/users/register", json={
             "display_name": "Health User",
             "email": "health@test.com",
-            "password": "pass",
+            "password": "HealthPass123!",
         })
         user_id = resp.json()["id"]
 

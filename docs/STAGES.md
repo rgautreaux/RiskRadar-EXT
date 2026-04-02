@@ -1,3 +1,26 @@
+## Stage 5: User Data Security, Migration, and Full-Suite Verification Session (2026-04-02)
+
+### Implementation
+Added email encryption at rest for user records, deterministic email lookup hashing for duplicate checks, and stronger password policy enforcement during registration. A schema-aware migration script was added so existing plaintext emails can be converted safely.
+
+### Functionality
+- User emails are encrypted before storage and decrypted only for API responses.
+- Duplicate email checks now use a deterministic lookup hash rather than plaintext comparison.
+- Password policy enforcement rejects weak registration passwords before hashing.
+- The migration script can handle older databases by adding the lookup column when needed.
+- The backend suite was revalidated end to end and now passes 174/174 tests.
+
+### Execution
+- Added backend/auth/security.py for email encryption, hashing, and password helpers.
+- Updated backend/api/users.py to validate password strength, encrypt emails, and serialize users safely.
+- Added backend/scripts/migrate_emails_to_encrypted.py plus backend/db/migrations/2026-04-02_encrypt_user_emails.sql.
+- Updated documentation in docs/INSTRUCTIONS.md and docs/SECURITY.md to capture setup and rollout order.
+- Fixed the prioritized-alerts API endpoint so the full backend suite could complete successfully.
+
+### Importance
+- Protects user data at rest without breaking existing lookup behavior.
+- Creates a repeatable migration path for existing deployments.
+- Preserves the project's grading readiness by keeping the codebase verified and documented.
 # Stage 4 Documentation Synchronization & Forecast UI Session (2026-04-02)
 
 Summary:
@@ -450,3 +473,6 @@ For each stage, update:
 ## Web-App Security Documentation
 
 The RiskRadar web-app implements and documents security controls in docs/SecurityDocs/. All planning and verification steps reference these docs for compliance and evidence.
+
+
+

@@ -1,10 +1,10 @@
 """Tests for database models."""
 
-import hashlib
 import json
 import pytest
 from sqlalchemy.exc import IntegrityError
 
+from auth.security import decrypt_email, hash_email, password_hash, verify_password
 from db.models import Alert, Summary, User, ScrapeLog
 from tests.conftest import NOW
 
@@ -79,28 +79,39 @@ class TestUserModel:
     def test_create_user(self, db_session):
         user = User(
             display_name="Alice", email="alice@test.com",
-            password_hash=hashlib.sha256(b"pass").hexdigest(),
+            password_hash=password_hash("AlicePass123!"),
             created_at=NOW, updated_at=NOW,
         )
         db_session.add(user)
         db_session.commit()
         assert user.id is not None
-        assert user.password_hash != "pass"
+        assert user.password_hash != "AlicePass123!"
+        assert verify_password("AlicePass123!", user.password_hash)
+        assert decrypt_email(user.email) == "alice@test.com"
 
     def test_unique_email_constraint(self, db_session):
         u1 = User(
             display_name="A", email="same@test.com",
-            password_hash="hash1", created_at=NOW, updated_at=NOW,
+            password_hash=password_hash("SamePass123!"), created_at=NOW, updated_at=NOW,
         )
         u2 = User(
             display_name="B", email="same@test.com",
-            password_hash="hash2", created_at=NOW, updated_at=NOW,
+            password_hash=password_hash("SamePass456!"), created_at=NOW, updated_at=NOW,
         )
         db_session.add(u1)
         db_session.commit()
         db_session.add(u2)
         with pytest.raises(IntegrityError):
             db_session.commit()
+
+    def test_email_lookup_hash_populated(self, db_session):
+        user = User(
+            display_name="Hash Test", email="hash@test.com",
+            password_hash=password_hash("HashPass123!"), created_at=NOW, updated_at=NOW,
+        )
+        db_session.add(user)
+        db_session.commit()
+        assert user.email_lookup_hash == hash_email("hash@test.com")
 
 
 class TestScrapeLogModel:

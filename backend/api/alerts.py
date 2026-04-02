@@ -6,6 +6,7 @@ from datetime import datetime
 from db.database import get_db
 from db.models import Alert, User
 from schemas.alert import AlertOut, AlertStats, PrioritizedAlertListOut, MapAlertListOut
+from scoring.prioritization import prioritize_alerts as build_prioritized_alerts
 
 router = APIRouter(prefix="/alerts", tags=["Alerts"])
 
@@ -91,8 +92,7 @@ def prioritized_alerts(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    # Removed unreachable import
-    raise HTTPException(status_code=501, detail="Prioritized alerts endpoint is not implemented")
+    return build_prioritized_alerts(user, db, radius_km=radius_km, limit=limit)
 
 
 @router.get("/{alert_id}", response_model=AlertOut)
