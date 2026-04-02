@@ -50,8 +50,9 @@ Latest alignment updates:
 ### 4. Initial Integration Testing
 - **Status:** ✅ Complete (Backend), 🟡 In Progress (Full E2E)
 - **Evidence:**
-  - Backend: Full pytest suite (78/78 passing), integration tests for scraper-to-database, and API endpoint tests.
-  - Frontend: Lint baseline passing, Expo app shell runs, but full E2E integration (all screens, flows) is still being finalized.
+  - Backend: Full pytest suite (87/87 passing), integration tests for scraper-to-database, and API endpoint tests.
+  - Backend smoke runner for scraper/database verification completes cleanly after the latest registry, extraction, and summary-skip fixes.
+  - Frontend: Lint completes with warnings only, Expo app shell runs, but full E2E integration (all screens, flows) is still being finalized.
 
 ---
 

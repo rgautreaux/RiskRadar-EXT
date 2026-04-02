@@ -212,8 +212,9 @@ Team6Project/
 - All retention logic, migrations, and tests are documented and validated
 
 ### Stage 3: End-to-End Testing & Validation
-- Full backend pytest suite (78/78 passing) covers API, database, scrapers, and retention logic
+- Full backend pytest suite (87/87 passing) covers API, database, scrapers, retention logic, and user registration/login regressions
 - Integration tests ensure scraper-to-database pipeline is robust and reliable
+- Backend smoke verification script now completes cleanly, including config-driven scraper loading and conditional summary generation when no LLM provider is configured
 - CI/local pre-push checklist ensures code quality and reproducibility
 
 ### Stage 4: Frontend UI/UX & Wireframe Accuracy
@@ -226,6 +227,7 @@ Team6Project/
 - AUTHORS.md details each member's contributions and roles
 - README, TODO, and top-level planning/tracking docs are kept synchronized for auditability and onboarding
 - Apr 2 update: Phase 3 security implementation evidence and backend/security review-request content are now documented and ready for lead sign-off workflow
+- Apr 2 update: backend pytest, frontend lint, and scraper smoke verification were rerun; the backend suite passed cleanly, frontend lint reported warnings only, and the smoke script completed without summary-generation errors
 
 ---
 
@@ -239,6 +241,7 @@ Team6Project/
 - AUTHORS.md updated with each member’s contributions and roles in correct chronological order.
 - README.md expanded with sections on implementation, functionality, execution, and importance of major developments, all in correct chronological and stage order.
 - Phase 3 migration logging + monitoring implementation is complete with focused automated validation and monitoring tests; review handoff artifact prepared for backend/security leads.
+- April 2 verification pass confirmed backend pytest at 87/87, frontend lint warnings-only, and successful smoke execution of backend/test_scrape_and_summarize.py after registry/import and generic API extraction fixes.
 
 ---
 
@@ -349,7 +352,7 @@ py -m pip install -r requirements.txt
 py -m pytest -q --tb=short
 ```
 
-Expected: `78 passed`. Tests use an in-memory database and mock all external APIs — no API keys needed.
+Expected: `87 passed`. Tests use an in-memory database and mock all external APIs — no API keys needed.
 
 ---
 
@@ -426,9 +429,9 @@ For more details, see:
  - All retention logic, migrations, and tests are documented and validated
 
 ### Stage 3: End-to-End Testing & Validation
- - Full backend pytest suite (78/78 passing) covers API, database, scrapers, and retention logic
+ Full backend pytest suite (87/87 passing) covers API, database, scrapers, and retention logic
  - Integration tests ensure scraper-to-database pipeline is robust and reliable
- - CI/local pre-push checklist ensures code quality and reproducibility
+ Full backend pytest suite (87/87 passing) covers API, database, scrapers, and retention logic
 
 ### Stage 4: Frontend UI/UX & Wireframe Accuracy
  - Mobile app UI/UX plan finalized and mapped to wireframe assets
@@ -494,7 +497,7 @@ For more details, see:
 - All retention logic, migrations, and tests are documented and validated
 
 ### 3. End-to-End Testing & Validation
-- Full backend pytest suite (78/78 passing) covers API, database, scrapers, and retention logic
+- Full backend pytest suite (87/87 passing) covers API, database, scrapers, and retention logic
 - Integration tests ensure scraper-to-database pipeline is robust and reliable
 - CI/local pre-push checklist ensures code quality and reproducibility
 

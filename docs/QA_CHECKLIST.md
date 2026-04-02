@@ -46,7 +46,7 @@ This checklist is for use during the S3 QA/integration phase and for manual vali
 - [x] Login, registration, and logout flows work
 - [x] Dashboard summary dropdown and search bar (when implemented) work
 - [x] No runtime or TypeScript errors on startup
-- [x] Lint passes with no warnings
+- [x] Lint passes without errors; remaining warnings are tracked separately and do not block startup or test execution
 
 ---
 

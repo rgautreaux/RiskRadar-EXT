@@ -4,21 +4,11 @@ import { View, ViewProps, ViewStyle } from 'react-native';
 import { Colors, Shadows, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
-export type ThemedViewProps = ViewProps & {
-  /**
-   * Semantic surface token to apply as background.
-   * - 'background': full-screen background color
-   * - 'card': elevated card/surface color (typically white in light mode)
-   * - 'surfaceMuted': muted/secondary surface color
-   * @default 'background'
-   */
+export interface ThemedViewProps extends ViewProps {
   surface?: 'background' | 'card' | 'surfaceMuted';
-   * Padding preset for the container. If omitted, no automatic padding is applied.
-   * Use StyleSheet manually for custom padding.
-   * @default undefined
-   */
   padding?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-};
+  elevated?: boolean;
+}
 
 export function ThemedView({
   style,
@@ -79,9 +69,3 @@ function getPaddingStyle(
     padding: paddingMap[padding],
   };
 }
-
-const styles = StyleSheet.create({
-  default: {
-    flex: 0,
-  },
-});

@@ -65,18 +65,20 @@ Week-by-week sprint board for tracking delivery to the goal of having most imple
 [x] 🟢 **Apr 13:** Core implementation + docs freeze complete
 [x] 🟢 **Apr 20:** Final presentation polish complete
 
-## Current Verification Snapshot (Mar 18, 2026)
+## Current Verification Snapshot (Apr 2, 2026)
 
-- Backend pytest status remains green in recent verification sessions, including the latest documented backend run with system-endpoint additions.
+- Backend pytest status is green in the latest verification session, with 87/87 backend tests passing.
+- The backend smoke runner now completes cleanly after fixes to registry imports, generic API list extraction, and conditional summary generation.
 - Mobile Expo app shell progress remains implemented: wireframe assets, brand tokens, branded root layout, branded tab layout, and `app.json` shell theming in `frontend/RiskRadar`.
-- Mobile frontend lint baseline remains passing in recent documented runs.
+- Mobile frontend lint runs successfully with warnings only; there are no parsing errors remaining.
 - Mobile frontend remaining gap is now primarily wireframe-accurate screen wiring and shared component wiring (not shell setup).
 - Stage tracking source of truth: this sprint board plus `docs/UI_UX_STYLING_PLAN.md` (no separate `STAGES` file currently exists in `docs/`).
-- Mobile planning docs were synchronized on Mar 18 so completed Rebecca-track work and pending cross-team polish/QA are clearly separated.
+- Mobile planning docs remain synchronized and track completed Rebecca work separately from pending cross-team polish/QA.
 - `docs/UI_UX_STYLING_PLAN.md` now includes `Signature UX Details` (SD1-SD10) to operationalize uniqueness/ownership implementation criteria.
 - Newly documented in `README.md` this week:
   - full backend test suite explanation and run guide
   - scheduled data cleanup (retention) architecture + operations notes
+  - current smoke-run status and frontend lint warning baseline
 
 ---
 
