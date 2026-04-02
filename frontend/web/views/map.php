@@ -144,6 +144,9 @@ rr_render_layout_start('Risk Map', 'map');
                 var alertsUrl = <?php echo json_encode($alerts_url); ?>;
                 var riskUrl = <?php echo json_encode($risk_url); ?>;
                 window.renderRiskMap(alertsUrl, riskUrl, 'risk-map-container');
+                if (window.setupRiskMapListeners) {
+                    window.setupRiskMapListeners(alertsUrl, riskUrl, 'risk-map-container');
+                }
             });
             </script>
         <div>
