@@ -379,3 +379,26 @@ This ensures all documentation is in sync, the Forecast UI is fully documented, 
 - Forecasts are based on available data and may not capture sudden changes or rare events.
 - Always consult official sources for critical decisions.
 - Accessibility and language support are being improved in future updates.
+
+---
+
+## Accessibility & Navigation Testing (Stage 3+)
+
+The interactive map and overlays are fully accessible by keyboard and screen reader. To verify accessibility and navigation features:
+
+### Automated Testing
+- Run the automated test script at `frontend/web/tests/test_map_accessibility.js` (requires Node.js, puppeteer, axe-puppeteer, jest):
+  1. `npm install puppeteer axe-puppeteer jest`
+  2. Start the PHP server and ensure the map is available at http://localhost:8000/web/views/map.php
+  3. `npx jest frontend/web/tests/test_map_accessibility.js`
+- This script checks:
+  - No critical accessibility violations (axe-core)
+  - Tab navigation to all controls and overlays
+  - Marker modal opens with keyboard
+
+### Manual Testing
+- Use the checklist in `frontend/web/tests/test_map_accessibility.md` for keyboard, screen reader, and responsive layout verification.
+- All overlays, toggles, and modals are accessible by Tab/Shift+Tab, Enter/Space, and ARIA attributes are present.
+- Overlay toggling and marker focus are announced for assistive tech.
+
+See README for more details and troubleshooting.
