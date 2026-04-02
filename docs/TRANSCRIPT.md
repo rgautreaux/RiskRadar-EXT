@@ -1,4 +1,9 @@
+
 # Stage 5: Ongoing Maintenance, Advanced Features, and Review Session (2026-04-02)
+
+Rebecca: Run and document manual/automated map and accessibility tests, assign manual verification to Max, and update documentation and logs as features are finalized or tested.
+
+GitHub Copilot: Manual and automated map/accessibility tests have been run using the scripts in frontend/web/tests/. Manual evidence collection (screenshots, logs) is now assigned to Max, with instructions to save results in static/evidence/. Documentation and logs (TODO.md, doc_feature_finalization_log.md, map_accessibility_test_log.md) have been updated to reflect test results and feature finalization. All top-level documentation remains in sync as features are completed and verified.
 
 Rebecca: Then perform the following Documentation Updates for Rebecca now:
 

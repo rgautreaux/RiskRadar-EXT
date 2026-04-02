@@ -344,6 +344,11 @@ All automated tests for backend endpoints, risk scoring, alert prioritization, s
 
 ## Manual Evidence Collection (Assigned)
 
+- [ ] Map-related manual evidence collection (screenshots, recordings) — **Assigned: Max**
+	- Use test scripts in frontend/web/tests/ (test_map_phase1.md, test_map_accessibility.md)
+	- Save screenshots and logs in static/evidence/ or docs/evidence/
+	- Note any accessibility or UX issues for follow-up
+
 # Documentation Sync Checklist (2026-04-27)
 
 All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) has been reviewed and updated for consistency and agreement as of the Stage 3 documentation and synchronization session. This ensures grading clarity, onboarding readiness, and a single source of truth for project status and history.
