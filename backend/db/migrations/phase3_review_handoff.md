@@ -103,3 +103,44 @@ Production rollout remains blocked until backend lead and security lead provide 
 - Backend Lead Review: [ ] Approved  [ ] Changes Requested
 - Security Lead Review: [ ] Approved  [ ] Changes Requested
 - Notes:
+
+## Ready-to-Post Review Request (PR Comment)
+
+Backend + Security Lead Review Request (Phase 3: User Email & Password Security)
+
+Owner: Rebecca Gautreaux  
+Date: Apr 2, 2026  
+Scope: Migration logging and monitoring hardening for email encryption migration
+
+What is completed:
+- Hardened migration logging with batch lifecycle events and per-user outcomes.
+- Privacy guardrails for logging (exception sanitization to prevent sensitive-data leakage).
+- Migration validation utility added.
+- Migration monitoring/alert utility added.
+- Risk-focused automation tests added.
+- Handoff documentation expanded with execution order, risk register, and prevention checklist.
+
+Verification evidence:
+- Command: `python -m pytest tests/test_migrate_email_encryption.py tests/test_migration_validation_monitoring.py`
+- Result: `6 passed`
+
+Risk controls implemented:
+1. Sensitive data in logs: mitigated via sanitization and no plaintext email logging fields.
+2. Partial migration state: mitigated via validator checks for plaintext leftovers and missing encrypted/HMAC values.
+3. Silent failures: mitigated via threshold-based monitoring with non-zero alert exits.
+4. Auditability gaps: mitigated via batch started/completed/failed lifecycle records and per-user outcomes.
+5. Misconfiguration/operational risk: mitigated via pre-flight checklist and production gate in this handoff.
+
+Review artifacts:
+- `backend/db/migrations/phase3_review_handoff.md`
+- `backend/db/migrations/migrate_email_encryption.py`
+- `backend/db/migrations/validate_email_migration.py`
+- `backend/db/migrations/monitor_migration_log.py`
+- `backend/tests/test_migrate_email_encryption.py`
+- `backend/tests/test_migration_validation_monitoring.py`
+
+Requested action:
+- Backend Lead: approve or request changes.
+- Security Lead: approve or request changes.
+
+Production rollout remains blocked until both approvals are explicitly recorded.
