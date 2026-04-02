@@ -9,6 +9,7 @@ import math
 import httpx
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 
 from db.database import get_db
 from db.models import Alert
@@ -193,7 +194,21 @@ def get_alerts_for_location(
             db.add(alert)
             stored.append(alert)
 
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        # Re-fetch all alerts that were just inserted by another request
+        stored = []
+        for alert_data in all_alerts:
+            existing = (
+                db.query(Alert)
+                .filter_by(source=alert_data["source"], source_id=alert_data["source_id"])
+                .first()
+            )
+            if existing:
+                stored.append(existing)
+
     # Refresh to get IDs
     for a in stored:
         db.refresh(a)
