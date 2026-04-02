@@ -72,6 +72,7 @@ Recommended sync order when updating progress:
 
 ## Scope and Timeline
 
+
 **Required Deliverables:**
 - **Stage 1**: Web-App Extension — ✅ Completed (2026-03-13)
 - **Stage 2**: Environmental Risk Assessment and Alert Prioritization Extensions — ✅ Completed (2026-03-24)
@@ -79,10 +80,12 @@ Recommended sync order when updating progress:
   - Step 2: Smart Alert Prioritization System
 
 **Optional Stretch Goals:**
-- **Stage 3**: Data Visualization and User Experience Extensions — ✅ Completed (2026-03-24)
-   - Interactive risk map, personalized overlays, accessibility, and responsive UX implemented.
+- **Stage 3**: Data Visualization and User Experience Extensions — ✅ Completed (2026-03-31)
+   - Interactive risk map, personalized overlays, accessibility, and responsive UX implemented and verified.
    - Planning docs in `docs/PLANNING_DOCS/STAGE3_DOCS/`.
-- **Stage 4**: Predictive Analytics and AI-Driven Insights Extensions — ⏳ Not Started
+- **Stage 4**: Predictive Analytics and AI-Driven Insights Extensions — ⏳ In Progress (2026-04-02)
+   - Forecast UI, AI Assistant widget, and documentation sync/audit are underway.
+   - See `docs/PLANNING_DOCS/STAGE4_DOCS/`, `frontend/web/public/forecast.php`, `frontend/web/public/assistant.php`.
 
 **Status Legend**
 - **Not Started**: Requirements are defined, but implementation has not begun.
@@ -413,7 +416,7 @@ See `docs/PLANNING_DOCS/STAGE3_DOCS/` for contract, verification evidence, and i
 - Updated documentation for usage and interpretation
 
 ### Progress So Far
-⏳ **Not Started** - Planned: 24-48 hour forecasting and RiskRadar AI Assistant integration.
+⏳ **In Progress** - Forecast UI, AI Assistant widget, and documentation sync/audit are underway. See README and TODO.md for current status.
 
 ---
 
