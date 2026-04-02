@@ -21,13 +21,23 @@ def map_risk_overlay(
     alerts = db.query(Alert).filter(Alert.latitude != None, Alert.longitude != None).all()
     risk_zones = []
     for alert in alerts:
-        centroid = {"lat": alert.latitude, "lon": alert.longitude}
+        lat = float(alert.latitude) if alert.latitude is not None else None
+        lon = float(alert.longitude) if alert.longitude is not None else None
+        centroid = {"lat": lat, "lon": lon} if lat is not None and lon is not None else None
         # Dummy risk_level: map severity to risk
         sev = (alert.severity or "").lower()
         if sev in ("high", "critical"): rl = "high"
         elif sev == "moderate": rl = "moderate"
         else: rl = "low"
-        risk_zones.append(MapRiskZone(centroid=centroid, risk_level=rl, risk_score=None))
+        # Example: add a simple square polygon around the centroid (0.1 deg offset)
+        poly = [
+            {"lat": lat + 0.05, "lon": lon - 0.05},
+            {"lat": lat + 0.05, "lon": lon + 0.05},
+            {"lat": lat - 0.05, "lon": lon + 0.05},
+            {"lat": lat - 0.05, "lon": lon - 0.05},
+            {"lat": lat + 0.05, "lon": lon - 0.05},
+        ] if lat is not None and lon is not None else None
+        risk_zones.append(MapRiskZone(centroid=centroid, risk_level=rl, risk_score=None, polygon=poly))
     region_val = region or "all"
     return MapRiskOverlayOut(
         risk_zones=risk_zones,
@@ -52,16 +62,26 @@ def personalized_map_risk_overlay(
     alerts = db.query(Alert).filter(Alert.latitude != None, Alert.longitude != None).all()
     risk_zones = []
     for alert in alerts:
-        centroid = {"lat": alert.latitude, "lon": alert.longitude}
+        lat = float(alert.latitude) if alert.latitude is not None else None
+        lon = float(alert.longitude) if alert.longitude is not None else None
+        centroid = {"lat": lat, "lon": lon} if lat is not None and lon is not None else None
         # Compute personalized risk score for this alert location
         # Temporarily override user location to alert location for scoring
         orig_lat, orig_lon = user.latitude, user.longitude
-        user.latitude, user.longitude = alert.latitude, alert.longitude
+        user.latitude, user.longitude = lat, lon
         risk_score_result = compute_risk_score(user, db)
         user.latitude, user.longitude = orig_lat, orig_lon
         risk_score = risk_score_result["overall_score"]
         risk_level = risk_score_result["risk_level"]
-        risk_zones.append(MapRiskZone(centroid=centroid, risk_level=risk_level, risk_score=risk_score))
+        # Example: add a simple square polygon around the centroid (0.1 deg offset)
+        poly = [
+            {"lat": lat + 0.05, "lon": lon - 0.05},
+            {"lat": lat + 0.05, "lon": lon + 0.05},
+            {"lat": lat - 0.05, "lon": lon + 0.05},
+            {"lat": lat - 0.05, "lon": lon - 0.05},
+            {"lat": lat + 0.05, "lon": lon - 0.05},
+        ] if lat is not None and lon is not None else None
+        risk_zones.append(MapRiskZone(centroid=centroid, risk_level=risk_level, risk_score=risk_score, polygon=poly))
     region_val = region or "all"
     return MapRiskOverlayOut(
         risk_zones=risk_zones,

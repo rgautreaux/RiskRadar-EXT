@@ -24,9 +24,22 @@ def map_alerts(
         q = q.filter(Alert.alert_type == alert_type)
     if severity:
         q = q.filter(Alert.severity == severity)
-    # Optionally filter by bbox/region (not implemented for MVP)
+    # Region filtering (example: filter by location_name or custom logic)
+    if region and region.lower() != "all":
+        q = q.filter(Alert.location_name.ilike(f"%{region}%"))
+    # BBox filtering: bbox="minLon,minLat,maxLon,maxLat"
+    if bbox:
+        try:
+            minlon, minlat, maxlon, maxlat = map(float, bbox.split(","))
+            q = q.filter(
+                Alert.latitude >= minlat,
+                Alert.latitude <= maxlat,
+                Alert.longitude >= minlon,
+                Alert.longitude <= maxlon,
+            )
+        except Exception:
+            pass  # Ignore invalid bbox
     alerts = q.order_by(Alert.fetched_at.desc()).limit(500).all()
-    # Use region param or default
     region_val = region or "all"
     return MapAlertListOut(
         alerts=alerts,

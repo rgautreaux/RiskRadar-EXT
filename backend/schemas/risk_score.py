@@ -7,7 +7,7 @@ class MapRiskZone(BaseModel):
     centroid: dict[str, float]  # {"lat": float, "lon": float}
     risk_level: str
     risk_score: float | None = None
-    # Optionally: polygon: list[dict[str, float]]
+    polygon: list[dict[str, float]] | None = None  # Optional: list of {"lat": float, "lon": float}
 
 class MapRiskOverlayOut(BaseModel):
     risk_zones: list[MapRiskZone]
