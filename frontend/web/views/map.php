@@ -31,7 +31,7 @@
     outline: 2px solid #1976d2 !important;
     outline-offset: 2px;
 }
-<!--
+/*
 Stage 3 Risk Map Architecture & Geospatial Field Definition
 
 Purpose: Define the technical architecture for the interactive risk map (Plotly-based) and specify required geospatial fields for backend/frontend integration.
@@ -81,7 +81,7 @@ Purpose: Define the technical architecture for the interactive risk map (Plotly-
     - Integrate Plotly map in frontend (S3-03)
     - Connect overlays to backend endpoints
     - Add tests and accessibility checks
--->
+*/
 </style>
 <script>
 // Toast/snackbar logic
@@ -133,22 +133,6 @@ rr_render_layout_start('Risk Map', 'map');
 
 <section class="panel">
     <h2 id="risk-map-heading">Interactive Map</h2>
-    <div style="margin-bottom:12px;display:flex;gap:24px;align-items:center;">
-            </div>
-            <div id="risk-map-container"></div>
-            <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
-            <script src="/assets/plotly-map.js"></script>
-            <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Use PHP-injected URLs for backend endpoints
-                var alertsUrl = <?php echo json_encode($alerts_url); ?>;
-                var riskUrl = <?php echo json_encode($risk_url); ?>;
-                window.renderRiskMap(alertsUrl, riskUrl, 'risk-map-container');
-                if (window.setupRiskMapListeners) {
-                    window.setupRiskMapListeners(alertsUrl, riskUrl, 'risk-map-container');
-                }
-            });
-            </script>
         <div>
             <label for="region-filter">Region Filter: </label>
             <select id="region-filter" style="min-width:120px;" aria-label="Region Filter" aria-describedby="region-filter-desc" accesskey="r">

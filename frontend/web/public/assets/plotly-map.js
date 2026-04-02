@@ -56,7 +56,7 @@ async function renderRiskMap(alertsUrl, riskUrl, containerId) {
     };
 
     // Prepare alert markers
-    const alertMarkers = toggles.alerts !== false ? alerts.filter(a => a.latitude && a.longitude).map(a => ({
+    const alertMarkers = toggles.alerts !== false ? alerts.filter(a => a.latitude != null && a.longitude != null).map(a => ({
         type: 'scattermapbox',
         lat: [a.latitude],
         lon: [a.longitude],
