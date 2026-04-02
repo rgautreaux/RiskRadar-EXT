@@ -19,16 +19,31 @@ def run_validation() -> int:
         users_missing_encrypted = db.query(User).filter(User.email.is_(None), User.email_encrypted.is_(None)).count()
         users_missing_hmac = db.query(User).filter(User.email.is_(None), User.email_hmac.is_(None)).count()
 
-        failed_logs = db.query(MigrationLog).filter(MigrationLog.status.in_(["failed", "error"])) .count()
-        batch_completed = (
+        last_batch_started = (
             db.query(MigrationLog)
             .filter(
                 MigrationLog.action == "email_encryption_batch",
-                MigrationLog.status == "completed",
+                MigrationLog.status == "started",
             )
-            .count()
+            .order_by(MigrationLog.timestamp.desc())
+            .first()
         )
 
+        failed_logs_query = db.query(MigrationLog).filter(
+            MigrationLog.action.in_(["email_encryption", "email_encryption_batch"]),
+            MigrationLog.status.in_(["failed", "error"]),
+        )
+        batch_completed_query = db.query(MigrationLog).filter(
+            MigrationLog.action == "email_encryption_batch",
+            MigrationLog.status == "completed",
+        )
+
+        if last_batch_started is not None:
+            failed_logs_query = failed_logs_query.filter(MigrationLog.timestamp >= last_batch_started.timestamp)
+            batch_completed_query = batch_completed_query.filter(MigrationLog.timestamp >= last_batch_started.timestamp)
+
+        failed_logs = failed_logs_query.count()
+        batch_completed = batch_completed_query.count()
         print(f"[{_now_utc().isoformat()}] Email migration validation report")
         print(f"users_total={users_total}")
         print(f"users_plaintext_remaining={users_plaintext_remaining}")

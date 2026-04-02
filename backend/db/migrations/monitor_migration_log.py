@@ -15,22 +15,60 @@ def _now_utc() -> datetime:
 def run_monitoring() -> int:
     db = SessionLocal()
     try:
-        threshold = int(os.getenv("MIGRATION_ERROR_THRESHOLD", "1"))
+        raw_threshold = os.getenv("MIGRATION_ERROR_THRESHOLD", "1")
+        try:
+            threshold = int(raw_threshold)
+        except ValueError:
+            print(
+                f"Invalid MIGRATION_ERROR_THRESHOLD value {raw_threshold!r}; "
+                "defaulting to 1"
+            )
+            threshold = 1
 
-        error_count = (
+        if threshold <= 0:
+            print(
+                f"Non-positive MIGRATION_ERROR_THRESHOLD value {threshold!r}; "
+                "defaulting to 1"
+            )
+            threshold = 1
+
+        latest_batch = (
             db.query(MigrationLog)
-            .filter(MigrationLog.status.in_(["error", "failed"]))
-            .count()
-        )
-        recent_errors = (
-            db.query(MigrationLog)
-            .filter(MigrationLog.status.in_(["error", "failed"]))
+            .filter(
+                MigrationLog.action == "email_encryption_batch",
+                MigrationLog.status == "started",
+            )
             .order_by(MigrationLog.timestamp.desc())
-            .limit(10)
-            .all()
+            .first()
         )
+
+        if latest_batch is None:
+            error_count = 0
+            recent_errors = []
+        else:
+            batch_started_at = latest_batch.timestamp
+            scoped_errors = (
+                db.query(MigrationLog)
+                .filter(
+                    MigrationLog.action == "email_encryption",
+                    MigrationLog.status.in_(["error", "failed"]),
+                    MigrationLog.timestamp >= batch_started_at,
+                )
+            )
+            error_count = scoped_errors.count()
+            recent_errors = (
+                scoped_errors
+                .order_by(MigrationLog.timestamp.desc())
+                .limit(10)
+                .all()
+            )
 
         print(f"[{_now_utc().isoformat()}] Migration monitor report")
+        if latest_batch is None:
+            print("latest_batch_started_at=None")
+            print("No email_encryption_batch start found; monitoring current batch only")
+        else:
+            print(f"latest_batch_started_at={latest_batch.timestamp}")
         print(f"error_count={error_count}")
         print(f"threshold={threshold}")
 

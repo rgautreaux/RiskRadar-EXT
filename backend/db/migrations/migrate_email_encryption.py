@@ -11,6 +11,7 @@ Run this script in a safe environment after backing up the database.
 """
 
 from datetime import datetime, timezone
+import os
 import re
 import sys
 
@@ -23,6 +24,7 @@ from db.models import MigrationLog, User
 
 EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
 MAX_ERROR_LENGTH = 500
+BATCH_SIZE = int(os.getenv("MIGRATION_BATCH_SIZE", "100"))
 
 
 def _now_utc() -> datetime:
@@ -67,38 +69,47 @@ def migrate_emails() -> int:
         _log(db, action="email_encryption_batch", status="started")
         db.commit()
 
-        users = (
-            db.query(User)
-            .filter(User.email.isnot(None))
-            .order_by(User.id.asc())
-            .all()
-        )
+        last_id = 0
+        while True:
+            batch = (
+                db.query(User)
+                .filter(User.email.isnot(None), User.id > last_id)
+                .order_by(User.id.asc())
+                .limit(BATCH_SIZE)
+                .all()
+            )
+            if not batch:
+                break
 
-        for user in users:
-            processed += 1
-            try:
-                original_email = user.email
-                if not original_email:
-                    raise ValueError("User email is empty")
+            for user in batch:
+                processed += 1
+                user_id = user.id
+                try:
+                    with db.begin_nested():
+                        original_email = user.email
+                        if not original_email:
+                            raise ValueError("User email is empty")
 
-                user.email_encrypted = encrypt_email(original_email)
-                user.email_hmac = email_hmac(original_email)
-                user.email = None
+                        user.email_encrypted = encrypt_email(original_email)
+                        user.email_hmac = email_hmac(original_email)
+                        user.email = None
 
-                _log(db, action="email_encryption", status="success", user_id=user.id)
-                db.commit()
-                succeeded += 1
-            except Exception as exc:  # noqa: BLE001 - capture migration/user-level failures safely
-                db.rollback()
-                failed += 1
-                _log(
-                    db,
-                    action="email_encryption",
-                    status="error",
-                    user_id=user.id,
-                    error_message=safe_error_message(exc),
-                )
-                db.commit()
+                        _log(db, action="email_encryption", status="success", user_id=user_id)
+                    succeeded += 1
+                except Exception as exc:  # noqa: BLE001 - capture migration/user-level failures safely
+                    failed += 1
+                    _log(
+                        db,
+                        action="email_encryption",
+                        status="error",
+                        user_id=user_id,
+                        error_message=safe_error_message(exc),
+                    )
+
+            db.commit()
+            last_id = batch[-1].id
+            if len(batch) < BATCH_SIZE:
+                break
 
         summary = f"processed={processed},succeeded={succeeded},failed={failed}"
         _log(db, action="email_encryption_batch", status="completed", error_message=summary)
