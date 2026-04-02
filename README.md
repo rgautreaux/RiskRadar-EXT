@@ -9,6 +9,111 @@ Our senior project focuses on developing **RiskRadar**, an environmental risk aw
 
 Our goal for the CMPS 357 final project is to build a unique web-app extension with a distinct frontend interface while extending the platform with features such as personalized risk assessment, interactive mapping, and predictive/AI-supported insights.
 
+---
+
+## Prerequisites
+
+Before you start, make sure you have these installed on your machine:
+
+| Tool        | Version | How to check         | How to install |
+|-------------|---------|----------------------|----------------|
+| **Python**  | 3.10+   | `python --version` or `py --version` | [python.org/downloads](https://www.python.org/downloads/) — check "Add to PATH" during install |
+| **Node.js** | 18+     | `node --version`     | [nodejs.org](https://nodejs.org/) — LTS version recommended |
+| **npm**     | 9+      | `npm --version`      | Comes with Node.js |
+| **Git**     | any     | `git --version`      | [git-scm.com](https://git-scm.com/) |
+
+> **Windows users:** Use `py` instead of `python3`. If `py` doesn't work, reinstall Python from [python.org](https://www.python.org/downloads/) and check **"Add Python to PATH"** during installation.
+
+---
+
+## Quick Start / Setup Guide
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/your-org/Team6Project.git
+cd Team6Project
+```
+
+### 2. Set up environment variables
+
+Copy the example environment file and fill in required values:
+
+```bash
+copy .env.example .env   # Windows
+cp .env.example .env     # Mac/Linux
+```
+
+Edit `.env` and set at minimum:
+
+```
+# REQUIRED — generate with: py -c "import secrets; print(secrets.token_hex(32))"
+JWT_SECRET_KEY=paste-your-random-secret-here
+
+# REQUIRED for AI summaries (get a key from https://platform.deepseek.com/)
+LLM_PROVIDER=deepseek
+LLM_MODEL=deepseek-chat
+LLM_API_KEY=your-deepseek-api-key
+
+# OPTIONAL — for air quality data (free key from https://docs.airnowapi.org/account/request/)
+AIRNOW_API_KEY=your-airnow-key
+```
+
+### 3. Start the Backend
+
+```bash
+cd backend
+py -m pip install -r requirements.txt
+py -m uvicorn main:app --host 0.0.0.0 --port 8000
+```
+
+You should see:
+
+```
+INFO:     Uvicorn running on http://0.0.0.0:8000
+```
+
+Verify it works by opening http://localhost:8000/docs in your browser (Swagger API docs).
+
+### 4. Start the Web Frontend
+
+```bash
+cd frontend/web
+npm install
+npm run dev
+```
+
+### 5. Start the Mobile Frontend (Expo)
+
+```bash
+cd frontend/mobile/RiskRadar
+npm install
+npx expo start
+```
+
+Then press:
+- **`w`** to open in your web browser
+- **Scan the QR code** with the Expo Go app on your phone (same WiFi network)
+
+> **Important:** The mobile app auto-detects your computer's IP address so it can reach the backend. Both devices must be on the same WiFi network.
+
+---
+
+## Common Issues
+
+| Problem | Solution |
+|---------|----------|
+| `'py' is not recognized` | Install Python from [python.org](https://www.python.org/downloads/), check "Add to PATH" |
+| `'uvicorn' is not recognized` | Use `py -m uvicorn` instead of `uvicorn` directly |
+| Backend says `402 Insufficient Balance` | Your LLM API key (DeepSeek) has no credits — add funds or skip summary generation |
+| Weather report shows wrong location | Make sure you're entering a valid 5-digit US zip code |
+| Frontend can't connect to backend | Both devices must be on the same WiFi; backend must be running with `--host 0.0.0.0` |
+| `ModuleNotFoundError` | Run `py -m pip install -r requirements.txt` in the backend folder |
+| Expo QR code won't scan | Press `w` to test on web first; make sure Expo Go app is installed on phone |
+| Registration fails silently | Check the backend terminal for error messages |
+
+---
+
 ## Documentation Quick Links (Grading + Navigation)
 
 **Navigation hubs**
@@ -178,6 +283,7 @@ The required Certification of Original Work is included in the [docs/CERTIFICATI
 # Additional Project Content
 
 See below for legacy content, architecture, and further details.
+
 
 ###### Implementation
 Stage 3 planning introduced an interactive risk map and enhanced user experience features. The backend and frontend were prepared for new geoJSON endpoints, map rendering logic, and responsive UX improvements. Planning documents (API contract, verification evidence, implementation spec) were created to lock requirements and guide development.
