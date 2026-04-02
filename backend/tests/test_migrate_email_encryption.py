@@ -6,6 +6,7 @@ def test_migrate_emails_success(db_session, monkeypatch):
     user = User(display_name="A", email="a@test.com", password_hash="x")
     db_session.add(user)
     db_session.commit()
+    user_id = user.id
 
     monkeypatch.setattr(migration, "SessionLocal", lambda: db_session)
     monkeypatch.setattr(migration, "encrypt_email", lambda value: f"enc:{value}")
@@ -13,15 +14,15 @@ def test_migrate_emails_success(db_session, monkeypatch):
 
     code = migration.migrate_emails()
 
-    db_session.refresh(user)
+    updated = db_session.query(User).filter(User.id == user_id).one()
     assert code == 0
-    assert user.email is None
-    assert user.email_encrypted == "enc:a@test.com"
-    assert user.email_hmac == "hmac:a@test.com"
+    assert updated.email is None
+    assert updated.email_encrypted == "enc:a@test.com"
+    assert updated.email_hmac == "hmac:a@test.com"
 
     logs = db_session.query(MigrationLog).order_by(MigrationLog.id.asc()).all()
     assert any(log.action == "email_encryption_batch" and log.status == "started" for log in logs)
-    assert any(log.action == "email_encryption" and log.status == "success" and log.user_id == user.id for log in logs)
+    assert any(log.action == "email_encryption" and log.status == "success" and log.user_id == user_id for log in logs)
     assert any(log.action == "email_encryption_batch" and log.status == "completed" for log in logs)
 
 
