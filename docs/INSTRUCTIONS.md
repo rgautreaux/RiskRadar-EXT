@@ -68,4 +68,7 @@ RiskRadar is designed to help you monitor, summarize, and stay informed about en
 
 ---
 
-Thank you for using RiskRadar! Stay safe and informed.
+# April 2026 Synchronization Note
+All instructions, onboarding, and feature documentation are fully synchronized as of April 1, 2026. All planning and QA documentation is up to date and audit-ready.
+
+---
