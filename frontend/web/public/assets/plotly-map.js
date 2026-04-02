@@ -109,6 +109,74 @@ async function renderRiskMap(alertsUrl, riskUrl, containerId) {
         height: container.offsetHeight || 480
     };
     Plotly.newPlot(container, data, layout, {responsive: true});
+
+    // Accessibility: set ARIA attributes on map container
+    container.setAttribute('role', 'region');
+    container.setAttribute('aria-label', 'Interactive Risk Map');
+    container.setAttribute('tabindex', '0');
+    container.setAttribute('aria-live', 'polite');
+
+    // Keyboard navigation for markers/overlays
+    let markerEls = [];
+    if (alerts.length > 0 && toggles.alerts !== false) {
+        markerEls = alerts.filter(a => a.latitude && a.longitude);
+    }
+    let focusIdx = -1;
+
+    container.addEventListener('keydown', function(e) {
+        // Tab/Shift+Tab: cycle through markers
+        if (e.key === 'Tab') {
+            if (markerEls.length === 0) return;
+            e.preventDefault();
+            if (e.shiftKey) {
+                focusIdx = (focusIdx <= 0) ? markerEls.length - 1 : focusIdx - 1;
+            } else {
+                focusIdx = (focusIdx + 1) % markerEls.length;
+            }
+            announceMarkerFocus(markerEls[focusIdx]);
+        }
+        // Enter/Space: show marker details
+        if ((e.key === 'Enter' || e.key === ' ') && focusIdx >= 0 && markerEls[focusIdx]) {
+            showMarkerDetails(markerEls[focusIdx]);
+            e.preventDefault();
+        }
+        // Arrow keys: pan map
+        if (["ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(e.key)) {
+            // Use Plotly relayout for panning
+            let pan = {lon: 0, lat: 0};
+            if (e.key === 'ArrowLeft') pan.lon = -0.5;
+            if (e.key === 'ArrowRight') pan.lon = 0.5;
+            if (e.key === 'ArrowUp') pan.lat = 0.5;
+            if (e.key === 'ArrowDown') pan.lat = -0.5;
+            const cur = layout.mapbox.center;
+            Plotly.relayout(container, {'mapbox.center.lon': cur.lon + pan.lon, 'mapbox.center.lat': cur.lat + pan.lat});
+            e.preventDefault();
+        }
+        // +/- keys: zoom
+        if (e.key === '+' || e.key === '=') {
+            Plotly.relayout(container, {'mapbox.zoom': layout.mapbox.zoom + 0.5});
+            e.preventDefault();
+        }
+        if (e.key === '-') {
+            Plotly.relayout(container, {'mapbox.zoom': layout.mapbox.zoom - 0.5});
+            e.preventDefault();
+        }
+    });
+
+    // Announce marker focus for screen readers
+    function announceMarkerFocus(marker) {
+        const toast = document.getElementById('toast');
+        if (!toast) return;
+        toast.textContent = `Focused alert: ${marker.title || marker.alert_type || 'Alert'}`;
+        toast.style.display = 'block';
+        toast.style.opacity = 1;
+        setTimeout(() => { toast.style.opacity = 0; setTimeout(()=>{toast.style.display='none';}, 400); }, 1200);
+    }
+
+    // Show marker details (simple alert for now, replace with modal for full accessibility)
+    function showMarkerDetails(marker) {
+        alert(`Alert: ${marker.title || marker.alert_type || ''}\n${marker.description || ''}`);
+    }
 }
 
 // Re-render map on overlay toggle, region filter, or user ID change
@@ -120,9 +188,57 @@ function setupRiskMapListeners(alertsUrl, riskUrl, containerId) {
         if (el) {
             el.addEventListener('change', function() {
                 window.renderRiskMap(alertsUrl, riskUrl, containerId);
+                announceOverlayChange(id);
             });
         }
     });
+
+    // Keyboard shortcuts for overlay toggles (Alt+1 ... Alt+7)
+    document.addEventListener('keydown', function(e) {
+        if (e.altKey && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
+            const keyMap = {
+                '1': 'toggle-alerts',
+                '2': 'toggle-risk',
+                '3': 'toggle-aqi',
+                '4': 'toggle-wildfire',
+                '5': 'toggle-earthquake',
+                '6': 'toggle-weather',
+                '7': 'toggle-pollution'
+            };
+            if (keyMap[e.key]) {
+                const cb = document.getElementById(keyMap[e.key]);
+                if (cb) {
+                    cb.checked = !cb.checked;
+                    cb.focus();
+                    cb.dispatchEvent(new Event('change', {bubbles:true}));
+                    e.preventDefault();
+                }
+            }
+        }
+    });
+}
+
+// Announce overlay changes for screen readers
+function announceOverlayChange(id) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    let msg = '';
+    switch(id) {
+        case 'toggle-alerts': msg = 'Alerts overlay toggled.'; break;
+        case 'toggle-risk': msg = 'Risk zones overlay toggled.'; break;
+        case 'toggle-aqi': msg = 'AQI overlay toggled.'; break;
+        case 'toggle-wildfire': msg = 'Wildfire overlay toggled.'; break;
+        case 'toggle-earthquake': msg = 'Earthquake overlay toggled.'; break;
+        case 'toggle-weather': msg = 'Weather overlay toggled.'; break;
+        case 'toggle-pollution': msg = 'Pollution overlay toggled.'; break;
+        case 'region-filter': msg = 'Region filter changed.'; break;
+        case 'user-id-input': msg = 'User ID changed.'; break;
+        default: msg = 'Overlay changed.';
+    }
+    toast.textContent = msg;
+    toast.style.display = 'block';
+    toast.style.opacity = 1;
+    setTimeout(() => { toast.style.opacity = 0; setTimeout(()=>{toast.style.display='none';}, 400); }, 1200);
 }
 
 window.renderRiskMap = renderRiskMap;

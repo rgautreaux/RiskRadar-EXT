@@ -151,27 +151,28 @@ rr_render_layout_start('Risk Map', 'map');
             </script>
         <div>
             <label for="region-filter">Region Filter: </label>
-            <select id="region-filter" style="min-width:120px;" aria-label="Region Filter" aria-describedby="region-filter-desc">
+            <select id="region-filter" style="min-width:120px;" aria-label="Region Filter" aria-describedby="region-filter-desc" accesskey="r">
                 <option value="">All Regions</option>
                 <option value="LA">Louisiana</option>
                 <option value="TX">Texas</option>
                 <option value="MS">Mississippi</option>
             </select>
-            <span id="region-filter-desc" class="sr-only">Select a region to filter map overlays. Use Tab to move to overlays and toggles.</span>
+            <span id="region-filter-desc" class="sr-only">Select a region to filter map overlays. Use Tab to move to overlays and toggles. Shortcut: Alt+R.</span>
         </div>
         <div style="margin-left:18px;">
             <label for="user-id-input">User ID for Personalized Map: </label>
-            <input type="number" id="user-id-input" min="1" value="1" style="width:70px;" aria-label="User ID for Personalized Map" aria-describedby="user-id-desc" />
-            <span id="user-id-desc" class="sr-only">Enter your numeric user ID to enable personalized risk overlays. This is required for personalized map mode.</span>
+            <input type="number" id="user-id-input" min="1" value="1" style="width:70px;" aria-label="User ID for Personalized Map" aria-describedby="user-id-desc" accesskey="u" />
+            <span id="user-id-desc" class="sr-only">Enter your numeric user ID to enable personalized risk overlays. This is required for personalized map mode. Shortcut: Alt+U.</span>
         </div>
-        <div role="group" aria-label="Overlay Toggles">
-            <label><input type="checkbox" id="toggle-alerts" checked aria-checked="true" aria-label="Show Alerts"> Show Alerts</label>
-            <label style="margin-left:12px;"><input type="checkbox" id="toggle-risk" checked aria-checked="true" aria-label="Show Risk Zones"> Show Risk Zones</label>
-            <label style="margin-left:12px;"><input type="checkbox" id="toggle-aqi" aria-label="AQI Overlay"> AQI Overlay</label>
-            <label style="margin-left:12px;"><input type="checkbox" id="toggle-wildfire" aria-label="Wildfire Overlay"> Wildfire Overlay</label>
-            <label style="margin-left:12px;"><input type="checkbox" id="toggle-earthquake" aria-label="Earthquake Overlay"> Earthquake Overlay</label>
-            <label style="margin-left:12px;"><input type="checkbox" id="toggle-weather" aria-label="Weather Overlay"> Weather Overlay</label>
-            <label style="margin-left:12px;"><input type="checkbox" id="toggle-pollution" aria-label="Pollution Overlay"> Pollution Overlay</label>
+        <div role="group" aria-label="Overlay Toggles" aria-describedby="overlay-toggles-desc">
+            <span id="overlay-toggles-desc" class="sr-only">Toggle overlays with Space or Enter. Keyboard shortcuts: Alt+1 Alerts, Alt+2 Risk Zones, Alt+3 AQI, Alt+4 Wildfire, Alt+5 Earthquake, Alt+6 Weather, Alt+7 Pollution.</span>
+            <label><input type="checkbox" id="toggle-alerts" checked aria-checked="true" aria-label="Show Alerts" accesskey="1"> Show Alerts</label>
+            <label style="margin-left:12px;"><input type="checkbox" id="toggle-risk" checked aria-checked="true" aria-label="Show Risk Zones" accesskey="2"> Show Risk Zones</label>
+            <label style="margin-left:12px;"><input type="checkbox" id="toggle-aqi" aria-label="AQI Overlay" accesskey="3"> AQI Overlay</label>
+            <label style="margin-left:12px;"><input type="checkbox" id="toggle-wildfire" aria-label="Wildfire Overlay" accesskey="4"> Wildfire Overlay</label>
+            <label style="margin-left:12px;"><input type="checkbox" id="toggle-earthquake" aria-label="Earthquake Overlay" accesskey="5"> Earthquake Overlay</label>
+            <label style="margin-left:12px;"><input type="checkbox" id="toggle-weather" aria-label="Weather Overlay" accesskey="6"> Weather Overlay</label>
+            <label style="margin-left:12px;"><input type="checkbox" id="toggle-pollution" aria-label="Pollution Overlay" accesskey="7"> Pollution Overlay</label>
         </div>
         <div style="margin-left:24px;display:flex;align-items:center;gap:16px;">
             <label><input type="checkbox" id="toggle-personalized" aria-label="Personalized Risk Map"> Personalized Risk Map</label>
