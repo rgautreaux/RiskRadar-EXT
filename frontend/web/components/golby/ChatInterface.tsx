@@ -1,2 +1,226 @@
-// ...existing code...
-// (Partial content, will be completed in next steps)
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { GolbyIcon } from './GolbyIcon';
+import { ChatBubble } from './ChatBubble';
+import { TypingIndicator } from './TypingIndicator';
+import { Send, ThumbsUp, ThumbsDown, Smile } from 'lucide-react';
+
+interface Message {
+	id: string;
+	text: string;
+	isGolby: boolean;
+	timestamp: Date;
+}
+
+interface ChatInterfaceProps {
+	suggestions?: string[];
+	onClose?: () => void;
+}
+
+const defaultSuggestions = [
+	"Show me today's forecast",
+	"How do I set alerts?",
+	"Tell me a joke!",
+	"What are the risks in my area?"
+];
+
+const golbyResponses: Record<string, string> = {
+	"tell me a joke": "Why did the weather map break up with the compass? Because it found someone more climate! 😄",
+	"joke": "What's a tornado's favorite game? Twister! 🌪️",
+	"hello": "Hi there, superstar! 🌟 How can I help you today?",
+	"hi": "Hey there! Ready to explore some environmental insights? 🌍",
+	"help": "I'm here to help! You can ask me about environmental risks, how to use RiskRadar, weather forecasts, or even just chat. What would you like to know?",
+	"default": "Great question! I can help you with that. RiskRadar provides comprehensive environmental risk data to help you make informed travel decisions. What specific information are you looking for?"
+};
+
+export function ChatInterface({ suggestions = defaultSuggestions, onClose }: ChatInterfaceProps) {
+	const [messages, setMessages] = useState<Message[]>([
+		{
+			id: '1',
+			text: "Hey there! I'm Golby, your travel safety buddy. What can I help you discover today?",
+			isGolby: true,
+			timestamp: new Date()
+		}
+	]);
+	const [inputValue, setInputValue] = useState('');
+	const [isTyping, setIsTyping] = useState(false);
+	const messagesEndRef = useRef<HTMLDivElement>(null);
+
+	const scrollToBottom = () => {
+		messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+	};
+
+	useEffect(() => {
+		scrollToBottom();
+	}, [messages, isTyping]);
+
+	const getGolbyResponse = (userMessage: string): string => {
+		const lowerMessage = userMessage.toLowerCase();
+		if (lowerMessage.includes('joke')) {
+			return golbyResponses['joke'];
+		}
+		if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
+			return golbyResponses['hello'];
+		}
+		if (lowerMessage.includes('help')) {
+			return golbyResponses['help'];
+		}
+		if (lowerMessage.includes('forecast') || lowerMessage.includes('weather')) {
+			return "The forecast looks clear ahead! ☀️ I can pull up detailed environmental data for any location you're interested in. Which area would you like to check?";
+		}
+		if (lowerMessage.includes('alert')) {
+			return "Setting up alerts is easy! Head to your settings, choose 'Notifications', and you can customize alerts for specific risk types or locations. Want me to guide you there?";
+		}
+		if (lowerMessage.includes('risk')) {
+			return "I can show you comprehensive risk assessments including air quality, natural disasters, climate risks, and more. Just click on any location on the map, or tell me which area you're curious about!";
+		}
+		return golbyResponses['default'];
+	};
+
+	const handleSendMessage = (text: string) => {
+		if (!text.trim()) return;
+		// Add user message
+		const userMessage: Message = {
+			id: Date.now().toString(),
+			text: text,
+			isGolby: false,
+			timestamp: new Date()
+		};
+		setMessages(prev => [...prev, userMessage]);
+		setInputValue('');
+		// Simulate Golby typing
+		setIsTyping(true);
+		setTimeout(() => {
+			setIsTyping(false);
+			const golbyMessage: Message = {
+				id: (Date.now() + 1).toString(),
+				text: getGolbyResponse(text),
+				isGolby: true,
+				timestamp: new Date()
+			};
+			setMessages(prev => [...prev, golbyMessage]);
+		}, 1000 + Math.random() * 1000);
+	};
+
+	const handleSuggestionClick = (suggestion: string) => {
+		handleSendMessage(suggestion);
+	};
+
+	return (
+		<div className="flex flex-col h-full max-h-[600px] bg-white rounded-2xl shadow-xl overflow-hidden">
+			{/* Header */}
+			<div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 flex items-center gap-3">
+				<GolbyIcon expression="happy" size="md" />
+				<div className="flex-1">
+					<h2 className="text-white font-medium">Chat with Golby</h2>
+					<p className="text-blue-100 text-sm">Your AI Travel Assistant</p>
+				</div>
+				{onClose && (
+					<button onClick={onClose} className="text-white hover:text-blue-200 text-xl font-bold ml-2" aria-label="Close chat">×</button>
+				)}
+			</div>
+			{/* Messages */}
+			<div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50">
+				{messages.map((message) => (
+					<div
+						key={message.id}
+						className={`flex gap-3 ${message.isGolby ? 'justify-start' : 'justify-end'}`}
+					>
+						{message.isGolby && (
+							<div className="flex-shrink-0">
+								<GolbyIcon expression="happy" size="sm" />
+							</div>
+						)}
+						<div className={`flex flex-col ${message.isGolby ? 'items-start' : 'items-end'}`}>
+							<ChatBubble message={message.text} isGolby={message.isGolby} />
+							{message.isGolby && (
+								<div className="flex gap-2 mt-2">
+									<button 
+										className="text-gray-400 hover:text-green-600 transition-colors"
+										aria-label="This was helpful"
+									>
+										<ThumbsUp className="w-4 h-4" />
+									</button>
+									<button 
+										className="text-gray-400 hover:text-red-600 transition-colors"
+										aria-label="This wasn't helpful"
+									>
+										<ThumbsDown className="w-4 h-4" />
+									</button>
+									<button 
+										className="text-gray-400 hover:text-yellow-600 transition-colors"
+										aria-label="Rate with emoji"
+									>
+										<Smile className="w-4 h-4" />
+									</button>
+								</div>
+							)}
+						</div>
+					</div>
+				))}
+				{isTyping && (
+					<div className="flex gap-3 justify-start">
+						<div className="flex-shrink-0">
+							<GolbyIcon expression="thinking" size="sm" />
+						</div>
+						<TypingIndicator />
+					</div>
+				)}
+				<div ref={messagesEndRef} />
+			</div>
+			{/* Quick Suggestions */}
+			{messages.length === 1 && (
+				<motion.div 
+					initial={{ opacity: 0, y: 10 }}
+					animate={{ opacity: 1, y: 0 }}
+					className="px-6 py-3 bg-white border-t border-gray-200"
+				>
+					<p className="text-xs text-gray-500 mb-2">Quick suggestions:</p>
+					<div className="flex flex-wrap gap-2">
+						{suggestions.map((suggestion, index) => (
+							<motion.button
+								key={index}
+								initial={{ opacity: 0, scale: 0.9 }}
+								animate={{ opacity: 1, scale: 1 }}
+								transition={{ delay: index * 0.1 }}
+								onClick={() => handleSuggestionClick(suggestion)}
+								className="bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full text-sm transition-colors border border-blue-200"
+								whileHover={{ scale: 1.05 }}
+								whileTap={{ scale: 0.95 }}
+							>
+								{suggestion}
+							</motion.button>
+						))}
+					</div>
+				</motion.div>
+			)}
+			{/* Input */}
+			<div className="bg-white px-6 py-4 border-t border-gray-200">
+				<form 
+					onSubmit={(e) => {
+						e.preventDefault();
+						handleSendMessage(inputValue);
+					}}
+					className="flex gap-2"
+				>
+					<input
+						type="text"
+						value={inputValue}
+						onChange={(e) => setInputValue(e.target.value)}
+						placeholder="Ask Golby anything..."
+						className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+						aria-label="Message input"
+					/>
+					<button
+						type="submit"
+						disabled={!inputValue.trim()}
+						className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white p-2 rounded-full transition-colors disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500"
+						aria-label="Send message"
+					>
+						<Send className="w-5 h-5" />
+					</button>
+				</form>
+			</div>
+		</div>
+	);
+}
