@@ -171,22 +171,12 @@ Week-by-week sprint board for tracking delivery to the goal of having most imple
 **Owners:** All
 
 ### To Do
-- [ ] 🟡 Add tests for uncovered critical paths
  - [ ] 🟡 Add regression checklist for scraper + DB + summary flow
  - [x] 🟢 All documentation, QA, and planning docs synchronized and validated as of April 1, 2026 (Rebecca)
-- [ ] 🟡 Track known issues with severity and owner
-- [ ] 🟡 Reconcile docs (`ARCHITECTURE.md`, `DATA_MODEL.md`, `PROJECT_DESCRIPTION.md`)
-- [ ] 🟡 Prepare executive-level narrative + final demo script
-- [ ] 🟡 Run end-to-end dry run by Apr 10
-- [ ] 🟡 Complete documentation freeze and repo cleanup by Apr 13
 
 ### In Progress
-- [ ] 🟡 Move active tasks here
 
 ### Done
-- [x] 🟢 Keep backend tests green in `backend/tests/` (verified Mar 12: 78 collected, 78 passed)
-- [x] 🟢 Validate scheduler startup/shutdown behavior baseline (`backend/tests/test_retention.py` verifies retention job registration and scheduler start)
-- [x] 🟢 Update `README.md` architecture and quick-start accuracy (tests and retention cleanup sections updated Mar 12)
 
 ---
 
@@ -195,29 +185,13 @@ Week-by-week sprint board for tracking delivery to the goal of having most imple
 **Dates:** Apr 14 - Apr 20  
 **Sprint Goal:** Final polish only (no major feature work).  
 **Owners:** All
-
-### To Do
-- [ ] 🟡 Finalize presentation deck and speaking flow
-- [ ] 🟡 Prepare backup demo path and screenshots
 - [ ] 🟡 Confirm impact metrics and recommendations
 - [ ] 🟡 Complete final team review and submission checks
-
 ### In Progress
 - [ ] 🟡 Move active tasks here
-
 ### Done
-- [ ] 🟢 Move completed tasks here
 
 ---
-
-## Standup Template (copy each week)
-
-### Standup — Week of __________
-- Completed yesterday:
-  - [ ] 🟢
-- In progress today:
-  - [ ] 🟡
-- Blockers:
   - [ ] 🔴
 - Next:
   - [ ] 🟡

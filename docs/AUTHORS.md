@@ -1,3 +1,41 @@
+## Contributions and Roles (as of Apr 2, 2026)
+
+- All member roles and contributions have been updated to reflect the April 2, 2026 documentation synchronization and audit.
+- All top-level documentation, progress logs, and transcripts are now in sync and audit-ready.
+- Each member’s contributions and evolving roles are listed in correct chronological order for historical accuracy.
+
+### Qui Huynh
+- Project lead, backend architecture, database design, API development, code review, documentation.
+- Led backend API endpoint design, database models, and integration with MariaDB/SQLite.
+- Supported API testing, troubleshooting, and documentation.
+
+### Noah Benoit
+- Security lead, authentication, compliance, and risk mitigation.
+- Led User Security Plan, implemented authentication (JWT, bcrypt), user management, and security audits.
+- Oversaw compliance and contributed to documentation.
+
+### Ben Manuel
+- Frontend developer, UI/UX implementation, and mobile app integration.
+- Developed React Native mobile app, implemented UI components, navigation, and onboarding flows.
+- Integrated frontend with backend API and contributed to summary dashboard features.
+
+### Max Compeaux
+- AI backend developer, LLM integration, and backend support.
+- Developed AI-powered summarization module, implemented daily digest generation, prompt engineering, and supported backend integration and documentation.
+
+### Rebecca Gautreaux
+- Documentation lead, database administrator, and progress tracking.
+- Led database schema design, migration planning, and test/staging setup.
+- Implemented and documented User Security Plan preparatory work, maintained project documentation, progress logs, and transcripts.
+- Supported backend test coverage, validation, and documentation synchronization.
+- Led the April 2, 2026 documentation synchronization and audit, ensuring all project records are in sync and audit-ready.
+
+### Celeste George
+- Frontend developer, UI/UX research, and QA.
+- Contributed to frontend development, asset mapping, wireframe implementation, and component styling.
+- Supported documentation, project planning, and QA.
+
+---
 # INFX 490 - Project Authors
 
 
