@@ -1,5 +1,11 @@
 <?php rr_render_layout_start('AI Assistant', 'assistant'); ?>
 
+<!-- RiskRadar AI Assistant Widget Assets -->
+<link rel="stylesheet" href="/public/assets/index.css">
+<link rel="modulepreload" href="/public/assets/index-CbcLeLl0.js">
+<script type="module" src="/public/assets/index-CbcLeLl0.js" defer></script>
+<script type="module" src="/public/assets/ai-assistant-widget.js" defer></script>
+
 <section class="page-heading">
     <div>
         <p class="eyebrow">Stage 4 scaffold</p>
@@ -18,17 +24,8 @@
         </div>
     </div>
 
-    <!-- Chat interface scaffold -->
-    <div id="assistant-chat" class="assistant-chat" style="background: var(--muted); border-radius: 10px; min-height: 180px; padding: 1.2rem; margin-bottom: 1.2rem;">
-        <div class="assistant-message assistant-message--golby" style="margin-bottom: 1rem;">
-            <strong>Golby:</strong> Hi! I’m Golby, your RiskRadar assistant. How can I help you today?
-        </div>
-        <!-- Future: Loop through chat messages here -->
-    </div>
-    <form id="assistant-chat-form" class="assistant-chat-form" autocomplete="off" style="display: flex; gap: 0.5rem;">
-        <input type="text" name="user_message" id="user_message" placeholder="Type your question..." style="flex: 1; padding: 0.7rem 1rem; border-radius: 8px; border: 1px solid var(--muted-foreground); font-size: 15px;" aria-label="Ask Golby a question" disabled />
-        <button type="submit" style="padding: 0.7rem 1.2rem; border-radius: 8px; background: var(--primary); color: #fff; font-weight: bold; border: none; font-size: 15px; opacity: 0.6; cursor: not-allowed;" disabled>Send</button>
-    </form>
+    <!-- React AI Assistant Widget Mount Point -->
+    <div id="riskradar-ai-assistant-widget"></div>
     <div class="mt-3" style="font-size: 13px; color: var(--muted-foreground);">
         <em>Note: Chat functionality will be enabled once the backend is ready.</em>
     </div>

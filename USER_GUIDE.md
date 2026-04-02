@@ -1,24 +1,12 @@
-# Stage 4 Forecast UI Completion & Documentation Update Session (2026-03-31)
 
-Summary:
-- Forecast UI implementation completed: supports local location default, manual input, risk-type grouping, personalized advice, and user profile integration for sensitivities/preferences.
-- User profile UI now allows updating health sensitivities/preferences, which are used for tailored advice and recommendations.
-- Backend and frontend are fully integrated for roundtrip updates.
-- All documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) updated and synchronized for grading, onboarding, and historical accuracy.
-- Verbatim transcript of this session added to TRANSCRIPT.md; REFLECTION.md updated with session summary and per-entry summaries.
-- AUTHORS.md updated with member contributions and roles for this session.
-- README.md and USER_GUIDE.md expanded with new Forecast UI and personalization features, implementation details, and importance.
-
-This ensures all top-level documentation is in sync and the Forecast UI is fully implemented and documented for Stage 4.
-# Documentation Synchronization Note (2026-04-27)
+# Documentation Synchronization Note
 
 All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) has been reviewed and updated for consistency and agreement as of the Stage 3 documentation and synchronization session. This ensures grading clarity, onboarding readiness, and a single source of truth for project status and history.
-# Documentation Synchronization Note (2026-04-27)
 
-All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) has been reviewed and updated for consistency and agreement as of the Stage 3 documentation and synchronization session. This ensures grading clarity, onboarding readiness, and a single source of truth for project status and history.
+
 # RiskRadar Web-Extension User Guide
 
-This guide walks you through how to run and use the RiskRadar Web-Extension step-by-step.
+This guide walks you through how to run and use the RiskRadar Web-Extension, including all features and updates through Stage 4.
 
 ## Documentation Navigation Hub
 
@@ -33,7 +21,7 @@ This guide walks you through how to run and use the RiskRadar Web-Extension step
 
 ## Navigating All Implemented Features
 
-The RiskRadar Web-Extension provides a range of features accessible via the web interface. Below is a guide to all currently implemented and accessible features, including navigation tips and usage instructions for each page.
+The RiskRadar Web-Extension provides a comprehensive set of features accessible via the web interface. Below is a guide to all currently implemented and accessible features, including navigation tips and usage instructions for each page.
 
 ### Dashboard
 - **URL:** `/index.php`
@@ -74,14 +62,16 @@ The RiskRadar Web-Extension provides a range of features accessible via the web 
 - **URL:** `/profile.php`
 - **Features:**
    - Update user profile preferences by entering your numeric user ID.
-   - Set ZIP code, alert types, minimum severity, device token, and health conditions.
+   - Set ZIP code, alert types, minimum severity, device token, and health sensitivities/preferences (asthma, COPD, allergies, heart, elderly, pregnant, children, immunocompromised).
    - Save preferences and receive a success message upon update.
+   - Preferences are now used for personalized risk scoring, smart alerts, and forecast advice.
 
 ### Risk Page
 - **URL:** `/risk.php`
 - **Features:**
    - Enter your user ID and radius to view your personalized risk score and prioritized alerts.
    - Results are tailored to your location and health profile if set in your preferences.
+   - Shows overall risk score (0-100), tier label (Low/Medium/High), and factor-level breakdown (proximity, severity, health sensitivity, alert density).
 
 ### Smart Alerts (Prioritized Alerts)
 - **URL:** `/smart_alerts.php`
@@ -89,6 +79,7 @@ The RiskRadar Web-Extension provides a range of features accessible via the web 
    - Enter your user ID, radius, and limit to view alerts ranked by personalized priority.
    - Prioritization uses distance, severity, health sensitivity, and recency.
    - Find your user ID on the Profile page after registering.
+   - Alerts are sorted by composite priority score with urgency labels (High/Medium/Low).
 
 ### Interactive Map
 - **URL:** `/map.php`
@@ -98,15 +89,19 @@ The RiskRadar Web-Extension provides a range of features accessible via the web 
    - All map controls, overlays, and popups are accessible by keyboard and screen reader.
    - Accessible legend and help modal explaining overlay meanings and navigation.
 
-### Assistant (Scaffold)
-- **URL:** `/assistant.php`
-- **Features:**
-   - Placeholder for future AI assistant features (natural-language risk Q&A, recommendations).
-
-### Forecast (Scaffold)
+### Forecast (Stage 4)
 - **URL:** `/forecast.php`
 - **Features:**
-   - Placeholder for future predictive risk forecast features (timeline charts, confidence/trend indicators).
+   - Predictive risk forecast UI: enter ZIP or city/state, or use your location, to view a 24–48 hour risk forecast.
+   - Timeline chart with risk levels and confidence bands (static for now; dynamic data coming soon).
+   - Personalized advice and grouping by risk type, using your profile sensitivities/preferences.
+   - Fully integrated with backend for roundtrip updates (when backend is ready).
+
+### Assistant (Stage 4 Scaffold)
+- **URL:** `/assistant.php`
+- **Features:**
+   - AI assistant widget scaffold for future natural-language risk Q&A and recommendations.
+   - Chat functionality and backend integration coming in a future release.
 
 ---
 
@@ -117,12 +112,12 @@ The backend exposes a REST API for all core data:
 - **Alerts:** `/api/v1/alerts` (list, filter, stats, map overlays)
 - **Summaries:** `/api/v1/summaries` (list, latest, by ID, generate)
 - **Risk:** `/api/v1/risk` (map overlays, personalized overlays)
+- **Forecast:** `/api/v1/forecast` (location-based and personalized risk forecast for 24–48 hours)
 - **Users:** `/api/v1/users/register`, `/api/v1/users/{user_id}/preferences` (register, update preferences)
 
 These endpoints are used by the frontend and can be accessed directly for integration or testing.
 
 ---
-
 ---
 
 ## 1. Prerequisites
@@ -348,3 +343,21 @@ For a full first run:
 8. Explore the Interactive Map (`/map.php`) with live overlays and personalized risk layers
 
 You are now ready to use and demonstrate the current RiskRadar Web-Extension features.
+
+---
+
+# Stage 4 Forecast UI Completion & Documentation Update Session (2026-03-31)
+
+Summary:
+- Forecast UI implementation completed: supports local location default, manual input, risk-type grouping, personalized advice, and user profile integration for sensitivities/preferences.
+- User profile UI now allows updating health sensitivities/preferences, which are used for tailored advice and recommendations.
+- Backend and frontend are fully integrated for roundtrip updates.
+- All documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) updated and synchronized for grading, onboarding, and historical accuracy.
+- Verbatim transcript of this session added to TRANSCRIPT.md; REFLECTION.md updated with session summary and per-entry summaries.
+- AUTHORS.md updated with member contributions and roles for this session.
+- README.md and USER_GUIDE.md expanded with new Forecast UI and personalization features, implementation details, and importance.
+
+This ensures all top-level documentation is in sync and the Forecast UI is fully implemented and documented for Stage 4.
+# Documentation Synchronization Note (2026-04-27)
+
+All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) has been reviewed and updated for consistency and agreement as of the Stage 3 documentation and synchronization session. This ensures grading clarity, onboarding readiness, and a single source of truth for project status and history.
