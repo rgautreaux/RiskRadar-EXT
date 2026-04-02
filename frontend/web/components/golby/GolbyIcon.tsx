@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, easeInOut } from 'framer-motion';
 
 export type GolbyExpression = 
   | 'happy' 
@@ -34,50 +34,60 @@ export function GolbyIcon({
   className = ''
 }: GolbyIconProps) {
   // Animation variants based on expression
+  // Always return all keys for framer-motion animate prop
   const getAnimationVariant = () => {
     switch (expression) {
       case 'waving':
         return {
+          scale: [1, 1, 1, 1, 1, 1],
           rotate: [0, -10, 10, -10, 10, 0],
+          y: [0, 0, 0, 0, 0, 0],
           transition: { duration: 1, repeat: Infinity, repeatDelay: 2 }
         };
       case 'thinking':
         return {
+          scale: [1, 1, 1],
+          rotate: [0, 0, 0],
           y: [0, -5, 0],
-          transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' }
+          transition: { duration: 2, repeat: Infinity, ease: easeInOut }
         };
       case 'excited':
         return {
           scale: [1, 1.1, 1],
           rotate: [0, -5, 5, -5, 5, 0],
+          y: [0, 0, 0, 0, 0, 0],
           transition: { duration: 0.6, repeat: Infinity, repeatDelay: 1 }
         };
       case 'winking':
         return {
           scale: [1, 0.95, 1],
+          rotate: [0, 0, 0],
+          y: [0, 0, 0],
           transition: { duration: 0.5, repeat: Infinity, repeatDelay: 3 }
         };
       case 'laughing':
         return {
-          y: [0, -3, 0, -3, 0],
+          scale: [1, 1, 1, 1, 1],
           rotate: [0, -3, 3, -3, 0],
+          y: [0, -3, 0, -3, 0],
           transition: { duration: 0.8, repeat: Infinity, repeatDelay: 1 }
         };
       default:
         return {
           scale: [1, 1.05, 1],
-          transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' }
+          rotate: [0, 0, 0],
+          y: [0, 0, 0],
+          transition: { duration: 2, repeat: Infinity, ease: easeInOut }
         };
     }
   };
 
+  const staticPose = { scale: 1, rotate: 0, y: 0 };
   return (
     <motion.div
       className={`relative inline-flex items-center justify-center ${sizeMap[size]} ${className}`}
-      initial={{ scale: 0, rotate: -180 }}
-      animate={animate ? { 
-        scale: 1, rotate: 0, ...getAnimationVariant()
-      } : { scale: 1, rotate: 0 }}
+      initial={{ scale: 0, rotate: -180, y: 0 }}
+      animate={animate ? getAnimationVariant() : staticPose}
       transition={{ duration: 0.5, type: 'spring' }}
       role="img"
       aria-label={`Golby the assistant looking ${expression}`}
