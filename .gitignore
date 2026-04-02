@@ -36,6 +36,7 @@ build/
 .idea/tasks.xml
 .idea/dictionaries
 .idea/shelf
+.vscode/
 
 # OS files
 .DS_Store
@@ -71,3 +72,9 @@ Thumbs.db
 
 # Development docs and notes
 .workspace_docs
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+backend/db/backups/*.sql
