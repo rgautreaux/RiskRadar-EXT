@@ -27,11 +27,34 @@ const defaultSuggestions = [
 	"What are the risks in my area?"
 ];
 
+// Fun Easter Egg responses
+const golbyJokes = [
+	"Why did the weather map break up with the compass? Because it found someone more climate! 😄",
+	"What's a tornado's favorite game? Twister! 🌪️",
+	"Why did the cloud stay home from school? It was feeling under the weather! ☁️",
+	"What do you call dangerous precipitation? A rain of terror! ☔️",
+	"Why did the sun go to school? To get a little brighter! ☀️",
+	"How do hurricanes see? With one eye! 🌀",
+	"Why don’t mountains get cold in the winter? They wear snowcaps! 🏔️",
+	"What’s a snowman’s favorite snack? Ice Krispies! ⛄️",
+	"Why did the bicycle fall over on its trip? It was two-tired! 🚲",
+	"Why did the traveler bring a ladder to the bar? Because they heard the drinks were on the house! 🍹",
+	"Why did the airplane get sent to its room? For having a bad altitude! ✈️",
+	"What do you call a bear caught in the rain? A drizzly bear! 🐻",
+	"Why did the river never get lost? It always followed its current! 🏞️"
+];
+
+const golbyGreetings = [
+	"Hi there, superstar! 🌟 How can I help you today?",
+	"Hey there! Ready to explore some environmental insights? 🌍",
+	"Hello, traveler! Where are you headed today? 🧳",
+	"Greetings, explorer! Need a weather update or a fun fact? ☀️",
+	"Welcome back! Let’s make your journey safe and fun. 🚦",
+	"Hey! Golby here, your trusty travel buddy. How can I assist? 🐟",
+	"Hi! Want a forecast, a risk check, or just a good laugh? 😄"
+];
+
 const golbyResponses: Record<string, string> = {
-	"tell me a joke": "Why did the weather map break up with the compass? Because it found someone more climate! 😄",
-	"joke": "What's a tornado's favorite game? Twister! 🌪️",
-	"hello": "Hi there, superstar! 🌟 How can I help you today?",
-	"hi": "Hey there! Ready to explore some environmental insights? 🌍",
 	"help": "I'm here to help! You can ask me about environmental risks, how to use RiskRadar, weather forecasts, or even just chat. What would you like to know?",
 	"default": "Great question! I can help you with that. RiskRadar provides comprehensive environmental risk data to help you make informed travel decisions. What specific information are you looking for?"
 };
@@ -132,12 +155,14 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 			return 'Sorry, I had trouble fetching live data.';
 		}
 		// 4. Fallback to static
-		if (lowerMessage.includes('joke')) {
-			return golbyResponses['joke'];
-		}
-		if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
-			return golbyResponses['hello'];
-		}
+			if (lowerMessage.includes('joke')) {
+				// Random joke
+				return golbyJokes[Math.floor(Math.random() * golbyJokes.length)];
+			}
+			if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
+				// Random greeting
+				return golbyGreetings[Math.floor(Math.random() * golbyGreetings.length)];
+			}
 		if (lowerMessage.includes('help')) {
 			return golbyResponses['help'];
 		}
