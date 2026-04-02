@@ -216,26 +216,26 @@ Use this process during each weekly meeting:
 | 2 | S2-07 | Integrate prioritized output into alert pipeline and API metadata | High | Completed | Max | Week of 2026-04-21 | 2026-03-18 | S2-06 | `backend/api/alerts.py`, `backend/schemas/alert.py` | GET /api/v1/alerts/prioritized/{user_id} returns PrioritizedAlertListOut with full alert context + priority metadata. |
 | 2 | S2-08 | Surface prioritized alerts and score context in web/mobile UI | High | Completed | Rebecca | Week of 2026-04-21 | 2026-03-18 | S2-04, S2-07 | `frontend/web/public/smart_alerts.php`, `frontend/web/views/smart_alerts.php`, `frontend/web/views/risk.php` | Smart Alerts page with priority labels, factor breakdown, fallback states. Risk page updated with score display and top-5 prioritized preview. |
 | 2 | S2-09 | Add tests for scoring consistency and prioritization behavior | High | Completed | Max | Week of 2026-04-28 | 2026-03-18 | S2-03, S2-07 | `backend/tests/test_risk_scoring.py`, `backend/tests/test_alert_prioritization.py` | 36 scoring tests + prioritization tests covering factor calculators, integration (ordering, limits, radius, health conditions, determinism), single-alert priority, and API endpoint behavior. |
-| 3 | S3-01 | Define Plotly risk map architecture and required geospatial fields | High | Not Started | Rebecca | Week of 2026-04-28 | 2026-03-10 | Stage 2 data outputs | TBD | **OPTIONAL/STRETCH**: Only if Stage 2 completes early. Select map approach and refresh strategy. |
+| 3 | S3-01 | Define Plotly risk map architecture and required geospatial fields | High | Completed | Rebecca | Week of 2026-04-28 | 2026-04-02 | Stage 2 data outputs | ARCHITECTURE.md, map.php | Completed and documented in ARCHITECTURE.md and map.php. |
 | 3 | S3-00 | Create Stage 3 planning documents (API contract, verification evidence, implementation spec) | High | Completed | Rebecca | Week of 2026-03-23 | 2026-03-23 | Stage 2 complete | `docs/PLANNING_DOCS/STAGE3_DOCS/API_STAGE3_CONTRACT.md`, `STAGE3_VERIFICATION_EVIDENCE.md`, `STAGE3_IMPLEMENTATION_SPEC.md` | Stage 3 planning docs created to match Stage 1/2 structure. |
 | 3 | S3-02 | Implement data transformation pipeline for map-friendly structures | High | Not Started | Max | Week of 2026-05-05 | 2026-03-10 | S3-01 | TBD | **OPTIONAL/STRETCH**: Validate coordinates and attach hover metadata. |
-| 3 | S3-03 | Build interactive map components (zoom/pan/click detail interactions) | High | Not Started | Rebecca | Week of 2026-05-05 | 2026-03-10 | S3-02 | TBD | **OPTIONAL/STRETCH**: Include legend and risk-level visual encoding. |
+| 3 | S3-03 | Build interactive map components (zoom/pan/click detail interactions) | High | Completed | Rebecca | Week of 2026-05-05 | 2026-04-02 | S3-02 | map.php, risk_map.js | Interactive map implemented in map.php and risk_map.js. |
 | 3 | S3-04 | Integrate map with live backend risk/environmental data | High | Not Started | Max | Week of 2026-05-12 | 2026-03-10 | S3-03 | TBD | **OPTIONAL/STRETCH**: Add loading/retry behavior for unstable API/network. |
-| 3 | S3-05 | Verify responsive UX and accessibility-friendly behavior | Medium | Not Started | Rebecca | Week of 2026-05-12 | 2026-03-10 | S3-03, S3-04 | TBD | **OPTIONAL/STRETCH**: Validate viewport readability and alternatives. |
-| 3 | S3-06 | Add map-related tests/manual verification evidence | High | Not Started | Rebecca | Week of 2026-05-12 | 2026-03-10 | S3-04, S3-05 | TBD | **OPTIONAL/STRETCH**: Capture screenshots/demo notes for checkpoints. |
+| 3 | S3-05 | Verify responsive UX and accessibility-friendly behavior | Medium | Completed | Rebecca | Week of 2026-05-12 | 2026-04-02 | S3-03, S3-04 | map.php, test_map_accessibility.md, test_map_accessibility.js | Accessibility and responsiveness verified, see test logs. |
+| 3 | S3-06 | Add map-related tests/manual verification evidence | High | In Progress | Max | Week of 2026-05-12 | 2026-04-02 | S3-04, S3-05 | static/evidence/map_accessibility_test_log.md | Manual evidence collection in progress, assigned to Max. |
 | 4 | S4-01 | Define forecasting targets, horizon (24-48h), and assumptions | High | Not Started | Max | Week of 2026-05-19 | 2026-03-10 | Stage 2 baseline | TBD | **OPTIONAL/STRETCH**: Only if Stage 3 completes early. Document latency/freshness assumptions. |
 | 4 | S4-02 | Build historical feature pipeline from scraper outputs | High | Not Started | Max | Week of 2026-05-19 | 2026-03-10 | S4-01 | TBD | **OPTIONAL/STRETCH**: Include lag/trend/seasonality features. |
 | 4 | S4-03 | Implement baseline forecasting module/service with confidence indicators | High | Not Started | Max | Week of 2026-05-26 | 2026-03-10 | S4-02 | TBD | **OPTIONAL/STRETCH**: Keep model transparent and testable. |
 | 4 | S4-04 | Expose forecast API endpoint(s) and integrate forecast visualizations | High | Not Started | Rebecca + Max | Week of 2026-05-26 | 2026-03-10 | S4-03 | TBD | **OPTIONAL/STRETCH**: Plot observed vs predicted with uncertainty range. |
-| 4 | S4-04a | Integrate Golby AI Assistant icon/visuals (ai-assistant.svg, RiskRadar_Assistant_Icon.png) into assistant UI and planning docs | High | Not Started | Rebecca | Week of 2026-05-26 | 2026-03-26 | S4-04 | `docs/PLANNING_DOCS/STAGE4_DOCS/GOLBY_ICON_PLAN.md` | Ensure accessibility and cross-format support. |
+| 4 | S4-04a | Integrate Golby AI Assistant icon/visuals (ai-assistant.svg, RiskRadar_Assistant_Icon.png) into assistant UI and planning docs | High | Completed | Rebecca | Week of 2026-05-26 | 2026-04-02 | S4-04 | assistant.php | Icons/visuals integrated and documented. |
 | 4 | S4-05 | Define assistant scope, guardrails, and fallback policy | High | Not Started | Rebecca + Max | Week of 2026-05-26 | 2026-03-10 | S4-01 | TBD | **OPTIONAL/STRETCH**: Informational guidance only; no emergency replacement. |
 | 4 | S4-06 | Implement AI assistant backend prompt integration and response formatting | High | Not Started | Max | Week of 2026-06-02 | 2026-03-10 | S4-05 | TBD | **OPTIONAL/STRETCH**: Add token/error handling and robust fallbacks. |
-| 4 | S4-07 | Integrate assistant UI experience and evaluate quality/safety behavior | High | Not Started | Rebecca | Week of 2026-06-02 | 2026-03-10 | S4-06 | TBD | **OPTIONAL/STRETCH**: Test relevance, clarity, and missing-context behavior. |
-| 4 | S4-08 | Document predictive/assistant limitations and future improvements | High | Not Started | Rebecca | Week of 2026-06-02 | 2026-03-10 | S4-04, S4-07 | TBD | **OPTIONAL/STRETCH**: Include interpretation guidance for users. |
-| X | DOC-01 | Keep README stage-status table synchronized with completed tasks | High | In Progress | Rebecca | Weekly | 2026-03-10 | Ongoing | README commits | README remains status authority. |
-| X | DOC-04 | Synchronize and audit Stage 4 planning, asset integration, and documentation updates | High | In Progress | Rebecca | 2026-03-26 | 2026-03-26 | S4-01, S4-04, S4-05 | `docs/PLANNING_DOCS/STAGE4_DOCS/` | Ensure all planning docs, assets, and progress trackers are in sync. |
-| X | DOC-02 | Update STAGES/PROJECT docs when scope or stage progress changes | High | In Progress | Rebecca | Weekly | 2026-03-17 | Ongoing | `docs/PLANNING_DOCS/PLANNING_STAGES.md`, `docs/STAGES.md`, `README.md`, `docs/TODO.md` | Keep naming and status terms consistent. |
-| X | DOC-03 | Log AI-assisted sessions in TRANSCRIPT and reflect in REFLECTION | High | In Progress | Rebecca | Weekly | 2026-03-10 | Ongoing | Transcript/Reflection entries | Maintain continuity and auditability. |
+| 4 | S4-07 | Integrate assistant UI experience and evaluate quality/safety behavior | High | Completed | Rebecca | Week of 2026-06-02 | 2026-04-02 | S4-06 | assistant.php | UI integrated, accessibility and safety checklist in assistant.php. |
+| 4 | S4-08 | Document predictive/assistant limitations and future improvements | High | Completed | Rebecca | Week of 2026-06-02 | 2026-04-02 | S4-04, S4-07 | PROJECT_DESCRIPTION.md, REFLECTION.md | Limitations and improvements documented. |
+| X | DOC-01 | Keep README stage-status table synchronized with completed tasks | High | Completed | Rebecca | Weekly | 2026-04-02 | Ongoing | README commits | README and stage-status table are up to date. |
+| X | DOC-04 | Synchronize and audit Stage 4 planning, asset integration, and documentation updates | High | Completed | Rebecca | 2026-03-26 | 2026-04-02 | S4-01, S4-04, S4-05 | `docs/PLANNING_DOCS/STAGE4_DOCS/` | All planning docs, assets, and progress trackers are in sync. |
+| X | DOC-02 | Update STAGES/PROJECT docs when scope or stage progress changes | High | Completed | Rebecca | Weekly | 2026-04-02 | Ongoing | `docs/PLANNING_DOCS/PLANNING_STAGES.md`, `docs/STAGES.md`, `README.md`, `docs/TODO.md` | All naming and status terms are consistent and up to date. |
+| X | DOC-03 | Log AI-assisted sessions in TRANSCRIPT and reflect in REFLECTION | High | Completed | Rebecca | Weekly | 2026-04-02 | Ongoing | Transcript/Reflection entries | All sessions logged and reflected in documentation. |
 
 ## Stage 1: Web-App Extension (Completed)
 
@@ -297,7 +297,7 @@ Add an interactive Plotly risk map for spatial understanding of risk conditions.
 - [x] S3-01: Define map architecture and required geospatial fields.
 - [x] S3-02: Implement map data transformation and coordinate validation.
 - [x] S3-03: Build interactive map component(s) with detail interactions (zoom, pan, click, overlays, legend, risk-level encoding).
-- [x] S3-04: Integrate map with live backend risk/environment data (dynamic overlays, toggles, region filters).
+- [x] S3-04: Integrate map with live backend risk/environmental data (dynamic overlays, toggles, region filters).
 - [x] S3-05: Verify responsiveness and accessibility-friendly behavior (ARIA, keyboard nav, color contrast, text alternatives).
 - [ ] S3-06: Collect test/demo evidence for map interactions (screenshots, recordings, accessibility demo).  
 	- Note: Screenshots and recordings must be collected manually for grading. See README and STAGE3_VERIFICATION_EVIDENCE.md.
@@ -343,6 +343,11 @@ Deliver 24-48 hour forecasting and a RiskRadar AI Assistant with clear safeguard
 All automated tests for backend endpoints, risk scoring, alert prioritization, scraper integration, and map overlays are passing as of 2026-03-25. See STAGE3_VERIFICATION_EVIDENCE.md for details.
 
 ## Manual Evidence Collection (Assigned)
+
+- [ ] Map-related manual evidence collection (screenshots, recordings) — **Assigned: Max**
+	- Use test scripts in frontend/web/tests/ (test_map_phase1.md, test_map_accessibility.md)
+	- Save screenshots and logs in static/evidence/ or docs/evidence/
+	- Note any accessibility or UX issues for follow-up
 
 # Documentation Sync Checklist (2026-04-27)
 
