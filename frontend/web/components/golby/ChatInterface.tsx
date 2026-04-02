@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { fetchUserGuide, searchDocForAnswer } from './docSearch';
+import { fetchCurrentAlerts, fetchRiskOverlay, fetchForecast } from './apiClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GolbyIcon } from './GolbyIcon';
 import { ChatBubble } from './ChatBubble';
@@ -16,6 +17,7 @@ interface Message {
 interface ChatInterfaceProps {
 	suggestions?: string[];
 	onClose?: () => void;
+	pageContext?: string;
 }
 
 const defaultSuggestions = [
@@ -34,7 +36,7 @@ const golbyResponses: Record<string, string> = {
 	"default": "Great question! I can help you with that. RiskRadar provides comprehensive environmental risk data to help you make informed travel decisions. What specific information are you looking for?"
 };
 
-export function ChatInterface({ suggestions = defaultSuggestions, onClose }: ChatInterfaceProps) {
+export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageContext = 'unknown' }: ChatInterfaceProps) {
 	const [messages, setMessages] = useState<Message[]>([
 		{
 			id: '1',
@@ -61,16 +63,75 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose }: Cha
 	}, [messages, isTyping]);
 
 
-	// Async: Try to answer from docs, else fallback to static
+
+
+	// Async: Try to answer from docs, then with page context, then with live data, else fallback to static
 	const getGolbyResponse = async (userMessage: string): Promise<string> => {
 		const lowerMessage = userMessage.toLowerCase();
-		// Try documentation if loaded and not a joke/greeting
+		// 1. Try documentation if loaded and not a joke/greeting
 		if (userGuide && !lowerMessage.includes('joke') && !lowerMessage.includes('hello') && !lowerMessage.includes('hi')) {
 			const docAnswer = searchDocForAnswer(userGuide, userMessage);
 			if (!docAnswer.startsWith("Sorry")) {
 				return docAnswer;
 			}
 		}
+		// 2. Page-aware answers
+		if (pageContext === 'map' && lowerMessage.includes('risk')) {
+			return "You're on the map view! Click any location to see detailed risk scores and environmental data for that area.";
+		}
+		if (pageContext === 'alerts' && lowerMessage.includes('alert')) {
+			return "You're viewing alerts. Here you can see all current environmental alerts for your selected region. Want help setting up custom alerts?";
+		}
+		if (pageContext === 'dashboard') {
+			return "This is your dashboard, where you can get a quick overview of your travel safety, recent alerts, and personalized recommendations.";
+		}
+		if (pageContext === 'profile') {
+			return "You're on your profile page. Here you can update your information, preferences, and notification settings.";
+		}
+		if (pageContext === 'settings') {
+			return "You're in settings. Adjust your preferences, manage alerts, and customize your RiskRadar experience here.";
+		}
+		if (pageContext === 'forecast' && lowerMessage.includes('forecast')) {
+			return "You're on the forecast page. Enter a location or use your current location to get the latest environmental forecast.";
+		}
+		// 3. Live data answers
+		try {
+			if (lowerMessage.includes('current alert') || lowerMessage.includes('latest alert')) {
+				const alerts = await fetchCurrentAlerts();
+				if (alerts && alerts.length > 0) {
+					return `Here are the latest alerts:\n` + alerts.map((a: any) => `• ${a.title || a.alert_type || 'Alert'} (${a.severity || 'unknown'})`).join('\n');
+				} else {
+					return 'There are no current alerts.';
+				}
+			}
+			if (lowerMessage.includes('risk') && lowerMessage.includes('map')) {
+				const risk = await fetchRiskOverlay();
+				if (risk && risk.risk_zones && risk.risk_zones.length > 0) {
+					const high = risk.risk_zones.filter((z: any) => z.risk_level === 'high').length;
+					const mod = risk.risk_zones.filter((z: any) => z.risk_level === 'moderate').length;
+					const low = risk.risk_zones.filter((z: any) => z.risk_level === 'low').length;
+					return `Current map risk overlay:\nHigh risk: ${high}, Moderate: ${mod}, Low: ${low}`;
+				} else {
+					return 'No risk data available for the map.';
+				}
+			}
+			if (lowerMessage.includes('forecast')) {
+				const match = userMessage.match(/forecast for ([\w\s,]+)/i);
+				const location = match ? match[1].trim() : '';
+				const forecast = await fetchForecast(location);
+				if (forecast && forecast.risk_zones && forecast.risk_zones.length > 0) {
+					const high = forecast.risk_zones.filter((z: any) => z.risk_level === 'high').length;
+					const mod = forecast.risk_zones.filter((z: any) => z.risk_level === 'moderate').length;
+					const low = forecast.risk_zones.filter((z: any) => z.risk_level === 'low').length;
+					return `Forecast for ${location || 'your area'}:\nHigh risk: ${high}, Moderate: ${mod}, Low: ${low}`;
+				} else {
+					return `No forecast data available${location ? ' for ' + location : ''}.`;
+				}
+			}
+		} catch (e) {
+			return 'Sorry, I had trouble fetching live data.';
+		}
+		// 4. Fallback to static
 		if (lowerMessage.includes('joke')) {
 			return golbyResponses['joke'];
 		}
