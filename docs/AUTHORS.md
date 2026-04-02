@@ -103,7 +103,7 @@
 ---
 
 
-## Contributions and Roles (as of Mar 30, 2026)
+## Archived Contributions Snapshot (as of Mar 30, 2026)
 
 - **Qui Huynh**: Project lead, backend architecture, database design, API development, code review, documentation. Led backend API endpoint design, database models, and integration with MariaDB/SQLite. Supported API testing, troubleshooting, and documentation.
 - **Noah Benoit**: Security lead, authentication, compliance, and risk mitigation. Led User Security Plan, implemented authentication (JWT, bcrypt), user management, and security audits. Oversaw compliance and contributed to documentation.
