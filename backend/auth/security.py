@@ -36,9 +36,20 @@ import base64
 # ---------------------------------------------------------------------------
 # AES Email Encryption/Decryption & HMAC for lookup
 # ---------------------------------------------------------------------------
-_EMAIL_AES_KEY = settings.JWT_SECRET_KEY[:32].encode("utf-8")  # Use a 32-byte key (for demo; use a dedicated key in prod)
-_EMAIL_AES_IV = b"RiskRadarEmailIV!"  # 16 bytes (for demo; use random IV in prod)
+def _derive_email_aes_key() -> bytes:
+    """
+    Derive a fixed 32-byte AES key for email encryption from JWT_SECRET_KEY.
 
+    This avoids invalid AES key lengths when JWT_SECRET_KEY is shorter than
+    32 characters by always producing a 32-byte SHA-256 digest.
+    """
+    secret_bytes = settings.JWT_SECRET_KEY.encode("utf-8")
+    digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
+    digest.update(secret_bytes)
+    return digest.finalize()  # 32 bytes
+
+_EMAIL_AES_KEY = _derive_email_aes_key()  # Always a valid 32-byte AES key
+_EMAIL_AES_IV = b"RiskRadarEmailIV"  # 16 bytes (for demo; use random IV in prod)
 def encrypt_email(email: str) -> str:
     """Encrypt an email address using AES-CBC."""
     backend = default_backend()
