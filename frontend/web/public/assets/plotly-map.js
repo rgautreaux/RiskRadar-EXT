@@ -173,9 +173,13 @@ async function renderRiskMap(alertsUrl, riskUrl, containerId) {
         setTimeout(() => { toast.style.opacity = 0; setTimeout(()=>{toast.style.display='none';}, 400); }, 1200);
     }
 
-    // Show marker details (simple alert for now, replace with modal for full accessibility)
+    // Show marker details in accessible modal
     function showMarkerDetails(marker) {
-        alert(`Alert: ${marker.title || marker.alert_type || ''}\n${marker.description || ''}`);
+        if (window.openMarkerModal) {
+            window.openMarkerModal(marker.title || marker.alert_type || 'Alert', marker.description || '');
+        } else {
+            alert(`Alert: ${marker.title || marker.alert_type || ''}\n${marker.description || ''}`);
+        }
     }
 }
 

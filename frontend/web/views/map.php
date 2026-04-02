@@ -180,6 +180,53 @@ rr_render_layout_start('Risk Map', 'map');
             <button id="help-btn" aria-haspopup="dialog" aria-controls="help-modal" aria-label="How to use this map" style="background:var(--accent-coral,#ef6f51);color:#fff;border:none;border-radius:6px;padding:7px 16px;font-size:1em;cursor:pointer;box-shadow:0 2px 8px rgba(18,34,49,0.08);font-weight:500;">Help</button>
         </div>
     <script>
+    // Accessible marker details modal
+    function openMarkerModal(title, description) {
+        let modal = document.getElementById('marker-modal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'marker-modal';
+            modal.setAttribute('role', 'dialog');
+            modal.setAttribute('aria-modal', 'true');
+            modal.setAttribute('aria-labelledby', 'marker-modal-title');
+            modal.setAttribute('tabindex', '-1');
+            modal.style.display = 'flex';
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100vw';
+            modal.style.height = '100vh';
+            modal.style.background = 'rgba(18,34,49,0.32)';
+            modal.style.zIndex = '300';
+            modal.style.alignItems = 'center';
+            modal.style.justifyContent = 'center';
+            modal.innerHTML = `
+                <div style="background:#fffaf2;color:#122231;max-width:420px;width:92vw;padding:28px 22px 18px 22px;border-radius:14px;box-shadow:0 8px 40px rgba(18,34,49,0.18);position:relative;outline:none;">
+                    <button id="marker-modal-close" aria-label="Close alert details" style="position:absolute;top:10px;right:14px;background:none;border:none;font-size:1.3em;color:#b65c00;cursor:pointer;">×</button>
+                    <h2 id="marker-modal-title" style="margin-top:0;font-size:1.15em;">${title}</h2>
+                    <div style="margin-top:10px;">${description}</div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        } else {
+            modal.querySelector('#marker-modal-title').textContent = title;
+            modal.querySelector('div[style*="margin-top:10px;"]').textContent = description;
+            modal.style.display = 'flex';
+        }
+        // Focus trap
+        const closeBtn = modal.querySelector('#marker-modal-close');
+        closeBtn.focus();
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+        };
+        modal.onkeydown = function(e) {
+            if (e.key === 'Escape') {
+                modal.style.display = 'none';
+                closeBtn.blur();
+            }
+        };
+    }
+
     // Dark mode toggle logic
     document.addEventListener('DOMContentLoaded', function() {
         var darkToggle = document.getElementById('darkmode-toggle');
