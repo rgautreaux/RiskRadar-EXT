@@ -62,7 +62,7 @@ DATABASE_URL=mysql+pymysql://root@127.0.0.1:3306/riskradar_db
 
 Successful sources: `nws` (0 new/0 fetched), `epa` (25/25), `usgs_earthquakes` (3/3).
 
-LLM summary step returned DeepSeek `402 Insufficient Balance` — non-blocking for scraper/database verification.
+LLM summary step returned DeepSeek `402 Insufficient Balance` — this was non-blocking for scraper/database verification.
 
 #### 5) Automated Integration Tests Added
 
@@ -82,7 +82,7 @@ python -m pytest tests/test_scraper_db_integration.py -v --tb=short
 
 #### 6) Dependency Update
 
-Added MySQL driver to `backend/requirements.txt`:
+Added the MySQL driver to `backend/requirements.txt`:
 ```
 pymysql>=1.1.0
 ```

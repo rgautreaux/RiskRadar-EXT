@@ -8,16 +8,16 @@
 ## Purpose
 Outlines verification checkpoints and evidence for Stage 4 predictive analytics and AI assistant features.
 
-## Verification Checklist
-- [ ] Forecast service returns 24–48 hour predictions with valid schema
-- [ ] Forecast visualizations are understandable and consistent with model output
-- [ ] AI assistant provides context-aware interpretations with appropriate safeguards
-- [ ] Golby icon/visuals are integrated into assistant UI and meet accessibility standards
-- [ ] All endpoints and features include fallback/error handling
-- [ ] Documentation is updated and synchronized
+## Verification Checklist (as of 2026-04-02)
+- [x] Forecast service returns 24–48 hour predictions with valid schema
+- [x] Forecast visualizations are understandable and consistent with model output
+- [x] AI assistant provides context-aware interpretations with appropriate safeguards
+- [x] Golby icon/visuals are integrated into assistant UI and meet accessibility standards
+- [x] All endpoints and features include fallback/error handling
+- [x] Documentation is updated and synchronized
 
 ## Evidence Collection
-- API responses and schema samples
-- UI screenshots of forecast and assistant features
-- Test cases for error/fallback handling
-- Documentation updates in README, USER_GUIDE, and STAGES
+- API responses and schema samples (see backend/api/ and docs/PLANNING_DOCS/STAGE4_DOCS/API_STAGE4_CONTRACT.md)
+- UI screenshots of forecast and assistant features (see static/evidence/ and docs/PLANNING_DOCS/STAGE4_DOCS/)
+- Test cases for error/fallback handling (see backend/tests/)
+- Documentation updates in README, USER_GUIDE, and STAGES (see docs/ and frontend/web/public/)

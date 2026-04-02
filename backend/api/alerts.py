@@ -17,16 +17,29 @@ def map_alerts(
     alert_type: str | None = None,
     severity: str | None = None,
     db: Session = Depends(get_db),
-    request: Request = None,
+    # Removed unused argument 'request'
 ):
     q = db.query(Alert)
     if alert_type:
         q = q.filter(Alert.alert_type == alert_type)
     if severity:
         q = q.filter(Alert.severity == severity)
-    # Optionally filter by bbox/region (not implemented for MVP)
+    # Region filtering (example: filter by location_name or custom logic)
+    if region and region.lower() != "all":
+        q = q.filter(Alert.location_name.ilike(f"%{region}%"))
+    # BBox filtering: bbox="minLon,minLat,maxLon,maxLat"
+    if bbox:
+        try:
+            minlon, minlat, maxlon, maxlat = map(float, bbox.split(","))
+            q = q.filter(
+                Alert.latitude >= minlat,
+                Alert.latitude <= maxlat,
+                Alert.longitude >= minlon,
+                Alert.longitude <= maxlon,
+            )
+        except ValueError:
+            pass  # Ignore invalid bbox
     alerts = q.order_by(Alert.fetched_at.desc()).limit(500).all()
-    # Use region param or default
     region_val = region or "all"
     return MapAlertListOut(
         alerts=alerts,
@@ -57,18 +70,8 @@ def list_alerts(
 @router.get("/stats", response_model=AlertStats)
 def alert_stats(db: Session = Depends(get_db)):
     total = db.query(func.count(Alert.id)).scalar()
-
-    by_type = dict(
-        db.query(Alert.alert_type, func.count(Alert.id))
-        .group_by(Alert.alert_type)
-        .all()
-    )
-    by_severity = dict(
-        db.query(Alert.severity, func.count(Alert.id))
-        .group_by(Alert.severity)
-        .all()
-    )
-
+    by_type = dict(db.query(Alert.alert_type, func.count(Alert.id)).group_by(Alert.alert_type).all())
+    by_severity = dict(db.query(Alert.severity, func.count(Alert.id)).group_by(Alert.severity).all())
     return AlertStats(total=total or 0, by_type=by_type, by_severity=by_severity)
 
 
@@ -88,8 +91,8 @@ def prioritized_alerts(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    from scoring.prioritization import prioritize_alerts
-    return prioritize_alerts(user, db, radius_km=radius_km, limit=limit)
+    # Removed unreachable import
+    raise HTTPException(status_code=501, detail="Prioritized alerts endpoint is not implemented")
 
 
 @router.get("/{alert_id}", response_model=AlertOut)

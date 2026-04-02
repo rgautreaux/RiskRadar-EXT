@@ -6,6 +6,7 @@ from db.database import get_db
 from db.models import Alert, User
 from schemas.risk_score import RiskScoreOut, MapRiskOverlayOut, MapRiskZone
 from scoring import compute_risk_score
+from scrapers.registry import load_all_scrapers
 
 router = APIRouter(prefix="/risk", tags=["Risk Scoring"])
 
@@ -14,23 +15,52 @@ router = APIRouter(prefix="/risk", tags=["Risk Scoring"])
 def map_risk_overlay(
     region: str | None = None,
     bbox: str | None = None,
-    risk_level: str | None = None,
+    # Removed unused argument 'risk_level'
     db: Session = Depends(get_db),
 ):
-    # For MVP, use alerts as risk proxies; real impl would use grid/polygon risk
-    alerts = db.query(Alert).filter(Alert.latitude != None, Alert.longitude != None).all()
-    risk_zones = []
-    for alert in alerts:
-        centroid = {"lat": alert.latitude, "lon": alert.longitude}
-        # Dummy risk_level: map severity to risk
-        sev = (alert.severity or "").lower()
-        if sev in ("high", "critical"): rl = "high"
-        elif sev == "moderate": rl = "moderate"
-        else: rl = "low"
-        risk_zones.append(MapRiskZone(centroid=centroid, risk_level=rl, risk_score=None))
+    # Overlay integration: fetch all overlays from registry
+    overlays = []
+    for entry in load_all_scrapers():
+        scraper = entry["scraper"]
+        # Only process overlays (not all scrapers)
+        if getattr(scraper, "alert_type", None) in {"air_quality", "wildfire", "weather", "pollution"}:
+            # Fetch latest alerts for this overlay type
+            q = db.query(Alert).filter(Alert.alert_type == scraper.alert_type)
+            if region and region.lower() != "all":
+                q = q.filter(Alert.location_name.ilike(f"%{region}%"))
+            if bbox:
+                try:
+                    minlon, minlat, maxlon, maxlat = map(float, bbox.split(","))
+                    q = q.filter(
+                        Alert.latitude >= minlat,
+                        Alert.latitude <= maxlat,
+                        Alert.longitude >= minlon,
+                        Alert.longitude <= maxlon,
+                    )
+                except ValueError:
+                    pass
+            alerts = q.all()
+            for alert in alerts:
+                lat = float(alert.latitude) if alert.latitude is not None else None
+                lon = float(alert.longitude) if alert.longitude is not None else None
+                if lat is None or lon is None:
+                    continue
+                centroid = {"lat": lat, "lon": lon}
+                sev = (alert.severity or "").lower()
+                if sev in ("high", "critical"): rl = "high"
+                elif sev == "moderate": rl = "moderate"
+                else: rl = "low"
+                poly = [
+                    {"lat": lat + 0.05, "lon": lon - 0.05},
+                    {"lat": lat + 0.05, "lon": lon + 0.05},
+                    {"lat": lat - 0.05, "lon": lon + 0.05},
+                    {"lat": lat - 0.05, "lon": lon - 0.05},
+                    {"lat": lat + 0.05, "lon": lon - 0.05},
+                ]
+                overlays.append(MapRiskZone(centroid=centroid, risk_level=rl, risk_score=None, polygon=poly))
     region_val = region or "all"
     return MapRiskOverlayOut(
-        risk_zones=risk_zones,
+        risk_zones=overlays,
         region=region_val,
         generated_at=datetime.utcnow().isoformat() + "Z",
     )
@@ -41,7 +71,7 @@ def map_risk_overlay(
 def personalized_map_risk_overlay(
     user_id: int,
     region: str | None = None,
-    bbox: str | None = None,
+    # Removed unused argument 'bbox'
     db: Session = Depends(get_db),
 ):
     """Return a map overlay with user-personalized risk scores for each alert location."""
@@ -52,16 +82,26 @@ def personalized_map_risk_overlay(
     alerts = db.query(Alert).filter(Alert.latitude != None, Alert.longitude != None).all()
     risk_zones = []
     for alert in alerts:
-        centroid = {"lat": alert.latitude, "lon": alert.longitude}
+        lat = float(alert.latitude) if alert.latitude is not None else None
+        lon = float(alert.longitude) if alert.longitude is not None else None
+        centroid = {"lat": lat, "lon": lon} if lat is not None and lon is not None else None
         # Compute personalized risk score for this alert location
         # Temporarily override user location to alert location for scoring
         orig_lat, orig_lon = user.latitude, user.longitude
-        user.latitude, user.longitude = alert.latitude, alert.longitude
+        user.latitude, user.longitude = lat, lon
         risk_score_result = compute_risk_score(user, db)
         user.latitude, user.longitude = orig_lat, orig_lon
         risk_score = risk_score_result["overall_score"]
         risk_level = risk_score_result["risk_level"]
-        risk_zones.append(MapRiskZone(centroid=centroid, risk_level=risk_level, risk_score=risk_score))
+        # Example: add a simple square polygon around the centroid (0.1 deg offset)
+        poly = [
+            {"lat": lat + 0.05, "lon": lon - 0.05},
+            {"lat": lat + 0.05, "lon": lon + 0.05},
+            {"lat": lat - 0.05, "lon": lon + 0.05},
+            {"lat": lat - 0.05, "lon": lon - 0.05},
+            {"lat": lat + 0.05, "lon": lon - 0.05},
+        ] if lat is not None and lon is not None else None
+        risk_zones.append(MapRiskZone(centroid=centroid, risk_level=risk_level, risk_score=risk_score, polygon=poly))
     region_val = region or "all"
     return MapRiskOverlayOut(
         risk_zones=risk_zones,

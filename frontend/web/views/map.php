@@ -31,6 +31,57 @@
     outline: 2px solid #1976d2 !important;
     outline-offset: 2px;
 }
+/*
+Stage 3 Risk Map Architecture & Geospatial Field Definition
+
+Purpose: Define the technical architecture for the interactive risk map (Plotly-based) and specify required geospatial fields for backend/frontend integration.
+
+1. Map Architecture Overview
+    - Frontend: Uses Plotly.js for rendering an interactive map (pan, zoom, click, overlays).
+    - Backend: Provides two main endpoints:
+            /api/v1/alerts/map (returns alert markers with geospatial data)
+            /api/v1/risk/map (returns risk zone polygons/overlays)
+    - Data Flow:
+            1. User loads map page; JS fetches data from both endpoints.
+            2. Alerts are plotted as markers (lat/lon, severity, type, etc.).
+            3. Risk zones are plotted as polygons (GeoJSON or array of coordinates).
+            4. Overlay toggles control visibility of each layer.
+            5. Region filter and user ID personalize overlays.
+
+2. Required Geospatial Fields
+    Alerts (per marker):
+        - id: unique alert identifier
+        - latitude: float (required)
+        - longitude: float (required)
+        - type: string (e.g., AQI, wildfire, weather)
+        - severity: string or int (e.g., Low/Medium/High or 1-5)
+        - source: string
+        - timestamp: ISO8601 string
+        - title/description: string
+    Risk Zones (per polygon):
+        - id: unique risk zone identifier
+        - region: string (e.g., LA, TX, MS)
+        - polygon: array of [lat, lon] pairs or GeoJSON Polygon
+        - risk_level: string or int
+        - label: string
+        - color: string (for overlay)
+
+3. Plotly Layer Structure
+    - Base map: OpenStreetMap or similar
+    - Alert markers: Plotly scattermapbox layer
+    - Risk zones: Plotly choroplethmapbox or filled polygon layer
+    - Other overlays: AQI, wildfire, etc. as additional layers
+
+4. Accessibility & Responsiveness
+    - All controls must be keyboard and screen reader accessible
+    - Map must be responsive (mobile/desktop)
+
+5. Next Steps
+    - Implement data transformation pipeline (S3-02)
+    - Integrate Plotly map in frontend (S3-03)
+    - Connect overlays to backend endpoints
+    - Add tests and accessibility checks
+*/
 </style>
 <script>
 // Toast/snackbar logic
@@ -82,30 +133,30 @@ rr_render_layout_start('Risk Map', 'map');
 
 <section class="panel">
     <h2 id="risk-map-heading">Interactive Map</h2>
-    <div style="margin-bottom:12px;display:flex;gap:24px;align-items:center;">
         <div>
             <label for="region-filter">Region Filter: </label>
-            <select id="region-filter" style="min-width:120px;" aria-label="Region Filter" aria-describedby="region-filter-desc">
+            <select id="region-filter" style="min-width:120px;" aria-label="Region Filter" aria-describedby="region-filter-desc" accesskey="r">
                 <option value="">All Regions</option>
                 <option value="LA">Louisiana</option>
                 <option value="TX">Texas</option>
                 <option value="MS">Mississippi</option>
             </select>
-            <span id="region-filter-desc" class="sr-only">Select a region to filter map overlays. Use Tab to move to overlays and toggles.</span>
+            <span id="region-filter-desc" class="sr-only">Select a region to filter map overlays. Use Tab to move to overlays and toggles. Shortcut: Alt+R.</span>
         </div>
         <div style="margin-left:18px;">
             <label for="user-id-input">User ID for Personalized Map: </label>
-            <input type="number" id="user-id-input" min="1" value="1" style="width:70px;" aria-label="User ID for Personalized Map" aria-describedby="user-id-desc" />
-            <span id="user-id-desc" class="sr-only">Enter your numeric user ID to enable personalized risk overlays. This is required for personalized map mode.</span>
+            <input type="number" id="user-id-input" min="1" value="1" style="width:70px;" aria-label="User ID for Personalized Map" aria-describedby="user-id-desc" accesskey="u" />
+            <span id="user-id-desc" class="sr-only">Enter your numeric user ID to enable personalized risk overlays. This is required for personalized map mode. Shortcut: Alt+U.</span>
         </div>
-        <div role="group" aria-label="Overlay Toggles">
-            <label><input type="checkbox" id="toggle-alerts" checked aria-checked="true" aria-label="Show Alerts"> Show Alerts</label>
-            <label style="margin-left:12px;"><input type="checkbox" id="toggle-risk" checked aria-checked="true" aria-label="Show Risk Zones"> Show Risk Zones</label>
-            <label style="margin-left:12px;"><input type="checkbox" id="toggle-aqi" aria-label="AQI Overlay"> AQI Overlay</label>
-            <label style="margin-left:12px;"><input type="checkbox" id="toggle-wildfire" aria-label="Wildfire Overlay"> Wildfire Overlay</label>
-            <label style="margin-left:12px;"><input type="checkbox" id="toggle-earthquake" aria-label="Earthquake Overlay"> Earthquake Overlay</label>
-            <label style="margin-left:12px;"><input type="checkbox" id="toggle-weather" aria-label="Weather Overlay"> Weather Overlay</label>
-            <label style="margin-left:12px;"><input type="checkbox" id="toggle-pollution" aria-label="Pollution Overlay"> Pollution Overlay</label>
+        <div role="group" aria-label="Overlay Toggles" aria-describedby="overlay-toggles-desc">
+            <span id="overlay-toggles-desc" class="sr-only">Toggle overlays with Space or Enter. Keyboard shortcuts: Alt+1 Alerts, Alt+2 Risk Zones, Alt+3 AQI, Alt+4 Wildfire, Alt+5 Earthquake, Alt+6 Weather, Alt+7 Pollution.</span>
+            <label><input type="checkbox" id="toggle-alerts" checked aria-checked="true" aria-label="Show Alerts" accesskey="1"> Show Alerts</label>
+            <label style="margin-left:12px;"><input type="checkbox" id="toggle-risk" checked aria-checked="true" aria-label="Show Risk Zones" accesskey="2"> Show Risk Zones</label>
+            <label style="margin-left:12px;"><input type="checkbox" id="toggle-aqi" aria-label="AQI Overlay" accesskey="3"> AQI Overlay</label>
+            <label style="margin-left:12px;"><input type="checkbox" id="toggle-wildfire" aria-label="Wildfire Overlay" accesskey="4"> Wildfire Overlay</label>
+            <label style="margin-left:12px;"><input type="checkbox" id="toggle-earthquake" aria-label="Earthquake Overlay" accesskey="5"> Earthquake Overlay</label>
+            <label style="margin-left:12px;"><input type="checkbox" id="toggle-weather" aria-label="Weather Overlay" accesskey="6"> Weather Overlay</label>
+            <label style="margin-left:12px;"><input type="checkbox" id="toggle-pollution" aria-label="Pollution Overlay" accesskey="7"> Pollution Overlay</label>
         </div>
         <div style="margin-left:24px;display:flex;align-items:center;gap:16px;">
             <label><input type="checkbox" id="toggle-personalized" aria-label="Personalized Risk Map"> Personalized Risk Map</label>
@@ -113,6 +164,53 @@ rr_render_layout_start('Risk Map', 'map');
             <button id="help-btn" aria-haspopup="dialog" aria-controls="help-modal" aria-label="How to use this map" style="background:var(--accent-coral,#ef6f51);color:#fff;border:none;border-radius:6px;padding:7px 16px;font-size:1em;cursor:pointer;box-shadow:0 2px 8px rgba(18,34,49,0.08);font-weight:500;">Help</button>
         </div>
     <script>
+    // Accessible marker details modal
+    function openMarkerModal(title, description) {
+        let modal = document.getElementById('marker-modal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'marker-modal';
+            modal.setAttribute('role', 'dialog');
+            modal.setAttribute('aria-modal', 'true');
+            modal.setAttribute('aria-labelledby', 'marker-modal-title');
+            modal.setAttribute('tabindex', '-1');
+            modal.style.display = 'flex';
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100vw';
+            modal.style.height = '100vh';
+            modal.style.background = 'rgba(18,34,49,0.32)';
+            modal.style.zIndex = '300';
+            modal.style.alignItems = 'center';
+            modal.style.justifyContent = 'center';
+            modal.innerHTML = `
+                <div style="background:#fffaf2;color:#122231;max-width:420px;width:92vw;padding:28px 22px 18px 22px;border-radius:14px;box-shadow:0 8px 40px rgba(18,34,49,0.18);position:relative;outline:none;">
+                    <button id="marker-modal-close" aria-label="Close alert details" style="position:absolute;top:10px;right:14px;background:none;border:none;font-size:1.3em;color:#b65c00;cursor:pointer;">×</button>
+                    <h2 id="marker-modal-title" style="margin-top:0;font-size:1.15em;">${title}</h2>
+                    <div style="margin-top:10px;">${description}</div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        } else {
+            modal.querySelector('#marker-modal-title').textContent = title;
+            modal.querySelector('div[style*="margin-top:10px;"]').textContent = description;
+            modal.style.display = 'flex';
+        }
+        // Focus trap
+        const closeBtn = modal.querySelector('#marker-modal-close');
+        closeBtn.focus();
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+        };
+        modal.onkeydown = function(e) {
+            if (e.key === 'Escape') {
+                modal.style.display = 'none';
+                closeBtn.blur();
+            }
+        };
+    }
+
     // Dark mode toggle logic
     document.addEventListener('DOMContentLoaded', function() {
         var darkToggle = document.getElementById('darkmode-toggle');

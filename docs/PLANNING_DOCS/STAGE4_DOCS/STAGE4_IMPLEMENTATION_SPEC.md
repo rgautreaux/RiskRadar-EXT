@@ -24,6 +24,14 @@ Details the implementation plan, step-by-step requirements, and policy lock for 
 	- Evaluate quality/safety of assistant responses and visuals
 9. Document limitations and future improvements
 
+## Limitations and Future Improvements (AI Assistant & Predictive Features)
+
+- The AI Assistant currently provides general guidance and Q&A, but does not support emergency or real-time response.
+- Forecasts are based on available data and may not reflect sudden environmental changes or rare events.
+- The assistant does not replace professional or government alerts; users should always consult official sources for critical decisions.
+- Accessibility and language support are in progress; future versions will improve screen reader and multi-language support.
+- Planned improvements: context-aware follow-up, richer explanations, user feedback loop, and integration with more data sources.
+
 ## Policy Lock
 - All features must include fallback/error handling and clear user guidance
 - Prioritize transparency and testability in models and assistant responses

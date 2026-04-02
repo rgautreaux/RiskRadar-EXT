@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { fetchUserGuide, searchDocForAnswer } from './docSearch';
+import { fetchCurrentAlerts, fetchRiskOverlay, fetchForecast } from './apiClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GolbyIcon } from './GolbyIcon';
 import { ChatBubble } from './ChatBubble';
@@ -15,6 +17,7 @@ interface Message {
 interface ChatInterfaceProps {
 	suggestions?: string[];
 	onClose?: () => void;
+	pageContext?: string;
 }
 
 const defaultSuggestions = [
@@ -24,16 +27,39 @@ const defaultSuggestions = [
 	"What are the risks in my area?"
 ];
 
+// Fun Easter Egg responses
+const golbyJokes = [
+	"Why did the weather map break up with the compass? Because it found someone more climate! 😄",
+	"What's a tornado's favorite game? Twister! 🌪️",
+	"Why did the cloud stay home from school? It was feeling under the weather! ☁️",
+	"What do you call dangerous precipitation? A rain of terror! ☔️",
+	"Why did the sun go to school? To get a little brighter! ☀️",
+	"How do hurricanes see? With one eye! 🌀",
+	"Why don’t mountains get cold in the winter? They wear snowcaps! 🏔️",
+	"What’s a snowman’s favorite snack? Ice Krispies! ⛄️",
+	"Why did the bicycle fall over on its trip? It was two-tired! 🚲",
+	"Why did the traveler bring a ladder to the bar? Because they heard the drinks were on the house! 🍹",
+	"Why did the airplane get sent to its room? For having a bad altitude! ✈️",
+	"What do you call a bear caught in the rain? A drizzly bear! 🐻",
+	"Why did the river never get lost? It always followed its current! 🏞️"
+];
+
+const golbyGreetings = [
+	"Hi there, superstar! 🌟 How can I help you today?",
+	"Hey there! Ready to explore some environmental insights? 🌍",
+	"Hello, traveler! Where are you headed today? 🧳",
+	"Greetings, explorer! Need a weather update or a fun fact? ☀️",
+	"Welcome back! Let’s make your journey safe and fun. 🚦",
+	"Hey! Golby here, your trusty travel buddy. How can I assist? 🐟",
+	"Hi! Want a forecast, a risk check, or just a good laugh? 😄"
+];
+
 const golbyResponses: Record<string, string> = {
-	"tell me a joke": "Why did the weather map break up with the compass? Because it found someone more climate! 😄",
-	"joke": "What's a tornado's favorite game? Twister! 🌪️",
-	"hello": "Hi there, superstar! 🌟 How can I help you today?",
-	"hi": "Hey there! Ready to explore some environmental insights? 🌍",
 	"help": "I'm here to help! You can ask me about environmental risks, how to use RiskRadar, weather forecasts, or even just chat. What would you like to know?",
 	"default": "Great question! I can help you with that. RiskRadar provides comprehensive environmental risk data to help you make informed travel decisions. What specific information are you looking for?"
 };
 
-export function ChatInterface({ suggestions = defaultSuggestions, onClose }: ChatInterfaceProps) {
+export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageContext = 'unknown' }: ChatInterfaceProps) {
 	const [messages, setMessages] = useState<Message[]>([
 		{
 			id: '1',
@@ -44,7 +70,12 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose }: Cha
 	]);
 	const [inputValue, setInputValue] = useState('');
 	const [isTyping, setIsTyping] = useState(false);
+	const [userGuide, setUserGuide] = useState<string | null>(null);
 	const messagesEndRef = useRef<HTMLDivElement>(null);
+	// Fetch USER_GUIDE.md on mount
+	useEffect(() => {
+		fetchUserGuide().then(setUserGuide).catch(() => setUserGuide(null));
+	}, []);
 
 	const scrollToBottom = () => {
 		messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -54,14 +85,84 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose }: Cha
 		scrollToBottom();
 	}, [messages, isTyping]);
 
-	const getGolbyResponse = (userMessage: string): string => {
+
+
+
+	// Async: Try to answer from docs, then with page context, then with live data, else fallback to static
+	const getGolbyResponse = async (userMessage: string): Promise<string> => {
 		const lowerMessage = userMessage.toLowerCase();
-		if (lowerMessage.includes('joke')) {
-			return golbyResponses['joke'];
+		// 1. Try documentation if loaded and not a joke/greeting
+		if (userGuide && !lowerMessage.includes('joke') && !lowerMessage.includes('hello') && !lowerMessage.includes('hi')) {
+			const docAnswer = searchDocForAnswer(userGuide, userMessage);
+			if (!docAnswer.startsWith("Sorry")) {
+				return docAnswer;
+			}
 		}
-		if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
-			return golbyResponses['hello'];
+		// 2. Page-aware answers
+		if (pageContext === 'map' && lowerMessage.includes('risk')) {
+			return "You're on the map view! Click any location to see detailed risk scores and environmental data for that area.";
 		}
+		if (pageContext === 'alerts' && lowerMessage.includes('alert')) {
+			return "You're viewing alerts. Here you can see all current environmental alerts for your selected region. Want help setting up custom alerts?";
+		}
+		if (pageContext === 'dashboard') {
+			return "This is your dashboard, where you can get a quick overview of your travel safety, recent alerts, and personalized recommendations.";
+		}
+		if (pageContext === 'profile') {
+			return "You're on your profile page. Here you can update your information, preferences, and notification settings.";
+		}
+		if (pageContext === 'settings') {
+			return "You're in settings. Adjust your preferences, manage alerts, and customize your RiskRadar experience here.";
+		}
+		if (pageContext === 'forecast' && lowerMessage.includes('forecast')) {
+			return "You're on the forecast page. Enter a location or use your current location to get the latest environmental forecast.";
+		}
+		// 3. Live data answers
+		try {
+			if (lowerMessage.includes('current alert') || lowerMessage.includes('latest alert')) {
+				const alerts = await fetchCurrentAlerts();
+				if (alerts && alerts.length > 0) {
+					return `Here are the latest alerts:\n` + alerts.map((a: any) => `• ${a.title || a.alert_type || 'Alert'} (${a.severity || 'unknown'})`).join('\n');
+				} else {
+					return 'There are no current alerts.';
+				}
+			}
+			if (lowerMessage.includes('risk') && lowerMessage.includes('map')) {
+				const risk = await fetchRiskOverlay();
+				if (risk && risk.risk_zones && risk.risk_zones.length > 0) {
+					const high = risk.risk_zones.filter((z: any) => z.risk_level === 'high').length;
+					const mod = risk.risk_zones.filter((z: any) => z.risk_level === 'moderate').length;
+					const low = risk.risk_zones.filter((z: any) => z.risk_level === 'low').length;
+					return `Current map risk overlay:\nHigh risk: ${high}, Moderate: ${mod}, Low: ${low}`;
+				} else {
+					return 'No risk data available for the map.';
+				}
+			}
+			if (lowerMessage.includes('forecast')) {
+				const match = userMessage.match(/forecast for ([\w\s,]+)/i);
+				const location = match ? match[1].trim() : '';
+				const forecast = await fetchForecast(location);
+				if (forecast && forecast.risk_zones && forecast.risk_zones.length > 0) {
+					const high = forecast.risk_zones.filter((z: any) => z.risk_level === 'high').length;
+					const mod = forecast.risk_zones.filter((z: any) => z.risk_level === 'moderate').length;
+					const low = forecast.risk_zones.filter((z: any) => z.risk_level === 'low').length;
+					return `Forecast for ${location || 'your area'}:\nHigh risk: ${high}, Moderate: ${mod}, Low: ${low}`;
+				} else {
+					return `No forecast data available${location ? ' for ' + location : ''}.`;
+				}
+			}
+		} catch (e) {
+			return 'Sorry, I had trouble fetching live data.';
+		}
+		// 4. Fallback to static
+			if (lowerMessage.includes('joke')) {
+				// Random joke
+				return golbyJokes[Math.floor(Math.random() * golbyJokes.length)];
+			}
+			if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
+				// Random greeting
+				return golbyGreetings[Math.floor(Math.random() * golbyGreetings.length)];
+			}
 		if (lowerMessage.includes('help')) {
 			return golbyResponses['help'];
 		}
@@ -77,7 +178,7 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose }: Cha
 		return golbyResponses['default'];
 	};
 
-	const handleSendMessage = (text: string) => {
+	const handleSendMessage = async (text: string) => {
 		if (!text.trim()) return;
 		// Add user message
 		const userMessage: Message = {
@@ -90,16 +191,15 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose }: Cha
 		setInputValue('');
 		// Simulate Golby typing
 		setIsTyping(true);
-		setTimeout(() => {
-			setIsTyping(false);
-			const golbyMessage: Message = {
-				id: (Date.now() + 1).toString(),
-				text: getGolbyResponse(text),
-				isGolby: true,
-				timestamp: new Date()
-			};
-			setMessages(prev => [...prev, golbyMessage]);
-		}, 1000 + Math.random() * 1000);
+		const response = await getGolbyResponse(text);
+		setIsTyping(false);
+		const golbyMessage: Message = {
+			id: (Date.now() + 1).toString(),
+			text: response,
+			isGolby: true,
+			timestamp: new Date()
+		};
+		setMessages(prev => [...prev, golbyMessage]);
 	};
 
 	const handleSuggestionClick = (suggestion: string) => {

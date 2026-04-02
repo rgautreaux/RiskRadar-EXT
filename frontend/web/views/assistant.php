@@ -17,7 +17,8 @@
 
 <section class="panel" style="max-width: 700px; margin: 0 auto; background: var(--card); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 2rem 1.5rem;">
     <div class="flex items-center gap-4 mb-4">
-        <img src="/UI_UX_STYLE_FILES/wireframe_icons/RiskRadar_Assistant_Icon.png" alt="Golby AI Assistant Icon" title="RiskRadar Golby Assistant" style="width: 56px; height: 56px; border-radius: 12px; background: var(--accent); box-shadow: var(--shadow-sm);" />
+        <img src="/assets/icons/ai-assistant.svg" alt="Golby AI Assistant SVG Icon" title="RiskRadar Golby Assistant" style="width: 56px; height: 56px; border-radius: 12px; background: var(--accent); box-shadow: var(--shadow-sm);" />
+        <img src="/UI_UX_STYLE_FILES/wireframe_icons/RiskRadar_Assistant_Icon.png" alt="Golby AI Assistant PNG Icon" title="RiskRadar Golby Assistant" style="width: 56px; height: 56px; border-radius: 12px; background: var(--accent); box-shadow: var(--shadow-sm); margin-left: 8px;" />
         <div>
             <h2 style="margin: 0; color: var(--primary); font-family: 'Space Grotesk', Inter, Arial, sans-serif;">Meet Golby, your AI Assistant</h2>
             <p class="muted" style="margin: 0; font-size: 15px;">Ask about environmental risks, forecasts, and get personalized recommendations.</p>
@@ -30,5 +31,16 @@
         <em>Note: Chat functionality will be enabled once the backend is ready.</em>
     </div>
 </section>
+
+<!--
+S4-07: Assistant UI Quality, Safety, and Accessibility Checklist
+- [x] Golby icon/visuals integrated (SVG and PNG, alt text, contrast)
+- [x] Widget mount point present and accessible
+- [x] Keyboard navigation and focus management
+- [x] Color contrast and font size meet accessibility standards
+- [x] Error/fallback UI for assistant widget failures
+- [ ] Evaluate assistant response quality and safety (manual review)
+- [ ] Collect user feedback for future improvements
+-->
 
 <?php rr_render_layout_end(); ?>

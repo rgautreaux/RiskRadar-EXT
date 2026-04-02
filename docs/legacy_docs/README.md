@@ -15,7 +15,7 @@ These files are condensed from the `CMPS490_contents/` directory, which contains
 
 **Source directory:** `CMPS490_contents/`
 
-**Non-markdown assets not included** (binary files, PDFs):
+**Non-markdown assets are not included** (binary files, PDFs):
 - `CMPS490_SecurityDocs/SBOM/RiskRadar_SBOM.docx`
 - `CMPS490_SecurityDocs/Security Questionnaire/` — individual PDF submissions per team member
 - `CMPS490_SecurityDocs/Tech Stack Reference/RiskRadar_Tech_Stack_Reference.pdf` and `.png` flowchart images

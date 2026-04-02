@@ -1,4 +1,3 @@
-
 # Documentation Synchronization Note
 
 All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) has been reviewed and updated for consistency and agreement as of the Stage 3 documentation and synchronization session. This ensures grading clarity, onboarding readiness, and a single source of truth for project status and history.
@@ -349,15 +348,43 @@ You are now ready to use and demonstrate the current RiskRadar Web-Extension fea
 # Stage 4 Forecast UI Completion & Documentation Update Session (2026-03-31)
 
 Summary:
-- Forecast UI implementation completed: supports local location default, manual input, risk-type grouping, personalized advice, and user profile integration for sensitivities/preferences.
-- User profile UI now allows updating health sensitivities/preferences, which are used for tailored advice and recommendations.
-- Backend and frontend are fully integrated for roundtrip updates.
-- All documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) updated and synchronized for grading, onboarding, and historical accuracy.
-- Verbatim transcript of this session added to TRANSCRIPT.md; REFLECTION.md updated with session summary and per-entry summaries.
-- AUTHORS.md updated with member contributions and roles for this session.
-- README.md and USER_GUIDE.md expanded with new Forecast UI and personalization features, implementation details, and importance.
 
 This ensures all top-level documentation is in sync and the Forecast UI is fully implemented and documented for Stage 4.
-# Documentation Synchronization Note (2026-04-27)
 
-All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) has been reviewed and updated for consistency and agreement as of the Stage 3 documentation and synchronization session. This ensures grading clarity, onboarding readiness, and a single source of truth for project status and history.
+
+# Stage 4 Documentation Synchronization & Progress Update Session (2026-04-02)
+
+Summary:
+
+This ensures all documentation is in sync, the Forecast UI is fully documented, and the project is ready for grading and onboarding.
+
+---
+
+## AI Assistant & Forecast Limitations
+- The AI Assistant is for informational purposes only and does not provide emergency or real-time alerts.
+- Forecasts are based on available data and may not capture sudden changes or rare events.
+- Always consult official sources for critical decisions.
+- Accessibility and language support are being improved in future updates.
+
+---
+
+## Accessibility & Navigation Testing (Stage 3+)
+
+The interactive map and overlays are fully accessible by keyboard and screen reader. To verify accessibility and navigation features:
+
+### Automated Testing
+- Run the automated test script at `frontend/web/tests/test_map_accessibility.js` (requires Node.js, puppeteer, axe-puppeteer, jest):
+  1. `npm install puppeteer axe-puppeteer jest`
+  2. Start the PHP server and ensure the map is available at http://localhost:8000/web/views/map.php
+  3. `npx jest frontend/web/tests/test_map_accessibility.js`
+- This script checks:
+  - No critical accessibility violations (axe-core)
+  - Tab navigation to all controls and overlays
+  - Marker modal opens with keyboard
+
+### Manual Testing
+- Use the checklist in `frontend/web/tests/test_map_accessibility.md` for keyboard, screen reader, and responsive layout verification.
+- All overlays, toggles, and modals are accessible by Tab/Shift+Tab, Enter/Space, and ARIA attributes are present.
+- Overlay toggling and marker focus are announced for assistive tech.
+
+See README for more details and troubleshooting.
