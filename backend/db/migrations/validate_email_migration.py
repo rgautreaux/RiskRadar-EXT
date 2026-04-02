@@ -19,7 +19,7 @@ def run_validation() -> int:
         users_missing_encrypted = db.query(User).filter(User.email.is_(None), User.email_encrypted.is_(None)).count()
         users_missing_hmac = db.query(User).filter(User.email.is_(None), User.email_hmac.is_(None)).count()
 
-        failed_logs = db.query(MigrationLog).filter(MigrationLog.status.in_(["failed", "error"])) .count()
+        failed_logs = db.query(MigrationLog).filter(MigrationLog.status.in_(["failed", "error"])).count()
         batch_completed = (
             db.query(MigrationLog)
             .filter(
