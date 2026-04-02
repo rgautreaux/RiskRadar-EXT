@@ -8,7 +8,11 @@ from sqlalchemy.orm import Session
 
 from config.settings import settings
 from db.models import Alert, Summary
-from llm.prompts import DAILY_DIGEST_SYSTEM, DAILY_DIGEST_USER, BREAKING_SYSTEM, BREAKING_USER
+from llm.prompts import (
+    DAILY_DIGEST_SYSTEM, DAILY_DIGEST_USER,
+    LOCAL_TRAVEL_SYSTEM, LOCAL_TRAVEL_USER,
+    BREAKING_SYSTEM, BREAKING_USER,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +26,6 @@ class Summarizer:
             # DeepSeek uses the OpenAI-compatible API with a different base URL
             if settings.LLM_PROVIDER == "deepseek":
                 client = openai.OpenAI(
-                    # api_key="sk-190105abaaf345c38ff6e75984afb6cc",
                     api_key=settings.LLM_API_KEY,
                     base_url="https://api.deepseek.com",
                 )
@@ -44,7 +47,6 @@ class Summarizer:
         elif settings.LLM_PROVIDER == "anthropic":
             import anthropic
 
-            #client = anthropic.Anthropic(api_key="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")
             client = anthropic.Anthropic(api_key=settings.LLM_API_KEY)
             resp = client.messages.create(
                 model=settings.LLM_MODEL,
@@ -86,7 +88,7 @@ class Summarizer:
         text, tokens = self._call_llm(DAILY_DIGEST_SYSTEM, user_msg)
 
         summary = Summary(
-            title=f"Environmental Digest — {date.today().strftime('%b %d, %Y')}",
+            title=f"Travel Safety Briefing — {date.today().strftime('%b %d, %Y')}",
             content=text,
             summary_type="daily",
             alert_ids=json.dumps([a.id for a in alerts]),
@@ -103,7 +105,7 @@ class Summarizer:
     def generate_local_digest(
         self, db: Session, alerts: list, city: str, state: str, zip_code: str
     ) -> "Summary":
-        """Generate a summary scoped to a specific location."""
+        """Generate a travel-focused summary scoped to a specific location."""
         alerts_data = [
             {
                 "type": a.alert_type,
@@ -116,16 +118,19 @@ class Summarizer:
             for a in alerts
         ]
 
-        user_msg = DAILY_DIGEST_USER.format(
+        system_msg = LOCAL_TRAVEL_SYSTEM.format(city=city, state=state)
+        user_msg = LOCAL_TRAVEL_USER.format(
             count=len(alerts),
+            city=city,
+            state=state,
             date=date.today().strftime("%B %d, %Y"),
             alerts_json=json.dumps(alerts_data, indent=2),
         )
 
-        text, tokens = self._call_llm(DAILY_DIGEST_SYSTEM, user_msg)
+        text, tokens = self._call_llm(system_msg, user_msg)
 
         summary = Summary(
-            title=f"Local Digest for {city}, {state} — {date.today().strftime('%b %d, %Y')}",
+            title=f"Travel Briefing: {city}, {state} — {date.today().strftime('%b %d, %Y')}",
             content=text,
             summary_type="local",
             alert_ids=json.dumps([a.id for a in alerts]),

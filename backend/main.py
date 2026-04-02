@@ -47,13 +47,19 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="RiskRadar API", version="1.0.0", lifespan=lifespan)
 
 # --- CORS middleware -------------------------------------------------------
-# Allows the React Native app (or any frontend) to call the API.
-# TODO: Before production, replace "*" with your actual frontend origins.
+# Allows the React Native app and web frontend to call the API.
+# Add your production domain here when deploying.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=[
+        "http://localhost:8081",       # Expo web dev
+        "http://localhost:19006",      # Expo web alt port
+        "http://localhost:8000",       # Backend HTML frontend
+        "http://127.0.0.1:8000",
+    ],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
+    allow_credentials=True,
 )
 
 # --- Static files (CSS, JS) -----------------------------------------------

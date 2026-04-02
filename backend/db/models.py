@@ -65,6 +65,23 @@ class User(Base):
     updated_at = Column(DateTime(timezone=True), nullable=False, default=_now, onupdate=_now)
 
 
+class SavedDestination(Base):
+    __tablename__ = "saved_destinations"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, nullable=False)
+    city = Column(Text, nullable=False)
+    state = Column(Text)
+    zip_code = Column(Text)
+    latitude = Column(Float, nullable=False)
+    longitude = Column(Float, nullable=False)
+    created_at = Column(DateTime(timezone=True), nullable=False, default=_now)
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "city", "state", name="uq_user_destination"),
+    )
+
+
 class ScrapeLog(Base):
     __tablename__ = "scrape_log"
 
@@ -121,7 +138,6 @@ class SummaryArchive(Base):
     cleanup_run_id = Column(Integer)
 
 
-
 class ScrapeLogArchive(Base):
     __tablename__ = "scrape_log_archive"
 
@@ -137,18 +153,6 @@ class ScrapeLogArchive(Base):
     completed_at = Column(DateTime(timezone=True), nullable=False)
     archived_at = Column(DateTime(timezone=True), nullable=False, default=_now)
     cleanup_run_id = Column(Integer)
-
-
-# Migration logging table for email/password migration
-class MigrationLog(Base):
-    __tablename__ = "migration_log"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    timestamp = Column(DateTime(timezone=True), nullable=False, default=_now)
-    user_id = Column(Integer)
-    action = Column(Text)
-    status = Column(Text)
-    error_message = Column(Text)
 
 
 class CleanupRun(Base):

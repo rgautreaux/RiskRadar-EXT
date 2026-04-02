@@ -1,5 +1,11 @@
 from pydantic import BaseModel, ConfigDict
 
+"""
+Pydantic schemas for the User resource.
+
+These schemas validate request bodies and shape response payloads
+for the /api/v1/users/* endpoints.
+"""
 
 from typing import Optional
 from datetime import datetime
@@ -47,11 +53,6 @@ class UserOut(BaseModel):
     zip_code: Optional[str] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
-    display_name: Optional[str] = None
-    email: Optional[str] = None
-    zip_code: Optional[str] = None
-    latitude: Optional[float] = None
-    longitude: Optional[float] = None
     alert_types: Optional[str] = None
     notify_severity: Optional[str] = None
     created_at: datetime
@@ -61,4 +62,26 @@ class NotificationSettingsOut(BaseModel):
     """Response for GET /users/notifications."""
     notify_severity: Optional[str] = None
     device_token: Optional[str] = None
+    model_config = ConfigDict(from_attributes=True)
+
+
+# --- Saved destinations -----------------------------------------------------
+
+class SavedDestinationCreate(BaseModel):
+    """POST /users/destinations — save a travel destination."""
+    city: str
+    state: Optional[str] = None
+    zip_code: Optional[str] = None
+    latitude: float
+    longitude: float
+
+class SavedDestinationOut(BaseModel):
+    """Response for saved destination endpoints."""
+    id: int
+    city: str
+    state: Optional[str] = None
+    zip_code: Optional[str] = None
+    latitude: float
+    longitude: float
+    created_at: datetime
     model_config = ConfigDict(from_attributes=True)

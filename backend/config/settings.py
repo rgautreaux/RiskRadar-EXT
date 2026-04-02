@@ -36,6 +36,7 @@ class Settings(BaseSettings):
     DEFAULT_LAT: float = 34.0522
     DEFAULT_LON: float = -118.2437
     SCRAPE_INTERVAL_MINUTES: int = 30
+    LOCATION_CACHE_TTL_MINUTES: int = 30
     RETENTION_ENABLED: bool = False
     RETENTION_DRY_RUN: bool = True
     RETENTION_BATCH_SIZE: int = 500

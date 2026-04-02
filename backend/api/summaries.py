@@ -1,6 +1,9 @@
+from datetime import datetime, timedelta, timezone
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
+from config.settings import settings
 from db.database import get_db
 from db.models import Alert, Summary
 from schemas.summary import SummaryOut
@@ -54,6 +57,22 @@ def generate_local_summary(
     zip_code: str = Query(..., min_length=5, max_length=5, pattern=r"^\d{5}$"),
     db: Session = Depends(get_db),
 ):
+    # Return cached summary if one exists within the TTL
+    ttl = settings.LOCATION_CACHE_TTL_MINUTES
+    cutoff = datetime.now(timezone.utc) - timedelta(minutes=ttl)
+    cached = (
+        db.query(Summary)
+        .filter(
+            Summary.summary_type == "local",
+            Summary.region.contains(zip_code),
+            Summary.generated_at >= cutoff,
+        )
+        .order_by(Summary.generated_at.desc())
+        .first()
+    )
+    if cached:
+        return cached
+
     from api.location import _zip_to_coords, _fetch_nws_alerts, _fetch_airnow
 
     location = _zip_to_coords(zip_code)

@@ -24,7 +24,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from db.database import get_db
-from db.models import User
+from db.models import User, SavedDestination
 from auth.security import hash_password, verify_password, create_access_token, get_current_user
 from schemas.user import (
     UserCreate,
@@ -34,6 +34,8 @@ from schemas.user import (
     TokenOut,
     NotificationSettingsUpdate,
     NotificationSettingsOut,
+    SavedDestinationCreate,
+    SavedDestinationOut,
 )
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -181,3 +183,69 @@ def update_notifications(
         notify_severity=current_user.notify_severity,
         device_token=current_user.device_token,
     )
+
+
+# ---------------------------------------------------------------------------
+# Saved destinations (JWT required)
+# ---------------------------------------------------------------------------
+
+@router.get("/destinations", response_model=list[SavedDestinationOut])
+def list_destinations(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """List all saved destinations for the current user."""
+    return (
+        db.query(SavedDestination)
+        .filter(SavedDestination.user_id == current_user.id)
+        .order_by(SavedDestination.created_at.desc())
+        .all()
+    )
+
+
+@router.post("/destinations", response_model=SavedDestinationOut)
+def save_destination(
+    body: SavedDestinationCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Save a travel destination for the current user."""
+    existing = (
+        db.query(SavedDestination)
+        .filter_by(user_id=current_user.id, city=body.city, state=body.state)
+        .first()
+    )
+    if existing:
+        raise HTTPException(status_code=409, detail="Destination already saved")
+
+    dest = SavedDestination(
+        user_id=current_user.id,
+        city=body.city,
+        state=body.state,
+        zip_code=body.zip_code,
+        latitude=body.latitude,
+        longitude=body.longitude,
+    )
+    db.add(dest)
+    db.commit()
+    db.refresh(dest)
+    return dest
+
+
+@router.delete("/destinations/{dest_id}")
+def delete_destination(
+    dest_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Remove a saved destination."""
+    dest = (
+        db.query(SavedDestination)
+        .filter_by(id=dest_id, user_id=current_user.id)
+        .first()
+    )
+    if not dest:
+        raise HTTPException(status_code=404, detail="Destination not found")
+    db.delete(dest)
+    db.commit()
+    return {"detail": "Destination removed"}
