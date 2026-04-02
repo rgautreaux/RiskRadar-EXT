@@ -417,7 +417,7 @@ Run this from the repository root to execute both the pytest suite and the stand
 scraper/database smoke test with a mocked LLM summary:
 
 ```bash
-python backend/scripts/run_full_verification.py
+npm run verify:backend
 ```
 
 Why this is useful:

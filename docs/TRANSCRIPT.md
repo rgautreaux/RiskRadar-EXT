@@ -15,6 +15,12 @@ Rebecca: Perform the following Documentation Updates for Rebecca now:
 
 GitHub Copilot: Implemented the user-data security rollout for this session by adding encrypted email storage, deterministic lookup hashes, stronger password validation, a schema-aware migration script, and documentation updates. The backend was revalidated with the full suite and now passes 174/174 tests. The prioritized-alerts endpoint regression was fixed so the suite completes cleanly. All updated documentation was synchronized in chronological order.
 
+# Stage 5: Full Backend Verification Workflow and Documentation Sync Session (2026-04-02)
+
+Rebecca: Add a repeatable backend verification path that future contributors can run easily, and update the project documentation to reflect it.
+
+GitHub Copilot: Added a repo-root verification command that runs backend pytest and the standalone smoke test together. The smoke test now supports mock-summary mode, optional summary skipping, and a configurable lookback window, and the npm alias resolves the project virtual environment so the workflow is portable and deterministic. The README, PROGRAM_EXECUTION guide, STAGES, TODO, and other progress-tracking docs were updated to reflect the new verification path.
+
 # Stage 5: Ongoing Maintenance, Advanced Features, and Review Session (2026-04-02)
 
 Rebecca: Run and document manual/automated map and accessibility tests, assign manual verification to Max, and update documentation and logs as features are finalized or tested.

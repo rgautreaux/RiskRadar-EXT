@@ -201,8 +201,14 @@ Maintain delivered features, harden security, and keep documentation and verific
 - [x] Ongoing map and accessibility checks documented.
 - [x] Security and migration rollout documented.
 - [x] Full backend suite passed after regression fixes.
+- [x] One-command backend verification workflow added and validated with `npm run verify:backend`.
 
 ### Stage 5 Session Entries (After Checklist)
+
+#### Stage 5 Full Backend Verification Workflow and Documentation Sync Session (2026-04-02)
+Summary:
+- Added a deterministic repo-root backend verification command that runs pytest plus the standalone smoke test.
+- Added mock-summary mode and npm/Python wrappers so future testing does not depend on external LLM credits or system Python.
 
 #### Stage 5 Ongoing Maintenance, Advanced Features, and Review Session (2026-04-02)
 Summary:

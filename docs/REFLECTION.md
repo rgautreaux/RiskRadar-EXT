@@ -177,6 +177,20 @@ Why this was done:
 How this improved the project:
 - Strengthened security posture while keeping deployment and verification repeatable.
 
+### Stage 5 Full Backend Verification Workflow and Documentation Sync Session (2026-04-02)
+Summary:
+- Added a single repository-root verification command for backend pytest plus the standalone smoke test.
+- Extended the smoke test with mock-summary mode and portable venv-aware execution wrappers.
+- Synchronized the execution guide and progress-tracking documentation with the new workflow.
+
+Why this was done:
+- To make future validation fast, deterministic, and independent of paid LLM credits.
+
+How this improved the project:
+- Simplified grading and maintenance by giving contributors one canonical backend verification command.
+- Reduced environment-specific failures by forcing the workflow through the project virtual environment.
+- Preserved the runtime smoke test value while making summary verification mockable.
+
 ### Stage 3 Documentation and Synchronization Session (2026-04-27)
 Summary:
 - Completed another cross-doc synchronization pass and updated historical records.
