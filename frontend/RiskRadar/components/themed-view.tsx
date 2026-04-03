@@ -1,42 +1,28 @@
 import React from 'react';
-import { View, ViewProps, StyleSheet, ViewStyle } from 'react-native';
+import { View, StyleProp, ViewProps, ViewStyle } from 'react-native';
 
 import { Colors, Shadows, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export type ThemedViewProps = ViewProps & {
-  /**
-   * Semantic surface token to apply as background.
-   * - 'background': full-screen background color
-   * - 'card': elevated card/surface color (typically white in light mode)
-   * - 'surfaceMuted': muted/secondary surface color
-   * @default 'background'
-   */
   surface?: 'background' | 'card' | 'surfaceMuted';
-  /**
-   * Whether to apply a card shadow (elevation).
-   * @default false
-   */
   elevated?: boolean;
-  /**
-   * Padding preset for the container. If omitted, no automatic padding is applied.
-   * Use StyleSheet manually for custom padding.
-   * @default undefined
-   */
   padding?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  style?: StyleProp<ViewStyle>;
 };
 
-export function ThemedView({
-  style,
-  surface = 'background',
-  elevated = false,
-  padding,
-  ...rest
-}: ThemedViewProps) {
+export function ThemedView(props: ThemedViewProps) {
+  const {
+    style,
+    surface = 'background',
+    elevated = false,
+    padding,
+    ...rest
+  } = props;
+
   const scheme = useColorScheme() ?? 'light';
   const palette = Colors[scheme];
 
-  // Resolve background color based on surface semantic
   let backgroundColor: string;
   switch (surface) {
     case 'card':
@@ -51,43 +37,26 @@ export function ThemedView({
       break;
   }
 
-  // Build style array
-  const viewStyle: ViewProps['style'] = [
+  const viewStyle: StyleProp<ViewStyle> = [
     { backgroundColor },
-    padding && getPaddingStyle(padding),
-    elevated && Shadows.card,
+    padding ? getPaddingStyle(padding) : null,
+    elevated ? Shadows.card : null,
     style,
   ];
 
-  return (
-    <View
-      style={viewStyle}
-      {...rest}
-    />
-  );
+  return <View style={viewStyle} {...rest} />;
 }
 
-/**
- * Resolve padding values from preset keys.
- */
-function getPaddingStyle(
-  padding: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-): ViewStyle {
+function getPaddingStyle(padding: NonNullable<ThemedViewProps['padding']>): ViewStyle {
   const paddingMap = {
     xs: Spacing.xs,
     sm: Spacing.sm,
     md: Spacing.md,
     lg: Spacing.lg,
     xl: Spacing.xl,
-  };
+  } as const;
 
   return {
     padding: paddingMap[padding],
   };
 }
-
-const styles = StyleSheet.create({
-  default: {
-    flex: 0,
-  },
-});
