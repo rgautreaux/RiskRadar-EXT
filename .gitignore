@@ -72,3 +72,5 @@ Thumbs.db
 /.claude
 /.vs/Team6Project.slnx/FileContentIndex
 /.vs/Team6Project/CopilotIndices/18.5.39108.44903
+# Development docs and notes
+.workspace_docs

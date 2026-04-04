@@ -72,8 +72,8 @@ This system ensures that the backend database does not grow indefinitely, improv
 
 ### 10. `tests/`
 - **Purpose:** Automated test suite using pytest.
-- **How it works:** Contains unit and integration tests for all backend modules.
-- **Contribution:** Ensures reliability, correctness, and safe development.
+- **How it works:** Contains unit and integration tests for all backend modules, plus the standalone smoke runner used for scraper/database verification.
+- **Contribution:** Ensures reliability, correctness, and safe development. The full backend pytest suite is currently 87/87 passing, and the smoke runner now completes cleanly after registry import and generic API extraction fixes.
 
 ---
 

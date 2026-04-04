@@ -10,10 +10,9 @@ import {
   SafeAreaView,
   ScrollView,
   Pressable,
-  ActivityIndicator,
-  Alert
 } from 'react-native';
-import PrimaryButton from '@/components/ui/PrimaryButton';
+import { PrimaryButton } from '@/components/ui/PrimaryButton';
+import { BrandHeader } from '@/components/brand-header';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/theme';
@@ -110,6 +109,7 @@ export default function RegistrationScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <BrandHeader style={{ paddingTop: 12, paddingBottom: 8 }} />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardAvoidingView}
