@@ -1,3 +1,46 @@
+## Stage 5: User Data Security, Migration, and Full-Suite Verification Session (2026-04-02)
+
+### Implementation
+Added email encryption at rest for user records, deterministic email lookup hashing for duplicate checks, and stronger password policy enforcement during registration. A schema-aware migration script was added so existing plaintext emails can be converted safely.
+
+### Functionality
+- User emails are encrypted before storage and decrypted only for API responses.
+- Duplicate email checks now use a deterministic lookup hash rather than plaintext comparison.
+- Password policy enforcement rejects weak registration passwords before hashing.
+- The migration script can handle older databases by adding the lookup column when needed.
+- The backend suite was revalidated end to end and now passes 174/174 tests.
+
+### Execution
+- Added backend/auth/security.py for email encryption, hashing, and password helpers.
+- Updated backend/api/users.py to validate password strength, encrypt emails, and serialize users safely.
+- Added backend/scripts/migrate_emails_to_encrypted.py plus backend/db/migrations/2026-04-02_encrypt_user_emails.sql.
+- Updated documentation in docs/INSTRUCTIONS.md and docs/SECURITY.md to capture setup and rollout order.
+- Fixed the prioritized-alerts API endpoint so the full backend suite could complete successfully.
+
+### Importance
+- Protects user data at rest without breaking existing lookup behavior.
+- Creates a repeatable migration path for existing deployments.
+- Preserves the project's grading readiness by keeping the codebase verified and documented.
+
+## Stage 5: Full Backend Verification Workflow and Documentation Sync Session (2026-04-02)
+
+### Implementation
+Added a repeatable backend verification workflow that combines the full pytest suite with a deterministic standalone smoke test. The smoke test was extended with mock-summary mode, and a Node wrapper was added so the repo-root npm script always uses the project virtual environment.
+
+### Functionality
+- `npm run verify:backend` runs the backend suite and smoke test together.
+- `backend/test_scrape_and_summarize.py --mock-summary` validates the scraper/database path without requiring LLM credits.
+- The smoke test now returns non-zero on validation failure so it can be used in CI or grading checks.
+
+### Execution
+- Added `backend/scripts/run_full_verification.py` as the orchestration entry point.
+- Added `backend/scripts/run_full_verification.mjs` to resolve the repo `.venv` interpreter from npm.
+- Updated the smoke test CLI and execution docs to support repeatable testing.
+
+### Importance
+- Provides a single canonical verification command for future maintenance and review.
+- Improves reliability by avoiding system-Python drift and external billing dependencies.
+- Keeps status, docs, and runtime validation aligned.
 # Stage 4 Documentation Synchronization & Forecast UI Session (2026-04-02)
 
 Summary:
@@ -450,3 +493,6 @@ For each stage, update:
 ## Web-App Security Documentation
 
 The RiskRadar web-app implements and documents security controls in docs/SecurityDocs/. All planning and verification steps reference these docs for compliance and evidence.
+
+
+

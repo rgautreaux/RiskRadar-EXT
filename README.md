@@ -1,5 +1,52 @@
 # Project Progress and Stage Summaries
 
+## Stage 5: User Data Security, Migration, and Full-Suite Verification Session (2026-04-02)
+
+### Implementation
+This session added encrypted storage for user email addresses, deterministic lookup hashing for duplicate detection, and stronger password validation during registration. It also introduced a schema-aware migration path for existing plaintext emails and updated the documentation set to describe the rollout order.
+
+### Functionality
+- User emails are encrypted before being stored in the database.
+- Duplicate email checks use a lookup hash instead of plaintext comparisons.
+- Registration rejects weak passwords before they are hashed.
+- The migration script can handle older databases and populate the new lookup column.
+- The backend prioritization endpoint regression was fixed so the full suite can complete cleanly.
+
+### Execution
+- Added `backend/auth/security.py` and wired it into `backend/api/users.py`.
+- Added `backend/scripts/migrate_emails_to_encrypted.py` for schema-aware batch migration.
+- Added `backend/db/migrations/2026-04-02_encrypt_user_emails.sql` for schema alignment.
+- Updated `docs/INSTRUCTIONS.md` and `docs/SECURITY.md` with deployment and key-management guidance.
+- Re-ran the backend test suite after fixing the prioritized-alerts endpoint; the suite now passes 174/174 tests.
+
+### Importance
+- Reduces exposure of user email data at rest.
+- Preserves existing user lookup behavior while improving privacy.
+- Provides a repeatable rollout path for current and future deployments.
+- Keeps the repository in a verified and grading-ready state.
+
+## Stage 5: Full Backend Verification Workflow and Documentation Sync Session (2026-04-02)
+
+### Implementation
+Added a deterministic backend verification workflow that runs the full pytest suite and the standalone scraper/database smoke test in mock-summary mode. A small Node wrapper was added so the repo root npm script resolves the project virtual environment consistently on Windows and other platforms.
+
+### Functionality
+- `npm run verify:backend` runs backend pytest and the standalone smoke test from the repository root.
+- The standalone smoke test now supports `--mock-summary` for deterministic, offline-friendly verification.
+- The smoke test exits with a non-zero status when scraper or summary validation fails.
+- The workflow preserves the live scraper/database path while avoiding paid LLM dependency for routine checks.
+
+### Execution
+- Added `backend/scripts/run_full_verification.py` to orchestrate the backend test suite and smoke test.
+- Added `backend/scripts/run_full_verification.mjs` so the npm script uses the project `.venv` interpreter instead of system Python.
+- Updated `backend/test_scrape_and_summarize.py` with CLI flags for mock summary, skip summary, and lookback control.
+- Documented the new verification commands in `docs/PROGRAM_EXECUTION.md` and this README.
+
+### Importance
+- Gives the project a single repeatable verification command for future grading and maintenance.
+- Keeps runtime smoke testing useful even when external LLM credits are unavailable.
+- Reduces environment ambiguity by ensuring the repository uses the configured virtual environment.
+
 ## Stage 5: Ongoing Maintenance, Advanced Features, and Review Session (2026-04-02)
 
 ### Implementation
@@ -134,6 +181,17 @@ Then press:
 | `ModuleNotFoundError` | Run `py -m pip install -r requirements.txt` in the backend folder |
 | Expo QR code won't scan | Press `w` to test on web first; make sure Expo Go app is installed on phone |
 | Registration fails silently | Check the backend terminal for error messages |
+
+---
+
+## Full Backend Verification (One Command)
+
+Run this from the repository root to execute both backend `pytest` and a deterministic
+integration smoke test that does not require paid LLM credits:
+
+```bash
+npm run verify:backend
+```
 
 ---
 

@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "verify:backend": "node backend/scripts/run_full_verification.mjs"
+  },
   "dependencies": {
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",

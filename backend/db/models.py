@@ -1,7 +1,8 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import Column, Integer, Text, Float, UniqueConstraint
+from sqlalchemy import Column, Integer, Text, Float, UniqueConstraint, event
 from db.database import Base
+from auth.security import decrypt_email, encrypt_email, hash_email, is_encrypted_email, normalize_email
 
 
 def _now():
@@ -54,7 +55,8 @@ class User(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     device_token = Column(Text)
     display_name = Column(Text)
-    email = Column(Text, unique=True)
+    email = Column(Text, nullable=False)
+    email_lookup_hash = Column(Text, unique=True, nullable=False)
     password_hash = Column(Text)
     zip_code = Column(Text)
     latitude = Column(Float)
@@ -64,6 +66,31 @@ class User(Base):
     health_conditions = Column(Text, default='[]')    # JSON array of condition keys
     created_at = Column(Text, nullable=False, default=_now)
     updated_at = Column(Text, nullable=False, default=_now, onupdate=_now)
+
+
+def _secure_user_email(target: User):
+    if not target.email:
+        return
+
+    if is_encrypted_email(target.email):
+        plaintext_email = decrypt_email(target.email)
+        target.email = encrypt_email(plaintext_email)
+        target.email_lookup_hash = target.email_lookup_hash or hash_email(plaintext_email)
+        return
+
+    normalized_email = normalize_email(target.email)
+    target.email = encrypt_email(normalized_email)
+    target.email_lookup_hash = hash_email(normalized_email)
+
+
+@event.listens_for(User, "before_insert")
+def _user_before_insert(_mapper, _connection, target):
+    _secure_user_email(target)
+
+
+@event.listens_for(User, "before_update")
+def _user_before_update(_mapper, _connection, target):
+    _secure_user_email(target)
 
 
 class ScrapeLog(Base):

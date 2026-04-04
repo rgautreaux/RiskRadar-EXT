@@ -15,6 +15,11 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60  # token lifetime in minutes
 
+    # User data protection
+    EMAIL_ENCRYPTION_KEY: str = ""
+    EMAIL_HASH_SECRET: str = ""
+    PASSWORD_MIN_LENGTH: int = 12
+
     # API Keys
     AIRNOW_API_KEY: str = ""
     OpenAQ_API_KEY: str = ""

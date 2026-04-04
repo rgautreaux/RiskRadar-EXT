@@ -411,6 +411,27 @@ cd frontend/mobile/RiskRadar
 npm run lint
 ```
 
+### 8.3 Full backend verification (recommended)
+
+Run this from the repository root to execute both the pytest suite and the standalone
+scraper/database smoke test with a mocked LLM summary:
+
+```bash
+npm run verify:backend
+```
+
+Why this is useful:
+- Verifies core backend correctness (`pytest`)
+- Verifies runtime scraper + persistence flow (`test_scrape_and_summarize.py`)
+- Avoids paid LLM dependency during routine validation (`--mock-summary`)
+
+To run the standalone smoke test directly:
+
+```bash
+cd backend
+python test_scrape_and_summarize.py --mock-summary
+```
+
 ---
 
 ## 9. Common Operations
