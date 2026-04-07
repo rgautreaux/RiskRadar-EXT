@@ -71,3 +71,6 @@ Thumbs.db
 
 # Development docs and notes
 .workspace_docs
+/.vs/slnx.sqlite
+/.vs/Team6Project.slnx/FileContentIndex/79b9982a-d886-4969-b974-f91b7b03cd40.vsidx
+/.vs/slnx.sqlite-journal
