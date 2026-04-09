@@ -1,76 +1,109 @@
-"""7-day weather forecast from the National Weather Service API.
+"""7-day weather forecast using the OpenWeatherMap One Call API 3.0.
 
-NWS forecast flow:
-  1. GET https://api.weather.gov/points/{lat},{lon}  → gives a forecast URL
-  2. GET {forecast_url}                               → gives 14 half-day periods
+Flow:
+  GET https://api.openweathermap.org/data/3.0/onecall
+      ?lat={lat}&lon={lon}&appid={key}&units=imperial
+      &exclude=minutely,hourly,alerts
+
+Returns up to 8 daily forecast objects.
 """
 
 import logging
 import time
+from collections import OrderedDict
+from datetime import datetime, timezone
 
 import httpx
 from fastapi import APIRouter, HTTPException, Query
 
 from config.settings import settings
 from schemas.forecast import ForecastPeriodOut
+from api.location import _zip_to_coords
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/forecast", tags=["Forecast"])
 
-# Simple in-memory cache: key → (timestamp, data)
-_cache: dict[str, tuple[float, list[dict]]] = {}
-_CACHE_TTL = 30 * 60  # 30 minutes in seconds
+_OWM_BASE = "https://api.openweathermap.org/data/2.5/forecast"
+
+# LRU cache with 30-min TTL, max 256 entries
+_cache: OrderedDict[str, tuple[float, list[dict]]] = OrderedDict()
+_CACHE_TTL = 30 * 60
+_CACHE_MAX_SIZE = 256
 
 
 def _cache_key(lat: float, lon: float) -> str:
     return f"{round(lat, 2)},{round(lon, 2)}"
 
 
-def _fetch_nws_forecast(lat: float, lon: float) -> list[dict]:
-    """Fetch 7-day forecast from NWS (two-step API call)."""
-    headers = {
-        "User-Agent": settings.NWS_USER_AGENT,
-        "Accept": "application/geo+json",
-    }
+def _fetch_owm_forecast(lat: float, lon: float) -> list[dict]:
+    """Fetch 5-day forecast from OpenWeatherMap free API (3-hour intervals),
+    then aggregate into daily high/low/description entries."""
+    if not settings.OPENWEATHER_API_KEY:
+        raise ValueError("OPENWEATHER_API_KEY is not configured")
 
-    # Step 1: Get the forecast URL from the points endpoint
-    # NWS requires max 4 decimal places for coordinates
-    point_url = f"https://api.weather.gov/points/{round(lat, 4)},{round(lon, 4)}"
-    point_resp = httpx.get(point_url, headers=headers, timeout=15)
-    point_resp.raise_for_status()
+    resp = httpx.get(
+        _OWM_BASE,
+        params={
+            "lat": round(lat, 6),
+            "lon": round(lon, 6),
+            "appid": settings.OPENWEATHER_API_KEY,
+            "units": "imperial",
+            "cnt": 40,  # max 5 days of 3-hour slots
+        },
+        timeout=15,
+    )
+    resp.raise_for_status()
+    data = resp.json()
 
-    forecast_url = point_resp.json().get("properties", {}).get("forecast")
-    if not forecast_url:
-        raise ValueError("NWS points response missing forecast URL")
-
-    # Step 2: Fetch the actual forecast
-    forecast_resp = httpx.get(forecast_url, headers=headers, timeout=15)
-    forecast_resp.raise_for_status()
-
-    periods = forecast_resp.json().get("properties", {}).get("periods", [])
+    # Group 3-hour slots by date
+    from collections import defaultdict
+    days: dict[str, list[dict]] = defaultdict(list)
+    for slot in data.get("list", []):
+        date_str = slot["dt_txt"][:10]  # "2024-05-15"
+        days[date_str].append(slot)
 
     results = []
-    for p in periods:
-        precip = p.get("probabilityOfPrecipitation", {})
-        precip_value = precip.get("value") if isinstance(precip, dict) else None
+    for date_str in sorted(days.keys())[:7]:
+        slots = days[date_str]
+        dt = datetime.strptime(date_str, "%Y-%m-%d")
+
+        temps = [s["main"]["temp"] for s in slots]
+        humidities = [s["main"]["humidity"] for s in slots]
+        winds = [s["wind"]["speed"] for s in slots]
+        pops = [s.get("pop", 0) for s in slots]
+
+        # Pick the daytime slot for weather description (pod == 'd'), fallback to first
+        day_slot = next((s for s in slots if s.get("sys", {}).get("pod") == "d"), slots[0])
+        weather = day_slot.get("weather", [{}])[0]
 
         results.append({
-            "name": p.get("name", ""),
-            "temperature": p.get("temperature", 0),
-            "temperature_unit": p.get("temperatureUnit", "F"),
-            "wind_speed": p.get("windSpeed", ""),
-            "wind_direction": p.get("windDirection", ""),
-            "short_forecast": p.get("shortForecast", ""),
-            "detailed_forecast": p.get("detailedForecast", ""),
-            "is_daytime": p.get("isDaytime", True),
-            "start_time": p.get("startTime", ""),
-            "end_time": p.get("endTime", ""),
-            "icon": p.get("icon", ""),
-            "precipitation_chance": precip_value,
+            "date": date_str,
+            "day_name": dt.strftime("%A"),
+            "high_temp": round(max(temps), 1),
+            "low_temp": round(min(temps), 1),
+            "description": weather.get("description", ""),
+            "weather_main": weather.get("main", ""),
+            "icon_code": weather.get("icon", "01d"),
+            "wind_mph": round(sum(winds) / len(winds), 1),
+            "precip_chance": round(max(pops) * 100),
+            "humidity": round(sum(humidities) / len(humidities)),
+            "uvi": 0.0,  # not available on free tier
         })
 
     return results
+
+
+@router.get("/zip", response_model=list[ForecastPeriodOut])
+def get_forecast_by_zip(
+    zip_code: str = Query(..., description="US ZIP code"),
+):
+    """Return the 7-day forecast for a US ZIP code."""
+    coords = _zip_to_coords(zip_code)
+    if not coords:
+        raise HTTPException(status_code=404, detail=f"Could not resolve ZIP code: {zip_code}")
+    lat, lon, _, _ = coords
+    return get_forecast(lat=lat, lon=lon)
 
 
 @router.get("", response_model=list[ForecastPeriodOut])
@@ -78,23 +111,38 @@ def get_forecast(
     lat: float = Query(..., description="Latitude"),
     lon: float = Query(..., description="Longitude"),
 ):
-    """Return the 7-day (14-period) NWS forecast for a location."""
+    """Return the 7-day daily forecast for a location."""
+    if not settings.OPENWEATHER_API_KEY:
+        raise HTTPException(
+            status_code=503,
+            detail="Forecast unavailable: OPENWEATHER_API_KEY not configured",
+        )
+
     key = _cache_key(lat, lon)
 
-    # Check cache
     if key in _cache:
         ts, data = _cache[key]
         if time.time() - ts < _CACHE_TTL:
+            _cache.move_to_end(key)
             return data
+        del _cache[key]
 
     try:
-        data = _fetch_nws_forecast(lat, lon)
+        data = _fetch_owm_forecast(lat, lon)
     except httpx.HTTPStatusError as exc:
-        logger.error("NWS forecast HTTP error: %s", exc)
-        raise HTTPException(status_code=502, detail="NWS API returned an error")
-    except Exception as exc:
-        logger.exception("NWS forecast fetch failed")
-        raise HTTPException(status_code=502, detail="Could not fetch forecast from NWS")
+        status = exc.response.status_code
+        if status == 401:
+            raise HTTPException(status_code=502, detail="Invalid OpenWeatherMap API key")
+        if status == 429:
+            raise HTTPException(status_code=429, detail="OpenWeatherMap rate limit reached")
+        logger.error("OWM forecast HTTP error %s: %s", status, exc)
+        raise HTTPException(status_code=502, detail="OpenWeatherMap API returned an error")
+    except Exception:
+        logger.exception("OWM forecast fetch failed")
+        raise HTTPException(status_code=502, detail="Could not fetch forecast")
 
     _cache[key] = (time.time(), data)
+    while len(_cache) > _CACHE_MAX_SIZE:
+        _cache.popitem(last=False)
+
     return data

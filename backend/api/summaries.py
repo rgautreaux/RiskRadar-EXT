@@ -14,7 +14,7 @@ router = APIRouter(prefix="/summaries", tags=["Summaries"])
 @router.get("", response_model=list[SummaryOut])
 def list_summaries(
     summary_type: str | None = None,
-    limit: int = 20,
+    limit: int = Query(default=20, le=200, ge=1),
     db: Session = Depends(get_db),
 ):
     q = db.query(Summary)
@@ -35,7 +35,7 @@ def latest_local_summary(
 ):
     return (
         db.query(Summary)
-        .filter(Summary.summary_type == "local", Summary.region.contains(zip_code))
+        .filter(Summary.summary_type == "local", Summary.region.endswith(zip_code))
         .order_by(Summary.generated_at.desc())
         .first()
     )
@@ -64,7 +64,7 @@ def generate_local_summary(
         db.query(Summary)
         .filter(
             Summary.summary_type == "local",
-            Summary.region.contains(zip_code),
+            Summary.region.endswith(zip_code),
             Summary.generated_at >= cutoff,
         )
         .order_by(Summary.generated_at.desc())

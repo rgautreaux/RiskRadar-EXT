@@ -116,6 +116,11 @@ export default function AlertsScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
+
+  const toggleFilter = (type: string) => {
+    setActiveFilter(prev => prev === type ? null : type);
+  };
 
   const fetchAlerts = useCallback(async () => {
     try {
@@ -183,7 +188,6 @@ export default function AlertsScreen() {
   }
 
 
-  // Example hazard chips (static for now, could be dynamic)
   const hazardChips = [
     { hazardType: 'weather', label: 'Weather', icon: hazardIconMap.weather },
     { hazardType: 'airquality', label: 'Air Quality', icon: hazardIconMap.airquality },
@@ -195,12 +199,19 @@ export default function AlertsScreen() {
     { hazardType: 'fire', label: 'Fire', icon: hazardIconMap.fire },
   ];
 
+  const filteredAlerts = activeFilter
+    ? alerts.filter(alert => {
+        const typeKey = (alert.alert_type || '').toLowerCase().replace(/[^a-z]/g, '');
+        return typeKey === activeFilter || typeKey.includes(activeFilter) || activeFilter.includes(typeKey);
+      })
+    : alerts;
+
   return (
     <ThemedView style={styles.container}>
       {/* Branded Section Header */}
       <SectionHeader
         title="Alerts"
-        subtitle={`${alerts.length} active alert${alerts.length !== 1 ? 's' : ''}`}
+        subtitle={`${filteredAlerts.length} active alert${filteredAlerts.length !== 1 ? 's' : ''}${activeFilter ? ` · filtered` : ''}`}
         style={styles.sectionHeader}
       />
 
@@ -217,7 +228,8 @@ export default function AlertsScreen() {
             hazardType={chip.hazardType}
             label={chip.label}
             iconSource={chip.icon}
-            isActive={false}
+            isActive={activeFilter === chip.hazardType}
+            onPress={() => toggleFilter(chip.hazardType)}
             style={{ marginRight: Spacing.sm }}
           />
         ))}
@@ -252,9 +264,9 @@ export default function AlertsScreen() {
               </ThemedText>
             </View>
           </View>
-        ) : alerts.length > 0 ? (
+        ) : filteredAlerts.length > 0 ? (
           <View style={styles.alertsContainer}>
-            {alerts.map((alert, i) => {
+            {filteredAlerts.map((alert, i) => {
               // Map alert_type to icon asset
               const typeKey = (alert.alert_type || '').toLowerCase().replace(/[^a-z]/g, '');
               const iconSource =

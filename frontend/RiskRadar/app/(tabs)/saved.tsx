@@ -109,7 +109,7 @@ export default function SavedScreen() {
               onPress={() =>
                 router.push({
                   pathname: '/main/weather-report',
-                  params: { query: item.zip_code ?? `${item.city}, ${item.state}` },
+                  params: { query: `${item.city}, ${item.state}` },
                 })
               }
             >

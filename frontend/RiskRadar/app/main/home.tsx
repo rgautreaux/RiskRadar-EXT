@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   ScrollView,
   Platform,
   StatusBar,
+  Keyboard,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -16,7 +17,6 @@ import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/auth-context';
 import { apiFetch } from '@/utils/api';
-import { API_BASE_URL } from '@/constants/api';
 import { StateView } from '@/components/ui/state-view';
 
 interface AlertStats {
@@ -34,31 +34,38 @@ interface Summary {
   generated_at: string;
 }
 
+interface AutocompleteResult {
+  label: string;
+  city: string;
+  state: string;
+}
+
 export default function Home() {
   const router = useRouter();
   const scheme = useColorScheme() ?? 'light';
   const palette = Colors[scheme];
   const styles = getStyles(palette);
   const { user, isLoggedIn } = useAuth();
-  const [zipCode, setZipCode] = useState(user?.zip_code ?? '');
+  const [searchQuery, setSearchQuery] = useState(user?.zip_code ?? '');
+  const [suggestions, setSuggestions] = useState<AutocompleteResult[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [stats, setStats] = useState<AlertStats | null>(null);
   const [summary, setSummary] = useState<Summary | null>(null);
   const [loadingStats, setLoadingStats] = useState(true);
   const [loadingSummary, setLoadingSummary] = useState(true);
   const [errorStats, setErrorStats] = useState<string | null>(null);
   const [errorSummary, setErrorSummary] = useState<string | null>(null);
+  const autocompleteTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    if (user?.zip_code) setZipCode(user.zip_code);
+    if (user?.zip_code) setSearchQuery(user.zip_code);
   }, [user?.zip_code]);
 
   useEffect(() => {
     (async () => {
       try {
         setErrorStats(null);
-        console.log('Fetching stats from:', API_BASE_URL + '/alerts/stats');
         const data = await apiFetch<AlertStats>('/alerts/stats');
-        console.log('Stats loaded:', data);
         setStats(data);
       } catch {
         setErrorStats('Failed to load risk assessment data');
@@ -70,7 +77,6 @@ export default function Home() {
       try {
         setErrorSummary(null);
         const data = await apiFetch<Summary | null>('/summaries/latest');
-        console.log('Summary loaded:', data);
         setSummary(data);
       } catch {
         setErrorSummary('Failed to load latest summary');
@@ -79,12 +85,50 @@ export default function Home() {
     })();
   }, []);
 
+  const isZip = (q: string) => /^\d{5}$/.test(q.trim());
+
+  const fetchAutocomplete = useCallback(async (text: string) => {
+    if (text.length < 2 || isZip(text)) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+    try {
+      const data = await apiFetch<AutocompleteResult[]>(
+        `/location/autocomplete?q=${encodeURIComponent(text)}`
+      );
+      setSuggestions(data);
+      setShowSuggestions(data.length > 0);
+    } catch {
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  }, []);
+
+  const handleQueryChange = (text: string) => {
+    setSearchQuery(text);
+    if (autocompleteTimer.current) clearTimeout(autocompleteTimer.current);
+    autocompleteTimer.current = setTimeout(() => fetchAutocomplete(text), 300);
+  };
+
+  const handleSelectSuggestion = (suggestion: AutocompleteResult) => {
+    setSearchQuery(suggestion.label);
+    setSuggestions([]);
+    setShowSuggestions(false);
+    Keyboard.dismiss();
+    router.push({ pathname: '/main/weather-report', params: { query: suggestion.label } });
+  };
+
   const handleSearch = () => {
-    if (zipCode.length === 5) {
-      router.push({ pathname: '/main/weather-report', params: { zipCode } });
+    const q = searchQuery.trim();
+    if (q.length >= 2) {
+      setShowSuggestions(false);
+      Keyboard.dismiss();
+      router.push({ pathname: '/main/weather-report', params: { query: q } });
     }
   };
 
+  const canSearch = searchQuery.trim().length >= 2;
   const displayName = isLoggedIn ? (user?.display_name ?? 'User') : 'Guest';
 
   return (
@@ -106,7 +150,7 @@ export default function Home() {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.profileButton}
-            onPress={() => !isLoggedIn ? router.replace('/auth/login') : console.log('Profile')}
+            onPress={() => !isLoggedIn ? router.replace('/auth/login') : router.push('/main/settings')}
           >
             <Ionicons name={!isLoggedIn ? 'log-in-outline' : 'person-circle-outline'} size={28} color={palette.primary} />
           </TouchableOpacity>
@@ -119,8 +163,8 @@ export default function Home() {
           <Text style={styles.sectionTitle}>Check Location Risk</Text>
           <Text style={styles.sectionSubtitle}>
             {!isLoggedIn
-              ? 'Enter a zip code to see current weather and risk reports.'
-              : 'Showing your home location. Enter a different zip code to check another area.'}
+              ? 'Enter a city name or zip code to see current weather and risk reports.'
+              : 'Showing your home location. Search a different city or zip code to check another area.'}
           </Text>
 
           <View style={styles.searchContainer}>
@@ -128,28 +172,52 @@ export default function Home() {
               <Ionicons name="location-outline" size={20} color={palette.textSecondary} style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="Enter 5-digit Zip Code"
+                placeholder="City, State or Zip Code"
                 placeholderTextColor={palette.textSecondary}
-                keyboardType="number-pad"
-                maxLength={5}
-                value={zipCode}
-                onChangeText={setZipCode}
+                autoCapitalize="words"
+                autoCorrect={false}
+                returnKeyType="search"
+                onSubmitEditing={handleSearch}
+                value={searchQuery}
+                onChangeText={handleQueryChange}
+                onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
               />
+              {searchQuery.length > 0 && (
+                <TouchableOpacity onPress={() => { setSearchQuery(''); setSuggestions([]); setShowSuggestions(false); }}>
+                  <Ionicons name="close-circle" size={18} color={palette.textSecondary} />
+                </TouchableOpacity>
+              )}
             </View>
             <TouchableOpacity
-              style={[styles.searchButton, zipCode.length !== 5 && styles.searchButtonDisabled]}
+              style={[styles.searchButton, !canSearch && styles.searchButtonDisabled]}
               onPress={handleSearch}
-              disabled={zipCode.length !== 5}
+              disabled={!canSearch}
             >
               <Ionicons name="search" size={20} color={palette.white} />
             </TouchableOpacity>
           </View>
+
+          {/* Autocomplete suggestions */}
+          {showSuggestions && suggestions.length > 0 && (
+            <View style={styles.suggestionsContainer}>
+              {suggestions.map((s, i) => (
+                <TouchableOpacity
+                  key={`${s.label}-${i}`}
+                  style={[styles.suggestionRow, i < suggestions.length - 1 && styles.suggestionBorder]}
+                  onPress={() => handleSelectSuggestion(s)}
+                >
+                  <Ionicons name="location-outline" size={16} color={palette.primary} style={{ marginRight: 10 }} />
+                  <Text style={styles.suggestionText}>{s.label}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
         </View>
 
         {/* Latest Summary Card */}
         <TouchableOpacity
           style={styles.card}
-          onPress={() => router.push({ pathname: '/main/weather-report', params: { zipCode: zipCode || 'Unknown Location' } })}
+          onPress={() => router.push({ pathname: '/main/weather-report', params: { query: searchQuery || 'Unknown Location' } })}
         >
           <View style={styles.cardHeader}>
             <View style={styles.cardIconBox}>
@@ -161,7 +229,7 @@ export default function Home() {
           <StateView
             state={loadingSummary ? 'loading' : errorSummary ? 'error' : summary ? 'success' : 'empty'}
             loadingText="Loading summary..."
-            emptyText={zipCode.length === 5 ? `No summary available for ${zipCode}` : 'Enter a zip code to see summaries'}
+            emptyText={searchQuery.trim().length >= 2 ? `No summary available for ${searchQuery}` : 'Search a city or zip code to see summaries'}
             emptyIcon="document-outline"
             errorText={errorSummary || 'Failed to load summary'}
             onRetry={() => {
@@ -350,6 +418,34 @@ function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
       backgroundColor: palette.textSecondary,
       shadowOpacity: 0,
       elevation: 0,
+    },
+    suggestionsContainer: {
+      marginTop: 8,
+      backgroundColor: palette.card,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: palette.border,
+      overflow: 'hidden',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.08,
+      shadowRadius: 6,
+      elevation: 4,
+    },
+    suggestionRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+    },
+    suggestionBorder: {
+      borderBottomWidth: 1,
+      borderBottomColor: palette.border,
+    },
+    suggestionText: {
+      fontSize: 15,
+      color: palette.text,
+      flex: 1,
     },
     card: {
       backgroundColor: palette.card,

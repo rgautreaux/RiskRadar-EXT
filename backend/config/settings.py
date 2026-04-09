@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=str(BASE_DIR.parent / ".env"),
         env_file_encoding="utf-8",
+        extra="ignore",
     )
 
     # Database
@@ -31,6 +32,7 @@ class Settings(BaseSettings):
     NASA_FIRMS_MAP_KEY: str = ""
     FIRECRAWL_API_KEY: str = ""
     OpenAQ_API_KEY: str = ""
+    OPENWEATHER_API_KEY: str = ""
 
     # --- App Defaults ---
     DEFAULT_ZIP_CODE: str = "90001"

@@ -98,9 +98,14 @@ export default function RegistrationScreen() {
         message = 'An account with this email already exists.';
       } else if (err.message?.includes('Failed to fetch') || err.message?.includes('Network request failed')) {
         message = 'Cannot connect to server. Make sure the backend is running.';
-      } else if (err.message) {
-        message = err.message;
+      } else if (err.message?.includes('Too many requests')) {
+        message = 'Too many attempts. Please wait a moment and try again.';
+      } else if (err.message?.includes('value is not a valid email')) {
+        message = 'Please enter a valid email address.';
+      } else if (err.message?.includes('Password must be at least')) {
+        message = 'Password must be at least 6 characters.';
       }
+      // Don't pass raw backend errors to the UI — use the safe default above
       setErrors({ form: message });
     } finally {
       setIsSubmitting(false);

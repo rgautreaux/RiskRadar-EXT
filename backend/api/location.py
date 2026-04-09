@@ -140,11 +140,11 @@ def _fetch_nws_alerts(lat: float, lon: float, state: str) -> list[dict]:
     resp.raise_for_status()
     features = resp.json().get("features", [])
 
-    # If none, try state-wide
+    # If none, try state-wide but cap to 25 to avoid flooding for large states
     if not features:
         resp2 = httpx.get(url, params={"area": state}, headers=headers, timeout=30)
         resp2.raise_for_status()
-        features = resp2.json().get("features", [])
+        features = resp2.json().get("features", [])[:25]
 
     results = []
     for raw in features:
@@ -243,6 +243,7 @@ def get_alerts_for_location(
     lat: Optional[float] = None,
     lon: Optional[float] = None,
     state: Optional[str] = None,
+    limit: int = Query(default=50, ge=1, le=200),
     db: Session = Depends(get_db),
 ):
     """Fetch fresh alerts from NWS and AirNow.
@@ -271,6 +272,8 @@ def get_alerts_for_location(
             Alert.latitude.between(lat - 0.5, lat + 0.5),
             Alert.longitude.between(lon - 0.5, lon + 0.5),
         )
+        .order_by(Alert.fetched_at.desc())
+        .limit(limit)
         .all()
     )
     if cached:
@@ -301,22 +304,26 @@ def get_alerts_for_location(
         db.commit()
     except IntegrityError:
         db.rollback()
-        # Re-fetch all alerts that were just inserted by another request
-        stored = []
-        for alert_data in all_alerts:
-            existing = (
-                db.query(Alert)
-                .filter_by(source=alert_data["source"], source_id=alert_data["source_id"])
-                .first()
+        # Re-fetch all matching alerts in one query instead of per-item lookups
+        source_ids = [(d["source"], d["source_id"]) for d in all_alerts]
+        stored = (
+            db.query(Alert)
+            .filter(
+                Alert.fetched_at >= cutoff,
+                Alert.source.in_(["nws", "airnow"]),
+                Alert.latitude.isnot(None),
+                Alert.latitude.between(lat - 0.5, lat + 0.5),
+                Alert.longitude.between(lon - 0.5, lon + 0.5),
             )
-            if existing:
-                stored.append(existing)
+            .order_by(Alert.fetched_at.desc())
+            .all()
+        )
 
     # Refresh to get IDs
     for a in stored:
         db.refresh(a)
 
-    return stored
+    return stored[:limit]
 
 
 @router.get("/search")

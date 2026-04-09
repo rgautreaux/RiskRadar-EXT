@@ -26,9 +26,13 @@ export async function apiFetch<T = any>(
   const token = await getToken();
 
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
     ...((options.headers as Record<string, string>) ?? {}),
   };
+
+  // Only set Content-Type for requests that have a body
+  if (options.body) {
+    headers['Content-Type'] = headers['Content-Type'] ?? 'application/json';
+  }
 
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;

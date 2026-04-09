@@ -9,6 +9,7 @@ import {
   Platform,
   SafeAreaView,
   Pressable,
+  Alert as RNAlert,
 } from 'react-native';
 import { PrimaryButton } from '@/components/ui/PrimaryButton';
 import { BrandHeader } from '@/components/brand-header';
@@ -63,9 +64,12 @@ export default function LoginScreen() {
       let message = 'Invalid email or password. Please try again.';
       if (err.message?.includes('Failed to fetch') || err.message?.includes('Network request failed')) {
         message = 'Cannot connect to server. Make sure the backend is running.';
-      } else if (err.message) {
-        message = err.message;
+      } else if (err.message?.includes('Invalid email or password')) {
+        message = 'Invalid email or password. Please try again.';
+      } else if (err.message?.includes('Too many requests')) {
+        message = 'Too many login attempts. Please wait a moment and try again.';
       }
+      // Don't pass raw backend errors to the UI — use the safe default above
       setErrors({ form: message });
     } finally {
       setIsSubmitting(false);
@@ -140,7 +144,10 @@ export default function LoginScreen() {
             {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
           </View>
 
-          <TouchableOpacity style={styles.forgotPassword}>
+          <TouchableOpacity
+            style={styles.forgotPassword}
+            onPress={() => RNAlert.alert('Forgot Password', 'Password reset is not yet available. Please contact support for help.')}
+          >
             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
 

@@ -17,6 +17,7 @@ or http://localhost:8000/docs for the Swagger API docs.
 """
 
 import logging
+import socket
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -35,6 +36,18 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname
 BASE_DIR = Path(__file__).resolve().parent
 
 
+def _get_local_ip() -> str | None:
+    """Best-effort detection of the machine's LAN IP for CORS."""
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except Exception:
+        return None
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Startup: init DB + start scrapers. Shutdown: stop scheduler."""
@@ -48,15 +61,24 @@ app = FastAPI(title="RiskRadar API", version="1.0.0", lifespan=lifespan)
 
 # --- CORS middleware -------------------------------------------------------
 # Allows the React Native app and web frontend to call the API.
-# Add your production domain here when deploying.
+# Includes the machine's LAN IP so physical Expo devices on the same
+# network are not blocked.  Add your production domain when deploying.
+_cors_origins = [
+    "http://localhost:8081",       # Expo web dev
+    "http://localhost:19006",      # Expo web alt port
+    "http://localhost:8000",       # Backend HTML frontend
+    "http://127.0.0.1:8000",
+]
+
+_lan_ip = _get_local_ip()
+if _lan_ip:
+    _cors_origins.append(f"http://{_lan_ip}:8081")
+    _cors_origins.append(f"http://{_lan_ip}:8000")
+    _cors_origins.append(f"http://{_lan_ip}:19006")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:8081",       # Expo web dev
-        "http://localhost:19006",      # Expo web alt port
-        "http://localhost:8000",       # Backend HTML frontend
-        "http://127.0.0.1:8000",
-    ],
+    allow_origins=_cors_origins,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type"],
     allow_credentials=True,

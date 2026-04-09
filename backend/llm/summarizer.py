@@ -66,7 +66,7 @@ class Summarizer:
             for a in alerts
         ]
 
-        user_msg = prompts.TRIP_PACKING_USER.format(
+        user_msg = prompts.DAILY_DIGEST_USER.format(
             count=len(alerts),
             date=date.today().strftime("%B %d, %Y"),
             alerts_json=json.dumps(alerts_data, indent=2),
@@ -110,8 +110,6 @@ class Summarizer:
             city=city,
             state=state,
             date=date.today().strftime("%B %d, %Y"),
-            city=city,
-            state=state,
             zip_code=zip_code,
             alerts_json=json.dumps(alerts_data, indent=2),
         )

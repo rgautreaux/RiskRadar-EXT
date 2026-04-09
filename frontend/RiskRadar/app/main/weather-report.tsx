@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAuth } from '@/contexts/auth-context';
 import { apiFetch } from '@/utils/api';
 import { StateView } from '@/components/ui/state-view';
 
@@ -36,11 +37,45 @@ interface AlertItem {
 }
 
 interface LocationInfo {
-  zip_code: string;
+  zip_code: string | null;
   city: string;
   state: string;
   latitude: number;
   longitude: number;
+}
+
+interface ForecastPeriod {
+  date: string;
+  day_name: string;
+  high_temp: number;
+  low_temp: number;
+  description: string;
+  weather_main: string;
+  icon_code: string;
+  wind_mph: number;
+  precip_chance: number;
+  humidity: number;
+  uvi: number;
+}
+
+function forecastIcon(weatherMain: string): keyof typeof Ionicons.glyphMap {
+  const w = weatherMain.toLowerCase();
+  if (w === 'thunderstorm') return 'thunderstorm-outline';
+  if (w === 'snow') return 'snow-outline';
+  if (w === 'rain' || w === 'drizzle') return 'rainy-outline';
+  if (w === 'atmosphere') return 'water-outline';
+  if (w === 'clouds') return 'cloudy-outline';
+  return 'sunny-outline';
+}
+
+function forecastIconColor(weatherMain: string): string {
+  const w = weatherMain.toLowerCase();
+  if (w === 'thunderstorm') return '#6B7280';
+  if (w === 'snow') return '#93C5FD';
+  if (w === 'rain' || w === 'drizzle') return '#3B82F6';
+  if (w === 'atmosphere') return '#9CA3AF';
+  if (w === 'clouds') return '#6B7280';
+  return '#F59E0B';
 }
 
 export default function WeatherReport() {
@@ -48,41 +83,114 @@ export default function WeatherReport() {
   const scheme = useColorScheme() ?? 'light';
   const palette = Colors[scheme];
   const styles = getStyles(palette);
+  const { isLoggedIn } = useAuth();
   const params = useLocalSearchParams();
-  const rawZipCode = params.zipCode;
-  const zipCode = Array.isArray(rawZipCode) ? rawZipCode[0] : rawZipCode ?? 'Unknown Location';
+  // Accept either "query" (new) or "zipCode" (legacy) param
+  const rawQuery = params.query ?? params.zipCode;
+  const query = (Array.isArray(rawQuery) ? rawQuery[0] : rawQuery ?? '').trim();
 
   const [summary, setSummary] = useState<Summary | null>(null);
   const [alerts, setAlerts] = useState<AlertItem[]>([]);
   const [locationInfo, setLocationInfo] = useState<LocationInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isSaved, setIsSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [forecast, setForecast] = useState<ForecastPeriod[]>([]);
+
+  const fetchData = async () => {
+    setError(null);
+    setLoading(true);
+    try {
+      if (!query || query.length < 2) {
+        setError('Please provide a valid city name or zip code.');
+        return;
+      }
+
+      // Step 1: Resolve the query (city name or zip) to coordinates via /location/search
+      const loc = await apiFetch<LocationInfo>(
+        `/location/search?q=${encodeURIComponent(query)}`
+      );
+      setLocationInfo(loc);
+
+      // Step 2: Fetch alerts — use zip if available, otherwise use lat/lon/state
+      const alertsParam = loc.zip_code
+        ? `zip_code=${loc.zip_code}`
+        : `lat=${loc.latitude}&lon=${loc.longitude}&state=${loc.state}`;
+      const alertsPromise = apiFetch<AlertItem[]>(`/location/alerts?${alertsParam}`).catch(() => []);
+
+      // Step 3: Summaries — only zip-based endpoints are available, so use zip if we have one
+      const summaryPromises: [Promise<Summary | null>, Promise<Summary | null>] = loc.zip_code
+        ? [
+            apiFetch<Summary | null>(`/summaries/generate/local?zip_code=${loc.zip_code}`, { method: 'POST' }).catch(() => null),
+            apiFetch<Summary | null>(`/summaries/latest/local?zip_code=${loc.zip_code}`).catch(() => null),
+          ]
+        : [Promise.resolve(null), Promise.resolve(null)];
+
+      const [alertsData, generatedSummary, latestSummary] = await Promise.all([
+        alertsPromise,
+        ...summaryPromises,
+      ]);
+
+      const summaryToUse = generatedSummary ?? latestSummary ?? null;
+
+      setSummary(summaryToUse);
+      setAlerts(alertsData ?? []);
+
+      // Step 4: Fetch 7-day OpenWeatherMap forecast (fire-and-forget)
+      apiFetch<ForecastPeriod[]>(`/forecast?lat=${loc.latitude}&lon=${loc.longitude}`)
+        .then(periods => setForecast(periods))
+        .catch(() => {});
+
+      // Check if this location is already saved
+      if (isLoggedIn && loc) {
+        apiFetch<{ id: number; city: string; state: string }[]>('/users/destinations')
+          .then(destinations => {
+            const already = destinations.some(
+              d => d.city.toLowerCase() === loc.city.toLowerCase() && d.state === loc.state
+            );
+            setIsSaved(already);
+          })
+          .catch(() => {});
+      }
+    } catch {
+      setError('Failed to load weather report. Please check your connection.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBookmark = async () => {
+    if (!isLoggedIn) {
+      router.push('/auth/login');
+      return;
+    }
+    if (!locationInfo || isSaved || isSaving) return;
+    setIsSaving(true);
+    try {
+      await apiFetch('/users/destinations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          city: locationInfo.city,
+          state: locationInfo.state,
+          zip_code: locationInfo.zip_code,
+          latitude: locationInfo.latitude,
+          longitude: locationInfo.longitude,
+        }),
+      });
+      setIsSaved(true);
+    } catch {
+      // 409 = already saved
+      setIsSaved(true);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   useEffect(() => {
-    (async () => {
-      try {
-        setError(null);
-        const isValidZip = zipCode.length === 5 && /^\d{5}$/.test(zipCode);
-
-        if (isValidZip) {
-          // Fetch location info and alerts while triggering summary generation in parallel
-          const [locInfo, alertsData] = await Promise.all([
-            apiFetch<LocationInfo>(`/location/info?zip_code=${zipCode}`).catch(() => null),
-            apiFetch<AlertItem[]>(`/location/alerts?zip_code=${zipCode}`).catch(() => []),
-            apiFetch<Summary | null>(`/summaries/generate/local?zip_code=${zipCode}`, { method: 'POST' }).catch(() => null),
-          ]);
-
-        const [summaryData, locInfo, alertsData] = await Promise.all(promises);
-        setSummary(summaryData);
-        setLocationInfo(locInfo);
-        setAlerts(alertsData ?? []);
-      } catch {
-        setError('Failed to load weather report. Please check your connection.');
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [zipCode]);
+    fetchData();
+  }, [query]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -97,7 +205,17 @@ export default function WeatherReport() {
           <Ionicons name="arrow-back" size={24} color={palette.text} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Weather Report</Text>
-        <View style={{ width: 44 }} />
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={handleBookmark}
+          disabled={isSaving}
+        >
+          <Ionicons
+            name={isSaved ? 'bookmark' : 'bookmark-outline'}
+            size={24}
+            color={isSaved ? palette.primary : palette.text}
+          />
+        </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
@@ -105,44 +223,14 @@ export default function WeatherReport() {
           state={loading ? 'loading' : error ? 'error' : 'success'}
           loadingText="Loading weather report..."
           errorText={error || 'Failed to load report'}
-          onRetry={() => {
-            setLoading(true);
-            setError(null);
-            // Retry the fetch
-            (async () => {
-              try {
-                const isValidZip = zipCode.length === 5 && /^\d{5}$/.test(zipCode);
-                const promises: Promise<any>[] = [
-                  apiFetch<Summary | null>(`/summaries/latest/local?zip_code=${zipCode}`).catch(() => null)
-                ];
-                if (isValidZip) {
-                  promises.push(
-                    apiFetch<LocationInfo>(`/location/info?zip_code=${zipCode}`).catch(() => null),
-                    apiFetch<AlertItem[]>(`/location/alerts?zip_code=${zipCode}`).catch(() => []),
-                    apiFetch<Summary | null>(`/summaries/generate/local?zip_code=${zipCode}`, { method: 'POST' }).catch(() => null),
-                    apiFetch<Summary | null>(`/summaries/latest/local?zip_code=${zipCode}`).catch(() => null)
-                  );
-                } else {
-                  promises.push(Promise.resolve(null), Promise.resolve([]));
-                }
-                const [summaryData, locInfo, alertsData] = await Promise.all(promises);
-                setSummary(summaryData);
-                setLocationInfo(locInfo);
-                setAlerts(alertsData ?? []);
-              } catch {
-                setError('Failed to load weather report. Please check your connection.');
-              } finally {
-                setLoading(false);
-              }
-            })();
-          }}
+          onRetry={fetchData}
         >
           {/* Location Header */}
           <View style={styles.mainWeatherCard}>
             <Text style={styles.locationText}>
               {locationInfo
-                ? `${locationInfo.city}, ${locationInfo.state} ${zipCode}`
-                : `Location: ${zipCode}`}
+                ? `${locationInfo.city}, ${locationInfo.state}${locationInfo.zip_code ? ` ${locationInfo.zip_code}` : ''}`
+                : query}
             </Text>
             <View style={styles.tempContainer}>
               <Ionicons name="partly-sunny" size={80} color="#F59E0B" />
@@ -169,6 +257,41 @@ export default function WeatherReport() {
               )}
             </View>
           </View>
+
+          {/* 7-Day Forecast */}
+          {forecast.length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>7-Day Forecast</Text>
+              <View style={styles.summaryCard}>
+                {forecast.map((period, i) => {
+                  const dayLabel = period.day_name.slice(0, 3);
+                  const icon = forecastIcon(period.weather_main);
+                  const iconColor = forecastIconColor(period.weather_main);
+                  return (
+                    <React.Fragment key={i}>
+                      {i > 0 && <View style={styles.forecastDivider} />}
+                      <View style={styles.forecastRow}>
+                        <Text style={styles.forecastDay}>{dayLabel}</Text>
+                        <Ionicons name={icon} size={22} color={iconColor} />
+                        <Text style={styles.forecastDesc} numberOfLines={1}>{period.description}</Text>
+                        <View style={styles.forecastRight}>
+                          {period.precip_chance > 0 && (
+                            <Text style={styles.forecastPrecip}>
+                              <Ionicons name="water-outline" size={11} color={palette.primary} />{' '}
+                              {period.precip_chance}%
+                            </Text>
+                          )}
+                          <Text style={styles.forecastTemp}>
+                            {Math.round(period.high_temp)}° / {Math.round(period.low_temp)}°
+                          </Text>
+                        </View>
+                      </View>
+                    </React.Fragment>
+                  );
+                })}
+              </View>
+            </View>
+          )}
 
           {/* Active Alerts Summary */}
           <View style={styles.section}>
@@ -314,6 +437,40 @@ function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
       color: palette.textSecondary,
       marginTop: 2,
       textTransform: 'capitalize',
+    },
+    forecastRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: 12,
+      gap: 10,
+    },
+    forecastDivider: {
+      height: 1,
+      backgroundColor: palette.border,
+    },
+    forecastDay: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: palette.text,
+      width: 72,
+    },
+    forecastDesc: {
+      flex: 1,
+      fontSize: 13,
+      color: palette.textSecondary,
+    },
+    forecastRight: {
+      alignItems: 'flex-end',
+    },
+    forecastTemp: {
+      fontSize: 15,
+      fontWeight: '700',
+      color: palette.text,
+    },
+    forecastPrecip: {
+      fontSize: 11,
+      color: palette.primary,
+      marginBottom: 2,
     },
   });
 }

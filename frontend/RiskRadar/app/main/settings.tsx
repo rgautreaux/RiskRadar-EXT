@@ -10,12 +10,15 @@ import {
   Platform,
   StatusBar,
   TextInput,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import * as Notifications from 'expo-notifications';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/auth-context';
+import { apiFetch } from '@/utils/api';
 import { PrimaryButton } from '@/components/ui/PrimaryButton';
 
 export default function SettingsScreen() {
@@ -26,12 +29,55 @@ export default function SettingsScreen() {
   
   const { user, isLoggedIn, logout, isDevUserMode, toggleDevUserMode } = useAuth();
 
-  // Local state for toggles (mocked for now, not saved to DB)
-  const [pushEnabled, setPushEnabled] = useState(true);
+  const [pushEnabled, setPushEnabled] = useState(false);
   const [emailEnabled, setEmailEnabled] = useState(false);
   const [smsEnabled, setSmsEnabled] = useState(false);
   const [useGps, setUseGps] = useState(false);
   const [zipCode, setZipCode] = useState(user?.zip_code || '');
+
+  const handlePushToggle = async (value: boolean) => {
+    if (!value) {
+      setPushEnabled(false);
+      if (isLoggedIn && user) {
+        apiFetch(`/users/${user.id}/preferences`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ device_token: null }),
+        }).catch(() => {});
+      }
+      return;
+    }
+
+    // Request permission
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+
+    if (finalStatus !== 'granted') {
+      Alert.alert(
+        'Permission Required',
+        'Enable notifications in your device settings to receive RiskRadar alerts.',
+        [{ text: 'OK' }]
+      );
+      return;
+    }
+
+    // Get push token and save to backend
+    const tokenData = await Notifications.getExpoPushTokenAsync();
+    const token = tokenData.data;
+    setPushEnabled(true);
+
+    if (isLoggedIn && user) {
+      apiFetch(`/users/${user.id}/preferences`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ device_token: token }),
+      }).catch(() => {});
+    }
+  };
 
   const handleLogout = async () => {
     if (user && !isDevUserMode) {
@@ -71,7 +117,7 @@ export default function SettingsScreen() {
               </View>
               <Switch
                 value={pushEnabled}
-                onValueChange={setPushEnabled}
+                onValueChange={handlePushToggle}
                 trackColor={{ false: palette.border, true: palette.primary }}
                 thumbColor={Platform.OS === 'ios' ? '#FFFFFF' : pushEnabled ? palette.primary : '#f4f3f4'}
               />

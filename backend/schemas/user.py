@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_validator, EmailStr
 
 """
 Pydantic schemas for the User resource.
@@ -15,13 +15,20 @@ from datetime import datetime
 class UserCreate(BaseModel):
     """POST /users/register — required fields to create an account."""
     display_name: str
-    email: str
+    email: EmailStr
     password: str
     zip_code: Optional[str] = None
 
+    @field_validator("password")
+    @classmethod
+    def password_strength(cls, v: str) -> str:
+        if len(v) < 6:
+            raise ValueError("Password must be at least 6 characters")
+        return v
+
 class UserLogin(BaseModel):
     """POST /users/login — email + password to get a JWT back."""
-    email: str
+    email: EmailStr
     password: str
 
 class UserPrefsUpdate(BaseModel):
