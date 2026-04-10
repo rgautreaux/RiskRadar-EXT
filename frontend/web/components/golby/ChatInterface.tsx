@@ -47,7 +47,7 @@ interface ChatInterfaceProps {
 	onClose?: () => void;
 	pageContext?: string;
 	isAdmin?: boolean;
-	adminUserId?: number;
+	currentUserId?: number;
 }
 
 const defaultSuggestions = [
@@ -351,7 +351,13 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 	return text;
 }
 
-export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageContext = 'unknown', isAdmin = false, adminUserId }: ChatInterfaceProps) {
+export function ChatInterface({
+	suggestions = defaultSuggestions,
+	onClose,
+	pageContext = 'unknown',
+	isAdmin = false,
+	currentUserId,
+}: ChatInterfaceProps) {
 	const [messages, setMessages] = useState<Message[]>([
 		{
 			id: '1',
@@ -405,7 +411,7 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 	}, [isAdmin]);
 
 	const refreshWeeklyAnalytics = async () => {
-		if (!isAdmin || adminUserId === undefined) {
+		if (!isAdmin) {
 			setAnalyticsError('Admin access required to view analytics.');
 			setWeeklyAnalytics(null);
 			return;
@@ -413,7 +419,7 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 		setAnalyticsLoading(true);
 		setAnalyticsError(null);
 		try {
-			const analytics = await fetchWeeklyFeedbackAnalytics(7, sessionIdRef.current, adminUserId);
+			const analytics = await fetchWeeklyFeedbackAnalytics(7, sessionIdRef.current);
 			setWeeklyAnalytics(analytics);
 		} catch {
 			setAnalyticsError('Unable to load weekly analytics right now.');
@@ -660,6 +666,10 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 						<div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-700">
 							<span>Session ID</span>
 							<span className="font-mono text-[11px] break-all">{sessionIdRef.current}</span>
+							<span>Current User ID</span>
+							<span>{currentUserId ?? 'Anonymous'}</span>
+							<span>Access</span>
+							<span>{isAdmin ? 'Admin' : 'Standard user'}</span>
 							<span>Feedback Count</span>
 							<span>{feedbackCount}</span>
 							<span>Style Bias</span>

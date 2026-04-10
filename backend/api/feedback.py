@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
+from auth.dependencies import get_optional_current_user, require_admin_user
 from db.database import get_db
 from db.models import Feedback, User
 from schemas.feedback import FeedbackCreate, FeedbackOut
@@ -24,26 +25,18 @@ def _safe_parse_timestamp(value: str | None) -> datetime | None:
         return None
 
 
-def _require_admin(admin_user_id: int | None, db: Session) -> User:
-    if admin_user_id is None:
-        raise HTTPException(status_code=403, detail="Admin access required")
-
-    user = db.query(User).filter(User.id == admin_user_id).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    if not bool(user.is_admin):
-        raise HTTPException(status_code=403, detail="Admin access required")
-
-    return user
-
-
 @router.post("", response_model=FeedbackOut)
-def record_feedback(body: FeedbackCreate, db: Session = Depends(get_db)):
-    if body.user_id is not None:
-        user = db.query(User).filter(User.id == body.user_id).first()
+def record_feedback(
+    body: FeedbackCreate,
+    db: Session = Depends(get_db),
+    current_user: User | None = Depends(get_optional_current_user),
+):
+    effective_user_id = current_user.id if current_user is not None else body.user_id
+    if effective_user_id is not None:
+        user = db.query(User).filter(User.id == effective_user_id).first()
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
+        effective_user_id = user.id
 
     feedback = (
         db.query(Feedback)
@@ -55,7 +48,7 @@ def record_feedback(body: FeedbackCreate, db: Session = Depends(get_db)):
         feedback = Feedback(
             session_id=body.session_id,
             message_id=body.message_id,
-            user_id=body.user_id,
+            user_id=effective_user_id,
             reaction=body.reaction,
             rating=body.rating,
             page_context=body.page_context,
@@ -65,7 +58,7 @@ def record_feedback(body: FeedbackCreate, db: Session = Depends(get_db)):
         )
         db.add(feedback)
     else:
-        feedback.user_id = body.user_id if body.user_id is not None else feedback.user_id
+        feedback.user_id = effective_user_id if effective_user_id is not None else feedback.user_id
         feedback.reaction = body.reaction
         feedback.rating = body.rating
         feedback.page_context = body.page_context
@@ -90,12 +83,12 @@ def list_session_feedback(session_id: str, db: Session = Depends(get_db)):
 
 @router.get("/analytics")
 def feedback_analytics(
-    admin_user_id: int | None = None,
     session_id: str | None = None,
     response_category: str | None = None,
+    current_user: User = Depends(require_admin_user),
     db: Session = Depends(get_db),
 ):
-    _require_admin(admin_user_id, db)
+    _ = current_user
 
     base_query = db.query(Feedback)
     if session_id:
@@ -148,12 +141,12 @@ def feedback_analytics(
 @router.get("/analytics/weekly")
 def feedback_weekly_report(
     days: int = 7,
-    admin_user_id: int | None = None,
     session_id: str | None = None,
     response_category: str | None = None,
+    current_user: User = Depends(require_admin_user),
     db: Session = Depends(get_db),
 ):
-    _require_admin(admin_user_id, db)
+    _ = current_user
 
     days = max(1, min(days, 30))
     now = datetime.now(timezone.utc)

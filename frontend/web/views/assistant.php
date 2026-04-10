@@ -1,5 +1,8 @@
 <?php rr_render_layout_start('AI Assistant', 'assistant'); ?>
 
+<?php $currentUserResult = rr_fetch_current_user($config); ?>
+<?php $currentUser = $currentUserResult['ok'] ? $currentUserResult['data'] : null; ?>
+
 <!-- RiskRadar AI Assistant Widget Assets -->
 <link rel="stylesheet" href="/public/assets/index.css">
 <link rel="modulepreload" href="/public/assets/index-CbcLeLl0.js">
@@ -26,7 +29,11 @@
     </div>
 
     <!-- React AI Assistant Widget Mount Point -->
-    <div id="riskradar-ai-assistant-widget" data-admin="false" data-admin-user-id=""></div>
+    <div
+        id="riskradar-ai-assistant-widget"
+        data-current-user-id="<?php echo e((string) ($currentUser['id'] ?? '')); ?>"
+        data-is-admin="<?php echo e(!empty($currentUser['is_admin']) ? 'true' : 'false'); ?>"
+    ></div>
     <div class="mt-3" style="font-size: 13px; color: var(--muted-foreground);">
         <em>Note: Chat functionality will be enabled once the backend is ready.</em>
     </div>

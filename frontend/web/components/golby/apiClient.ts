@@ -44,20 +44,20 @@ export interface WeeklyAnalyticsPayload {
 }
 
 export async function fetchCurrentAlerts() {
-  const res = await fetch('/api/v1/alerts?limit=5');
+  const res = await fetch('/api/v1/alerts?limit=5', { credentials: 'include' });
   if (!res.ok) throw new Error('Failed to fetch alerts');
   return await res.json();
 }
 
 export async function fetchRiskOverlay() {
-  const res = await fetch('/api/v1/risk/map');
+  const res = await fetch('/api/v1/risk/map', { credentials: 'include' });
   if (!res.ok) throw new Error('Failed to fetch risk overlay');
   return await res.json();
 }
 
 export async function fetchForecast(location = '') {
   const url = location ? `/api/v1/forecast?location=${encodeURIComponent(location)}` : '/api/v1/forecast';
-  const res = await fetch(url);
+  const res = await fetch(url, { credentials: 'include' });
   if (!res.ok) throw new Error('Failed to fetch forecast');
   return await res.json();
 }
@@ -68,6 +68,7 @@ export async function fetchAssistantReply(payload: AssistantRequestPayload): Pro
     headers: {
       'Content-Type': 'application/json',
     },
+    credentials: 'include',
     body: JSON.stringify(payload),
   });
 
@@ -84,6 +85,7 @@ export async function sendGolbyFeedback(payload: GolbyFeedbackPayload) {
     headers: {
       'Content-Type': 'application/json',
     },
+    credentials: 'include',
     body: JSON.stringify(payload),
   });
 
@@ -94,16 +96,22 @@ export async function sendGolbyFeedback(payload: GolbyFeedbackPayload) {
   return await res.json();
 }
 
-export async function fetchWeeklyFeedbackAnalytics(days = 7, sessionId?: string, adminUserId?: number): Promise<WeeklyAnalyticsPayload> {
+export async function fetchCurrentUser() {
+  const res = await fetch('/api/v1/auth/me', { credentials: 'include' });
+  if (!res.ok) {
+    throw new Error('Failed to fetch current user');
+  }
+
+  return await res.json();
+}
+
+export async function fetchWeeklyFeedbackAnalytics(days = 7, sessionId?: string): Promise<WeeklyAnalyticsPayload> {
   const params = new URLSearchParams({ days: String(days) });
   if (sessionId) {
     params.set('session_id', sessionId);
   }
-  if (adminUserId !== undefined) {
-    params.set('admin_user_id', String(adminUserId));
-  }
 
-  const res = await fetch(`/api/v1/feedback/analytics/weekly?${params.toString()}`);
+  const res = await fetch(`/api/v1/feedback/analytics/weekly?${params.toString()}`, { credentials: 'include' });
   if (!res.ok) {
     throw new Error('Failed to fetch weekly feedback analytics');
   }

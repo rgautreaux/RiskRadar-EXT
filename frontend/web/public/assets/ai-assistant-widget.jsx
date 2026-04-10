@@ -8,15 +8,38 @@ import { WelcomeTab } from '../../components/golby/WelcomeTab';
 function GolbyAssistantWidget() {
   const [open, setOpen] = React.useState(false);
   const [pageContext, setPageContext] = React.useState('unknown');
+  const [currentUserId, setCurrentUserId] = React.useState(undefined);
   const [isAdmin, setIsAdmin] = React.useState(false);
-  const [adminUserId, setAdminUserId] = React.useState(undefined);
 
   React.useEffect(() => {
     setPageContext(detectCurrentPage());
     const mount = document.getElementById('riskradar-ai-assistant-widget');
-    setIsAdmin(mount?.dataset.admin === 'true');
-    const parsedAdminUserId = Number(mount?.dataset.adminUserId);
-    setAdminUserId(Number.isFinite(parsedAdminUserId) && parsedAdminUserId > 0 ? parsedAdminUserId : undefined);
+
+    const parsedCurrentUserId = Number(mount?.dataset.currentUserId);
+    if (Number.isFinite(parsedCurrentUserId) && parsedCurrentUserId > 0) {
+      setCurrentUserId(parsedCurrentUserId);
+    }
+
+    setIsAdmin(mount?.dataset.isAdmin === 'true');
+
+    fetch('/api/v1/auth/me', { credentials: 'include' })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('not-authenticated');
+        }
+
+        return response.json();
+      })
+      .then((currentUser) => {
+        if (currentUser?.id && Number.isFinite(Number(currentUser.id))) {
+          setCurrentUserId(Number(currentUser.id));
+        }
+
+        setIsAdmin(Boolean(currentUser?.is_admin));
+      })
+      .catch(() => {
+        // Keep the server-rendered session state if the current user lookup fails.
+      });
   }, []);
 
   return (
@@ -25,7 +48,7 @@ function GolbyAssistantWidget() {
       {open && (
         <div style={{ position: 'fixed', bottom: 100, right: 32, zIndex: 1000 }}>
           <div style={{ background: 'rgba(255,255,255,0.98)', borderRadius: 24, boxShadow: '0 8px 32px rgba(0,0,0,0.18)', padding: 0, minWidth: 360, maxWidth: 400 }}>
-            <ChatInterface onClose={() => setOpen(false)} pageContext={pageContext} isAdmin={isAdmin} adminUserId={adminUserId} />
+            <ChatInterface onClose={() => setOpen(false)} pageContext={pageContext} isAdmin={isAdmin} currentUserId={currentUserId} />
           </div>
         </div>
       )}

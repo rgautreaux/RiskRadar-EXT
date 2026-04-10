@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
+from auth.dependencies import get_optional_current_user
 from db.database import get_db
 from db.models import Alert, User
 from schemas.assistant import AssistantRequest, AssistantResponse
@@ -80,7 +81,11 @@ def _severity_weight(severity: str | None) -> float:
 
 
 @router.post("/respond", response_model=AssistantResponse)
-def respond(body: AssistantRequest, db: Session = Depends(get_db)):
+def respond(
+    body: AssistantRequest,
+    db: Session = Depends(get_db),
+    current_user: User | None = Depends(get_optional_current_user),
+):
     guardrail_category = _detect_guardrail(body.message)
     if guardrail_category:
         return AssistantResponse(
@@ -90,11 +95,12 @@ def respond(body: AssistantRequest, db: Session = Depends(get_db)):
             sources=["guardrail-policy"],
         )
 
-    user = None
+    user = current_user
     if body.user_id is not None:
-        user = db.query(User).filter(User.id == body.user_id).first()
         if user is None:
-            raise HTTPException(status_code=404, detail="User not found")
+            user = db.query(User).filter(User.id == body.user_id).first()
+            if user is None:
+                raise HTTPException(status_code=404, detail="User not found")
 
     message = body.message.lower()
     alerts = _query_active_alerts(db, body.location)
