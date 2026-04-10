@@ -1,5 +1,4 @@
-"""
-Migration Script: Encrypt and HMAC Existing User Emails
+"""Migration Script: Encrypt and HMAC Existing User Emails.
 
 This script migrates all users in the database:
 - Encrypts the plaintext email into email_encrypted
@@ -17,6 +16,8 @@ import sys
 from importlib import import_module
 from pathlib import Path
 
+from sqlalchemy import inspect, text
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 BACKEND_DIR = Path(__file__).resolve().parents[2]
@@ -30,6 +31,7 @@ models_module = import_module("db.models")
 encrypt_email = security_module.encrypt_email
 email_hmac = security_module.email_hmac
 SessionLocal = database_module.SessionLocal
+Base = database_module.Base
 MigrationLog = models_module.MigrationLog
 User = models_module.User
 
@@ -71,6 +73,26 @@ def _log(
     )
 
 
+def _ensure_phase3_schema(db: Session) -> None:
+    """Create the migration log table and add missing email columns if needed."""
+    bind = db.get_bind()
+    if bind is None:
+        raise RuntimeError("Could not resolve database bind for email migration")
+
+    Base.metadata.create_all(bind=bind)
+
+    inspector = inspect(bind)
+    user_columns = {column["name"] for column in inspector.get_columns("users")}
+
+    if "email_encrypted" not in user_columns:
+        db.execute(text("ALTER TABLE users ADD COLUMN email_encrypted TEXT"))
+
+    if "email_hmac" not in user_columns:
+        db.execute(text("ALTER TABLE users ADD COLUMN email_hmac TEXT"))
+
+    db.commit()
+
+
 def migrate_emails() -> int:
     db: Session = SessionLocal()
     processed = 0
@@ -78,6 +100,8 @@ def migrate_emails() -> int:
     failed = 0
 
     try:
+        _ensure_phase3_schema(db)
+
         _log(db, action="email_encryption_batch", status="started")
         db.commit()
 
@@ -91,24 +115,12 @@ def migrate_emails() -> int:
                 .all()
             )
             if not batch:
-                break
-
-            for user in batch:
-                processed += 1
-                user_id = user.id
-                try:
-                    with db.begin_nested():
-                        original_email = user.email
-                        if not original_email:
-                            raise ValueError("User email is empty")
-
-                        user.email_encrypted = encrypt_email(original_email)
                         user.email_hmac = email_hmac(original_email)
                         user.email = None
 
                         _log(db, action="email_encryption", status="success", user_id=user_id)
                     succeeded += 1
-                except Exception as exc:  # noqa: BLE001 - capture migration/user-level failures safely
+                except (ValueError, TypeError, OSError, RuntimeError, SQLAlchemyError) as exc:
                     failed += 1
                     _log(
                         db,
@@ -127,7 +139,7 @@ def migrate_emails() -> int:
         _log(db, action="email_encryption_batch", status="completed", error_message=summary)
         db.commit()
         return 0 if failed == 0 else 2
-    except Exception as exc:  # noqa: BLE001, pyright: ignore[reportGeneralTypeIssues] - capture batch-level failure and persist audit record
+    except (ValueError, TypeError, OSError, RuntimeError, SQLAlchemyError) as exc:
         db.rollback()
         _log(
             db,
