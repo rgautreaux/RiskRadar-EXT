@@ -49,6 +49,27 @@ class Summary(Base):
     created_at = Column(Text, nullable=False, default=_now)
 
 
+class Feedback(Base):
+    __tablename__ = "feedback"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    session_id = Column(Text, nullable=False)
+    message_id = Column(Text, nullable=False)
+    user_id = Column(Integer)
+    reaction = Column(Text, nullable=False)
+    rating = Column(Integer, nullable=False)
+    page_context = Column(Text)
+    response_category = Column(Text)
+    response_text = Column(Text)
+    comment = Column(Text)
+    created_at = Column(Text, nullable=False, default=_now)
+    updated_at = Column(Text, nullable=False, default=_now, onupdate=_now)
+
+    __table_args__ = (
+        UniqueConstraint("session_id", "message_id", name="uq_feedback_session_message"),
+    )
+
+
 class User(Base):
     __tablename__ = "users"
 

@@ -21,26 +21,18 @@
         <button type="button" id="use-my-location-btn" style="padding: 0.5rem 1rem; border-radius: 6px; background: var(--accent); color: var(--primary); border: none; font-weight: 600;">Use My Location</button>
     </form>
     <div id="forecast-location-status" style="font-size: 0.95rem; color: var(--muted-foreground); margin-bottom: 0.5rem;"></div>
+    <div id="forecast-results" aria-live="polite"></div>
 </section>
 
 
 
 <?php
-// Stage 4: Dynamic forecast data integration (planned)
-// This block will fetch forecast data from the backend once available.
-// Example usage:
-// $forecastResult = rr_api_get_forecast($config);
-// if ($forecastResult['ok']) {
-//     $forecastData = $forecastResult['data'];
-//     // Render dynamic forecast chart and details here
-// } else {
-//     // Render fallback or error message
-// }
+// Stage 4: Dynamic forecast data integration now happens in the companion script.
 ?>
 <section class="panel" style="background: var(--card); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 2rem 1.5rem; max-width: 700px; margin: 0 auto;">
     <h2 class="mb-2" style="color: var(--primary); font-family: 'Space Grotesk', Inter, Arial, sans-serif;">24–48 Hour Risk Forecast</h2>
-    <?php // TODO: Replace static mockup below with dynamic rendering when backend is ready ?>
-    <!-- Forecasted condition icons row (static for now) -->
+    <p class="muted" style="margin-bottom: 1rem;">The live forecast panel above will update from the backend and summarize risk, confidence, and the current outlook for your selected location.</p>
+    <!-- Forecasted condition icons row (static preview) -->
     <div class="flex items-center justify-between mb-2" style="gap: 0.5rem; max-width: 560px; margin: 0 auto 1.5rem auto;">
         <img src="/assets/illustrations/weather.svg" alt="Weather" title="Weather" style="width: 38px; height: 38px;" />
         <img src="/assets/illustrations/fire.svg" alt="Fire" title="Fire" style="width: 38px; height: 38px;" />
@@ -80,7 +72,7 @@
         Confidence Band
     </div>
     <div class="mt-4" style="color: var(--destructive); font-size: 13px;">
-        <strong>Note:</strong> This is a static mockup. Actual data and interactivity will be added once the backend is ready.
+        <strong>Note:</strong> The static preview remains as a fallback visual until the live forecast panel has data.
     </div>
 </section>
 
