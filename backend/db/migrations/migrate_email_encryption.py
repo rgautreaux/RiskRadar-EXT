@@ -10,11 +10,12 @@ Run this script in a safe environment after backing up the database.
 """
 
 from datetime import datetime, timezone
+from importlib import import_module
 import os
 import re
 import sys
-from importlib import import_module
 from pathlib import Path
+from typing import cast
 
 from sqlalchemy import inspect, text
 from sqlalchemy.exc import SQLAlchemyError
@@ -116,16 +117,16 @@ def migrate_emails() -> int:
 
             for user in batch:
                 processed += 1
-                user_id = user.id
+                user_id = cast(int, user.id)
                 try:
                     with db.begin_nested():
-                        original_email = user.email
-                        if not original_email:
+                        original_email = cast(str | None, user.email)
+                        if original_email is None or original_email == "":
                             raise ValueError("User email is empty")
 
-                        user.email_encrypted = encrypt_email(original_email)
-                        user.email_hmac = email_hmac(original_email)
-                        user.email = None
+                        setattr(user, "email_encrypted", encrypt_email(original_email))
+                        setattr(user, "email_hmac", email_hmac(original_email))
+                        setattr(user, "email", None)
 
                         _log(db, action="email_encryption", status="success", user_id=user_id)
                     succeeded += 1
