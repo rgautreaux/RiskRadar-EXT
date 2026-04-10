@@ -3,14 +3,18 @@
 from datetime import datetime, timezone
 import os
 import sys
+from importlib import import_module
 from pathlib import Path
 
 BACKEND_DIR = Path(__file__).resolve().parents[2]
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
-from db.database import SessionLocal
-from db.models import MigrationLog
+database_module = import_module("db.database")
+models_module = import_module("db.models")
+
+SessionLocal = database_module.SessionLocal
+MigrationLog = models_module.MigrationLog
 
 
 def _now_utc() -> datetime:

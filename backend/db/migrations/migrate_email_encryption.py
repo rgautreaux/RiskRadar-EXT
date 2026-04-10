@@ -14,6 +14,7 @@ from datetime import datetime, timezone
 import os
 import re
 import sys
+from importlib import import_module
 from pathlib import Path
 
 from sqlalchemy.orm import Session
@@ -22,9 +23,15 @@ BACKEND_DIR = Path(__file__).resolve().parents[2]
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
-from auth.security import encrypt_email, email_hmac
-from db.database import SessionLocal
-from db.models import MigrationLog, User
+security_module = import_module("auth.security")
+database_module = import_module("db.database")
+models_module = import_module("db.models")
+
+encrypt_email = security_module.encrypt_email
+email_hmac = security_module.email_hmac
+SessionLocal = database_module.SessionLocal
+MigrationLog = models_module.MigrationLog
+User = models_module.User
 
 
 EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
