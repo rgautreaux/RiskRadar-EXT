@@ -16,7 +16,7 @@ function GolbyAssistantWidget() {
     setPageContext(detectCurrentPage());
     const mount = document.getElementById('riskradar-ai-assistant-widget');
 
-    const parsedCurrentUserId = Number(mount?.dataset.currentUserId);
+    const parsedCurrentUserId = Number(mount?.dataset.currentUserId ?? mount?.dataset.adminUserId);
     if (Number.isFinite(parsedCurrentUserId) && parsedCurrentUserId > 0) {
       setCurrentUserId(parsedCurrentUserId);
     }

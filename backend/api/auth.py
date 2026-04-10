@@ -14,18 +14,6 @@ from api.users import _serialize_user
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
-def _set_session_cookie(response: Response, session_token: str, expires_at) -> None:
-    response.set_cookie(
-        key=SESSION_COOKIE_NAME,
-        value=session_token,
-        httponly=True,
-        secure=False,
-        samesite="lax",
-        path="/",
-        expires=int(expires_at.timestamp()),
-    )
-
-
 @router.post("/login", response_model=AuthSessionOut)
 def login(body: AuthLoginRequest, request: Request, response: Response, db: Session = Depends(get_db)):
     normalized_email = normalize_email(str(body.email))
