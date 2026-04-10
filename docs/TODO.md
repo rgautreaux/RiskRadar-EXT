@@ -94,7 +94,7 @@ Summary:
 
 ---
 
-## Stage 3 TODOs: Data Visualization and UX Extension (Completed)
+## Stage 3 TODOs: Data Visualization and UX Extension (Implementation Completed, Evidence Closeout Pending)
 
 ### Objective
 Add an interactive risk map for spatial understanding of risk conditions.
@@ -115,6 +115,12 @@ Add an interactive risk map for spatial understanding of risk conditions.
 - [x] Accessibility features are present and verified.
 - [ ] Final manual screenshot and recording bundle complete.
 
+### S3-06 Evidence Closeout Next Steps
+- [ ] Capture desktop (1280px) screenshots for map overlays, legend/toggles, and personalized view.
+- [ ] Capture mobile-width (360px) screenshots for responsive map controls and accessibility labels.
+- [ ] Record a short walkthrough showing zoom/pan/click interactions, overlay toggles, and fallback/error handling.
+- [ ] File artifacts under `static/evidence/` and cross-link them in `docs/PLANNING_DOCS/STAGE3_DOCS/STAGE3_VERIFICATION_EVIDENCE.md`.
+
 ### Stage 3 Session Entries (After Checklist)
 
 #### Stage 3 Phase 5 Completion Session (2026-03-24)
@@ -128,6 +134,13 @@ Summary:
 #### Stage 3 Documentation and Synchronization Session (2026-04-27)
 Summary:
 - Conducted another full synchronization pass and aligned top-level artifacts.
+
+#### Stage 3 Verification Follow-Through Session (2026-04-10)
+Summary:
+- Ran a focused frontend verification pass for Forecast and Assistant integration paths against live backend and PHP frontend routes.
+- Confirmed forecast payload rendering and assistant guardrail/live-response behavior in runtime checks.
+- Identified and corrected local runtime schema drift in `backend/riskradar.db` needed for registration-based browser/API smoke validation.
+- Kept S3-06 open pending manual screenshot/recording evidence bundle capture and filing.
 
 ---
 

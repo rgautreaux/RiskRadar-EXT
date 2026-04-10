@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import base64
+import binascii
 import hashlib
 import hmac
 import json
@@ -29,7 +30,7 @@ def _fernet() -> Fernet:
     key_material = _secret_material()
     try:
         return Fernet(key_material.encode("utf-8"))
-    except Exception:
+    except (ValueError, TypeError, binascii.Error):
         digest = hashlib.sha256(key_material.encode("utf-8")).digest()
         return Fernet(base64.urlsafe_b64encode(digest))
 
@@ -131,5 +132,5 @@ def verify_session_token(token: str) -> int | None:
         if expires_at <= int(datetime.now(timezone.utc).timestamp()):
             return None
         return subject
-    except (ValueError, TypeError, json.JSONDecodeError, UnicodeDecodeError, base64.binascii.Error):
+    except (ValueError, TypeError, json.JSONDecodeError, UnicodeDecodeError, binascii.Error):
         return None

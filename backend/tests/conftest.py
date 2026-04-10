@@ -59,6 +59,7 @@ def test_client(db_session):
         allow_origins=["*"],
         allow_methods=["*"],
         allow_headers=["*"],
+        allow_credentials=True,
     )
     test_app.include_router(api_router)
 

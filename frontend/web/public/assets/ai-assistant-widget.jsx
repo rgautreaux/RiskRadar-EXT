@@ -2,6 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { FloatingWidget } from '../../components/golby/FloatingWidget';
 import { ChatInterface } from '../../components/golby/ChatInterface';
+import { fetchCurrentUser } from '../../components/golby/apiClient';
 import { detectCurrentPage } from '../../components/golby/pageContext';
 import { WelcomeTab } from '../../components/golby/WelcomeTab';
 
@@ -22,14 +23,7 @@ function GolbyAssistantWidget() {
 
     setIsAdmin(mount?.dataset.isAdmin === 'true');
 
-    fetch('/api/v1/auth/me', { credentials: 'include' })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('not-authenticated');
-        }
-
-        return response.json();
-      })
+    fetchCurrentUser()
       .then((currentUser) => {
         if (currentUser?.id && Number.isFinite(Number(currentUser.id))) {
           setCurrentUserId(Number(currentUser.id));

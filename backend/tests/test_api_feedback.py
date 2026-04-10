@@ -1,6 +1,12 @@
 """Tests for feedback API endpoints."""
 
 
+def _login(test_client, email: str, password: str):
+    resp = test_client.post("/api/v1/auth/login", json={"email": email, "password": password})
+    assert resp.status_code == 200
+    return resp
+
+
 class TestRecordFeedback:
     def test_create_feedback(self, test_client):
         resp = test_client.post("/api/v1/feedback", json={
@@ -55,9 +61,11 @@ class TestRecordFeedback:
 class TestFeedbackAnalytics:
     def test_feedback_analytics_requires_admin(self, test_client):
         resp = test_client.get("/api/v1/feedback/analytics")
-        assert resp.status_code == 403
+        assert resp.status_code == 401
 
     def test_feedback_analytics_summary(self, test_client, admin_user):
+        _ = admin_user
+        _login(test_client, "admin@example.com", "password123")
         test_client.post("/api/v1/feedback", json={
             "session_id": "session-analytics",
             "message_id": "msg-1",
@@ -73,7 +81,7 @@ class TestFeedbackAnalytics:
             "response_category": "live",
         })
 
-        resp = test_client.get("/api/v1/feedback/analytics", params={"admin_user_id": admin_user.id})
+        resp = test_client.get("/api/v1/feedback/analytics")
         assert resp.status_code == 200
         data = resp.json()
         assert data["total_feedback"] >= 2
@@ -82,6 +90,8 @@ class TestFeedbackAnalytics:
         assert any(entry["response_category"] == "docs" for entry in data["by_category"])
 
     def test_feedback_analytics_filters_by_session(self, test_client, admin_user):
+        _ = admin_user
+        _login(test_client, "admin@example.com", "password123")
         test_client.post("/api/v1/feedback", json={
             "session_id": "session-filter-a",
             "message_id": "msg-a",
@@ -97,16 +107,15 @@ class TestFeedbackAnalytics:
             "response_category": "static",
         })
 
-        resp = test_client.get(
-            "/api/v1/feedback/analytics",
-            params={"admin_user_id": admin_user.id, "session_id": "session-filter-a"},
-        )
+        resp = test_client.get("/api/v1/feedback/analytics", params={"session_id": "session-filter-a"})
         assert resp.status_code == 200
         data = resp.json()
         assert data["total_feedback"] == 1
         assert data["average_rating"] == 4.0
 
     def test_feedback_weekly_report(self, test_client, admin_user):
+        _ = admin_user
+        _login(test_client, "admin@example.com", "password123")
         test_client.post("/api/v1/feedback", json={
             "session_id": "session-weekly",
             "message_id": "msg-w1",
@@ -122,10 +131,7 @@ class TestFeedbackAnalytics:
             "response_category": "live",
         })
 
-        resp = test_client.get(
-            "/api/v1/feedback/analytics/weekly",
-            params={"days": 7, "admin_user_id": admin_user.id},
-        )
+        resp = test_client.get("/api/v1/feedback/analytics/weekly", params={"days": 7})
         assert resp.status_code == 200
         data = resp.json()
         assert data["window_days"] == 7
@@ -133,6 +139,8 @@ class TestFeedbackAnalytics:
         assert len(data["by_day"]) == 7
 
     def test_feedback_weekly_report_filters_by_category(self, test_client, admin_user):
+        _ = admin_user
+        _login(test_client, "admin@example.com", "password123")
         test_client.post("/api/v1/feedback", json={
             "session_id": "session-weekly-category",
             "message_id": "msg-c1",
@@ -148,11 +156,14 @@ class TestFeedbackAnalytics:
             "response_category": "live",
         })
 
-        resp = test_client.get(
-            "/api/v1/feedback/analytics/weekly",
-            params={"days": 7, "admin_user_id": admin_user.id, "response_category": "docs"},
-        )
+        resp = test_client.get("/api/v1/feedback/analytics/weekly", params={"days": 7, "response_category": "docs"})
         assert resp.status_code == 200
         data = resp.json()
         assert data["total_feedback"] == 1
         assert data["average_rating"] == 5.0
+
+    def test_feedback_analytics_rejects_standard_user(self, test_client, sample_user):
+        _ = sample_user
+        _login(test_client, "test@example.com", "password123")
+        resp = test_client.get("/api/v1/feedback/analytics")
+        assert resp.status_code == 403

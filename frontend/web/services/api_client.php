@@ -395,7 +395,13 @@ function rr_login_user(array $config, array $payload): array
 
 function rr_fetch_current_user(array $config): array
 {
-    $result = rr_http_request($config, 'GET', 'auth/me');
+    $sessionToken = $_COOKIE['riskradar_session'] ?? '';
+    $headers = [];
+    if (is_string($sessionToken) && $sessionToken !== '') {
+        $headers[] = 'Cookie: riskradar_session=' . $sessionToken;
+    }
+
+    $result = rr_http_request($config, 'GET', 'auth/me', [], null, $headers);
     if (!$result['ok'] || !is_array($result['data'])) {
         return rr_fallback_result(null, 'No authenticated user is available right now.', $result['status'] ?? null);
     }

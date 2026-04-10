@@ -124,8 +124,9 @@ Recommended sync order when updating progress:
 
 
 **Optional Stretch Goals:**
-- **Stage 3**: Data Visualization and User Experience Extensions — ✅ Completed (2026-03-31)
-   - Interactive risk map, personalized overlays, accessibility, and responsive UX implemented and verified.
+- **Stage 3**: Data Visualization and User Experience Extensions — 🟡 Implementation Complete, Evidence Closeout Pending
+   - Interactive risk map, personalized overlays, accessibility, and responsive UX are implemented.
+   - Manual evidence bundle closeout remains open in `docs/TODO.md` (S3-06).
    - Planning docs in `docs/PLANNING_DOCS/STAGE3_DOCS/`.
 - **Stage 4**: Predictive Analytics and AI-Driven Insights Extensions — ✅ Completed (2026-04-10)
    - Forecast baseline backend and live forecast timeline integration are implemented and verified.
@@ -390,7 +391,7 @@ Reference: `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`
 - Documentation of visualization design choices
 
 ### Progress So Far
-✅ **Completed** - Interactive risk map implemented and all Stage 3 web-app requirements verified:
+🟡 **Implementation Complete; Evidence Closeout Pending** - Interactive risk map is implemented and core Stage 3 web-app behavior has been verified:
 
 - Backend map endpoints implemented and CORS-enabled: `GET /api/v1/alerts/map`, `GET /api/v1/risk/map`, `GET /api/v1/risk/map/personalized/{user_id}`.
 - Web frontend `map.php` fetches and renders live alert and risk overlay data from backend endpoints.
@@ -398,7 +399,7 @@ Reference: `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`
 - Keyboard/touch navigation, dark mode, and responsive layout implemented and verified.
 - Accessibility improvements (ARIA, keyboard navigation, color contrast) applied.
 - Fallback UI and error states handled gracefully; map remains interactive if overlays fail to load.
-- All evidence organized and referenced in planning docs. Onboarding template and handoff summary completed.
+- Most evidence is organized and referenced in planning docs. Final manual screenshot/recording bundle remains pending in `docs/TODO.md` (S3-06).
 See `docs/PLANNING_DOCS/STAGE3_DOCS/` for contract, verification evidence, and implementation spec.
 
 ---

@@ -27,14 +27,22 @@ def _set_session_cookie(response: Response, session_token: str, expires_at) -> N
 
 
 @router.post("/login", response_model=AuthSessionOut)
-def login(body: AuthLoginRequest, response: Response, db: Session = Depends(get_db)):
+def login(body: AuthLoginRequest, request: Request, response: Response, db: Session = Depends(get_db)):
     normalized_email = normalize_email(str(body.email))
     user = db.query(User).filter(User.email_lookup_hash == hash_email(normalized_email)).first()
     if user is None or not user.password_hash or not verify_password(body.password, user.password_hash):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
 
     session_token, expires_at = create_session_token(user.id)
-    _set_session_cookie(response, session_token, expires_at)
+    response.set_cookie(
+        key=SESSION_COOKIE_NAME,
+        value=session_token,
+        httponly=True,
+        secure=request.url.scheme == "https",
+        samesite="lax",
+        path="/",
+        expires=int(expires_at.timestamp()),
+    )
     return AuthSessionOut(
         session_token=session_token,
         expires_at=expires_at.isoformat(),
