@@ -15,7 +15,6 @@ import re
 import sys
 from importlib import import_module
 from pathlib import Path
-from typing import Any, cast
 
 from sqlalchemy import inspect, text
 from sqlalchemy.exc import SQLAlchemyError
@@ -29,12 +28,12 @@ security_module = import_module("auth.security")
 database_module = import_module("db.database")
 models_module = import_module("db.models")
 
-encrypt_email = cast(Any, security_module.encrypt_email)
-email_hmac = cast(Any, security_module.email_hmac)
-SessionLocal = cast(Any, database_module.SessionLocal)
-Base = cast(Any, database_module.Base)
-MigrationLog = cast(Any, models_module.MigrationLog)
-User = cast(Any, models_module.User)
+encrypt_email = security_module.encrypt_email
+email_hmac = security_module.email_hmac
+SessionLocal = database_module.SessionLocal
+Base = database_module.Base
+MigrationLog = models_module.MigrationLog
+User = models_module.User
 
 
 EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
@@ -77,9 +76,6 @@ def _log(
 def _ensure_phase3_schema(db: Session) -> None:
     """Create the migration log table and add missing email columns if needed."""
     bind = db.get_bind()
-    if bind is None:
-        raise RuntimeError("Could not resolve database bind for email migration")
-
     Base.metadata.create_all(bind=bind)
 
     inspector = inspect(bind)
