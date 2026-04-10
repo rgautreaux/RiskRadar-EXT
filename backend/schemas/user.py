@@ -17,6 +17,7 @@ class UserPrefsUpdate(BaseModel):
     notify_severity: Optional[str] = None
     device_token: Optional[str] = None
     health_conditions: Optional[list[str]] = None
+    assistant_style_profile: Optional[dict] = None
 
 
 class UserAdminUpdate(BaseModel):
@@ -34,6 +35,7 @@ class UserOut(BaseModel):
     alert_types: Optional[str] = None
     notify_severity: Optional[str] = None
     health_conditions: Optional[str] = None
+    assistant_style_profile: Optional[str] = None
     created_at: str
 
     model_config = ConfigDict(from_attributes=True)

@@ -9,6 +9,7 @@ from auth.dependencies import get_optional_current_user
 from db.database import get_db
 from db.models import Alert, User
 from schemas.assistant import AssistantRequest, AssistantResponse
+from services.assistant_personality import parse_profile, shape_reply
 
 router = APIRouter(prefix="/assistant", tags=["Assistant"])
 
@@ -96,11 +97,14 @@ def respond(
         )
 
     user = current_user
+    profile = parse_profile(None)
     if body.user_id is not None:
         if user is None:
             user = db.query(User).filter(User.id == body.user_id).first()
             if user is None:
                 raise HTTPException(status_code=404, detail="User not found")
+    if user is not None:
+        profile = parse_profile(user.assistant_style_profile)
 
     message = body.message.lower()
     alerts = _query_active_alerts(db, body.location)
@@ -120,11 +124,12 @@ def respond(
         moderate = sum(1 for alert in alerts if (alert.severity or "").lower() == "moderate")
         low = max(len(alerts) - high - moderate, 0)
         location_label = body.location or "your area"
+        reply = (
+            f"Forecast summary for {location_label}: risk is {_risk_level(score)} ({score}/100). "
+            f"Active alerts -> High/Critical: {high}, Moderate: {moderate}, Low: {low}."
+        )
         return AssistantResponse(
-            reply=(
-                f"Forecast summary for {location_label}: risk is {_risk_level(score)} ({score}/100). "
-                f"Active alerts -> High/Critical: {high}, Moderate: {moderate}, Low: {low}."
-            ),
+            reply=shape_reply(reply, category="live", profile=profile, message=body.message),
             category="live",
             used_live_data=True,
             sources=["alerts", "forecast-baseline"],
@@ -141,8 +146,9 @@ def respond(
 
         top = alerts[:3]
         lines = [f"- {item.title} ({item.severity})" for item in top]
+        reply = "Latest alerts:\n" + "\n".join(lines)
         return AssistantResponse(
-            reply="Latest alerts:\n" + "\n".join(lines),
+            reply=shape_reply(reply, category="live", profile=profile, message=body.message),
             category="live",
             used_live_data=True,
             sources=["alerts"],
@@ -159,33 +165,36 @@ def respond(
 
         weighted = sum(_severity_weight(getattr(alert, "severity", None)) for alert in alerts)
         score = min(100.0, round((weighted / max(len(alerts), 1)) * 100, 1))
+        reply = (
+            f"Current regional risk is {_risk_level(score)} ({score}/100) based on {len(alerts)} active alerts. "
+            "Use the map and forecast pages for location-specific detail."
+        )
         return AssistantResponse(
-            reply=(
-                f"Current regional risk is {_risk_level(score)} ({score}/100) based on {len(alerts)} active alerts. "
-                "Use the map and forecast pages for location-specific detail."
-            ),
+            reply=shape_reply(reply, category="live", profile=profile, message=body.message),
             category="live",
             used_live_data=True,
             sources=["alerts"],
         )
 
     if "help" in message:
+        reply = (
+            "I can help with RiskRadar alerts, forecast summaries, map risk interpretation, and dashboard guidance. "
+            "Try asking: 'forecast for Baton Rouge' or 'show latest alerts'."
+        )
         return AssistantResponse(
-            reply=(
-                "I can help with RiskRadar alerts, forecast summaries, map risk interpretation, and dashboard guidance. "
-                "Try asking: 'forecast for Baton Rouge' or 'show latest alerts'."
-            ),
+            reply=shape_reply(reply, category="fallback", profile=profile, message=body.message),
             category="fallback",
             used_live_data=False,
             sources=["assistant-help"],
         )
 
     role_hint = " and your profile preferences" if user else ""
+    reply = (
+        "I can explain RiskRadar data and features. Ask me about alerts, forecast, or map risk, "
+        f"and I will use current platform data{role_hint} where available."
+    )
     return AssistantResponse(
-        reply=(
-            "I can explain RiskRadar data and features. Ask me about alerts, forecast, or map risk, "
-            f"and I will use current platform data{role_hint} where available."
-        ),
+        reply=shape_reply(reply, category="fallback", profile=profile, message=body.message),
         category="fallback",
         used_live_data=False,
         sources=["assistant-help"],

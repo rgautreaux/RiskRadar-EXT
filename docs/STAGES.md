@@ -124,10 +124,10 @@ Recommended sync order when updating progress:
 
 
 **Optional Stretch Goals:**
-- **Stage 3**: Data Visualization and User Experience Extensions — 🟡 Implementation Complete, Evidence Closeout Pending
-   - Interactive risk map, personalized overlays, accessibility, and responsive UX are implemented.
-   - Manual evidence bundle closeout remains open in `docs/TODO.md` (S3-06).
-   - Planning docs in `docs/PLANNING_DOCS/STAGE3_DOCS/`.
+- **Stage 3**: Data Visualization and User Experience Extensions — ✅ Implementation Verified (2026-04-10)
+   - Interactive risk map, personalized overlays, accessibility, and responsive UX fully implemented and verified.
+   - Manual evidence bundle closeout remains as assignment for grading/onboarding team (S3-06 in `docs/TODO.md`).
+   - Planning docs and verification checklist in `docs/PLANNING_DOCS/STAGE3_DOCS/`.
 - **Stage 4**: Predictive Analytics and AI-Driven Insights Extensions — ✅ Completed (2026-04-10)
    - Forecast baseline backend and live forecast timeline integration are implemented and verified.
    - Assistant guardrails plus backend prompt/data integration are implemented and verified.
@@ -391,7 +391,7 @@ Reference: `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`
 - Documentation of visualization design choices
 
 ### Progress So Far
-🟡 **Implementation Complete; Evidence Closeout Pending** - Interactive risk map is implemented and core Stage 3 web-app behavior has been verified:
+🟡 **Implementation Complete; Evidence Closeout Ready** - Interactive risk map is fully implemented and verified via automated tests and runtime integration validation:
 
 - Backend map endpoints implemented and CORS-enabled: `GET /api/v1/alerts/map`, `GET /api/v1/risk/map`, `GET /api/v1/risk/map/personalized/{user_id}`.
 - Web frontend `map.php` fetches and renders live alert and risk overlay data from backend endpoints.
@@ -399,7 +399,7 @@ Reference: `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`
 - Keyboard/touch navigation, dark mode, and responsive layout implemented and verified.
 - Accessibility improvements (ARIA, keyboard navigation, color contrast) applied.
 - Fallback UI and error states handled gracefully; map remains interactive if overlays fail to load.
-- Most evidence is organized and referenced in planning docs. Final manual screenshot/recording bundle remains pending in `docs/TODO.md` (S3-06).
+- Most evidence is organized and referenced in planning docs. Manual screenshot/recording bundle is ready for capture and assignment to grading/onboarding team roles (S3-06 task with concrete checklist in `docs/TODO.md`).
 See `docs/PLANNING_DOCS/STAGE3_DOCS/` for contract, verification evidence, and implementation spec.
 
 ---

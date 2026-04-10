@@ -86,6 +86,15 @@ class User(Base):
     alert_types = Column(Text, default='["all"]')     # JSON array
     notify_severity = Column(Text, default="high")
     health_conditions = Column(Text, default='[]')    # JSON array of condition keys
+    assistant_style_profile = Column(
+        Text,
+        default=(
+            '{"tone":{"warmth":0.55,"calmness":0.75,"humor":0.4},'
+            '"delivery":{"conciseness":0.7,"detail":0.45,"expandability":0.55},'
+            '"voice":{"formality":0.35},'
+            '"learning":{"feedback_count":0,"last_feedback_at":null}}'
+        ),
+    )
     created_at = Column(Text, nullable=False, default=_now)
     updated_at = Column(Text, nullable=False, default=_now, onupdate=_now)
 

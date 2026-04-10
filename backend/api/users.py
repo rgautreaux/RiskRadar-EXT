@@ -7,6 +7,7 @@ from auth.security import decrypt_email, hash_email, normalize_email, password_h
 from db.database import get_db
 from db.models import User
 from schemas.user import UserCreate, UserPrefsUpdate, UserOut
+from services.assistant_personality import default_profile_json
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -23,6 +24,7 @@ def _serialize_user(user: User) -> UserOut:
         alert_types=user.alert_types,
         notify_severity=user.notify_severity,
         health_conditions=user.health_conditions,
+        assistant_style_profile=user.assistant_style_profile,
         created_at=user.created_at,
     )
 
@@ -45,6 +47,7 @@ def register_user(body: UserCreate, db: Session = Depends(get_db)):
         password_hash=password_hash(body.password),
         is_admin=False,
         zip_code=body.zip_code,
+        assistant_style_profile=default_profile_json(),
     )
     db.add(user)
     db.commit()
@@ -72,6 +75,8 @@ def update_preferences(user_id: int, body: UserPrefsUpdate, db: Session = Depend
         user.device_token = body.device_token
     if body.health_conditions is not None:
         user.health_conditions = json.dumps(body.health_conditions)
+    if body.assistant_style_profile is not None:
+        user.assistant_style_profile = json.dumps(body.assistant_style_profile)
 
     db.commit()
     db.refresh(user)

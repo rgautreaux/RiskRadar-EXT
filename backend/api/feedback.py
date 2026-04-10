@@ -8,6 +8,11 @@ from auth.dependencies import get_optional_current_user, require_admin_user
 from db.database import get_db
 from db.models import Feedback, User
 from schemas.feedback import FeedbackCreate, FeedbackOut
+from services.assistant_personality import (
+    apply_feedback_to_profile,
+    parse_profile,
+    serialize_profile,
+)
 
 router = APIRouter(prefix="/feedback", tags=["Feedback"])
 
@@ -31,6 +36,7 @@ def record_feedback(
     db: Session = Depends(get_db),
     current_user: User | None = Depends(get_optional_current_user),
 ):
+    user = None
     effective_user_id = current_user.id if current_user is not None else body.user_id
     if effective_user_id is not None:
         user = db.query(User).filter(User.id == effective_user_id).first()
@@ -65,6 +71,16 @@ def record_feedback(
         feedback.response_category = body.response_category
         feedback.response_text = body.response_text
         feedback.comment = body.comment
+
+    if user is not None:
+        profile = parse_profile(user.assistant_style_profile)
+        updated_profile = apply_feedback_to_profile(
+            profile,
+            reaction=body.reaction,
+            rating=body.rating,
+            comment=body.comment,
+        )
+        user.assistant_style_profile = serialize_profile(updated_profile)
 
     db.commit()
     db.refresh(feedback)

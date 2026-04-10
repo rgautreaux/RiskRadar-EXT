@@ -81,6 +81,26 @@ All backend and integration tests for map endpoints, risk scoring, alert priorit
 
 Manual evidence is required for grading and onboarding. Automated verification is complete.
 
+## Manual Evidence Collection Status (2026-04-10)
+
+**Implementation Status:** Interactive risk map and all Stage 3 features are complete and verified via:
+- Automated backend tests (36 passed 2026-03-25, 100% pass current suite)
+- Live runtime checks (frontend forecast and assistant integration validated 2026-04-10)
+- Accessor field path validation (event start/end/latitude/longitude present and accessible)
+
+**Evidence Capture Checklist (Ready for Final Collection):**
+- [ ] Desktop (1280px) screenshot showing map with live alert/risk overlays active
+- [ ] Desktop screenshot showing overlay toggle controls and legend
+- [ ] Desktop screenshot showing personalized risk overlay (with user ID input, if present)
+- [ ] Mobile-width (360px) screenshot showing responsive map layout
+- [ ] Mobile-width screenshot showing reduced-complexity overlay controls
+- [ ] Short walkthrough video (~30-60 sec) showing: map load → zoom/pan interaction → overlay toggle → error/fallback state
+- [ ] Accessibility audit: keyboard navigation demo (Tab/Enter through controls)
+
+**Artifacts Filing Location:** `static/evidence/` with cross-links in this document and `docs/evidence/` index.
+
+**Target:** Final evidence bundle to be captured and filed as S3-06 closeout task for grading readiness.
+
 ## Phase 5 Progress Summary (2026-03-24)
 
 ### Phase 1: Requirements Cross-Check & Feature Verification
