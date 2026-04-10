@@ -7,7 +7,9 @@
     "demo:clean": "node backend/scripts/run_demo.mjs --clean",
     "demo:verify": "node backend/scripts/run_demo.mjs --verify",
     "demo:info": "node backend/scripts/run_demo.mjs --info",
-    "demo:generate-alerts": "node backend/scripts/run_demo.mjs --generate-alerts"
+    "demo:generate-alerts": "node backend/scripts/run_demo.mjs --generate-alerts",
+    "demo:run": "node frontend/web/tests/demo/demo_journey.js",
+    "demo:report": "node frontend/web/tests/demo/report_generator.js"
   },
   "dependencies": {
     "@types/react": "^19.2.14",
@@ -16,5 +18,8 @@
     "lucide-react": "^1.7.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "playwright": "^1.54.2"
   }
 }
