@@ -239,6 +239,16 @@ Maintain delivered features, harden security, and keep documentation and verific
 
 ### Stage 5 Session Entries (After Checklist)
 
+#### Stage 5 Golby Personality Learning, Communication Controls, and Cross-Device Sync Session (2026-04-10)
+Summary:
+- Added persistent user-level `assistant_style_profile` to store Golby communication preferences over time.
+- Implemented backend feedback-to-style learning updates from existing `POST /api/v1/feedback` payloads.
+- Integrated profile-aware reply shaping in `POST /api/v1/assistant/respond` for warmth, humor, concision, and expandability while preserving guardrails.
+- Added explicit style directives (for example: “be shorter,” “more detail,” “be warmer,” “be goofy,” “be calm”) with persistence for identified users.
+- Synced frontend local Golby learning profile to backend user preferences for cross-device consistency.
+- Added migration `backend/db/migrations/2026-04-10_add_assistant_style_profile.sql` and regression coverage.
+- Verification: ✅ targeted suites **27 passed**; full backend suite **196 passed, 0 failed**.
+
 #### Stage 5 Session-Based Authentication and Admin Gating Session (2026-04-10)
 Summary:
 - Replaced hardcoded admin gate on feedback analytics with real session-based authentication.

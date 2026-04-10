@@ -1,5 +1,31 @@
 # Project Progress and Stage Summaries
 
+## Stage 5: Golby Personality Learning, Communication Controls, and Cross-Device Sync Session (2026-04-10)
+
+### Implementation
+Implemented a complete Golby soft-learning loop by extending the existing assistant and feedback APIs with persistent communication profiles, bounded profile updates, explicit style controls, and frontend-to-backend sync.
+
+### Functionality
+- Added persistent `assistant_style_profile` per user for warmth, calmness, humor, conciseness, detail, and expandability.
+- Updated feedback recording to convert reaction/rating/comment signals into deterministic profile updates.
+- Updated assistant replies to use learned profiles for non-guardrail response shaping while keeping guardrail responses fixed.
+- Added style command handling in assistant flow (for example: be shorter, more detailed, warmer, goofier, calmer).
+- Synced frontend local Golby learning state to backend user preferences for cross-device continuity.
+
+### Execution
+- Backend updates: `backend/services/assistant_personality.py`, `backend/db/models.py`, `backend/api/assistant.py`, `backend/api/feedback.py`, `backend/api/users.py`, `backend/schemas/user.py`.
+- Frontend updates: `frontend/web/components/golby/ChatInterface.tsx`, `frontend/web/components/golby/apiClient.ts`.
+- Migration: `backend/db/migrations/2026-04-10_add_assistant_style_profile.sql`.
+- Tests: extended assistant/feedback/users coverage for profile learning and style command persistence.
+
+### Verification Evidence
+- ✅ Targeted suites: **27 passed**.
+- ✅ Full backend suite: **196 passed, 0 failed**.
+
+### Importance
+- Improved assistant friendliness and communication control without sacrificing accuracy, guardrails, or deterministic behavior.
+- Enabled preference persistence and cross-device consistency for a better long-term user experience.
+
 ## Stage 5: Session-Based Authentication and Admin Gating Session (2026-04-10)
 
 ### Implementation

@@ -1,3 +1,31 @@
+## Stage 5: Golby Personality Learning, Communication Controls, and Cross-Device Sync Session (2026-04-10)
+
+### Implementation
+Built a complete soft-learning communication loop for Golby by extending existing assistant and feedback infrastructure. Added persistent user communication profiles, deterministic profile updates from feedback, explicit style-control commands, and frontend-to-backend profile synchronization while preserving guardrail-first safety behavior.
+
+### Functionality
+- **Persistent Profile:** Added `assistant_style_profile` on user records for warmth, calmness, humor, conciseness, detail, expandability, and learning metadata.
+- **Feedback Learning:** Existing feedback endpoint now updates communication preferences using bounded, deterministic updates from reaction/rating/comment signals.
+- **Profile-Aware Replies:** Assistant endpoint now shapes non-guardrail replies using learned profile values.
+- **Style Directives:** Supports commands like “be shorter,” “more detail,” “be warmer,” “be goofy,” and “be calm,” with persistence for identified users.
+- **Cross-Device Sync:** Frontend local Golby profile now syncs to backend user preferences after feedback updates.
+
+### Execution
+- Added backend service helpers in `backend/services/assistant_personality.py`.
+- Extended `backend/db/models.py` and added migration `backend/db/migrations/2026-04-10_add_assistant_style_profile.sql`.
+- Updated `backend/api/assistant.py`, `backend/api/feedback.py`, `backend/api/users.py`, and `backend/schemas/user.py`.
+- Updated frontend Golby client integration in `frontend/web/components/golby/apiClient.ts` and `frontend/web/components/golby/ChatInterface.tsx`.
+- Added/updated tests in `backend/tests/test_api_assistant.py`, `backend/tests/test_api_feedback.py`, and `backend/tests/test_api_users.py`.
+
+### Verification Evidence
+- ✅ Targeted suites: **27 passed** (assistant/feedback/users).
+- ✅ Full backend suite: **196 passed, 0 failed**.
+
+### Importance
+- Improves assistant communication quality while keeping reliability and safety controls stable.
+- Gives users explicit control over assistant style and allows preference carry-over across sessions/devices.
+- Preserves deterministic behavior and maintainability by avoiding model retraining.
+
 ## Stage 5: Session-Based Authentication and Admin Gating Session (2026-04-10)
 
 ### Implementation
