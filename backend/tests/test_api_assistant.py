@@ -52,3 +52,32 @@ class TestAssistantRespond:
         data = resp.json()
         assert data["category"] == "fallback"
         assert data["reply"].startswith("Absolutely.")
+
+    def test_style_directive_persists_for_known_user(self, test_client, sample_user, db_session):
+        from db.models import User
+
+        before = db_session.query(User).filter(User.id == sample_user.id).first()
+        before_profile = json.loads(before.assistant_style_profile)
+
+        resp = test_client.post(
+            "/api/v1/assistant/respond",
+            json={"message": "be shorter", "user_id": sample_user.id},
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["category"] == "fallback"
+        assert "more concise" in data["reply"].lower()
+
+        after = db_session.query(User).filter(User.id == sample_user.id).first()
+        after_profile = json.loads(after.assistant_style_profile)
+        assert after_profile["delivery"]["conciseness"] > before_profile["delivery"]["conciseness"]
+
+    def test_style_directive_works_anonymous_without_persistence(self, test_client):
+        resp = test_client.post(
+            "/api/v1/assistant/respond",
+            json={"message": "be goofy"},
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["category"] == "fallback"
+        assert "for this reply" in data["reply"].lower()

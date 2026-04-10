@@ -1,3 +1,40 @@
+## Stage 5: Session-Based Authentication and Admin Gating Session (2026-04-10)
+
+### Implementation
+Replaced the hardcoded admin gate on feedback analytics (which accepted arbitrary `admin_user_id` query parameters from the browser) with a production-grade, cryptographically-signed session-based authentication system. Implemented HMAC-SHA256 signed session tokens stored in HttpOnly cookies with SameSite=Lax and scheme-aware secure flags. Wired the PHP login form and Golby widget to use the new session flow end-to-end.
+
+### Functionality
+- **Session Tokens:** HMAC-SHA256 signed tokens in format `payload.signature` using base64url encoding; tokens include user_id, issued-at, and expiration timestamps.
+- **Auth Endpoints:** POST /auth/login (email+password → session token), GET /auth/me (session → authenticated user), POST /auth/logout (delete cookie).
+- **Dependencies:** `require_admin_user()` (enforces admin role, 403 if not), `get_current_user()` (enforces auth, 401 if missing), `get_optional_current_user()` (returns user or None).
+- **Admin Gating:** Feedback analytics (`/api/v1/feedback/analytics`, `/api/v1/feedback/weekly-report`) now require `require_admin_user()` dependency; arbitrary `admin_user_id` query params are rejected.
+- **Frontend Login:** PHP form submission calls backend `/auth/login` endpoint; on success, session cookie is set and user is redirected to assistant.php.
+- **Widget Authentication:** Golby widget calls `fetchCurrentUser()` on mount (GET /auth/me with `credentials: 'include'`); derives authenticated user state and displays in diagnostics panel.
+- **API Client:** All widget fetch calls include `credentials: 'include'`; session cookie is automatically forwarded by browser.
+
+### Execution
+- **Backend Auth Layer:** Added `backend/auth/dependencies.py`, `backend/schemas/auth.py`, `backend/api/auth.py` with session extraction, login/logout, and current-user helpers.
+- **Session Cryptography:** Enhanced `backend/auth/security.py` with `create_session_token()`, `verify_session_token()`, `_base64url_encode()`, `_base64url_decode()` functions.
+- **API Routing:** Updated `backend/api/router.py` to expose auth_router before other endpoints; updated `backend/api/feedback.py` to use `require_admin_user()` dependency instead of query params.
+- **CORS Middleware:** Updated `backend/main.py` to add `allow_credentials=True` to CORSMiddleware configuration.
+- **Frontend Login:** Updated `frontend/web/public/login.php` to call backend auth endpoint, set session cookie, redirect on success.
+- **Frontend Services:** Added `rr_set_session_cookie()` and `rr_clear_session_cookie()` helpers to `frontend/web/services/security.php`; updated `api_client.php` to forward session cookie.
+- **Widget Integration:** Updated `ai-assistant-widget.jsx` to fetch `/auth/me` on mount; updated `ChatInterface.tsx` to accept `currentUserId` and display access level; updated `apiClient.ts` to include `credentials: 'include'` in all fetches.
+- **Testing:** Added 3 auth tests (`test_api_auth.py`); updated 9 feedback tests to authenticate via session; corrected 401/403 expectations.
+
+### Verification Evidence
+- ✅ **191 backend tests passed** (full suite, no regressions).
+- ✅ Auth endpoints: login returns token + user, logout clears session, me validates and returns user.
+- ✅ Feedback analytics: 401 for unauthenticated, 403 for non-admin, accessible for admin with valid session.
+- ✅ Widget: fetches `/auth/me` on mount, displays current user ID and access level, carries session cookie in all API calls.
+- ✅ No hardcoded admin IDs from browser; all admin status derived from signed session token.
+
+### Importance
+- **Security Hardening:** Admin gate is now enforced server-side via cryptographically-signed session tokens, not through page attributes or query parameters.
+- **Attack Surface Reduction:** Eliminates the risk of arbitrary `admin_user_id` values from the browser; admin status cannot be spoofed.
+- **Compliance:** Replaces implicit, browser-passed admin flag with explicit, cryptographically-validated session-based authentication.
+- **Production Readiness:** Session tokens include expiration, validation, and scheme-aware secure flag handling; suitable for deployment.
+
 ## Stage 5: User Data Security, Migration, and Full-Suite Verification Session (2026-04-02)
 
 ### Implementation

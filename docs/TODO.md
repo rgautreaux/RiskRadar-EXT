@@ -239,6 +239,23 @@ Maintain delivered features, harden security, and keep documentation and verific
 
 ### Stage 5 Session Entries (After Checklist)
 
+#### Stage 5 Session-Based Authentication and Admin Gating Session (2026-04-10)
+Summary:
+- Replaced hardcoded admin gate on feedback analytics with real session-based authentication.
+- Implemented HMAC-SHA256 signed session tokens stored in HttpOnly cookies (SameSite=Lax).
+- Added three auth endpoints: POST /auth/login (password → session), GET /auth/me (current user), POST /auth/logout.
+- Wired PHP login form to backend auth endpoint; session cookie persisted and forwarded by browser.
+- Updated Golby widget to fetch `/auth/me` on mount, derive authenticated user state from session.
+- Migrated feedback analytics to require authenticated admin session (no query-param bypass).
+- All API calls in widget now carry session cookie via `credentials: 'include'`.
+- Backend: Added `backend/auth/dependencies.py` (session extraction, role checking), `backend/schemas/auth.py` (login/response models), `backend/api/auth.py` (three endpoints).
+- Backend: Enhanced `backend/auth/security.py` with session token creation/verification, base64url encoding.
+- Frontend: Added `rr_set_session_cookie()`, `rr_clear_session_cookie()` to `security.php`; wired `login.php` form to backend.
+- Frontend: Updated `ai-assistant-widget.jsx` to fetch `/auth/me`; updated `ChatInterface.tsx` to accept `currentUserId`, `apiClient.ts` to include credentials in all fetches.
+- Testing: Added `backend/tests/test_api_auth.py` (3 tests), updated `backend/tests/test_api_feedback.py` (9 tests) to use session-based auth.
+- Verification: ✅ **191 backend tests passed** (full suite, 2.66s, no regressions); admin gating now enforced server-side via session tokens.
+- Evidence: All auth endpoints tested and working; widget derives admin/user state from session; no hardcoded admin IDs from browser.
+
 #### Stage 5 Full Backend Verification Workflow and Documentation Sync Session (2026-04-02)
 Summary:
 - Added a deterministic repo-root backend verification command that runs pytest plus the standalone smoke test.

@@ -153,3 +153,60 @@ def shape_reply(reply: str, category: str, profile: dict, message: str) -> str:
         shaped += " I can expand on this if you want more detail."
 
     return shaped
+
+
+def parse_style_directive(message: str) -> str | None:
+    lower = (message or "").lower()
+
+    concise_terms = ("be shorter", "be concise", "shorter", "more concise", "brief")
+    detail_terms = ("expand", "more detail", "explain more", "detailed", "full breakdown")
+    warm_terms = ("be warmer", "be friendly", "friendlier", "more warm")
+    goofy_terms = ("be goofy", "be funnier", "more funny", "more playful")
+    calm_terms = ("be calm", "calmer", "less intense")
+
+    if _contains_any(lower, concise_terms):
+        return "concise"
+    if _contains_any(lower, detail_terms):
+        return "detailed"
+    if _contains_any(lower, warm_terms):
+        return "warm"
+    if _contains_any(lower, goofy_terms):
+        return "goofy"
+    if _contains_any(lower, calm_terms):
+        return "calm"
+
+    return None
+
+
+def apply_style_directive(profile: dict, directive: str) -> dict:
+    updated = deepcopy(profile)
+    tone = updated["tone"]
+    delivery = updated["delivery"]
+
+    if directive == "concise":
+        delivery["conciseness"] = _clamp(delivery["conciseness"] + 0.12)
+        delivery["detail"] = _clamp(delivery["detail"] - 0.08)
+    elif directive == "detailed":
+        delivery["detail"] = _clamp(delivery["detail"] + 0.12)
+        delivery["conciseness"] = _clamp(delivery["conciseness"] - 0.08)
+    elif directive == "warm":
+        tone["warmth"] = _clamp(tone["warmth"] + 0.10)
+    elif directive == "goofy":
+        tone["humor"] = _clamp(tone["humor"] + 0.10)
+    elif directive == "calm":
+        tone["calmness"] = _clamp(tone["calmness"] + 0.10)
+
+    return updated
+
+
+def style_directive_ack(directive: str, persisted: bool) -> str:
+    mode = "for future replies" if persisted else "for this reply"
+    if directive == "concise":
+        return f"Absolutely. I will keep things shorter and more concise {mode}."
+    if directive == "detailed":
+        return f"Absolutely. I will provide more detail and fuller explanations {mode}."
+    if directive == "warm":
+        return f"Absolutely. I will use a warmer, friendlier tone {mode}."
+    if directive == "goofy":
+        return f"Absolutely. I will keep things a bit goofier and more playful {mode}."
+    return f"Absolutely. I will keep my tone calmer and steady {mode}."

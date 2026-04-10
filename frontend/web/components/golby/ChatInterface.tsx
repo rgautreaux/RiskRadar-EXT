@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { fetchUserGuide, searchDocForAnswer } from './docSearch';
-import { fetchAssistantReply, fetchCurrentAlerts, fetchRiskOverlay, fetchForecast, fetchWeeklyFeedbackAnalytics, sendGolbyFeedback } from './apiClient';
+import { fetchAssistantReply, fetchCurrentAlerts, fetchRiskOverlay, fetchForecast, fetchWeeklyFeedbackAnalytics, sendGolbyFeedback, syncGolbyStyleProfile } from './apiClient';
 import { motion } from 'framer-motion';
 import { GolbyIcon } from './GolbyIcon';
 import { ChatBubble } from './ChatBubble';
@@ -454,6 +454,7 @@ export function ChatInterface({
 			const backendReply = await fetchAssistantReply({
 				message: userMessage,
 				page_context: pageContext,
+				user_id: currentUserId,
 				location: locationHint,
 			});
 			if (backendReply?.reply) {
@@ -577,21 +578,16 @@ export function ChatInterface({
 
 	const handleFeedback = async (message: Message, reaction: FeedbackReaction) => {
 		const category = message.responseCategory ?? 'static';
-		setAssistantProfile((currentProfile) => {
-			const nextProfile = applyFeedback(currentProfile, category, reaction);
-			persistProfile(nextProfile);
-			return nextProfile;
-		});
-		setFeedbackCount((current) => {
-			const next = current + 1;
-			persistNumber(FEEDBACK_COUNT_STORAGE_KEY, next);
-			return next;
-		});
-		setStyleBias((currentBias) => {
-			const nextBias = updateStyleBias(currentBias, reaction, message.text);
-			persistNumber(STYLE_BIAS_STORAGE_KEY, nextBias);
-			return nextBias;
-		});
+		const nextProfile = applyFeedback(assistantProfile, category, reaction);
+		const nextFeedbackCount = feedbackCount + 1;
+		const nextStyleBias = updateStyleBias(styleBias, reaction, message.text);
+
+		setAssistantProfile(nextProfile);
+		persistProfile(nextProfile);
+		setFeedbackCount(nextFeedbackCount);
+		persistNumber(FEEDBACK_COUNT_STORAGE_KEY, nextFeedbackCount);
+		setStyleBias(nextStyleBias);
+		persistNumber(STYLE_BIAS_STORAGE_KEY, nextStyleBias);
 
 		try {
 			await sendGolbyFeedback({
@@ -602,9 +598,18 @@ export function ChatInterface({
 				page_context: pageContext,
 				response_category: category,
 				response_text: message.text,
+				user_id: currentUserId,
 			});
 		} catch {
 			// Keep the local learning loop working even if the backend call fails.
+		}
+
+		if (currentUserId) {
+			try {
+				await syncGolbyStyleProfile(currentUserId, nextProfile, nextFeedbackCount, nextStyleBias);
+			} catch {
+				// Keep local learning responsive even if profile sync fails.
+			}
 		}
 	};
 

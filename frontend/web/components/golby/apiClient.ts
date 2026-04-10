@@ -14,6 +14,14 @@ export interface GolbyFeedbackPayload {
   user_id?: number;
 }
 
+export interface GolbyLocalProfile {
+  docs: number;
+  page: number;
+  live: number;
+  playful: number;
+  static: number;
+}
+
 export interface AssistantRequestPayload {
   message: string;
   page_context?: string;
@@ -114,6 +122,60 @@ export async function fetchWeeklyFeedbackAnalytics(days = 7, sessionId?: string)
   const res = await fetch(`/api/v1/feedback/analytics/weekly?${params.toString()}`, { credentials: 'include' });
   if (!res.ok) {
     throw new Error('Failed to fetch weekly feedback analytics');
+  }
+
+  return await res.json();
+}
+
+function clamp(value: number, min = 0, max = 1) {
+  return Math.min(max, Math.max(min, value));
+}
+
+export async function syncGolbyStyleProfile(
+  userId: number,
+  profile: GolbyLocalProfile,
+  feedbackCount: number,
+  styleBias: number,
+) {
+  const warmth = clamp(0.55 + (profile.static + profile.page) * 0.02 + profile.playful * 0.01);
+  const calmness = clamp(0.7 + profile.docs * 0.02 - profile.playful * 0.01);
+  const humor = clamp(0.35 + profile.playful * 0.04);
+  const conciseness = clamp(0.65 - styleBias * 0.04);
+  const detail = clamp(0.45 + styleBias * 0.04);
+
+  const assistantStyleProfile = {
+    tone: {
+      warmth: Number(warmth.toFixed(4)),
+      calmness: Number(calmness.toFixed(4)),
+      humor: Number(humor.toFixed(4)),
+    },
+    delivery: {
+      conciseness: Number(conciseness.toFixed(4)),
+      detail: Number(detail.toFixed(4)),
+      expandability: Number(clamp(0.5 + feedbackCount * 0.01).toFixed(4)),
+    },
+    voice: {
+      formality: Number(clamp(0.35 + profile.docs * 0.02 - profile.playful * 0.02).toFixed(4)),
+    },
+    learning: {
+      feedback_count: feedbackCount,
+      last_feedback_at: new Date().toISOString(),
+    },
+  };
+
+  const res = await fetch(`/api/v1/users/${userId}/preferences`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify({
+      assistant_style_profile: assistantStyleProfile,
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to sync Golby style profile');
   }
 
   return await res.json();

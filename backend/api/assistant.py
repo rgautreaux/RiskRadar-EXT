@@ -9,7 +9,14 @@ from auth.dependencies import get_optional_current_user
 from db.database import get_db
 from db.models import Alert, User
 from schemas.assistant import AssistantRequest, AssistantResponse
-from services.assistant_personality import parse_profile, shape_reply
+from services.assistant_personality import (
+    apply_style_directive,
+    parse_profile,
+    parse_style_directive,
+    serialize_profile,
+    shape_reply,
+    style_directive_ack,
+)
 
 router = APIRouter(prefix="/assistant", tags=["Assistant"])
 
@@ -105,6 +112,20 @@ def respond(
                 raise HTTPException(status_code=404, detail="User not found")
     if user is not None:
         profile = parse_profile(user.assistant_style_profile)
+
+    directive = parse_style_directive(body.message)
+    if directive:
+        profile = apply_style_directive(profile, directive)
+        persisted = user is not None
+        if persisted:
+            user.assistant_style_profile = serialize_profile(profile)
+            db.commit()
+        return AssistantResponse(
+            reply=style_directive_ack(directive, persisted=persisted),
+            category="fallback",
+            used_live_data=False,
+            sources=["assistant-preferences"],
+        )
 
     message = body.message.lower()
     alerts = _query_active_alerts(db, body.location)
