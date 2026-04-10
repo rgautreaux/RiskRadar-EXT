@@ -22,11 +22,33 @@ Scope: Migration logging and monitoring hardening for email encryption migration
   - Command: `python -m pytest tests/test_migrate_email_encryption.py tests/test_migration_validation_monitoring.py`
   - Result: `6 passed`
 
+## Sign-off Closure Status
+
+- Rebecca's Phase 3 implementation work is complete.
+- The remaining work is limited to evidence packaging, staging proof, and explicit backend/security approvals.
+- No production rollout should occur until the checklist below is fully complete and both approvals are recorded.
+
 ## Staging Execution Commands
 
 1. `python db/migrations/migrate_email_encryption.py`
 2. `python db/migrations/validate_email_migration.py`
 3. `python db/migrations/monitor_migration_log.py`
+
+## Implementation Checklist (Execution Order)
+
+- [ ] Confirm the staging environment is using the reviewed `.env` source and the expected database target.
+- [ ] Confirm the migration scripts are at the reviewed commit SHA.
+- [ ] Confirm backup completion and restore readiness before any migration execution.
+- [ ] Run `python db/migrations/migrate_email_encryption.py` in staging and capture stdout, stderr, and exit code.
+- [ ] Confirm `migration_log` contains the batch lifecycle markers `started` and `completed` or `failed`.
+- [ ] Confirm per-user migration records include only `success` or `error` statuses and do not log plaintext email.
+- [ ] Run `python db/migrations/validate_email_migration.py` and capture the exit code.
+- [ ] Confirm the validator reports zero plaintext emails and the expected encrypted/HMAC fields.
+- [ ] Run `python db/migrations/monitor_migration_log.py` with the baseline threshold and capture the result.
+- [ ] Run the threshold test or a controlled fault simulation and confirm the monitoring script exits non-zero as expected.
+- [ ] Attach SQL spot-checks for `migration_log` to prove the run is auditable end to end.
+- [ ] Bundle the command output, SQL checks, and test results into the review package.
+- [ ] Submit the package to Noah and the backend/security lead for explicit approval or requested changes.
 
 ## Detailed Completion Plan (Execution Order)
 
@@ -144,3 +166,12 @@ Requested action:
 - Security Lead: approve or request changes.
 
 Production rollout remains blocked until both approvals are explicitly recorded.
+
+## Review Packet Attachments
+
+- Migration command output for `python db/migrations/migrate_email_encryption.py`
+- Validation command output for `python db/migrations/validate_email_migration.py`
+- Monitoring command output for `python db/migrations/monitor_migration_log.py`
+- SQL spot-checks showing the expected `migration_log` lifecycle and error/status records
+- Focused pytest output for `tests/test_migrate_email_encryption.py` and `tests/test_migration_validation_monitoring.py`
+- Staging backup and environment confirmation notes
