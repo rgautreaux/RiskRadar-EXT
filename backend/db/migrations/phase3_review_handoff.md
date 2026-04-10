@@ -224,3 +224,4 @@ Production rollout remains blocked until both approvals are explicitly recorded.
 - SQL spot-checks showing the expected `migration_log` lifecycle and error/status records
 - Focused pytest output for `tests/test_migrate_email_encryption.py` and `tests/test_migration_validation_monitoring.py`
 - Staging backup and environment confirmation notes
+- Completed staging worksheet: `backend/db/migrations/phase3_staging_evidence_template.md`

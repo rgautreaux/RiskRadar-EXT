@@ -2,6 +2,28 @@
 
 # Rebecca Gautreaux Log — 2026-04-10 (Checklist Marking - Rebecca-Controlled Items)
 
+# Rebecca Gautreaux Log — 2026-04-10 (Staging Evidence Template Prepared)
+
+### Session Focus
+- Execute the next remaining Rebecca-controlled step for the Phase 3 sign-off gate.
+- Standardize staging evidence capture so reviewers receive consistent artifacts.
+
+### Work Completed
+- Added `backend/db/migrations/phase3_staging_evidence_template.md` with:
+	- Pre-flight confirmation checklist
+	- Command/output capture sections
+	- SQL spot-check queries
+	- Reviewer submission checklist
+- Linked the template in `backend/db/migrations/phase3_review_handoff.md` and `backend/db/migrations/README.md`.
+
+### Validation / Testing
+- Documentation/process update only; no runtime behavior changes required for this step.
+
+### Outcome
+- The next staging execution step is now operationally templated, reducing ambiguity before external sign-off.
+
+---
+
 ### Session Focus
 - Mark only the sign-off checklist items that Rebecca has direct clearance to update.
 - Keep staging-only evidence and external approvals unmarked until they are actually completed.

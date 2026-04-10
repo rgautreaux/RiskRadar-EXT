@@ -27,6 +27,10 @@ This folder will contain migration scripts for email encryption and password has
   - Supports threshold-based alert behavior via `MIGRATION_ERROR_THRESHOLD`.
   - Returns non-zero exit code when threshold is reached.
 
+- `phase3_staging_evidence_template.md`
+  - Fill-in worksheet for staging execution evidence collection and SQL spot-check output.
+  - Intended to be attached to the Phase 3 review handoff package before approval request.
+
 ## Suggested Run Order (Staging)
 
 1. Apply `2026-04-10_phase3_email_security_schema.sql`
