@@ -50,3 +50,51 @@ class TestRecordFeedback:
             "rating": 9,
         })
         assert resp.status_code == 422
+
+
+class TestFeedbackAnalytics:
+    def test_feedback_analytics_summary(self, test_client):
+        test_client.post("/api/v1/feedback", json={
+            "session_id": "session-analytics",
+            "message_id": "msg-1",
+            "reaction": "thumbs_up",
+            "rating": 5,
+            "response_category": "docs",
+        })
+        test_client.post("/api/v1/feedback", json={
+            "session_id": "session-analytics",
+            "message_id": "msg-2",
+            "reaction": "thumbs_down",
+            "rating": 1,
+            "response_category": "live",
+        })
+
+        resp = test_client.get("/api/v1/feedback/analytics")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["total_feedback"] >= 2
+        assert data["average_rating"] is not None
+        assert any(entry["reaction"] == "thumbs_up" for entry in data["by_reaction"])
+        assert any(entry["response_category"] == "docs" for entry in data["by_category"])
+
+    def test_feedback_analytics_filters_by_session(self, test_client):
+        test_client.post("/api/v1/feedback", json={
+            "session_id": "session-filter-a",
+            "message_id": "msg-a",
+            "reaction": "smile",
+            "rating": 4,
+            "response_category": "static",
+        })
+        test_client.post("/api/v1/feedback", json={
+            "session_id": "session-filter-b",
+            "message_id": "msg-b",
+            "reaction": "thumbs_down",
+            "rating": 1,
+            "response_category": "static",
+        })
+
+        resp = test_client.get("/api/v1/feedback/analytics", params={"session_id": "session-filter-a"})
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["total_feedback"] == 1
+        assert data["average_rating"] == 4.0

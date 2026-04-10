@@ -137,21 +137,21 @@ Summary:
 Deliver 24-48 hour forecasting and a RiskRadar AI Assistant with safeguards.
 
 ### Predictive Risk Checklist
-- [ ] S4-01: Define forecast targets, horizon, and assumptions.
-- [ ] S4-02: Build historical feature pipeline.
-- [ ] S4-03: Implement baseline forecast service with confidence indicators.
-- [ ] S4-04: Add forecast API endpoint(s) and trend visualization integration.
+- [x] S4-01: Define forecast targets, horizon, and assumptions.
+- [x] S4-02: Build historical feature pipeline.
+- [x] S4-03: Implement baseline forecast service with confidence indicators.
+- [x] S4-04: Add forecast API endpoint(s) and trend visualization integration.
 
 ### AI Assistant Checklist
 - [x] S4-04a: Integrate assistant icon and visual assets into assistant UI and planning docs.
-- [ ] S4-05: Define assistant scope, guardrails, and safe fallback behavior.
+- [x] S4-05: Define assistant scope, guardrails, and safe fallback behavior.
 - [ ] S4-06: Implement assistant backend prompt and data integration.
 - [x] S4-07: Integrate assistant UI and evaluate quality and safety behavior.
 - [x] S4-08: Document predictive and assistant limitations and future improvements.
 
 ### Verification Evidence
-- [ ] Forecast API returns valid 24-48 hour schema outputs.
-- [ ] Forecast visualizations are understandable and aligned with model output.
+- [x] Forecast API returns valid 24-48 hour schema outputs.
+- [x] Forecast visualizations are understandable and aligned with model output.
 - [x] Assistant UI integration and guardrail documentation completed.
 
 ### Stage 4 Session Entries (After Checklist)
@@ -183,6 +183,18 @@ Summary:
 #### Stage 4 Forecast UI and Asset Integration Session (2026-04-28)
 Summary:
 - Finalized asset-path and CSS synchronization work for forecast and related UI files.
+
+#### Stage 4 Forecast Baseline Backend and Live Timeline Session (2026-04-10)
+Summary:
+- Implemented baseline forecast backend logic that returns 24-48 hour forecast points, trend, confidence, and summary fields.
+- Wired the Forecast web view to live API output with timeline rendering, summary cards, and fallback regional risk breakdown states.
+- Added and passed dedicated forecast API tests (`backend/tests/test_api_forecast.py`) to verify schema and personalized forecast responses.
+
+#### Stage 4 Assistant Guardrails and Safe Fallback Session (2026-04-10)
+Summary:
+- Implemented assistant guardrail detection for medical, legal, emergency-response, and harmful/credential-oriented requests.
+- Added explicit safe fallback responses to keep Golby scoped to RiskRadar interpretation and product guidance.
+- Updated `docs/SECURITY.md` with assistant scope, out-of-scope classes, and validation checklist expectations.
 
 ---
 

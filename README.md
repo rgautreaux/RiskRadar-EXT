@@ -298,7 +298,7 @@ Stage 3 elevates RiskRadar by providing spatial context and visual decision supp
 ## Stage 4: Predictive Analytics and AI-Driven Insights Extensions (In Progress)
 
 ### Implementation
-This session verified and documented the completion of the Forecast UI, including local/manual location input, risk-type grouping, personalized advice, and user profile integration for sensitivities/preferences. All top-level documentation was updated and synchronized, a verbatim transcript was added, and all entries were deduplicated and ordered for historical accuracy.
+Stage 4 now includes a baseline forecast backend implementation and a live forecast UI integration. The backend forecast endpoint returns 24-48 hour forecast points, confidence, trend, and summary fields derived from active alert signals and user sensitivity context. The forecast page now renders live timeline output and fallback regional risk states.
 
 This session also executed a comprehensive Stage 4 planning and documentation update, including:
 - Creating and cross-linking Stage 4 planning docs: Implementation Spec, Verification Evidence, API Contract, and Golby Icon Plan
@@ -310,7 +310,9 @@ This session also executed a comprehensive Stage 4 planning and documentation up
 ### Functionality
 - Forecast UI supports local and manual location input, risk-type grouping, personalized advice, and user profile integration for sensitivities/preferences.
 - User profile UI allows updating health sensitivities/preferences, which are used for tailored advice and recommendations.
-- Backend and frontend are fully integrated for roundtrip updates.
+- Forecast backend and frontend are integrated for live timeline updates.
+- Forecast responses now include `forecast_points`, `confidence`, `trend`, `summary`, and `baseline_risk_score` fields.
+- Golby assistant now applies guardrail checks for medical/legal/emergency/harmful requests and returns safe fallback guidance.
 - Ensures all Stage 4 planning, asset integration, and documentation are fully documented and traceable
 - Provides a clear audit trail of all major project decisions and technical enhancements for Stage 4
 - Maintains a single source of truth for project status and history
@@ -320,6 +322,8 @@ This session also executed a comprehensive Stage 4 planning and documentation up
 - Verbatim transcript of this session added to TRANSCRIPT.md; REFLECTION.md updated with session summary and per-entry summaries.
 - AUTHORS.md updated with member contributions and roles for this session.
 - README.md and USER_GUIDE.md expanded with new Forecast UI and personalization features, implementation details, and importance.
+- Added `backend/tests/test_api_forecast.py`; targeted forecast API tests pass (2/2).
+- Updated `docs/SECURITY.md` with assistant guardrail scope, out-of-scope classes, and fallback policy.
 - All documentation files were updated in a coordinated sequence for grading, onboarding, and future development clarity
 - Each phase of the Stage 4 documentation update was tracked and summarized in the relevant files
 
@@ -354,7 +358,7 @@ This session also executed a comprehensive Stage 4 planning and documentation up
 | 1 | Web-App Extension | Completed | 2026-03-13 | **Required** | Stage 1 dashboard MVP, API integration layer, security/reliability controls, setup docs, and responsive/web-distinctness verification evidence are complete. See `docs/TODO.md`, `docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md`, and `docs/PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md`. |
 | 2 | Environmental Risk Assessment and Alert Prioritization Extensions | Completed | 2026-03-24 | **Required** | Risk scoring engine, smart alert prioritization, and all required endpoints, schemas, and tests are implemented and verified. See `docs/PLANNING_DOCS/STAGE2_DOCS/`, `docs/TODO.md`. |
 | 3 | Data Visualization and User Experience Extensions | Completed | 2026-03-31 | Optional/Stretch | Interactive risk map, personalized overlays, accessibility, and responsive UX implemented and verified. See `docs/PLANNING_DOCS/STAGE3_DOCS/`, `frontend/web/public/map.php`. |
-| 4 | Predictive Analytics and AI-Driven Insights Extensions | In Progress | 2026-04-28 | Optional/Stretch | Forecast UI, AI Assistant widget, and documentation sync/audit are underway. See `docs/PLANNING_DOCS/STAGE4_DOCS/`, `frontend/web/public/forecast.php`, `frontend/web/public/assistant.php`. |
+| 4 | Predictive Analytics and AI-Driven Insights Extensions | In Progress | 2026-04-10 | Optional/Stretch | Forecast baseline backend + live forecast timeline integration are implemented and verified; assistant guardrails/backend integration remain in progress. See `docs/PLANNING_DOCS/STAGE4_DOCS/`, `frontend/web/public/forecast.php`, `frontend/web/public/assistant.php`. |
 ---
 
 # Certification of Original Work
@@ -759,7 +763,7 @@ Recommended update order when progress changes:
 | 1 | Web-App Extension | Completed | 2026-03-13 | **Required** | Stage 1 dashboard MVP, API integration layer, security/reliability controls, setup docs, and responsive/web-distinctness verification evidence are complete. See `docs/TODO.md`, `docs/PLANNING_DOCS/STAGE1_DOCS/API_STAGE1_CONTRACT.md`, and `docs/PLANNING_DOCS/STAGE1_DOCS/STAGE1_VERIFICATION_EVIDENCE.md`. |
 | 2 | Environmental Risk Assessment and Alert Prioritization Extensions | Completed | 2026-03-24 | **Required** | Risk scoring engine, smart alert prioritization, and all required endpoints, schemas, and tests are implemented and verified. See `docs/PLANNING_DOCS/STAGE2_DOCS/`, `docs/TODO.md`. |
 | 3 | Data Visualization and User Experience Extensions | Completed | 2026-03-31 | Optional/Stretch | Interactive risk map, personalized overlays, accessibility, and responsive UX implemented and verified. See `docs/PLANNING_DOCS/STAGE3_DOCS/`, `frontend/web/public/map.php`. |
-| 4 | Predictive Analytics and AI-Driven Insights Extensions | In Progress | 2026-04-28 | Optional/Stretch | Forecast UI, AI Assistant widget, and documentation sync/audit are underway. See `docs/PLANNING_DOCS/STAGE4_DOCS/`, `frontend/web/public/forecast.php`, `frontend/web/public/assistant.php`. |
+| 4 | Predictive Analytics and AI-Driven Insights Extensions | In Progress | 2026-04-10 | Optional/Stretch | Forecast baseline backend + live forecast timeline integration are implemented and verified; assistant guardrails/backend integration remain in progress. See `docs/PLANNING_DOCS/STAGE4_DOCS/`, `frontend/web/public/forecast.php`, `frontend/web/public/assistant.php`. |
 ---
 
 ## Stage 3: Data Visualization and User Experience Extensions

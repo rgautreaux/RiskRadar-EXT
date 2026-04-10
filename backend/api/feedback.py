@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from db.database import get_db
@@ -56,3 +57,57 @@ def list_session_feedback(session_id: str, db: Session = Depends(get_db)):
         .order_by(Feedback.updated_at.desc())
         .all()
     )
+
+
+@router.get("/analytics")
+def feedback_analytics(
+    session_id: str | None = None,
+    response_category: str | None = None,
+    db: Session = Depends(get_db),
+):
+    base_query = db.query(Feedback)
+    if session_id:
+        base_query = base_query.filter(Feedback.session_id == session_id)
+    if response_category:
+        base_query = base_query.filter(Feedback.response_category == response_category)
+
+    total_feedback = base_query.count()
+    average_rating = base_query.with_entities(func.avg(Feedback.rating)).scalar()
+
+    category_rows = (
+        base_query.with_entities(
+            Feedback.response_category,
+            func.count(Feedback.id),
+            func.avg(Feedback.rating),
+        )
+        .group_by(Feedback.response_category)
+        .all()
+    )
+    reaction_rows = (
+        base_query.with_entities(
+            Feedback.reaction,
+            func.count(Feedback.id),
+        )
+        .group_by(Feedback.reaction)
+        .all()
+    )
+
+    return {
+        "total_feedback": total_feedback,
+        "average_rating": round(float(average_rating), 3) if average_rating is not None else None,
+        "by_category": [
+            {
+                "response_category": category,
+                "count": count,
+                "average_rating": round(float(avg), 3) if avg is not None else None,
+            }
+            for category, count, avg in category_rows
+        ],
+        "by_reaction": [
+            {
+                "reaction": reaction,
+                "count": count,
+            }
+            for reaction, count in reaction_rows
+        ],
+    }

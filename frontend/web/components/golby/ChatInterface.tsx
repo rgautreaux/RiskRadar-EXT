@@ -9,6 +9,7 @@ import { Send, ThumbsUp, ThumbsDown, Smile } from 'lucide-react';
 
 type ResponseCategory = 'docs' | 'page' | 'live' | 'playful' | 'static';
 type FeedbackReaction = 'thumbs_up' | 'thumbs_down' | 'smile';
+type GuardrailCategory = 'medical' | 'legal' | 'emergency' | 'unsafe';
 
 interface AssistantProfile {
 	docs: number;
@@ -81,6 +82,19 @@ const DEFAULT_PROFILE: AssistantProfile = {
 
 const PROFILE_STORAGE_KEY = 'golby-assistant-profile';
 const SESSION_STORAGE_KEY = 'golby-session-id';
+const FEEDBACK_COUNT_STORAGE_KEY = 'golby-feedback-count';
+const STYLE_BIAS_STORAGE_KEY = 'golby-style-bias';
+
+const PROFILE_CAP = 8;
+const PROFILE_DECAY = 0.9;
+const MIN_FEEDBACK_TO_REORDER = 3;
+const MIN_FEEDBACK_TO_STYLE_SHIFT = 4;
+
+type ResponseStyle = 'balanced' | 'concise' | 'detailed';
+
+function clamp(value: number, min: number, max: number) {
+	return Math.min(max, Math.max(min, value));
+}
 
 function createMessageId() {
 	if (typeof window !== 'undefined' && window.crypto?.randomUUID) {
@@ -114,6 +128,36 @@ function persistProfile(profile: AssistantProfile) {
 
 	try {
 		window.localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
+	} catch {
+		// Ignore storage failures so chat remains usable.
+	}
+}
+
+function readStoredNumber(key: string, fallback: number) {
+	if (typeof window === 'undefined') {
+		return fallback;
+	}
+
+	const rawValue = window.localStorage.getItem(key);
+	if (!rawValue) {
+		return fallback;
+	}
+
+	const parsed = Number(rawValue);
+	if (Number.isNaN(parsed)) {
+		return fallback;
+	}
+
+	return parsed;
+}
+
+function persistNumber(key: string, value: number) {
+	if (typeof window === 'undefined') {
+		return;
+	}
+
+	try {
+		window.localStorage.setItem(key, String(value));
 	} catch {
 		// Ignore storage failures so chat remains usable.
 	}
@@ -172,7 +216,40 @@ function classifyTopic(message: string): 'forecast' | 'alert' | 'risk' | 'joke' 
 	return 'general';
 }
 
-function getOrderedCategories(topic: ReturnType<typeof classifyTopic>, profile: AssistantProfile): ResponseCategory[] {
+const GUARDED_PATTERNS: Array<{ category: GuardrailCategory; regex: RegExp }> = [
+	{ category: 'medical', regex: /\b(diagnose|diagnosis|prescription|dosage|dose|medication|treatment|medical advice)\b/i },
+	{ category: 'legal', regex: /\b(legal advice|lawsuit|sue|liability|attorney|lawyer|court)\b/i },
+	{ category: 'emergency', regex: /\b(call 911|emergency|evacuate now|life[- ]?threatening|immediate danger)\b/i },
+	{ category: 'unsafe', regex: /\b(hack|bypass|exploit|steal|weapon|harm|violence|password|secret key|token)\b/i },
+];
+
+function detectGuardrailCategory(message: string): GuardrailCategory | null {
+	for (const item of GUARDED_PATTERNS) {
+		if (item.regex.test(message)) {
+			return item.category;
+		}
+	}
+
+	return null;
+}
+
+function getGuardrailResponse(category: GuardrailCategory): string {
+	if (category === 'emergency') {
+		return 'I cannot provide emergency-response instructions. If there is immediate danger, contact local emergency services and follow official local alerts.';
+	}
+
+	if (category === 'medical') {
+		return 'I can explain RiskRadar environmental data, but I cannot provide medical advice, diagnosis, or treatment guidance. Please consult a qualified healthcare professional.';
+	}
+
+	if (category === 'legal') {
+		return 'I cannot provide legal advice. Please consult a licensed attorney or official legal resources for legal questions.';
+	}
+
+	return 'I cannot help with harmful, illegal, or credential-related requests. I can still help interpret RiskRadar alerts, maps, and forecast data.';
+}
+
+function getOrderedCategories(topic: ReturnType<typeof classifyTopic>, profile: AssistantProfile, feedbackCount: number): ResponseCategory[] {
 	const candidateOrders: Record<typeof topic, ResponseCategory[]> = {
 		forecast: ['docs', 'page', 'live', 'static'],
 		alert: ['docs', 'page', 'live', 'static'],
@@ -182,6 +259,10 @@ function getOrderedCategories(topic: ReturnType<typeof classifyTopic>, profile: 
 		help: ['docs', 'static', 'page', 'live'],
 		general: ['docs', 'page', 'live', 'static'],
 	};
+
+	if (feedbackCount < MIN_FEEDBACK_TO_REORDER) {
+		return candidateOrders[topic];
+	}
 
 	return candidateOrders[topic]
 		.slice()
@@ -196,9 +277,61 @@ function getOrderedCategories(topic: ReturnType<typeof classifyTopic>, profile: 
 }
 
 function applyFeedback(profile: AssistantProfile, category: ResponseCategory, reaction: FeedbackReaction) {
-	const nextProfile = { ...profile };
-	nextProfile[category] += reactionDelta(reaction);
+	const nextProfile: AssistantProfile = {
+		docs: clamp(profile.docs * PROFILE_DECAY, -PROFILE_CAP, PROFILE_CAP),
+		page: clamp(profile.page * PROFILE_DECAY, -PROFILE_CAP, PROFILE_CAP),
+		live: clamp(profile.live * PROFILE_DECAY, -PROFILE_CAP, PROFILE_CAP),
+		playful: clamp(profile.playful * PROFILE_DECAY, -PROFILE_CAP, PROFILE_CAP),
+		static: clamp(profile.static * PROFILE_DECAY, -PROFILE_CAP, PROFILE_CAP),
+	};
+	nextProfile[category] = clamp(nextProfile[category] + reactionDelta(reaction), -PROFILE_CAP, PROFILE_CAP);
 	return nextProfile;
+}
+
+function updateStyleBias(currentStyleBias: number, reaction: FeedbackReaction, messageText: string) {
+	const delta = reactionDelta(reaction);
+	const isLongResponse = messageText.length > 180 || messageText.includes('\n');
+	const styleDelta = isLongResponse ? delta : -delta;
+	return clamp(currentStyleBias + styleDelta, -PROFILE_CAP, PROFILE_CAP);
+}
+
+function getResponseStyle(feedbackCount: number, styleBias: number): ResponseStyle {
+	if (feedbackCount < MIN_FEEDBACK_TO_STYLE_SHIFT) {
+		return 'balanced';
+	}
+
+	if (styleBias <= -2) {
+		return 'concise';
+	}
+
+	if (styleBias >= 2) {
+		return 'detailed';
+	}
+
+	return 'balanced';
+}
+
+function formatResponseForStyle(text: string, style: ResponseStyle, category: ResponseCategory) {
+	if (style === 'balanced' || category === 'playful') {
+		return text;
+	}
+
+	if (style === 'concise') {
+		if (text.includes('\n')) {
+			const lines = text.split('\n').filter(Boolean);
+			return lines.slice(0, 2).join('\n');
+		}
+		if (text.length > 180) {
+			return `${text.slice(0, 177)}...`;
+		}
+		return text;
+	}
+
+	if (text.length < 160 && category !== 'playful') {
+		return `${text} If you want, I can provide a deeper breakdown.`;
+	}
+
+	return text;
 }
 
 export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageContext = 'unknown' }: ChatInterfaceProps) {
@@ -215,6 +348,8 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 	const [isTyping, setIsTyping] = useState(false);
 	const [userGuide, setUserGuide] = useState<string | null>(null);
 	const [assistantProfile, setAssistantProfile] = useState<AssistantProfile>(() => readStoredProfile());
+	const [feedbackCount, setFeedbackCount] = useState<number>(() => readStoredNumber(FEEDBACK_COUNT_STORAGE_KEY, 0));
+	const [styleBias, setStyleBias] = useState<number>(() => readStoredNumber(STYLE_BIAS_STORAGE_KEY, 0));
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 	const sessionIdRef = useRef(getSessionId());
 	// Fetch USER_GUIDE.md on mount
@@ -234,21 +369,42 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 		persistProfile(assistantProfile);
 	}, [assistantProfile]);
 
+	useEffect(() => {
+		persistNumber(FEEDBACK_COUNT_STORAGE_KEY, feedbackCount);
+	}, [feedbackCount]);
+
+	useEffect(() => {
+		persistNumber(STYLE_BIAS_STORAGE_KEY, styleBias);
+	}, [styleBias]);
+
 
 
 
 	// Async: Try to answer from docs, page context, live data, and then fallback to static.
 	const getGolbyResponse = async (userMessage: string): Promise<{ text: string; category: ResponseCategory }> => {
 		const lowerMessage = userMessage.toLowerCase();
+		const guardrailCategory = detectGuardrailCategory(lowerMessage);
+		if (guardrailCategory) {
+			return {
+				text: getGuardrailResponse(guardrailCategory),
+				category: 'static',
+			};
+		}
+
 		const topic = classifyTopic(lowerMessage);
-		const orderedCategories = getOrderedCategories(topic, assistantProfile);
+		const orderedCategories = getOrderedCategories(topic, assistantProfile, feedbackCount);
+		const preferredStyle = getResponseStyle(feedbackCount, styleBias);
+		const withStyle = (text: string, category: ResponseCategory) => ({
+			text: formatResponseForStyle(text, preferredStyle, category),
+			category,
+		});
 
 		for (const category of orderedCategories) {
 			if (category === 'docs') {
 				if (userGuide && topic !== 'joke' && topic !== 'greeting') {
 					const docAnswer = searchDocForAnswer(userGuide, userMessage);
 					if (!docAnswer.startsWith('Sorry')) {
-						return { text: docAnswer, category: 'docs' };
+						return withStyle(docAnswer, 'docs');
 					}
 				}
 				continue;
@@ -256,40 +412,22 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 
 			if (category === 'page') {
 				if (pageContext === 'map' && lowerMessage.includes('risk')) {
-					return {
-						text: "You're on the map view! Click any location to see detailed risk scores and environmental data for that area.",
-						category: 'page',
-					};
+					return withStyle("You're on the map view! Click any location to see detailed risk scores and environmental data for that area.", 'page');
 				}
 				if (pageContext === 'alerts' && lowerMessage.includes('alert')) {
-					return {
-						text: "You're viewing alerts. Here you can see all current environmental alerts for your selected region. Want help setting up custom alerts?",
-						category: 'page',
-					};
+					return withStyle("You're viewing alerts. Here you can see all current environmental alerts for your selected region. Want help setting up custom alerts?", 'page');
 				}
 				if (pageContext === 'dashboard') {
-					return {
-						text: "This is your dashboard, where you can get a quick overview of your travel safety, recent alerts, and personalized recommendations.",
-						category: 'page',
-					};
+					return withStyle("This is your dashboard, where you can get a quick overview of your travel safety, recent alerts, and personalized recommendations.", 'page');
 				}
 				if (pageContext === 'profile') {
-					return {
-						text: "You're on your profile page. Here you can update your information, preferences, and notification settings.",
-						category: 'page',
-					};
+					return withStyle("You're on your profile page. Here you can update your information, preferences, and notification settings.", 'page');
 				}
 				if (pageContext === 'settings') {
-					return {
-						text: "You're in settings. Adjust your preferences, manage alerts, and customize your RiskRadar experience here.",
-						category: 'page',
-					};
+					return withStyle("You're in settings. Adjust your preferences, manage alerts, and customize your RiskRadar experience here.", 'page');
 				}
 				if (pageContext === 'forecast' && lowerMessage.includes('forecast')) {
-					return {
-						text: "You're on the forecast page. Enter a location or use your current location to get the latest environmental forecast.",
-						category: 'page',
-					};
+					return withStyle("You're on the forecast page. Enter a location or use your current location to get the latest environmental forecast.", 'page');
 				}
 				continue;
 			}
@@ -299,12 +437,9 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 					if (lowerMessage.includes('current alert') || lowerMessage.includes('latest alert')) {
 						const alerts = await fetchCurrentAlerts();
 						if (alerts && alerts.length > 0) {
-							return {
-								text: `Here are the latest alerts:\n` + alerts.map((a: any) => `• ${a.title || a.alert_type || 'Alert'} (${a.severity || 'unknown'})`).join('\n'),
-								category: 'live',
-							};
+							return withStyle(`Here are the latest alerts:\n` + alerts.map((a: any) => `• ${a.title || a.alert_type || 'Alert'} (${a.severity || 'unknown'})`).join('\n'), 'live');
 						}
-						return { text: 'There are no current alerts.', category: 'live' };
+						return withStyle('There are no current alerts.', 'live');
 					}
 					if (lowerMessage.includes('risk') && lowerMessage.includes('map')) {
 						const risk = await fetchRiskOverlay();
@@ -312,9 +447,9 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 							const high = risk.risk_zones.filter((z: any) => z.risk_level === 'high').length;
 							const mod = risk.risk_zones.filter((z: any) => z.risk_level === 'moderate').length;
 							const low = risk.risk_zones.filter((z: any) => z.risk_level === 'low').length;
-							return { text: `Current map risk overlay:\nHigh risk: ${high}, Moderate: ${mod}, Low: ${low}`, category: 'live' };
+							return withStyle(`Current map risk overlay:\nHigh risk: ${high}, Moderate: ${mod}, Low: ${low}`, 'live');
 						}
-						return { text: 'No risk data available for the map.', category: 'live' };
+						return withStyle('No risk data available for the map.', 'live');
 					}
 					if (lowerMessage.includes('forecast')) {
 						const match = userMessage.match(/forecast for ([\w\s,]+)/i);
@@ -324,62 +459,44 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 							const high = forecast.risk_zones.filter((z: any) => z.risk_level === 'high').length;
 							const mod = forecast.risk_zones.filter((z: any) => z.risk_level === 'moderate').length;
 							const low = forecast.risk_zones.filter((z: any) => z.risk_level === 'low').length;
-							return { text: `Forecast for ${location || 'your area'}:\nHigh risk: ${high}, Moderate: ${mod}, Low: ${low}`, category: 'live' };
+							return withStyle(`Forecast for ${location || 'your area'}:\nHigh risk: ${high}, Moderate: ${mod}, Low: ${low}`, 'live');
 						}
-						return { text: `No forecast data available${location ? ' for ' + location : ''}.`, category: 'live' };
+						return withStyle(`No forecast data available${location ? ' for ' + location : ''}.`, 'live');
 					}
 				} catch {
-					return { text: 'Sorry, I had trouble fetching live data.', category: 'live' };
+					return withStyle('Sorry, I had trouble fetching live data.', 'live');
 				}
 				continue;
 			}
 
 			if (category === 'playful') {
 				if (topic === 'joke') {
-					return { text: golbyJokes[Math.floor(Math.random() * golbyJokes.length)], category: 'playful' };
+					return withStyle(golbyJokes[Math.floor(Math.random() * golbyJokes.length)], 'playful');
 				}
 				if (topic === 'greeting') {
-					return { text: golbyGreetings[Math.floor(Math.random() * golbyGreetings.length)], category: 'playful' };
+					return withStyle(golbyGreetings[Math.floor(Math.random() * golbyGreetings.length)], 'playful');
 				}
 				continue;
 			}
 
 			if (category === 'static') {
 				if (lowerMessage.includes('help')) {
-					return { text: golbyResponses['help'], category: 'static' };
-				if (pageContext === 'dashboard') {
-					return {
-						text: "This is your dashboard, where you can get a quick overview of your travel safety, recent alerts, and personalized recommendations.",
-						category: 'page',
-					};
-				}
-				if (pageContext === 'profile') {
-					return {
-						text: "You're on your profile page. Here you can update your information, preferences, and notification settings.",
-						category: 'page',
-					};
-				}
-				if (pageContext === 'settings') {
-					return {
-						text: "You're in settings. Adjust your preferences, manage alerts, and customize your RiskRadar experience here.",
-						category: 'page',
-					};
-				}
+					return withStyle(golbyResponses['help'], 'static');
 				}
 				if (lowerMessage.includes('forecast') || lowerMessage.includes('weather')) {
-					return { text: "The forecast looks clear ahead! ☀️ I can pull up detailed environmental data for any location you're interested in. Which area would you like to check?", category: 'static' };
+					return withStyle("The forecast looks clear ahead! ☀️ I can pull up detailed environmental data for any location you're interested in. Which area would you like to check?", 'static');
 				}
 				if (lowerMessage.includes('alert')) {
-					return { text: "Setting up alerts is easy! Head to your settings, choose 'Notifications', and you can customize alerts for specific risk types or locations. Want me to guide you there?", category: 'static' };
+					return withStyle("Setting up alerts is easy! Head to your settings, choose 'Notifications', and you can customize alerts for specific risk types or locations. Want me to guide you there?", 'static');
 				}
 				if (lowerMessage.includes('risk')) {
-					return { text: "I can show you comprehensive risk assessments including air quality, natural disasters, climate risks, and more. Just click on any location on the map, or tell me which area you're curious about!", category: 'static' };
+					return withStyle("I can show you comprehensive risk assessments including air quality, natural disasters, climate risks, and more. Just click on any location on the map, or tell me which area you're curious about!", 'static');
 				}
-				return { text: golbyResponses['default'], category: 'static' };
+				return withStyle(golbyResponses['default'], 'static');
 			}
 		}
 
-		return { text: golbyResponses['default'], category: 'static' };
+		return withStyle(golbyResponses['default'], 'static');
 	};
 
 	const handleFeedback = async (message: Message, reaction: FeedbackReaction) => {
@@ -388,6 +505,16 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 			const nextProfile = applyFeedback(currentProfile, category, reaction);
 			persistProfile(nextProfile);
 			return nextProfile;
+		});
+		setFeedbackCount((current) => {
+			const next = current + 1;
+			persistNumber(FEEDBACK_COUNT_STORAGE_KEY, next);
+			return next;
+		});
+		setStyleBias((currentBias) => {
+			const nextBias = updateStyleBias(currentBias, reaction, message.text);
+			persistNumber(STYLE_BIAS_STORAGE_KEY, nextBias);
+			return nextBias;
 		});
 
 		try {

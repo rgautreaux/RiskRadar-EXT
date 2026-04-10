@@ -98,10 +98,10 @@ It started as the CMPS 357 Stage 1 web extension and now includes:
 
 - `public/map.php` (Stage 3 scaffold)
 	- Placeholder for interactive map/layer workflow.
-- `public/forecast.php` (Stage 4 scaffold)
-	- Placeholder for 24-48 hour forecast timeline and confidence visuals.
-- `public/assistant.php` (Stage 4 scaffold)
-	- Placeholder for natural-language risk assistant flow.
+- `public/forecast.php` (Stage 4 live integration)
+	- Live 24-48 hour forecast output with confidence/trend summary cards and timeline rendering.
+- `public/assistant.php` (Stage 4 assistant integration)
+	- Golby assistant interface with context-aware answers and safety guardrail fallbacks.
 
 ### Error and Fallback Pages
 
@@ -212,7 +212,7 @@ If backend port `8000` is unavailable, set `RISKRADAR_API_BASE_URL` (for example
 - Stage 1 web-app extension requirements: implemented and integrated.
 - Stage 2 kickoff web integration: implemented for risk and prioritization read paths.
 - Stage 3 interactive map: backend endpoints, API client, and frontend scaffold complete; dynamic Plotly rendering, overlays, and accessibility features in progress (see below).
-- Stage 4 forecast + assistant: scaffolded pages and UX placeholders.
+- Stage 4 forecast + assistant: forecast backend/live timeline integrated; assistant guardrails documented and enabled.
 
 ## Related Docs
 
