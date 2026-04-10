@@ -7,13 +7,14 @@ import {
   SafeAreaView,
   ScrollView,
   Image,
+  Animated,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 
 import { ThemedText } from '@/components/themed-text';
-import PrimaryButton from '@/components/ui/PrimaryButton';
+import { PrimaryButton } from '@/components/ui/PrimaryButton';
 import { ThemedView } from '@/components/themed-view';
 import { Colors, Spacing, Radius, Shadows } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -36,6 +37,24 @@ export default function ModalScreen() {
     router.back();
   };
 
+  // SD9: Animate notification panel
+  const notifFadeAnim = useRef(new Animated.Value(0)).current;
+  const notifSlideAnim = useRef(new Animated.Value(24)).current;
+  useEffect(() => {
+    Animated.timing(notifFadeAnim, {
+      toValue: 1,
+      duration: 220,
+      delay: 120,
+      useNativeDriver: true,
+    }).start();
+    Animated.timing(notifSlideAnim, {
+      toValue: 0,
+      duration: 220,
+      delay: 120,
+      useNativeDriver: true,
+    }).start();
+  }, [notifFadeAnim, notifSlideAnim]);
+
   return (
     <>
       <Modal
@@ -44,7 +63,7 @@ export default function ModalScreen() {
         visible={isVisible}
         onRequestClose={handleClose}
       >
-        <SafeAreaView style={[styles.modalContainer, { backgroundColor: palette.surface }]}>
+        <SafeAreaView style={[styles.modalContainer, { backgroundColor: palette.surface }]}> 
           {/* Header with Close Button */}
           <View
             style={[
@@ -78,40 +97,46 @@ export default function ModalScreen() {
             contentContainerStyle={styles.contentContainer}
             showsVerticalScrollIndicator={false}
           >
-            {/* Notification Panel Container */}
-            <ThemedView
-              surface="card"
-              elevated={true}
-              padding="lg"
-              style={styles.notificationPanel}
+            {/* Notification Panel Container (SD9) */}
+            <Animated.View
+              style={{
+                opacity: notifFadeAnim,
+                transform: [{ translateY: notifSlideAnim }],
+              }}
             >
-              {/* Alert Icon and Title */}
-              <View style={styles.alertHeader}>
-                <View style={styles.alertIconArtContainer}>
-                  {/* Use alertNotifArt for critical, standardNotifArt for non-critical (future-proof) */}
-                  <Image
-                    source={alertNotifArt}
-                    style={{ width: 56, height: 56, borderRadius: Radius.md, resizeMode: 'contain' }}
-                  />
+              <ThemedView
+                surface="card"
+                elevated={true}
+                padding="lg"
+                style={styles.notificationPanel}
+              >
+                {/* Alert Icon and Title */}
+                <View style={styles.alertHeader}>
+                  <View style={styles.alertIconArtContainer}>
+                    {/* Use alertNotifArt for critical, standardNotifArt for non-critical (future-proof) */}
+                    <Image
+                      source={alertNotifArt}
+                      style={{ width: 56, height: 56, borderRadius: Radius.md, resizeMode: 'contain' }}
+                    />
+                  </View>
+                  <View style={styles.alertTitleContainer}>
+                    <ThemedText
+                      type="sectionTitle"
+                      lightColor={palette.text}
+                      darkColor={palette.text}
+                    >
+                      Air Quality Alert
+                    </ThemedText>
+                    <ThemedText
+                      type="eyebrow"
+                      lightColor={palette.danger}
+                      darkColor={palette.danger}
+                      style={styles.alertSeverity}
+                    >
+                      CRITICAL
+                    </ThemedText>
+                  </View>
                 </View>
-                <View style={styles.alertTitleContainer}>
-                  <ThemedText
-                    type="sectionTitle"
-                    lightColor={palette.text}
-                    darkColor={palette.text}
-                  >
-                    Air Quality Alert
-                  </ThemedText>
-                  <ThemedText
-                    type="eyebrow"
-                    lightColor={palette.danger}
-                    darkColor={palette.danger}
-                    style={styles.alertSeverity}
-                  >
-                    CRITICAL
-                  </ThemedText>
-                </View>
-              </View>
 
               {/* Alert Description */}
               <View style={styles.section}>
@@ -222,6 +247,7 @@ export default function ModalScreen() {
                 </View>
               </View>
             </ThemedView>
+            </Animated.View>
 
             {/* Action Button */}
             <PrimaryButton label="Acknowledge" onPress={handleClose} />

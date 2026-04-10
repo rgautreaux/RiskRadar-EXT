@@ -72,9 +72,3 @@ Thumbs.db
 
 # Development docs and notes
 .workspace_docs
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
-backend/db/backups/*.sql
