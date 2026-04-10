@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
   StatusBar,
   TextInput,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/theme';
@@ -18,13 +19,15 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/auth-context';
 import { PrimaryButton } from '@/components/ui/PrimaryButton';
 
+const DEMO_SETTINGS_KEY = 'riskradar_demo_settings';
+
 export default function SettingsScreen() {
   const router = useRouter();
   const scheme = useColorScheme() ?? 'light';
   const palette = Colors[scheme];
   const styles = getStyles(palette);
   
-  const { user, isLoggedIn, logout, isDevUserMode, toggleDevUserMode } = useAuth();
+  const { user, isLoggedIn, logout, isDevUserMode, toggleDevUserMode, savePreferences } = useAuth();
 
   // Local state for toggles (mocked for now, not saved to DB)
   const [pushEnabled, setPushEnabled] = useState(true);
@@ -32,6 +35,63 @@ export default function SettingsScreen() {
   const [smsEnabled, setSmsEnabled] = useState(false);
   const [useGps, setUseGps] = useState(false);
   const [zipCode, setZipCode] = useState(user?.zip_code || '');
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const stored = await AsyncStorage.getItem(DEMO_SETTINGS_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored) as {
+            pushEnabled?: boolean;
+            emailEnabled?: boolean;
+            smsEnabled?: boolean;
+            useGps?: boolean;
+            zipCode?: string;
+          };
+          if (typeof parsed.pushEnabled === 'boolean') setPushEnabled(parsed.pushEnabled);
+          if (typeof parsed.emailEnabled === 'boolean') setEmailEnabled(parsed.emailEnabled);
+          if (typeof parsed.smsEnabled === 'boolean') setSmsEnabled(parsed.smsEnabled);
+          if (typeof parsed.useGps === 'boolean') setUseGps(parsed.useGps);
+          if (typeof parsed.zipCode === 'string') setZipCode(parsed.zipCode);
+        } else if (user?.zip_code) {
+          setZipCode(user.zip_code);
+        }
+      } catch {
+        // Keep the screen usable even if local demo settings cannot be loaded.
+      }
+    })();
+  }, [user?.zip_code]);
+
+  useEffect(() => {
+    if (user?.zip_code && !zipCode) {
+      setZipCode(user.zip_code);
+    }
+  }, [user?.zip_code, zipCode]);
+
+  const handleSaveDemoSettings = async () => {
+    setSaveStatus('saving');
+    try {
+      const nextSettings = {
+        pushEnabled,
+        emailEnabled,
+        smsEnabled,
+        useGps,
+        zipCode: zipCode.trim(),
+      };
+
+      await AsyncStorage.setItem(DEMO_SETTINGS_KEY, JSON.stringify(nextSettings));
+
+      const shouldSaveRemoteZip = isLoggedIn && !isDevUserMode && nextSettings.zipCode.length === 5;
+      if (shouldSaveRemoteZip) {
+        await savePreferences({ zip_code: nextSettings.zipCode });
+      }
+
+      setSaveStatus('saved');
+    } catch {
+      setSaveStatus('error');
+    }
+  };
 
   const handleLogout = async () => {
     if (user && !isDevUserMode) {
@@ -171,6 +231,23 @@ export default function SettingsScreen() {
 
         {/* Logout */}
         <View style={styles.footerSection}>
+          <PrimaryButton
+            label={saveStatus === 'saving' ? 'Saving...' : 'Save Demo Settings'}
+            onPress={handleSaveDemoSettings}
+            style={{ marginBottom: 12 }}
+            disabled={saveStatus === 'saving'}
+            loading={saveStatus === 'saving'}
+          />
+          {saveStatus === 'saved' ? (
+            <Text style={[styles.sectionSubtitle, { textAlign: 'center', marginBottom: 12 }]}>
+              Demo settings saved.
+            </Text>
+          ) : null}
+          {saveStatus === 'error' ? (
+            <Text style={[styles.sectionSubtitle, { textAlign: 'center', marginBottom: 12, color: palette.danger }]}>
+              Could not save settings. Local demo preferences were still updated.
+            </Text>
+          ) : null}
           <PrimaryButton
             label={isLoggedIn ? "Log Out (Return to Home)" : "Return to Home"}
             onPress={handleLogout}
