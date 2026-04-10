@@ -50,6 +50,20 @@ This checklist is for use during the S3 QA/integration phase and for manual vali
 - [x] No runtime or TypeScript errors on startup
 - [x] Lint and TypeScript checks pass cleanly
 
+### 7. Route/Auth Verification Matrix (Apr 10, 2026)
+
+| Scenario | Status | Evidence | Follow-up |
+|---|---|---|---|
+| Register -> Home dashboard redirect | ✅ Code-verified | `frontend/RiskRadar/app/auth/registration.tsx` routes to `/main/home` after successful registration | Manual device run to confirm animation/transition feel |
+| Login -> Home dashboard redirect | ✅ Code-verified | `frontend/RiskRadar/app/auth/login.tsx` routes to `/main/home` after successful login | Manual device run to confirm no flicker |
+| Guest -> Home dashboard redirect | ✅ Code-verified | `frontend/RiskRadar/app/(tabs)/index.tsx` uses replace-style navigation to `/main/home` | Manual run to confirm expected back behavior |
+| Auth hydration gate before route stack render | ✅ Code-verified | `frontend/RiskRadar/app/_layout.tsx` waits on `isLoading` and shows loading state before stack render | Validate with stale token on real app start |
+| Logout -> launcher/auth recovery | 🟡 Manual runtime pending | `logout()` clears token and user state in `frontend/RiskRadar/contexts/auth-context.tsx` | Execute on device/emulator and verify back stack |
+| Invalid credentials error UX | 🟡 Manual runtime pending | Error messaging exists in login and registration handlers | Validate exact message rendering and persistence |
+| Backend unavailable handling | 🟡 Manual runtime pending | Auth forms and home data loaders include network error handling | Run app with backend stopped and verify UX |
+| Back navigation stability from Home/auth screens | 🟡 Manual runtime pending | Replace-style transitions reduce known loops in code | Validate on Android and iOS navigation stacks |
+| Lint and TypeScript baseline | ✅ Verified | `expo lint` and `npx tsc --noEmit` complete cleanly in `frontend/RiskRadar` | Keep re-running after each merge chunk |
+
 ---
 
 

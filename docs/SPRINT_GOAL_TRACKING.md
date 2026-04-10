@@ -6,6 +6,13 @@ The latest audit-trail pass confirms Rebecca’s implementation work is complete
 - Migration verification was rerun in this Apr 10 session: targeted migration tests passed and migration script execution completed successfully in this environment.
 - The April 10 transcript, progress log, TODO, AUTHORS, README, and sprint tracker are synchronized around the current closure state.
 - No additional implementation steps remain for Rebecca; only the external approval gate is open.
+- The frontend route/auth integration contract for Ben and Celeste is now documented in `docs/INTEGRATION_NOTES.md` and synchronized to sprint planning for execution.
+
+April 10 frontend integration sync for remaining Home/auth/navigation work:
+- Launcher vs dashboard contract is now explicit: `frontend/RiskRadar/app/(tabs)/index.tsx` is launcher flow and `frontend/RiskRadar/app/main/home.tsx` is the operational dashboard destination.
+- Auth hydration guard expectation is recorded: route stacks should wait on `AuthProvider` loading state to avoid startup route races.
+- Post-auth and guest navigation targets are aligned to `/main/home` with replace-style transitions to reduce back-stack loops.
+- Required QA scenarios are now tracked in `docs/QA_CHECKLIST.md` as a route/auth verification matrix for cross-team closeout.
 
 ---
 
