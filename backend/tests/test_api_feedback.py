@@ -98,3 +98,51 @@ class TestFeedbackAnalytics:
         data = resp.json()
         assert data["total_feedback"] == 1
         assert data["average_rating"] == 4.0
+
+    def test_feedback_weekly_report(self, test_client):
+        test_client.post("/api/v1/feedback", json={
+            "session_id": "session-weekly",
+            "message_id": "msg-w1",
+            "reaction": "thumbs_up",
+            "rating": 5,
+            "response_category": "docs",
+        })
+        test_client.post("/api/v1/feedback", json={
+            "session_id": "session-weekly",
+            "message_id": "msg-w2",
+            "reaction": "smile",
+            "rating": 4,
+            "response_category": "live",
+        })
+
+        resp = test_client.get("/api/v1/feedback/analytics/weekly", params={"days": 7})
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["window_days"] == 7
+        assert data["total_feedback"] >= 2
+        assert len(data["by_day"]) == 7
+
+    def test_feedback_weekly_report_filters_by_category(self, test_client):
+        test_client.post("/api/v1/feedback", json={
+            "session_id": "session-weekly-category",
+            "message_id": "msg-c1",
+            "reaction": "thumbs_up",
+            "rating": 5,
+            "response_category": "docs",
+        })
+        test_client.post("/api/v1/feedback", json={
+            "session_id": "session-weekly-category",
+            "message_id": "msg-c2",
+            "reaction": "thumbs_down",
+            "rating": 1,
+            "response_category": "live",
+        })
+
+        resp = test_client.get(
+            "/api/v1/feedback/analytics/weekly",
+            params={"days": 7, "response_category": "docs"},
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["total_feedback"] == 1
+        assert data["average_rating"] == 5.0

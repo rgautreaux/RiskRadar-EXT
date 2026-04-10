@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta, timezone
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import func
 from sqlalchemy.orm import Session
@@ -7,6 +9,19 @@ from db.models import Feedback, User
 from schemas.feedback import FeedbackCreate, FeedbackOut
 
 router = APIRouter(prefix="/feedback", tags=["Feedback"])
+
+
+def _safe_parse_timestamp(value: str | None) -> datetime | None:
+    if not value:
+        return None
+
+    try:
+        parsed = datetime.fromisoformat(value)
+        if parsed.tzinfo is None:
+            return parsed.replace(tzinfo=timezone.utc)
+        return parsed
+    except ValueError:
+        return None
 
 
 @router.post("", response_model=FeedbackOut)
@@ -110,4 +125,71 @@ def feedback_analytics(
             }
             for reaction, count in reaction_rows
         ],
+    }
+
+
+@router.get("/analytics/weekly")
+def feedback_weekly_report(
+    days: int = 7,
+    session_id: str | None = None,
+    response_category: str | None = None,
+    db: Session = Depends(get_db),
+):
+    days = max(1, min(days, 30))
+    now = datetime.now(timezone.utc)
+    since = now - timedelta(days=days - 1)
+
+    base_query = db.query(Feedback)
+    if session_id:
+        base_query = base_query.filter(Feedback.session_id == session_id)
+    if response_category:
+        base_query = base_query.filter(Feedback.response_category == response_category)
+
+    feedback_rows = base_query.order_by(Feedback.updated_at.desc()).all()
+
+    day_buckets: dict[str, dict[str, float | int]] = {}
+    for offset in range(days):
+        day = (since + timedelta(days=offset)).date().isoformat()
+        day_buckets[day] = {
+            "count": 0,
+            "rating_sum": 0,
+        }
+
+    for row in feedback_rows:
+        row_dt = _safe_parse_timestamp(row.updated_at or row.created_at)
+        if row_dt is None:
+            continue
+        if row_dt < since or row_dt > now:
+            continue
+
+        day_key = row_dt.date().isoformat()
+        if day_key not in day_buckets:
+            continue
+
+        day_buckets[day_key]["count"] += 1
+        day_buckets[day_key]["rating_sum"] += row.rating
+
+    by_day = []
+    for day_key, values in day_buckets.items():
+        count = int(values["count"])
+        rating_sum = float(values["rating_sum"])
+        by_day.append({
+            "date": day_key,
+            "count": count,
+            "average_rating": round(rating_sum / count, 3) if count > 0 else None,
+        })
+
+    total_feedback = sum(entry["count"] for entry in by_day)
+    overall_average = None
+    if total_feedback > 0:
+        weighted_sum = sum((entry["average_rating"] or 0) * entry["count"] for entry in by_day)
+        overall_average = round(weighted_sum / total_feedback, 3)
+
+    return {
+        "window_days": days,
+        "from_date": since.date().isoformat(),
+        "to_date": now.date().isoformat(),
+        "total_feedback": total_feedback,
+        "average_rating": overall_average,
+        "by_day": by_day,
     }
