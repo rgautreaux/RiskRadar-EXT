@@ -30,6 +30,7 @@ Scope: Migration logging and monitoring hardening for email encryption migration
 
 ## Staging Execution Commands
 
+0. Apply `backend/db/migrations/2026-04-10_phase3_email_security_schema.sql`
 1. `python db/migrations/migrate_email_encryption.py`
 2. `python db/migrations/validate_email_migration.py`
 3. `python db/migrations/monitor_migration_log.py`
@@ -37,6 +38,7 @@ Scope: Migration logging and monitoring hardening for email encryption migration
 ## Implementation Checklist (Execution Order)
 
 - [ ] Confirm the staging environment is using the reviewed `.env` source and the expected database target.
+- [ ] Apply the Phase 3 schema migration so `users.email_encrypted`, `users.email_hmac`, and `migration_log` exist before running the migration script.
 - [ ] Confirm the migration scripts are at the reviewed commit SHA.
 - [ ] Confirm backup completion and restore readiness before any migration execution.
 - [ ] Run `python db/migrations/migrate_email_encryption.py` in staging and capture stdout, stderr, and exit code.

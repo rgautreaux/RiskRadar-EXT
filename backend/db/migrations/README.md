@@ -7,6 +7,10 @@ This folder will contain migration scripts for email encryption and password has
 
 ## Phase 3 (Migration Logging & Monitoring) Scripts
 
+- `2026-04-10_phase3_email_security_schema.sql`
+  - Adds the `users.email_encrypted` and `users.email_hmac` columns required by the email migration.
+  - Creates the `migration_log` table used by the Phase 3 logging, validation, and monitoring tools.
+
 - `migrate_email_encryption.py`
   - Encrypts plaintext user emails into `email_encrypted`.
   - Computes and stores `email_hmac` for lookup uniqueness.
@@ -25,8 +29,9 @@ This folder will contain migration scripts for email encryption and password has
 
 ## Suggested Run Order (Staging)
 
-1. `python db/migrations/migrate_email_encryption.py`
-2. `python db/migrations/validate_email_migration.py`
-3. `python db/migrations/monitor_migration_log.py`
+1. Apply `2026-04-10_phase3_email_security_schema.sql`
+2. `python db/migrations/migrate_email_encryption.py`
+3. `python db/migrations/validate_email_migration.py`
+4. `python db/migrations/monitor_migration_log.py`
 
 Record all outputs in staging validation notes before requesting backend/security lead sign-off.
