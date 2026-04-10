@@ -127,9 +127,9 @@ Recommended sync order when updating progress:
 - **Stage 3**: Data Visualization and User Experience Extensions — ✅ Completed (2026-03-31)
    - Interactive risk map, personalized overlays, accessibility, and responsive UX implemented and verified.
    - Planning docs in `docs/PLANNING_DOCS/STAGE3_DOCS/`.
-- **Stage 4**: Predictive Analytics and AI-Driven Insights Extensions — ⏳ In Progress (Updated 2026-04-10)
+- **Stage 4**: Predictive Analytics and AI-Driven Insights Extensions — ✅ Completed (2026-04-10)
    - Forecast baseline backend and live forecast timeline integration are implemented and verified.
-   - Assistant scope/guardrails backend integration remains in progress.
+   - Assistant guardrails plus backend prompt/data integration are implemented and verified.
    - See `docs/PLANNING_DOCS/STAGE4_DOCS/`, `frontend/web/public/forecast.php`, `frontend/web/public/assistant.php`.
 - **Stage 5**: Ongoing Maintenance, Advanced Features, and Review — ✅ Completed (2026-04-02)
    - Transitioned to ongoing maintenance and advanced feature development for the Risk Map Architecture.

@@ -212,7 +212,7 @@ If backend port `8000` is unavailable, set `RISKRADAR_API_BASE_URL` (for example
 - Stage 1 web-app extension requirements: implemented and integrated.
 - Stage 2 kickoff web integration: implemented for risk and prioritization read paths.
 - Stage 3 interactive map: backend endpoints, API client, and frontend scaffold complete; dynamic Plotly rendering, overlays, and accessibility features in progress (see below).
-- Stage 4 forecast + assistant: forecast backend/live timeline integrated; assistant guardrails documented and enabled.
+- Stage 4 forecast + assistant: forecast backend/live timeline and assistant backend prompt/data integration are implemented and verified.
 
 ## Related Docs
 

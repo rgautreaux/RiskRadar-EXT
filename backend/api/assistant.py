@@ -108,7 +108,7 @@ def respond(body: AssistantRequest, db: Session = Depends(get_db)):
                 sources=["alerts"],
             )
 
-        weighted = sum(_severity_weight(alert.severity) for alert in alerts)
+        weighted = sum(_severity_weight(getattr(alert, "severity", None)) for alert in alerts)
         score = min(100.0, round((weighted / max(len(alerts), 1)) * 100, 1))
         high = sum(1 for alert in alerts if (alert.severity or "").lower() in {"high", "critical"})
         moderate = sum(1 for alert in alerts if (alert.severity or "").lower() == "moderate")
@@ -151,7 +151,7 @@ def respond(body: AssistantRequest, db: Session = Depends(get_db)):
                 sources=["alerts"],
             )
 
-        weighted = sum(_severity_weight(alert.severity) for alert in alerts)
+        weighted = sum(_severity_weight(getattr(alert, "severity", None)) for alert in alerts)
         score = min(100.0, round((weighted / max(len(alerts), 1)) * 100, 1))
         return AssistantResponse(
             reply=(
