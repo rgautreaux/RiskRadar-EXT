@@ -47,6 +47,7 @@ interface ChatInterfaceProps {
 	onClose?: () => void;
 	pageContext?: string;
 	isAdmin?: boolean;
+	adminUserId?: number;
 }
 
 const defaultSuggestions = [
@@ -350,7 +351,7 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 	return text;
 }
 
-export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageContext = 'unknown', isAdmin = false }: ChatInterfaceProps) {
+export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageContext = 'unknown', isAdmin = false, adminUserId }: ChatInterfaceProps) {
 	const [messages, setMessages] = useState<Message[]>([
 		{
 			id: '1',
@@ -404,10 +405,15 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 	}, [isAdmin]);
 
 	const refreshWeeklyAnalytics = async () => {
+		if (!isAdmin || adminUserId === undefined) {
+			setAnalyticsError('Admin access required to view analytics.');
+			setWeeklyAnalytics(null);
+			return;
+		}
 		setAnalyticsLoading(true);
 		setAnalyticsError(null);
 		try {
-			const analytics = await fetchWeeklyFeedbackAnalytics(7, sessionIdRef.current);
+			const analytics = await fetchWeeklyFeedbackAnalytics(7, sessionIdRef.current, adminUserId);
 			setWeeklyAnalytics(analytics);
 		} catch {
 			setAnalyticsError('Unable to load weekly analytics right now.');

@@ -16,6 +16,7 @@ def _serialize_user(user: User) -> UserOut:
         id=user.id,
         display_name=user.display_name,
         email=decrypt_email(user.email) if user.email else None,
+        is_admin=bool(user.is_admin),
         zip_code=user.zip_code,
         latitude=user.latitude,
         longitude=user.longitude,
@@ -42,6 +43,7 @@ def register_user(body: UserCreate, db: Session = Depends(get_db)):
         email=normalized_email,
         email_lookup_hash=hash_email(normalized_email),
         password_hash=password_hash(body.password),
+        is_admin=False,
         zip_code=body.zip_code,
     )
     db.add(user)

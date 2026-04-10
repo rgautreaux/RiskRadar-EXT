@@ -94,10 +94,13 @@ export async function sendGolbyFeedback(payload: GolbyFeedbackPayload) {
   return await res.json();
 }
 
-export async function fetchWeeklyFeedbackAnalytics(days = 7, sessionId?: string): Promise<WeeklyAnalyticsPayload> {
+export async function fetchWeeklyFeedbackAnalytics(days = 7, sessionId?: string, adminUserId?: number): Promise<WeeklyAnalyticsPayload> {
   const params = new URLSearchParams({ days: String(days) });
   if (sessionId) {
     params.set('session_id', sessionId);
+  }
+  if (adminUserId !== undefined) {
+    params.set('admin_user_id', String(adminUserId));
   }
 
   const res = await fetch(`/api/v1/feedback/analytics/weekly?${params.toString()}`);

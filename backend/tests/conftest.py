@@ -153,6 +153,27 @@ def sample_user(db_session):
         display_name="Test User",
         email="test@example.com",
         password_hash=_pwd_context.hash("password123"),
+        is_admin=False,
+        zip_code="90001",
+        created_at=NOW,
+        updated_at=NOW,
+    )
+    db_session.add(user)
+    db_session.commit()
+    db_session.refresh(user)
+    return user
+
+
+@pytest.fixture
+def admin_user(db_session):
+    from passlib.context import CryptContext
+
+    _pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
+    user = User(
+        display_name="Admin User",
+        email="admin@example.com",
+        password_hash=_pwd_context.hash("password123"),
+        is_admin=True,
         zip_code="90001",
         created_at=NOW,
         updated_at=NOW,

@@ -26,7 +26,7 @@
     </div>
 
     <!-- React AI Assistant Widget Mount Point -->
-    <div id="riskradar-ai-assistant-widget" data-admin="false"></div>
+    <div id="riskradar-ai-assistant-widget" data-admin="false" data-admin-user-id=""></div>
     <div class="mt-3" style="font-size: 13px; color: var(--muted-foreground);">
         <em>Note: Chat functionality will be enabled once the backend is ready.</em>
     </div>

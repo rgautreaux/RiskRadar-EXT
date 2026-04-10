@@ -24,6 +24,20 @@ def _safe_parse_timestamp(value: str | None) -> datetime | None:
         return None
 
 
+def _require_admin(admin_user_id: int | None, db: Session) -> User:
+    if admin_user_id is None:
+        raise HTTPException(status_code=403, detail="Admin access required")
+
+    user = db.query(User).filter(User.id == admin_user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if not bool(user.is_admin):
+        raise HTTPException(status_code=403, detail="Admin access required")
+
+    return user
+
+
 @router.post("", response_model=FeedbackOut)
 def record_feedback(body: FeedbackCreate, db: Session = Depends(get_db)):
     if body.user_id is not None:
@@ -76,10 +90,13 @@ def list_session_feedback(session_id: str, db: Session = Depends(get_db)):
 
 @router.get("/analytics")
 def feedback_analytics(
+    admin_user_id: int | None = None,
     session_id: str | None = None,
     response_category: str | None = None,
     db: Session = Depends(get_db),
 ):
+    _require_admin(admin_user_id, db)
+
     base_query = db.query(Feedback)
     if session_id:
         base_query = base_query.filter(Feedback.session_id == session_id)
@@ -131,10 +148,13 @@ def feedback_analytics(
 @router.get("/analytics/weekly")
 def feedback_weekly_report(
     days: int = 7,
+    admin_user_id: int | None = None,
     session_id: str | None = None,
     response_category: str | None = None,
     db: Session = Depends(get_db),
 ):
+    _require_admin(admin_user_id, db)
+
     days = max(1, min(days, 30))
     now = datetime.now(timezone.utc)
     since = now - timedelta(days=days - 1)
