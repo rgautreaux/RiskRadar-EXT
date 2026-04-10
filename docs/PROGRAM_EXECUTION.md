@@ -383,9 +383,35 @@ For a production-style database:
 
 6. **Start the backend** — SQLAlchemy will create any missing tables on startup.
 
+### 4.5 Demo Data & Grading
+
+To quickly set up a demo database with pre-populated users, alerts, and summaries:
+
+```bash
+# Terminal 1: Create fresh demo database
+npm run demo:setup
+
+# Verify demo data loaded
+npm run demo:verify
+
+# View demo user IDs and session tokens
+npm run demo:info
+
+# Generate additional alerts for scale/stress testing
+npm run demo:generate-alerts -- --count 50 --type air_quality
+```
+
+**Demo users available in fixtures:**
+- User 1: Low risk profile (baseline)
+- User 2: Medium risk profile (respiratory sensitivities)
+- User 3: High risk profile (multiple conditions)
+- User 4: Admin user (system-level access)
+
+For complete demo instructions, see [../DEMO_RUNBOOK.md](../docs/DEMO_RUNBOOK.md).
+
 ---
 
-## 8. Running Tests
+## 4.6 Verification & Testing
 
 ### 8.1 Backend tests
 

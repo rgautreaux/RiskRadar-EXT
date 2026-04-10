@@ -16,7 +16,6 @@ Usage:
 
 import argparse
 import json
-import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -25,9 +24,18 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from auth.security import encrypt_email, hash_email, password_hash, create_session_token
-from db.database import SessionLocal, engine
 from db.models import Base, Alert, Summary, User
-from sqlalchemy import text
+from sqlalchemy import text, create_engine
+from sqlalchemy.orm import sessionmaker
+
+
+def build_demo_session_factory(db_path: str):
+    """Create an isolated SQLAlchemy engine/session factory for the demo DB path."""
+    resolved = Path(db_path).resolve()
+    database_url = f"sqlite:///{resolved}"
+    engine = create_engine(database_url, connect_args={"check_same_thread": False})
+    session_factory = sessionmaker(bind=engine)
+    return engine, session_factory
 
 
 def load_fixtures() -> dict:
@@ -36,11 +44,11 @@ def load_fixtures() -> dict:
     if not fixtures_path.exists():
         raise FileNotFoundError(f"Fixtures file not found: {fixtures_path}")
     
-    with open(fixtures_path, "r") as f:
+    with open(fixtures_path, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
-def create_demo_db(db_path: str = "demo.db") -> str:
+def create_demo_db(engine, db_path: str = "demo.db") -> str:
     """Create a fresh demo database."""
     db_path = Path(db_path).resolve()
     if db_path.exists():
@@ -48,7 +56,7 @@ def create_demo_db(db_path: str = "demo.db") -> str:
         print(f"✓ Removed existing demo database: {db_path}")
     
     # Create all tables
-    Base.metadata.create_all(engine)
+    Base.metadata.create_all(bind=engine)
     print(f"✓ Created fresh demo database: {db_path}")
     return str(db_path)
 
@@ -70,17 +78,17 @@ def seed_users(session, fixtures: dict) -> dict:
             latitude=user_data.get("latitude"),
             longitude=user_data.get("longitude"),
             is_admin=user_data.get("is_admin", False),
-            alert_types=user_data.get("alert_types", []),
+            alert_types=json.dumps(user_data.get("alert_types", [])),
             notify_severity=user_data.get("notify_severity", "medium"),
-            health_conditions=user_data.get("health_conditions", {}),
-            created_at=datetime.now(timezone.utc),
-            updated_at=datetime.now(timezone.utc),
+            health_conditions=json.dumps(user_data.get("health_conditions", {})),
+            created_at=datetime.now(timezone.utc).isoformat(),
+            updated_at=datetime.now(timezone.utc).isoformat(),
         )
         session.add(user)
         session.flush()  # Ensure ID is assigned
         
         # Generate session token
-        token, expires_at = create_session_token(user["id"])
+        token, expires_at = create_session_token(user.id)
         session_tokens[user_data["id"]] = {
             "token": token,
             "expires_at": expires_at.isoformat(),
@@ -124,12 +132,12 @@ def seed_alerts(session, fixtures: dict) -> dict:
             location_name=alert_data.get("location_name"),
             latitude=alert_data.get("latitude"),
             longitude=alert_data.get("longitude"),
-            event_start=event_start,
-            event_end=event_end,
-            raw_data=alert_data.get("raw_data", {}),
-            fetched_at=datetime.now(timezone.utc),
-            created_at=datetime.now(timezone.utc),
-            updated_at=datetime.now(timezone.utc),
+            event_start=event_start.isoformat(),
+            event_end=event_end.isoformat() if event_end else None,
+            raw_data=json.dumps(alert_data.get("raw_data", {})),
+            fetched_at=datetime.now(timezone.utc).isoformat(),
+            created_at=datetime.now(timezone.utc).isoformat(),
+            updated_at=datetime.now(timezone.utc).isoformat(),
         )
         session.add(alert)
         
@@ -160,12 +168,11 @@ def seed_summaries(session, fixtures: dict) -> dict:
             content=summary_data["content"],
             summary_type=summary_data.get("summary_type", "daily_digest"),
             region=summary_data.get("region"),
-            generated_at=generated_at,
+            generated_at=generated_at.isoformat(),
             model_used=summary_data.get("model_used", "mock-summarizer"),
             token_count=summary_data.get("token_count", 0),
-            alert_ids=summary_data.get("alert_ids", []),
-            created_at=datetime.now(timezone.utc),
-            updated_at=datetime.now(timezone.utc),
+            alert_ids=json.dumps(summary_data.get("alert_ids", [])),
+            created_at=datetime.now(timezone.utc).isoformat(),
         )
         session.add(summary)
         session.flush()
@@ -199,7 +206,7 @@ def save_metadata(metadata: dict, db_path: str = "demo.db") -> None:
     metadata["seed_timestamp"] = datetime.now(timezone.utc).isoformat()
     metadata["fixtures_version"] = "1.0"
     
-    with open(metadata_path, "w") as f:
+    with open(metadata_path, "w", encoding="utf-8") as f:
         json.dump(metadata, f, indent=2)
     print(f"✓ Saved metadata to {metadata_path}")
 
@@ -243,7 +250,7 @@ def main():
     args = parser.parse_args()
     
     try:
-        print(f"\n🌍 RiskRadar Demo Data Seeding Script")
+        print("\n🌍 RiskRadar Demo Data Seeding Script")
         print(f"Mode: {args.mode} | Database: {args.db_path}")
         print("-" * 60)
         
@@ -251,7 +258,7 @@ def main():
         if args.info:
             metadata_path = Path(args.db_path).parent / "seed_metadata.json"
             if metadata_path.exists():
-                with open(metadata_path, "r") as f:
+                with open(metadata_path, "r", encoding="utf-8") as f:
                     metadata = json.load(f)
                 print("\n📋 Seed Metadata:")
                 print(json.dumps(metadata, indent=2))
@@ -267,7 +274,8 @@ def main():
                 return 1
             
             print(f"\n📊 Verifying demo database: {db_path}")
-            session = SessionLocal()
+            _, session_factory = build_demo_session_factory(str(db_path))
+            session = session_factory()
             
             # Count records
             user_count = session.query(User).count()
@@ -323,13 +331,15 @@ def main():
         print(f"  - {len(fixtures['alerts'])} alerts")
         print(f"  - {len(fixtures['summaries'])} summaries")
         
+        # Build isolated demo engine/session for this run
+        engine, session_factory = build_demo_session_factory(args.db_path)
+
         # Handle database setup
         if args.mode == "fresh":
-            db_path = create_demo_db(args.db_path)
-            os.environ["DATABASE_URL"] = f"sqlite:///{db_path}"
+            db_path = create_demo_db(engine, args.db_path)
         
         # Create session
-        session = SessionLocal()
+        session = session_factory()
         
         # Seed data
         print("\nSeeding data...")

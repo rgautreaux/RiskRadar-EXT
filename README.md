@@ -244,6 +244,68 @@ Then press:
 
 ---
 
+## Running the Demo
+
+The RiskRadar demo infrastructure provides a complete, reproducible walkthrough of all features across Stages 1–4. Designed for graders and presenters, the demo includes pre-populated data, CLI tools, and comprehensive documentation.
+
+### Quick Demo Setup
+
+```bash
+# Create fresh demo database with fixture data
+npm run demo:setup
+
+# Verify demo data loaded successfully
+npm run demo:verify
+
+# Print user IDs and session tokens for reference
+npm run demo:info
+```
+
+### Demo Flow (12–15 minutes)
+
+Once backend and web frontend are running, follow the guided walkthrough:
+
+1. **[DEMO_RUNBOOK.md](./docs/DEMO_RUNBOOK.md)** — Step-by-step presentation script (2 min per step)
+2. **[DEMO_FEATURES_BY_STAGE.md](./docs/DEMO_FEATURES_BY_STAGE.md)** — Feature-to-code mapping for graders
+3. **[DEMO_ONBOARDING.md](./docs/DEMO_ONBOARDING.md)** — How to customize or extend the demo
+
+### Demo CLI Commands
+
+```bash
+# Demo database operations
+npm run demo:setup           # Create fresh demo.db with fixtures
+npm run demo:seed            # Add fixtures to existing SQLite
+npm run demo:reset           # Clear and reseed existing database
+npm run demo:clean           # Remove demo.db and metadata
+npm run demo:verify          # Validate schema and data completeness
+npm run demo:info            # Print user IDs, tokens, alert summary
+
+# Generate additional alerts (for scale demos)
+npm run demo:generate-alerts -- --count 50 --type air_quality
+npm run demo:generate-alerts -- --count 100 --distribution balanced
+```
+
+### Demo Users (in fixtures)
+
+| ID | Name | Sensitivities | Use Case |
+|----|------|---|----------|
+| 1 | Demo User (Low Risk) | None | Baseline Stage 1 demo |
+| 2 | Demo User (Medium Risk) | Asthma=3, Allergies=2 | Stage 2 personalization |
+| 3 | Demo User (High Risk) | Asthma=4, COPD=3, Allergies=3, Heart=2, Immunocompromised=1 | Complex risk scoring |
+| 4 | Demo Admin | Allergies=1, Elderly=1 | Admin features (auth, analytics) |
+
+### For Graders
+
+The demo fulfills all course requirements:
+- ✅ **Stage 1**: Web-app backend connectivity, alerts/summaries feed, user registration/profile
+- ✅ **Stage 2**: Personalized risk scoring, smart alert prioritization, health sensitivities
+- ✅ **Stage 3**: Interactive geospatial map, overlays, responsive UX, accessibility  
+- ✅ **Stage 4**: Forecast UI with personalized advice, AI assistant with guardrails
+
+See [DEMO_FEATURES_BY_STAGE.md](./docs/DEMO_FEATURES_BY_STAGE.md) for detailed feature-to-code mapping.
+
+---
+
 ## Common Issues
 
 | Problem | Solution |
