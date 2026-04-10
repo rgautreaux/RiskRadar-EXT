@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { fetchUserGuide, searchDocForAnswer } from './docSearch';
-import { fetchCurrentAlerts, fetchRiskOverlay, fetchForecast, sendGolbyFeedback } from './apiClient';
+import { fetchAssistantReply, fetchCurrentAlerts, fetchRiskOverlay, fetchForecast, fetchWeeklyFeedbackAnalytics, sendGolbyFeedback } from './apiClient';
 import { motion } from 'framer-motion';
 import { GolbyIcon } from './GolbyIcon';
 import { ChatBubble } from './ChatBubble';
@@ -25,6 +25,21 @@ interface Message {
 	isGolby: boolean;
 	timestamp: Date;
 	responseCategory?: ResponseCategory;
+}
+
+interface WeeklyAnalyticsPoint {
+	date: string;
+	count: number;
+	average_rating: number | null;
+}
+
+interface WeeklyAnalyticsSummary {
+	window_days: number;
+	from_date: string;
+	to_date: string;
+	total_feedback: number;
+	average_rating: number | null;
+	by_day: WeeklyAnalyticsPoint[];
 }
 
 interface ChatInterfaceProps {
@@ -350,6 +365,10 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 	const [assistantProfile, setAssistantProfile] = useState<AssistantProfile>(() => readStoredProfile());
 	const [feedbackCount, setFeedbackCount] = useState<number>(() => readStoredNumber(FEEDBACK_COUNT_STORAGE_KEY, 0));
 	const [styleBias, setStyleBias] = useState<number>(() => readStoredNumber(STYLE_BIAS_STORAGE_KEY, 0));
+	const [showDiagnostics, setShowDiagnostics] = useState(false);
+	const [weeklyAnalytics, setWeeklyAnalytics] = useState<WeeklyAnalyticsSummary | null>(null);
+	const [analyticsLoading, setAnalyticsLoading] = useState(false);
+	const [analyticsError, setAnalyticsError] = useState<string | null>(null);
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 	const sessionIdRef = useRef(getSessionId());
 	// Fetch USER_GUIDE.md on mount
@@ -377,6 +396,25 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 		persistNumber(STYLE_BIAS_STORAGE_KEY, styleBias);
 	}, [styleBias]);
 
+	const refreshWeeklyAnalytics = async () => {
+		setAnalyticsLoading(true);
+		setAnalyticsError(null);
+		try {
+			const analytics = await fetchWeeklyFeedbackAnalytics(7, sessionIdRef.current);
+			setWeeklyAnalytics(analytics);
+		} catch {
+			setAnalyticsError('Unable to load weekly analytics right now.');
+		} finally {
+			setAnalyticsLoading(false);
+		}
+	};
+
+	useEffect(() => {
+		if (showDiagnostics) {
+			refreshWeeklyAnalytics();
+		}
+	}, [showDiagnostics]);
+
 
 
 
@@ -389,6 +427,25 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 				text: getGuardrailResponse(guardrailCategory),
 				category: 'static',
 			};
+		}
+
+		const locationMatch = userMessage.match(/(?:for|in)\s+([\w\s,]+)/i);
+		const locationHint = locationMatch ? locationMatch[1].trim() : undefined;
+		try {
+			const backendReply = await fetchAssistantReply({
+				message: userMessage,
+				page_context: pageContext,
+				location: locationHint,
+			});
+			if (backendReply?.reply) {
+				const mappedCategory: ResponseCategory = backendReply.category === 'live' ? 'live' : 'static';
+				return {
+					text: backendReply.reply,
+					category: mappedCategory,
+				};
+			}
+		} catch {
+			// Fall back to local response logic when backend assistant is unavailable.
 		}
 
 		const topic = classifyTopic(lowerMessage);
@@ -570,10 +627,84 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 					<h2 className="text-white font-medium">Chat with Golby</h2>
 					<p className="text-blue-100 text-sm">Your AI Travel Assistant</p>
 				</div>
+				<button
+					onClick={() => setShowDiagnostics((current) => !current)}
+					className="text-blue-100 hover:text-white text-xs px-2 py-1 border border-blue-300/50 rounded-md transition"
+					aria-label="Toggle diagnostics panel"
+				>
+					{showDiagnostics ? 'Hide Panels' : 'Show Panels'}
+				</button>
 				{onClose && (
 					<button onClick={onClose} className="text-white hover:text-blue-200 text-xl font-bold ml-2" aria-label="Close chat">×</button>
 				)}
 			</div>
+			{showDiagnostics && (
+				<div className="bg-blue-50 border-b border-blue-100 px-6 py-3 space-y-3">
+					<div className="rounded-lg border border-blue-200 bg-white p-3">
+						<p className="text-xs font-semibold text-blue-900 mb-2">Local Learning Panel</p>
+						<div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-700">
+							<span>Session ID</span>
+							<span className="font-mono text-[11px] break-all">{sessionIdRef.current}</span>
+							<span>Feedback Count</span>
+							<span>{feedbackCount}</span>
+							<span>Style Bias</span>
+							<span>{styleBias}</span>
+							<span>Active Style</span>
+							<span>{getResponseStyle(feedbackCount, styleBias)}</span>
+							<span>Category Scores</span>
+							<span>
+								docs {assistantProfile.docs.toFixed(2)}, page {assistantProfile.page.toFixed(2)}, live {assistantProfile.live.toFixed(2)}, playful {assistantProfile.playful.toFixed(2)}, static {assistantProfile.static.toFixed(2)}
+							</span>
+						</div>
+					</div>
+					<div className="rounded-lg border border-blue-200 bg-white p-3">
+						<div className="flex items-center justify-between mb-2">
+							<p className="text-xs font-semibold text-blue-900">Backend Weekly Analytics Panel</p>
+							<button
+								onClick={refreshWeeklyAnalytics}
+								className="text-xs text-blue-700 hover:text-blue-900 underline"
+								aria-label="Refresh backend analytics"
+							>
+								Refresh
+							</button>
+						</div>
+						{analyticsLoading && <p className="text-xs text-gray-600">Loading analytics...</p>}
+						{analyticsError && <p className="text-xs text-red-600">{analyticsError}</p>}
+						{weeklyAnalytics && !analyticsLoading && !analyticsError && (
+							<div className="space-y-2">
+								<div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-700">
+									<span>Window</span>
+									<span>{weeklyAnalytics.from_date} to {weeklyAnalytics.to_date}</span>
+									<span>Total Feedback</span>
+									<span>{weeklyAnalytics.total_feedback}</span>
+									<span>Average Rating</span>
+									<span>{weeklyAnalytics.average_rating ?? 'N/A'}</span>
+								</div>
+								<div className="border border-blue-100 rounded-md overflow-hidden">
+									<table className="w-full text-xs">
+										<thead className="bg-blue-100 text-blue-900">
+											<tr>
+												<th className="text-left px-2 py-1">Date</th>
+												<th className="text-left px-2 py-1">Count</th>
+												<th className="text-left px-2 py-1">Avg</th>
+											</tr>
+										</thead>
+										<tbody>
+											{weeklyAnalytics.by_day.map((day) => (
+												<tr key={day.date} className="border-t border-blue-50">
+													<td className="px-2 py-1">{day.date}</td>
+													<td className="px-2 py-1">{day.count}</td>
+													<td className="px-2 py-1">{day.average_rating ?? 'N/A'}</td>
+												</tr>
+											))}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						)}
+					</div>
+				</div>
+			)}
 			{/* Messages */}
 			<div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50">
 				{messages.map((message) => (
