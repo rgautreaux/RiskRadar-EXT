@@ -1,5 +1,7 @@
 """Tests for assistant API endpoint."""
 
+import json
+
 
 class TestAssistantRespond:
     def test_guardrail_response(self, test_client):
@@ -32,3 +34,21 @@ class TestAssistantRespond:
         )
         assert resp.status_code == 404
         assert "User not found" in resp.json()["detail"]
+
+    def test_profile_shaped_help_response(self, test_client, sample_user, db_session):
+        from db.models import User
+
+        user = db_session.query(User).filter(User.id == sample_user.id).first()
+        profile = json.loads(user.assistant_style_profile)
+        profile["tone"]["warmth"] = 0.9
+        user.assistant_style_profile = json.dumps(profile)
+        db_session.commit()
+
+        resp = test_client.post(
+            "/api/v1/assistant/respond",
+            json={"message": "help", "user_id": sample_user.id},
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["category"] == "fallback"
+        assert data["reply"].startswith("Absolutely.")

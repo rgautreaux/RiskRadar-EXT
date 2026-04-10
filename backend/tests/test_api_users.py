@@ -107,3 +107,28 @@ class TestUpdatePreferences:
             "zip_code": "00000",
         })
         assert resp.status_code == 404
+
+    def test_update_assistant_style_profile(self, test_client, sample_user):
+        resp = test_client.put(f"/api/v1/users/{sample_user.id}/preferences", json={
+            "assistant_style_profile": {
+                "tone": {
+                    "warmth": 0.82,
+                    "calmness": 0.8,
+                    "humor": 0.5
+                },
+                "delivery": {
+                    "conciseness": 0.72,
+                    "detail": 0.55,
+                    "expandability": 0.6
+                },
+                "voice": {
+                    "formality": 0.32
+                },
+                "learning": {
+                    "feedback_count": 2,
+                    "last_feedback_at": None
+                }
+            },
+        })
+        assert resp.status_code == 200
+        assert '"warmth": 0.82' in resp.json()["assistant_style_profile"]

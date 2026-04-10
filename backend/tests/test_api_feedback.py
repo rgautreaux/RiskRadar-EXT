@@ -1,5 +1,7 @@
 """Tests for feedback API endpoints."""
 
+import json
+
 
 def _login(test_client, email: str, password: str):
     resp = test_client.post("/api/v1/auth/login", json={"email": email, "password": password})
@@ -56,6 +58,30 @@ class TestRecordFeedback:
             "rating": 9,
         })
         assert resp.status_code == 422
+
+    def test_feedback_updates_user_assistant_profile(self, test_client, sample_user, db_session):
+        from db.models import User
+
+        before = db_session.query(User).filter(User.id == sample_user.id).first()
+        before_profile = json.loads(before.assistant_style_profile)
+        before_count = before_profile["learning"]["feedback_count"]
+
+        resp = test_client.post("/api/v1/feedback", json={
+            "session_id": "session-personality",
+            "message_id": "msg-personality",
+            "user_id": sample_user.id,
+            "reaction": "smile",
+            "rating": 5,
+            "comment": "Great tone, not robotic",
+        })
+
+        assert resp.status_code == 200
+
+        after = db_session.query(User).filter(User.id == sample_user.id).first()
+        after_profile = json.loads(after.assistant_style_profile)
+
+        assert after_profile["learning"]["feedback_count"] == before_count + 1
+        assert after_profile["tone"]["warmth"] > before_profile["tone"]["warmth"]
 
 
 class TestFeedbackAnalytics:
