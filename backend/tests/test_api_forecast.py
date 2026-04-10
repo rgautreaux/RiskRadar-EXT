@@ -4,7 +4,8 @@ import json
 
 
 class TestForecastEndpoint:
-    def test_forecast_returns_points_and_summary(self, test_client, _sample_alerts):
+    def test_forecast_returns_points_and_summary(self, test_client, sample_alerts):
+        assert sample_alerts
         resp = test_client.get("/api/v1/forecast?location=Los Angeles")
         assert resp.status_code == 200
 
@@ -26,7 +27,8 @@ class TestForecastEndpoint:
         assert data["baseline_risk_score"] is not None
         assert data["personalized"] is False
 
-    def test_personalized_forecast_marks_response(self, test_client, sample_user, _sample_alerts, db_session):
+    def test_personalized_forecast_marks_response(self, test_client, sample_user, sample_alerts, db_session):
+        assert sample_alerts
         sample_user.health_conditions = json.dumps(["asthma", "respiratory"])
         db_session.add(sample_user)
         db_session.commit()
