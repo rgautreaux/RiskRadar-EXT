@@ -127,7 +127,7 @@ def migrate_emails() -> int:
         _log(db, action="email_encryption_batch", status="completed", error_message=summary)
         db.commit()
         return 0 if failed == 0 else 2
-    except Exception as exc:  # noqa: BLE001 - capture batch-level failure and persist audit record
+    except Exception as exc:  # noqa: BLE001, pyright: ignore[reportGeneralTypeIssues] - capture batch-level failure and persist audit record
         db.rollback()
         _log(
             db,

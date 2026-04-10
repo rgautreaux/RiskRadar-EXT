@@ -53,7 +53,7 @@ def run_monitoring() -> int:
 
         if latest_batch is None:
             error_count = 0
-            recent_errors = []
+            recent_errors: list[MigrationLog] = []
         else:
             batch_started_at = latest_batch.timestamp
             scoped_errors = (
@@ -65,7 +65,7 @@ def run_monitoring() -> int:
                 )
             )
             error_count = scoped_errors.count()
-            recent_errors = (
+            recent_errors = list(
                 scoped_errors
                 .order_by(MigrationLog.timestamp.desc())
                 .limit(10)
