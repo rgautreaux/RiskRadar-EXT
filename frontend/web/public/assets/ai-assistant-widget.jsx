@@ -8,9 +8,12 @@ import { WelcomeTab } from '../../components/golby/WelcomeTab';
 function GolbyAssistantWidget() {
   const [open, setOpen] = React.useState(false);
   const [pageContext, setPageContext] = React.useState('unknown');
+  const [isAdmin, setIsAdmin] = React.useState(false);
 
   React.useEffect(() => {
     setPageContext(detectCurrentPage());
+    const mount = document.getElementById('riskradar-ai-assistant-widget');
+    setIsAdmin(mount?.dataset.admin === 'true');
   }, []);
 
   return (
@@ -19,7 +22,7 @@ function GolbyAssistantWidget() {
       {open && (
         <div style={{ position: 'fixed', bottom: 100, right: 32, zIndex: 1000 }}>
           <div style={{ background: 'rgba(255,255,255,0.98)', borderRadius: 24, boxShadow: '0 8px 32px rgba(0,0,0,0.18)', padding: 0, minWidth: 360, maxWidth: 400 }}>
-            <ChatInterface onClose={() => setOpen(false)} pageContext={pageContext} />
+            <ChatInterface onClose={() => setOpen(false)} pageContext={pageContext} isAdmin={isAdmin} />
           </div>
         </div>
       )}

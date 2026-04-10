@@ -46,6 +46,7 @@ interface ChatInterfaceProps {
 	suggestions?: string[];
 	onClose?: () => void;
 	pageContext?: string;
+	isAdmin?: boolean;
 }
 
 const defaultSuggestions = [
@@ -349,7 +350,7 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 	return text;
 }
 
-export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageContext = 'unknown' }: ChatInterfaceProps) {
+export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageContext = 'unknown', isAdmin = false }: ChatInterfaceProps) {
 	const [messages, setMessages] = useState<Message[]>([
 		{
 			id: '1',
@@ -395,6 +396,12 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 	useEffect(() => {
 		persistNumber(STYLE_BIAS_STORAGE_KEY, styleBias);
 	}, [styleBias]);
+
+	useEffect(() => {
+		if (!isAdmin) {
+			setShowDiagnostics(false);
+		}
+	}, [isAdmin]);
 
 	const refreshWeeklyAnalytics = async () => {
 		setAnalyticsLoading(true);
@@ -627,18 +634,20 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 					<h2 className="text-white font-medium">Chat with Golby</h2>
 					<p className="text-blue-100 text-sm">Your AI Travel Assistant</p>
 				</div>
-				<button
-					onClick={() => setShowDiagnostics((current) => !current)}
-					className="text-blue-100 hover:text-white text-xs px-2 py-1 border border-blue-300/50 rounded-md transition"
-					aria-label="Toggle diagnostics panel"
-				>
-					{showDiagnostics ? 'Hide Panels' : 'Show Panels'}
-				</button>
+				{isAdmin && (
+					<button
+						onClick={() => setShowDiagnostics((current) => !current)}
+						className="text-blue-100 hover:text-white text-xs px-2 py-1 border border-blue-300/50 rounded-md transition"
+						aria-label="Toggle diagnostics panel"
+					>
+						{showDiagnostics ? 'Hide Panels' : 'Show Panels'}
+					</button>
+				)}
 				{onClose && (
 					<button onClick={onClose} className="text-white hover:text-blue-200 text-xl font-bold ml-2" aria-label="Close chat">×</button>
 				)}
 			</div>
-			{showDiagnostics && (
+			{isAdmin && showDiagnostics && (
 				<div className="bg-blue-50 border-b border-blue-100 px-6 py-3 space-y-3">
 					<div className="rounded-lg border border-blue-200 bg-white p-3">
 						<p className="text-xs font-semibold text-blue-900 mb-2">Local Learning Panel</p>
