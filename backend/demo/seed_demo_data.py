@@ -225,12 +225,96 @@ def main():
         default=False,
         help="Fetch real environmental data from scrapers (not yet implemented)",
     )
+    parser.add_argument(
+        "--verify",
+        action="store_true",
+        help="Verify demo.db schema and seed data completeness (don't modify DB)",
+    )
+    parser.add_argument(
+        "--info",
+        action="store_true",
+        help="Print seed_metadata.json (user IDs, tokens, alert counts)",
+    )
+    parser.add_argument(
+        "--clean-only",
+        action="store_true",
+        help="Remove demo.db and seed_metadata.json without reseeding",
+    )
     args = parser.parse_args()
     
     try:
         print(f"\n🌍 RiskRadar Demo Data Seeding Script")
         print(f"Mode: {args.mode} | Database: {args.db_path}")
         print("-" * 60)
+        
+        # Handle info/verify/clean operations
+        if args.info:
+            metadata_path = Path(args.db_path).parent / "seed_metadata.json"
+            if metadata_path.exists():
+                with open(metadata_path, "r") as f:
+                    metadata = json.load(f)
+                print("\n📋 Seed Metadata:")
+                print(json.dumps(metadata, indent=2))
+                return 0
+            else:
+                print(f"❌ No seed metadata found at {metadata_path}")
+                return 1
+        
+        if args.verify:
+            db_path = Path(args.db_path)
+            if not db_path.exists():
+                print(f"❌ Database not found at {db_path}")
+                return 1
+            
+            print(f"\n📊 Verifying demo database: {db_path}")
+            session = SessionLocal()
+            
+            # Count records
+            user_count = session.query(User).count()
+            alert_count = session.query(Alert).count()
+            summary_count = session.query(Summary).count()
+            
+            print(f"  ✓ Users: {user_count}")
+            print(f"  ✓ Alerts: {alert_count}")
+            print(f"  ✓ Summaries: {summary_count}")
+            
+            session.close()
+            
+            # Expected counts
+            expected_users = 4
+            expected_alerts = 15
+            expected_summaries = 2
+            
+            all_good = (
+                user_count >= expected_users
+                and alert_count >= expected_alerts
+                and summary_count >= expected_summaries
+            )
+            
+            if all_good:
+                print("\n✅ Demo database verification passed!")
+                return 0
+            else:
+                print(
+                    f"\n⚠️  Warning: Expected at least {expected_users} users, "
+                    f"{expected_alerts} alerts, {expected_summaries} summaries"
+                )
+                return 1
+        
+        if args.clean_only:
+            db_path = Path(args.db_path)
+            metadata_path = db_path.parent / "seed_metadata.json"
+            
+            if db_path.exists():
+                db_path.unlink()
+                print(f"✓ Removed {db_path}")
+            
+            if metadata_path.exists():
+                metadata_path.unlink()
+                print(f"✓ Removed {metadata_path}")
+            
+            print("\n✅ Demo database and metadata cleaned!")
+            return 0
         
         # Load fixtures
         fixtures = load_fixtures()
