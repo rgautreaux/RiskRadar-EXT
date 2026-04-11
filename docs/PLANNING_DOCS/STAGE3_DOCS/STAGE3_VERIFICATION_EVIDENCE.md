@@ -103,6 +103,8 @@ Manual evidence is required for grading and onboarding. Automated verification i
 - `static/evidence/S3_CLOSEOUT_MANIFEST_2026-04-11.md`
 - `docs/evidence/INDEX.md`
 
+**Owner assignment:** Max (manual S3-06 artifact capture and filing)
+
 **Required closeout artifact paths:**
 - `static/evidence/s3-map-desktop-overlays.png`
 - `static/evidence/s3-map-desktop-controls-legend.png`

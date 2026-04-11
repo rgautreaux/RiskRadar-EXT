@@ -844,7 +844,7 @@ The goal of this project is to transform RiskRadar into a broader full-stack sys
 
 **RiskRadar** is a mobile app designed to help users identify and manage potential environmental conditions and risks they may encounter while traveling or in day-to-day activities. The app provides features such as real-time alerts, climate data statistics, and user-friendly 5-minute summaries.
 
-As an extension of our RiskRadar mobile app, this repository contains code from the mobile app to provide a foundation for our web-app extension.
+As an extension effort related to RiskRadar, this repository focuses on the CMPS 357 web-app implementation and shared backend. Mobile implementation work is maintained in the separate CMPS 490 mobile repository.
 
 ### RiskRadar Web-App Extension
 

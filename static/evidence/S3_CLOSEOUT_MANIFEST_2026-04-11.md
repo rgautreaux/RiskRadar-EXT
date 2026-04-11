@@ -3,6 +3,8 @@
 Date prepared: 2026-04-11  
 Status: Ready for manual capture and filing
 
+Owner assignment: Max (all capture and filing tasks)
+
 ## Required artifacts
 
 ### Desktop captures (1280px)

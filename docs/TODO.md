@@ -121,10 +121,10 @@ Add an interactive risk map for spatial understanding of risk conditions.
 - [ ] Final manual screenshot and recording bundle complete.
 
 ### S3-06 Evidence Closeout Next Steps
-- [ ] Capture desktop (1280px) screenshots for map overlays, legend/toggles, and personalized view.
-- [ ] Capture mobile-width (360px) screenshots for responsive map controls and accessibility labels.
-- [ ] Record a short walkthrough showing zoom/pan/click interactions, overlay toggles, and fallback/error handling.
-- [ ] File artifacts under `static/evidence/` and cross-link them in `docs/PLANNING_DOCS/STAGE3_DOCS/STAGE3_VERIFICATION_EVIDENCE.md`.
+- [ ] Capture desktop (1280px) screenshots for map overlays, legend/toggles, and personalized view. **Assigned: Max**
+- [ ] Capture mobile-width (360px) screenshots for responsive map controls and accessibility labels. **Assigned: Max**
+- [ ] Record a short walkthrough showing zoom/pan/click interactions, overlay toggles, and fallback/error handling. **Assigned: Max**
+- [ ] File artifacts under `static/evidence/` and cross-link them in `docs/PLANNING_DOCS/STAGE3_DOCS/STAGE3_VERIFICATION_EVIDENCE.md`. **Assigned: Max**
 
 ### Stage 3 Session Entries (After Checklist)
 
