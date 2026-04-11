@@ -8,6 +8,8 @@ RiskRadar helps residents and travelers identify environmental risks by scraping
 
 ## April 11, 2026 Synchronization Note
 
+- GitHub merge blockers were resolved in this session: migration SQL indexability fix (`email_hmac` bounded type), Phase 3 migration prerequisite hardening (no broad schema bootstrap), strict migration test monkeypatching, and handoff metadata date alignment.
+- Branch conflict state was cleared by merging `main` into the active branch, followed by focused migration test verification (`6 passed`).
 - Demo-readiness implementation work was completed this session for presentation support paths.
 - `docs/PROJECT_DEMO.md` now tracks implemented demos, to-be-implemented demos, recommended screen order, fallback rules, and presenter notes.
 - Mobile demo flow improvements now include persisted demo settings, backend-driven alert filters, in-app backend health checks, and scrape-trigger summary output.

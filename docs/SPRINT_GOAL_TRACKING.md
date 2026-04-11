@@ -1,6 +1,11 @@
 # April 11 Synchronization Note
 This Apr 11 pass synchronized sprint tracking with the completed demo-readiness implementation updates and final users+alerts API verification.
 
+Apr 11 merge-blocker remediation extension:
+- Resolved GitHub-reported merge blockers in migration SQL, migration schema-prerequisite handling, and migration test strictness.
+- Updated Phase 3 handoff metadata date context for reviewer clarity.
+- Merged `main` into the active branch to clear conflict state and reran focused migration suites (`6 passed`).
+
 - Added and synchronized the project demo guide (`docs/PROJECT_DEMO.md`) with implemented and planned demo tracks.
 - Implemented demo-path improvements in the mobile app: persisted settings flow, backend-driven alert filters, and backend demo actions in settings.
 - Revalidated backend users + alerts API suites from the root command path (`40 passed, 0 failed`).

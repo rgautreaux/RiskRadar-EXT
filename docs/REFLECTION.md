@@ -1,3 +1,20 @@
+### Apr 11, 2026: Merge Blocker Remediation and PR Conflict Resolution
+- Resolved GitHub-reported merge blockers by fixing migration schema/index compatibility, narrowing migration bootstrap behavior, tightening monkeypatch strictness in tests, and aligning handoff metadata.
+- Merged `main` into the feature branch and reran focused migration suites to confirm the conflict-resolution path remained stable.
+- Synchronized top-level documentation so the remediation pass is captured in transcript/progress records for auditability.
+
+#### Why These Developments Were Made
+- To remove concrete blockers preventing branch integration and review progress.
+- To ensure migration behavior remains explicit, reproducible, and aligned with the reviewed SQL artifact.
+- To prevent silent regression masking in tests where `SessionLocal` is a required module attribute.
+
+#### How This Betters the Project
+- Reduces merge risk by resolving branch-level conflict and migration portability concerns.
+- Improves operational safety by avoiding unintended schema creation side effects during migration runs.
+- Strengthens regression signal quality by ensuring tests fail loudly when expected patch targets drift.
+
+---
+
 ### Apr 11, 2026: Migration Verification Evidence + Full Suite Confirmation
 - Completed a verification closeout pass by rerunning migration execution, validation, and monitoring commands after local schema alignment.
 - Confirmed full backend stability with a fresh full-suite run (`159 passed, 3 skipped`) and documented the evidence in migration notes.

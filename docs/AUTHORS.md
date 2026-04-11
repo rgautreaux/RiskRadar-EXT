@@ -46,6 +46,7 @@
 - Implemented and validated Apr 10, 2026 backend critical regression expansion across location, summary, system, and user/auth flows, followed by a full backend suite pass (`107 passed`, warnings only).
 - Implemented Apr 11, 2026 demo-readiness updates (`docs/PROJECT_DEMO.md`, persisted demo settings, backend-driven alert filters, in-app backend health/scrape demo actions), then completed final root users+alerts API cleanup validation (`40 passed, 0 failed`).
 - Completed Apr 11, 2026 migration verification evidence reruns and full backend confirmation (`159 passed, 3 skipped`), then synchronized audit-tracking docs and closed the scraper/DB/summary regression-checklist task.
+- Completed Apr 11, 2026 merge-blocker remediation for branch integration by fixing migration schema/index portability, restricting Phase 3 migration bootstrap scope, tightening migration test patch strictness, and synchronizing branch/doc state after conflict-resolution merge from `main`.
 
 ### Celeste George
 - Frontend developer, UI/UX research, and QA.

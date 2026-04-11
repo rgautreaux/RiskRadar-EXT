@@ -1,5 +1,7 @@
 # Documentation Synchronization Note (Apr 10, 2026)
 
+[x] 🟢 Merge Blocker Remediation + Branch Conflict Resolution Sync (Apr 11, 2026): resolved GitHub-reported merge blockers by fixing `email_hmac` migration type/index compatibility, constraining Phase 3 schema bootstrap behavior to migration prerequisites, tightening migration-test monkeypatch strictness, aligning handoff metadata date context, and validating focused migration suites (`6 passed`) after merging `main` into the branch.
+
 [x] 🟢 Demo Readiness Implementation + Validation Sync (Apr 11, 2026): created `docs/PROJECT_DEMO.md`, implemented server-driven alerts filtering + settings/backend demo tooling enhancements, and validated root users+alerts API test command with `40 passed, 0 failed`.
 
 UI/UX, planning, and progress-tracking docs are synchronized as of April 10, 2026. The latest transcript and progress-log entries remain in chronological order, and the repository stays audit-ready for onboarding continuity.
