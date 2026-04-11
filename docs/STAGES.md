@@ -3,6 +3,26 @@
 - Latest full backend verification (`npm run verify:backend`): **198 passed** plus standalone smoke test pass (2026-04-11).
 - Historical lower totals in older session entries are retained intentionally as time-stamped snapshots.
 
+## Stage 5: Verified Map Closeout and Documentation Sync Session (2026-04-11)
+
+### Implementation
+Completed the final documentation synchronization pass after confirming the Stage 3 map closeout is verified and the evidence bundle is complete.
+
+### Functionality
+- Confirmed the interactive risk map is verifier-clean with the required S3-06 artifacts in place.
+- Kept the map fix scoped to coordinate normalization so the demo renders correctly without broader UI churn.
+- Brought the top-level stage summary into alignment with the verified map closeout state.
+
+### Verification Evidence
+- ✅ `npm run verify:evidence:s3` passes with all required files and links present.
+- ✅ The map demo now resolves alert and risk geometry using backend payload shapes.
+- ✅ Required Stage 3 artifacts are present under `static/evidence/`.
+
+### Importance
+- Establishes a clear verified endpoint for the Stage 3 map deliverable.
+- Reduces ambiguity for graders by documenting the final working state.
+- Keeps the stage summary consistent with the current repository evidence.
+
 ## Stage 5: Web-Only Scope Hardening and S3 Evidence Closeout Session (2026-04-11)
 
 ### Implementation

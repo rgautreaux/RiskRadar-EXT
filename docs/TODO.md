@@ -244,19 +244,18 @@ Maintain delivered features, harden security, and keep documentation and verific
 
 ### Stage 5 Session Entries (After Checklist)
 
+#### Stage 5 Verified Map Closeout and Documentation Sync Session (2026-04-11)
+Summary:
+- Confirmed the Stage 3 map closeout is verifier-clean after normalizing frontend coordinate parsing for alerts and risk polygons.
+- Verified that all required S3-06 evidence artifacts are present and that `npm run verify:evidence:s3` passes.
+- Synchronized the top-level project summary to reflect the validated map state and evidence bundle.
+
 #### Stage 5 Web-Only Scope Hardening and S3 Evidence Closeout Session (2026-04-11)
 Summary:
-- Hardened top-level setup/execution guidance so required workflows are backend + web only and mobile references are explicitly marked reference-only.
+- Hardened top-level setup and execution guidance so required workflows are backend + web only and mobile references are explicitly marked reference-only.
 - Corrected top-level web startup path to PHP runtime serving flow used by this repository.
 - Converted S3-06 evidence checklist into a concrete verifier-gated capture guide in `static/evidence/map_accessibility_test_log.md`.
-- Completed required S3-06 evidence artifact bundle under `static/evidence/`:
-	- `s3-map-desktop-overlays.png`
-	- `s3-map-desktop-controls-legend.png`
-	- `s3-map-desktop-personalized.png`
-	- `s3-map-mobile-layout.png`
-	- `s3-map-mobile-controls.png`
-	- `s3-map-walkthrough.mp4`
-	- `s3-map-keyboard-nav.mp4`
+- Completed required S3-06 evidence artifact bundle under `static/evidence/`.
 - Re-ran evidence closeout validator and confirmed final pass state: ✅ `npm run verify:evidence:s3`.
 
 #### Stage 5 Rebecca Implementation Closeout and Max Handoff Session (2026-04-11)
