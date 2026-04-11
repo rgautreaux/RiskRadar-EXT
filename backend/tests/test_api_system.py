@@ -95,3 +95,44 @@ def test_trigger_scrape_reports_partial_failure(test_client, sample_user, monkey
     assert data["results"][0]["status"] == "success"
     assert data["results"][1]["status"] == "error"
     assert "scraper exploded" in data["results"][1]["error"]
+
+
+def test_notify_subscribers_requires_auth(test_client, sample_alerts):
+    resp = test_client.post(f"/api/v1/notifications/alerts/{sample_alerts[0].id}/notify-subscribers")
+    assert resp.status_code == 401
+
+
+def test_notify_subscribers_filters_by_preferences(test_client, db_session, sample_alerts, sample_user):
+    sample_user.device_token = "ExponentPushToken[ok]"
+    sample_user.alert_types = '["weather"]'
+    sample_user.notify_severity = "high"
+
+    other_user = type(sample_user)(
+        display_name="Low Priority User",
+        email="low@test.com",
+        password_hash=sample_user.password_hash,
+        device_token="ExponentPushToken[low]",
+        alert_types='["weather"]',
+        notify_severity="critical",
+    )
+
+    db_session.add(other_user)
+    db_session.commit()
+
+    resp = test_client.post(
+        f"/api/v1/notifications/alerts/{sample_alerts[0].id}/notify-subscribers",
+        headers=_auth_headers(sample_user.id),
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["status"] == "queued_stub"
+    assert data["recipient_count"] == 1
+    assert sample_user.id in data["recipient_user_ids"]
+
+
+def test_notify_subscribers_404_for_missing_alert(test_client, sample_user):
+    resp = test_client.post(
+        "/api/v1/notifications/alerts/999999/notify-subscribers",
+        headers=_auth_headers(sample_user.id),
+    )
+    assert resp.status_code == 404

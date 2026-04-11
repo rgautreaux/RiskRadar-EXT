@@ -119,10 +119,24 @@ export default function AlertsScreen() {
   const [error, setError] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<'all' | 'critical' | 'weather' | 'airquality'>('all');
 
+  const buildAlertsPath = useCallback((filter: 'all' | 'critical' | 'weather' | 'airquality') => {
+    const params = new URLSearchParams({ limit: '50' });
+
+    if (filter === 'critical') {
+      params.set('severity', 'critical');
+    } else if (filter === 'weather') {
+      params.set('alert_type', 'weather');
+    } else if (filter === 'airquality') {
+      params.set('alert_type', 'air_quality');
+    }
+
+    return `/alerts/?${params.toString()}`;
+  }, []);
+
   const fetchAlerts = useCallback(async () => {
     try {
       setError(null);
-      const data = await apiFetch<AlertItem[]>('/alerts/?limit=50');
+      const data = await apiFetch<AlertItem[]>(buildAlertsPath(activeFilter));
       setAlerts(data);
     } catch {
       setError('Could not load alerts. Is the backend running?');
@@ -130,7 +144,7 @@ export default function AlertsScreen() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [activeFilter, buildAlertsPath]);
 
   useEffect(() => {
     fetchAlerts();
@@ -175,18 +189,7 @@ export default function AlertsScreen() {
   };
 
   const filteredAlerts = useMemo(() => {
-    const normalizedFilter = activeFilter.toLowerCase();
-    const matched = alerts.filter((alert) => {
-      if (normalizedFilter === 'all') {
-        return true;
-      }
-      if (normalizedFilter === 'critical') {
-        return getSeverityLevel(alert.severity) === 'critical';
-      }
-      return (alert.alert_type || '').toLowerCase().replace(/[^a-z]/g, '') === normalizedFilter;
-    });
-
-    return [...matched].sort((left, right) => {
+    return [...alerts].sort((left, right) => {
       const severityDiff = priorityRank(left.severity) - priorityRank(right.severity);
       if (severityDiff !== 0) {
         return severityDiff;
@@ -196,7 +199,7 @@ export default function AlertsScreen() {
       const rightTime = new Date(right.fetched_at || right.created_at).getTime();
       return rightTime - leftTime;
     });
-  }, [alerts, activeFilter]);
+  }, [alerts]);
 
   // const formatTime = (dateStr: string) => {
   //   const date = new Date(dateStr);
@@ -246,7 +249,7 @@ export default function AlertsScreen() {
       {/* Branded Section Header */}
       <SectionHeader
         title="Alerts"
-        subtitle={`${alerts.length} active alert${alerts.length !== 1 ? 's' : ''}`}
+        subtitle={`${filteredAlerts.length} active alert${filteredAlerts.length !== 1 ? 's' : ''}`}
         style={styles.sectionHeader}
       />
 

@@ -16,6 +16,16 @@ logger = logging.getLogger(__name__)
 
 
 class Summarizer:
+    def _build_fallback_summary(self, alerts_count: int, scope: str) -> str:
+        """Return a deterministic summary when the LLM provider is unavailable."""
+        return (
+            f"## {scope} Summary (Fallback)\n"
+            "The language model is temporarily unavailable, so this summary was generated "
+            "from structured alert metadata.\n\n"
+            f"- Alerts analyzed: {alerts_count}\n"
+            "- Next step: retry generation once LLM connectivity is restored."
+        )
+
     def _resolve_model(self, is_premium: bool = False) -> str:
         """Return the LLM model name for the given user tier."""
         if is_premium and settings.LLM_MODEL_PREMIUM:
@@ -72,7 +82,13 @@ class Summarizer:
             alerts_json=json.dumps(alerts_data, indent=2),
         )
 
-        text, tokens, model = self._call_llm(prompts.TRIP_PACKING_SYSTEM, user_msg, is_premium=is_premium)
+        try:
+            text, tokens, model = self._call_llm(prompts.TRIP_PACKING_SYSTEM, user_msg, is_premium=is_premium)
+        except Exception as exc:
+            logger.warning("LLM daily digest fallback activated: %s", exc)
+            text = self._build_fallback_summary(len(alerts), "Daily Digest")
+            tokens = 0
+            model = "fallback-no-llm"
 
         summary = Summary(
             title=f"Environmental Digest — {date.today().strftime('%b %d, %Y')}",
@@ -114,7 +130,13 @@ class Summarizer:
             alerts_json=json.dumps(alerts_data, indent=2),
         )
 
-        text, tokens, model = self._call_llm(prompts.TRIP_PACKING_SYSTEM, user_msg, is_premium=is_premium)
+        try:
+            text, tokens, model = self._call_llm(prompts.TRIP_PACKING_SYSTEM, user_msg, is_premium=is_premium)
+        except Exception as exc:
+            logger.warning("LLM local digest fallback activated for %s, %s: %s", city, state, exc)
+            text = self._build_fallback_summary(len(alerts), f"Local Digest for {city}, {state}")
+            tokens = 0
+            model = "fallback-no-llm"
 
         summary = Summary(
             title=f"Local Digest for {city}, {state} — {date.today().strftime('%b %d, %Y')}",

@@ -101,8 +101,9 @@ def list_alerts(
         raise HTTPException(status_code=422, detail="Invalid severity")
 
     q = db.query(Alert)
+    has_explicit_filters = any([alert_type, severity, source, zip_code])
 
-    if current_user:
+    if current_user and not has_explicit_filters:
         if not alert_type and current_user.alert_types:
             try:
                 preferred_types = json.loads(current_user.alert_types)

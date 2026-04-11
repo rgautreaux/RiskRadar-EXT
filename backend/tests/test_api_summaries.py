@@ -5,8 +5,6 @@ from unittest.mock import patch, MagicMock
 
 from db.models import Summary
 
-from db.models import Summary
-
 
 def _mock_local_alert(source: str, source_id: str, title: str) -> dict:
     return {
@@ -106,8 +104,16 @@ class TestGenerateSummary:
         resp = test_client.post("/api/v1/summaries/generate")
         assert resp.status_code == 404
 
+    def test_generate_falls_back_when_llm_fails(self, test_client, sample_alerts):
+        with patch("llm.summarizer.Summarizer._call_llm", side_effect=RuntimeError("provider down")):
+            resp = test_client.post("/api/v1/summaries/generate")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["summary_type"] == "daily"
+        assert "Fallback" in data["content"]
+        assert data["model_used"] == "fallback-no-llm"
 
-<<<<<<< Rebecca-Gautreaux-Work-Branch
+
 class TestLocalSummaryFlow:
     def test_generate_local_summary(self, test_client, db_session, monkeypatch):
         monkeypatch.setattr("api.location._zip_to_coords", lambda zip_code: (34.05, -118.24, "Los Angeles", "CA"))
@@ -120,40 +126,13 @@ class TestLocalSummaryFlow:
             lambda zip_code: [_mock_local_alert("airnow", f"{zip_code}_PM25_2026-04-10", "Local Air Quality")],
         )
 
-        mock_return = ("## Local Digest\nTest local summary.", 42)
+        mock_return = ("## Local Digest\nTest local summary.", 42, "openai/gpt-5.2")
         with patch("llm.summarizer.Summarizer._call_llm", return_value=mock_return):
-=======
-class TestGenerateLocalSummary:
-    def test_generate_local_with_alerts(self, test_client, sample_alerts):
-        mock_location = (34.05, -118.24, "Los Angeles", "CA")
-        mock_nws = [
-            {
-                "source": "nws",
-                "source_id": "nws_local_001",
-                "alert_type": "weather",
-                "severity": "high",
-                "title": "Heat Advisory",
-                "description": "Excessive heat expected.",
-                "latitude": 34.05,
-                "longitude": -118.24,
-                "location_name": "Los Angeles, CA",
-            }
-        ]
-        mock_llm_return = ("## Local Digest\nHeat advisory for Los Angeles.", 75, "openai/gpt-5.2")
-
-        with (
-            patch("api.location._zip_to_coords", return_value=mock_location),
-            patch("api.location._fetch_nws_alerts", return_value=mock_nws),
-            patch("api.location._fetch_airnow", return_value=[]),
-            patch("llm.summarizer.Summarizer._call_llm", return_value=mock_llm_return),
-        ):
->>>>>>> main
             resp = test_client.post("/api/v1/summaries/generate/local?zip_code=90001")
 
         assert resp.status_code == 200
         data = resp.json()
         assert data["summary_type"] == "local"
-<<<<<<< Rebecca-Gautreaux-Work-Branch
         assert data["region"] == "Los Angeles, CA 90001"
         assert "Local Digest for Los Angeles, CA" in data["title"]
         assert data["content"] == "## Local Digest\nTest local summary."
@@ -176,26 +155,6 @@ class TestGenerateLocalSummary:
         resp = test_client.get("/api/v1/summaries/latest/local?zip_code=90001")
         assert resp.status_code == 200
         assert resp.json() is None
-=======
-        assert "Los Angeles" in data["title"]
-        assert "Local Digest" in data["content"]
-
-    def test_generate_local_invalid_zip(self, test_client):
-        with patch("api.location._zip_to_coords", return_value=None):
-            resp = test_client.post("/api/v1/summaries/generate/local?zip_code=00000")
-        assert resp.status_code == 404
-
-    def test_generate_local_no_alerts(self, test_client):
-        mock_location = (34.05, -118.24, "Los Angeles", "CA")
-        with (
-            patch("api.location._zip_to_coords", return_value=mock_location),
-            patch("api.location._fetch_nws_alerts", return_value=[]),
-            patch("api.location._fetch_airnow", return_value=[]),
-        ):
-            resp = test_client.post("/api/v1/summaries/generate/local?zip_code=90001")
-        assert resp.status_code == 404
-
-
 class TestCallLlm:
     def test_call_llm_returns_text_and_tokens(self):
         from llm.summarizer import Summarizer
@@ -255,4 +214,3 @@ class TestCallLlm:
         assert text == "Response without usage"
         assert tokens == 0
         assert model == "test-model"
->>>>>>> main

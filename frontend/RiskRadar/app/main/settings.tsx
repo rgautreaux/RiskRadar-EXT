@@ -10,7 +10,6 @@ import {
   Platform,
   StatusBar,
   TextInput,
-  ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
@@ -22,6 +21,13 @@ import { PrimaryButton } from '@/components/ui/PrimaryButton';
 import { apiFetch } from '@/utils/api';
 
 const DEMO_SETTINGS_KEY = 'riskradar_demo_settings';
+
+interface ScrapeResultItem {
+  source: string;
+  status: string;
+  alerts_stored?: number;
+  error?: string;
+}
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -42,6 +48,7 @@ export default function SettingsScreen() {
   const [healthDetail, setHealthDetail] = useState('');
   const [scrapeStatus, setScrapeStatus] = useState<'idle' | 'triggering' | 'done' | 'error'>('idle');
   const [scrapeDetail, setScrapeDetail] = useState('');
+  const [scrapeResults, setScrapeResults] = useState<ScrapeResultItem[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -119,14 +126,16 @@ export default function SettingsScreen() {
   const handleTriggerScrape = async () => {
     setScrapeStatus('triggering');
     setScrapeDetail('');
+    setScrapeResults([]);
     try {
-      const response = await apiFetch<{ triggered_at: string; results: Array<{ source: string; status: string; alerts_stored?: number; error?: string }> }>('/scrape/trigger', {
+      const response = await apiFetch<{ triggered_at: string; results: ScrapeResultItem[] }>('/scrape/trigger', {
         method: 'POST',
       });
       const successCount = response.results.filter((item) => item.status === 'success').length;
       const errorCount = response.results.filter((item) => item.status === 'error').length;
       setScrapeStatus('done');
       setScrapeDetail(`Triggered ${response.results.length} scrapers: ${successCount} success, ${errorCount} error.`);
+      setScrapeResults(response.results);
     } catch (error) {
       setScrapeStatus('error');
       setScrapeDetail(error instanceof Error ? error.message : 'Could not trigger the scrape pipeline.');
@@ -302,6 +311,20 @@ export default function SettingsScreen() {
                 {scrapeDetail}
               </Text>
             ) : null}
+            {scrapeResults.length > 0 ? (
+              <View style={styles.scrapeResultsList}>
+                {scrapeResults.map((item) => (
+                  <View key={item.source} style={styles.scrapeResultRow}>
+                    <Text style={styles.scrapeSource}>{item.source}</Text>
+                    <Text style={[styles.scrapeOutcome, item.status === 'success' ? styles.backendSuccess : styles.backendError]}>
+                      {item.status === 'success'
+                        ? `stored ${item.alerts_stored ?? 0}`
+                        : item.error || 'error'}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            ) : null}
           </View>
         </View>
 
@@ -421,6 +444,30 @@ function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
       fontSize: 13,
       marginTop: 10,
       lineHeight: 18,
+    },
+    scrapeResultsList: {
+      marginTop: 10,
+      borderTopWidth: 1,
+      borderTopColor: palette.border,
+      paddingTop: 10,
+      gap: 8,
+    },
+    scrapeResultRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      gap: 8,
+    },
+    scrapeSource: {
+      fontSize: 12,
+      color: palette.text,
+      fontWeight: '600',
+      textTransform: 'uppercase',
+    },
+    scrapeOutcome: {
+      flex: 1,
+      textAlign: 'right',
+      fontSize: 12,
     },
     backendSuccess: {
       color: palette.success,
