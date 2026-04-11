@@ -103,6 +103,15 @@ Manual evidence is required for grading and onboarding. Automated verification i
 - `static/evidence/S3_CLOSEOUT_MANIFEST_2026-04-11.md`
 - `docs/evidence/INDEX.md`
 
+**Required closeout artifact paths:**
+- `static/evidence/s3-map-desktop-overlays.png`
+- `static/evidence/s3-map-desktop-controls-legend.png`
+- `static/evidence/s3-map-desktop-personalized.png`
+- `static/evidence/s3-map-mobile-layout.png`
+- `static/evidence/s3-map-mobile-controls.png`
+- `static/evidence/s3-map-walkthrough.mp4`
+- `static/evidence/s3-map-keyboard-nav.mp4`
+
 **Target:** Final evidence bundle to be captured and filed as S3-06 closeout task for grading readiness.
 
 ## Phase 5 Progress Summary (2026-03-24)

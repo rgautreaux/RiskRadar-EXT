@@ -1,3 +1,8 @@
+## Verification Snapshot (Latest)
+
+- Latest full backend verification (`npm run verify:backend`): **198 passed** plus standalone smoke test pass (2026-04-11).
+- Historical lower totals in older session entries are retained intentionally as time-stamped snapshots.
+
 ## Stage 5: Demo Verification Pass and FIRMS Warning Risk-Free Fix Session (2026-04-11)
 
 ### Implementation

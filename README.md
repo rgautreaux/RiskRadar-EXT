@@ -1,5 +1,10 @@
 # Project Progress and Stage Summaries
 
+## Verification Snapshot (Latest)
+
+- Latest full backend verification (`npm run verify:backend`): **198 passed** plus standalone smoke test pass (2026-04-11).
+- Historical 191/196 totals in session sections are preserved as point-in-time records from earlier runs.
+
 ## Stage 5: Demo Verification Pass and FIRMS Warning Risk-Free Fix Session (2026-04-11)
 
 ### Implementation
