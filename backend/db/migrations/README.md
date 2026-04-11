@@ -49,3 +49,7 @@ This folder will contain migration scripts for email encryption and password has
 5. `python db/migrations/monitor_migration_log.py`
 
 Record all outputs in staging validation notes before requesting backend/security lead sign-off.
+
+## Latest Verification Snapshot
+
+See `backend/db/migrations/MIGRATION_NOTES.md` for the dated 2026-04-11 evidence block including migration script results, validator/monitor outputs, query-plan index checks, and full backend pytest confirmation.

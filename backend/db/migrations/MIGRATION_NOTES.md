@@ -50,3 +50,28 @@ DATABASE_URL=mysql+pymysql://riskradar_user:your_password@127.0.0.1:3306/riskrad
 ```
 
 If `DATABASE_URL` is not set, backend continues using local SQLite (`DB_PATH`).
+
+## Verification evidence (2026-04-11)
+
+Local verification run completed after syncing local SQLite schema to current models.
+
+- `python db/migrations/migrate_email_encryption.py`
+	- `Migration complete.`
+- `python db/migrations/validate_email_migration.py`
+	- `users_total=0`
+	- `users_plaintext_remaining=0`
+	- `users_missing_encrypted=0`
+	- `users_missing_hmac=0`
+	- `migration_failed_or_error_logs=0` (scoped to latest batch window)
+	- `batch_completed_records=1`
+- `python db/migrations/monitor_migration_log.py`
+	- `error_count=0`
+	- `threshold=1`
+	- `OK: migration error threshold not reached`
+- `python -m pytest -q` (backend)
+	- `159 passed, 3 skipped, 66 warnings in 19.23s`
+
+SQLite dispatch log index checks (`EXPLAIN QUERY PLAN`) also confirmed expected index usage for:
+
+- `WHERE alert_id = ?` via `idx_notification_dispatch_alert_id`
+- `ORDER BY created_at DESC LIMIT ?` via `idx_notification_dispatch_created_at`
