@@ -32,6 +32,9 @@ class Settings(BaseSettings):
     FIRECRAWL_API_KEY: str = ""
     OpenAQ_API_KEY: str = ""
 
+    # --- Notifications ---
+    NOTIFICATION_PROVIDER: str = "noop"
+
     # --- App Defaults ---
     DEFAULT_ZIP_CODE: str = "90001"
     DEFAULT_LAT: float = 34.0522

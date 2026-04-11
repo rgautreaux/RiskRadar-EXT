@@ -128,6 +128,8 @@ def test_notify_subscribers_filters_by_preferences(test_client, db_session, samp
     assert data["status"] == "queued_stub"
     assert data["recipient_count"] == 1
     assert sample_user.id in data["recipient_user_ids"]
+    assert data["provider"] == "noop"
+    assert data["sent_count"] == 1
 
 
 def test_notify_subscribers_404_for_missing_alert(test_client, sample_user):

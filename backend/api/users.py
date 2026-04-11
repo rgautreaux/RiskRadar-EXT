@@ -19,6 +19,7 @@ HOW IT CONNECTS TO THE DATABASE:
 """
 
 import json
+import logging
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -39,6 +40,7 @@ from schemas.user import (
 )
 
 router = APIRouter(prefix="/users", tags=["Users"])
+logger = logging.getLogger(__name__)
 
 
 def _user_out_with_email(user: User) -> UserOut:
@@ -149,22 +151,34 @@ def update_preferences(
         raise HTTPException(status_code=403, detail="Cannot modify another user's preferences")
 
     user = current_user
+    changed_fields: list[str] = []
     if body.zip_code is not None:
         user.zip_code = body.zip_code
+        changed_fields.append("zip_code")
     if body.latitude is not None:
         user.latitude = body.latitude
+        changed_fields.append("latitude")
     if body.longitude is not None:
         user.longitude = body.longitude
+        changed_fields.append("longitude")
     if body.alert_types is not None:
         # Store as JSON text for compatibility with existing schema.
         user.alert_types = json.dumps(body.alert_types)
+        changed_fields.append("alert_types")
     if body.notify_severity is not None:
         user.notify_severity = body.notify_severity
+        changed_fields.append("notify_severity")
     if body.device_token is not None:
         user.device_token = body.device_token
+        changed_fields.append("device_token")
 
     db.commit()
     db.refresh(user)
+    logger.info(
+        "users.preferences_updated user_id=%s changed_fields=%s",
+        user.id,
+        ",".join(changed_fields) if changed_fields else "none",
+    )
     return _user_out_with_email(user)
 
 
@@ -182,6 +196,7 @@ def register_device_token(
     current_user.device_token = body.device_token
     db.commit()
     db.refresh(current_user)
+    logger.info("users.device_token_registered user_id=%s", current_user.id)
     return NotificationSettingsOut(
         notify_severity=current_user.notify_severity,
         device_token=current_user.device_token,
@@ -201,6 +216,7 @@ def revoke_device_token(
     current_user.device_token = None
     db.commit()
     db.refresh(current_user)
+    logger.info("users.device_token_revoked user_id=%s", current_user.id)
     return NotificationSettingsOut(
         notify_severity=current_user.notify_severity,
         device_token=current_user.device_token,

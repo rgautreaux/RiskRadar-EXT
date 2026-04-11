@@ -1,11 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+import logging
 
 from auth.security import get_current_user
 from db.database import get_db
 from db.models import Alert, User
+from notifications.provider import get_notification_provider
 
 router = APIRouter(prefix="/notifications", tags=["Notifications"])
+logger = logging.getLogger(__name__)
 
 _SEVERITY_ORDER = {
     "low": 0,
@@ -50,10 +53,30 @@ def notify_subscribers_for_alert(
 
     users = db.query(User).filter(User.device_token.isnot(None)).all()
     recipients = [u for u in users if _user_wants_alert(u, alert)]
+    provider = get_notification_provider()
+
+    title = f"RiskRadar: {alert.title}"
+    body = (alert.description or f"{alert.alert_type} alert from {alert.source}")[:200]
+
+    sent_count = 0
+    for recipient in recipients:
+        if recipient.device_token and provider.send(recipient.device_token, title, body):
+            sent_count += 1
+
+    logger.info(
+        "notifications.dispatch alert_id=%s initiated_by=%s provider=%s candidates=%s sent=%s",
+        alert.id,
+        current_user.id,
+        provider.name,
+        len(recipients),
+        sent_count,
+    )
 
     return {
         "status": "queued_stub",
         "alert_id": alert.id,
         "recipient_count": len(recipients),
         "recipient_user_ids": [u.id for u in recipients],
+        "provider": provider.name,
+        "sent_count": sent_count,
     }
