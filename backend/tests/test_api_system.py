@@ -1,6 +1,7 @@
 """Tests for system API endpoints."""
 
 from datetime import datetime, timezone
+from unittest.mock import Mock, patch
 
 from auth.security import create_access_token
 from db.models import ScrapeLog
@@ -138,3 +139,39 @@ def test_notify_subscribers_404_for_missing_alert(test_client, sample_user):
         headers=_auth_headers(sample_user.id),
     )
     assert resp.status_code == 404
+
+
+def test_notify_subscribers_expo_delivery_uses_mocked_network(
+    test_client,
+    db_session,
+    sample_alerts,
+    sample_user,
+    monkeypatch,
+):
+    sample_user.device_token = "ExponentPushToken[expo-ok]"
+    sample_user.alert_types = '["weather"]'
+    sample_user.notify_severity = "high"
+    db_session.commit()
+
+    monkeypatch.setattr("config.settings.settings.NOTIFICATION_PROVIDER", "expo")
+    monkeypatch.setattr("config.settings.settings.EXPO_ACCESS_TOKEN", "token")
+    monkeypatch.setattr("config.settings.settings.NOTIFICATION_DELIVERY_ENABLED", True)
+    monkeypatch.setattr("config.settings.settings.NOTIFICATION_TIMEOUT_SECONDS", 3.0)
+
+    response = Mock()
+    response.is_success = True
+    response.status_code = 200
+    response.text = "ok"
+
+    with patch("notifications.provider.httpx.post", return_value=response) as post_mock:
+        resp = test_client.post(
+            f"/api/v1/notifications/alerts/{sample_alerts[0].id}/notify-subscribers",
+            headers=_auth_headers(sample_user.id),
+        )
+
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["provider"] == "expo"
+    assert data["recipient_count"] == 1
+    assert data["sent_count"] == 1
+    post_mock.assert_called_once()
