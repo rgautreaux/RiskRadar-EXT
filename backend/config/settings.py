@@ -22,9 +22,12 @@ class Settings(BaseSettings):
 
     # --- LLM (OpenRouter) ---
     OPENROUTER_API_KEY: str = ""
-    LLM_MODEL: str = ""
-    LLM_MODEL_GUEST: str = ""
-    LLM_MODEL_PREMIUM: str = ""
+    LLM_API_KEY: str = ""
+    LLM_PROVIDER: str = "openrouter"
+    LLM_MODEL: str = "gpt-4o-mini"
+    LLM_MODEL_GUEST: str = "gpt-4o-mini"
+    LLM_MODEL_PREMIUM: str = "gpt-4o"
+    LLM_MAX_TOKENS: int = 4000
 
 
     # --- Scraper API Keys ---
@@ -59,5 +62,11 @@ class Settings(BaseSettings):
     RETENTION_WEEKLY_HOUR_UTC: int = 4
     NWS_USER_AGENT: str = "RiskRadar/1.0 (school-project)"
     SOURCES_CONFIG_PATH: str = str(BASE_DIR / "config" / "sources.yaml")
+
+    def resolved_llm_api_key(self) -> str:
+        return self.LLM_API_KEY.strip() or self.OPENROUTER_API_KEY.strip()
+
+    def resolved_llm_provider(self) -> str:
+        return self.LLM_PROVIDER.strip().lower()
 
 settings = Settings()

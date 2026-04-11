@@ -28,19 +28,23 @@ class Summarizer:
 
     def _resolve_model(self, is_premium: bool = False) -> str:
         """Return the LLM model name for the given user tier."""
-        if is_premium and settings.LLM_MODEL_PREMIUM:
-            return settings.LLM_MODEL_PREMIUM
-        if not is_premium and settings.LLM_MODEL_GUEST:
-            return settings.LLM_MODEL_GUEST
-        return settings.LLM_MODEL
+        default_model = settings.LLM_MODEL.strip() or "gpt-4o-mini"
+        guest_model = settings.LLM_MODEL_GUEST.strip() or default_model
+        premium_model = settings.LLM_MODEL_PREMIUM.strip() or default_model
+
+        if is_premium:
+            return premium_model
+        return guest_model
 
     def _call_llm(self, system: str, user: str, is_premium: bool = False) -> tuple[str, int, str]:
         """Call the configured LLM provider. Returns (text, token_count, model_used)."""
-        if settings.OPENROUTER_API_KEY:
+        api_key = settings.OPENROUTER_API_KEY.strip() or settings.LLM_API_KEY.strip()
+
+        if api_key:
             model = self._resolve_model(is_premium)
             client = openai.OpenAI(
                     base_url="https://openrouter.ai/api/v1",
-                    api_key=settings.OPENROUTER_API_KEY,
+                    api_key=api_key,
                 )
 
             completion = client.chat.completions.create(
