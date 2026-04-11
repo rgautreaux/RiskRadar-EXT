@@ -34,11 +34,15 @@ RiskRadar now uses a provider adapter abstraction for notification dispatch. The
 
 When required credentials are missing, the backend automatically falls back to `noop` and logs a provider fallback event.
 
+Outbound delivery is additionally controlled by `NOTIFICATION_DELIVERY_ENABLED` (default `false`). This gate must be explicitly enabled to allow real provider calls.
+
 ### Required Settings
 Configure in `.env`:
 
 ```
 NOTIFICATION_PROVIDER=noop
+NOTIFICATION_DELIVERY_ENABLED=false
+NOTIFICATION_TIMEOUT_SECONDS=10
 EXPO_ACCESS_TOKEN=
 EXPO_PUSH_URL=https://exp.host/--/api/v2/push/send
 FCM_PROJECT_ID=

@@ -34,6 +34,8 @@ class Settings(BaseSettings):
 
     # --- Notifications ---
     NOTIFICATION_PROVIDER: str = "noop"
+    NOTIFICATION_DELIVERY_ENABLED: bool = False
+    NOTIFICATION_TIMEOUT_SECONDS: float = 10.0
     EXPO_PUSH_URL: str = "https://exp.host/--/api/v2/push/send"
     EXPO_ACCESS_TOKEN: str = ""
     FCM_PROJECT_ID: str = ""

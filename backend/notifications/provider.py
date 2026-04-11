@@ -9,6 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Protocol
 import logging
+import httpx
 
 from config.settings import settings
 
@@ -43,9 +44,43 @@ class ExpoNotificationProvider:
     name: str = "expo"
 
     def send(self, device_token: str, title: str, body: str) -> bool:
-        # Integration scaffold only: intentionally no outbound API call yet.
-        _ = (device_token, title, body)
-        return False
+        if not settings.NOTIFICATION_DELIVERY_ENABLED:
+            logger.info("notifications.delivery_disabled provider=expo")
+            return False
+
+        payload = {
+            "to": device_token,
+            "title": title,
+            "body": body,
+            "sound": "default",
+        }
+
+        headers = {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        }
+        if settings.EXPO_ACCESS_TOKEN:
+            headers["Authorization"] = f"Bearer {settings.EXPO_ACCESS_TOKEN}"
+
+        try:
+            response = httpx.post(
+                settings.EXPO_PUSH_URL,
+                json=payload,
+                headers=headers,
+                timeout=settings.NOTIFICATION_TIMEOUT_SECONDS,
+            )
+            if response.is_success:
+                return True
+
+            logger.warning(
+                "notifications.delivery_failed provider=expo status=%s body=%s",
+                response.status_code,
+                response.text[:300],
+            )
+            return False
+        except Exception as exc:
+            logger.warning("notifications.delivery_exception provider=expo error=%s", exc)
+            return False
 
 
 @dataclass(frozen=True)
