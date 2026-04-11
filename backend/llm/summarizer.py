@@ -109,7 +109,7 @@ class Summarizer:
         db.add(summary)
         db.commit()
         db.refresh(summary)
-        logger.info(f"Daily digest generated: {len(alerts)} alerts, {tokens} tokens")
+        logger.info("Daily digest generated: %s alerts, %s tokens", len(alerts), tokens)
         return summary
 
     def generate_local_digest(
@@ -157,5 +157,5 @@ class Summarizer:
         db.add(summary)
         db.commit()
         db.refresh(summary)
-        logger.info(f"Local digest for {city}, {state}: {len(alerts)} alerts, {tokens} tokens")
+        logger.info("Local digest for %s, %s: %s alerts, %s tokens", city, state, len(alerts), tokens)
         return summary

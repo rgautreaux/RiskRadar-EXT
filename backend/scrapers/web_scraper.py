@@ -75,7 +75,7 @@ class WebScraper(BaseScraper):
         page_content = result.get("markdown", "") or result.get("content", "")
 
         if not page_content:
-            logger.warning(f"[{self.source_name}] Firecrawl returned no content")
+            logger.warning("[%s] Firecrawl returned no content", self.source_name)
             return []
 
         # Truncate to avoid blowing LLM context limits
@@ -106,7 +106,7 @@ class WebScraper(BaseScraper):
                 alerts = [alerts]
             return alerts
         except json.JSONDecodeError as e:
-            logger.error(f"[{self.source_name}] LLM returned invalid JSON: {e}")
+            logger.error("[%s] LLM returned invalid JSON: %s", self.source_name, e)
             return []
 
     def _call_llm(self, system: str, user: str) -> str:

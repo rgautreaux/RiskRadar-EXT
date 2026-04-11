@@ -156,6 +156,18 @@ class TestLocalSummaryFlow:
         assert resp.status_code == 200
         assert resp.json() is None
 class TestCallLlm:
+    def test_resolve_model_falls_back_to_safe_default(self):
+        from llm.summarizer import Summarizer
+
+        with (
+            patch("config.settings.settings.LLM_MODEL", ""),
+            patch("config.settings.settings.LLM_MODEL_GUEST", ""),
+            patch("config.settings.settings.LLM_MODEL_PREMIUM", ""),
+        ):
+            summarizer = Summarizer()
+            assert summarizer._resolve_model() == "gpt-4o-mini"
+            assert summarizer._resolve_model(is_premium=True) == "gpt-4o-mini"
+
     def test_call_llm_returns_text_and_tokens(self):
         from llm.summarizer import Summarizer
 
@@ -172,6 +184,8 @@ class TestCallLlm:
         with (
             patch("config.settings.settings.OPENROUTER_API_KEY", "test-key"),
             patch("config.settings.settings.LLM_MODEL", "test-model"),
+            patch("config.settings.settings.LLM_MODEL_GUEST", ""),
+            patch("config.settings.settings.LLM_MODEL_PREMIUM", ""),
             patch("openai.OpenAI") as mock_client_cls,
         ):
             mock_client_cls.return_value.chat.completions.create.return_value = mock_completion
@@ -205,6 +219,8 @@ class TestCallLlm:
         with (
             patch("config.settings.settings.OPENROUTER_API_KEY", "test-key"),
             patch("config.settings.settings.LLM_MODEL", "test-model"),
+            patch("config.settings.settings.LLM_MODEL_GUEST", ""),
+            patch("config.settings.settings.LLM_MODEL_PREMIUM", ""),
             patch("openai.OpenAI") as mock_client_cls,
         ):
             mock_client_cls.return_value.chat.completions.create.return_value = mock_completion

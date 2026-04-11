@@ -8,7 +8,9 @@ import sys
 from importlib import import_module
 from pathlib import Path
 
-from sqlalchemy import inspect
+from sqlalchemy import inspect, select
+from sqlalchemy.engine.reflection import Inspector
+from sqlalchemy.orm import Session
 
 BACKEND_DIR = Path(__file__).resolve().parents[2]
 if str(BACKEND_DIR) not in sys.path:
@@ -44,7 +46,7 @@ def _missing_items(actual: Iterable[str], expected: Iterable[str]) -> list[str]:
     return [item for item in expected if item not in actual_set]
 
 
-def _check_required_tables(inspector) -> list[PreflightIssue]:
+def _check_required_tables(inspector: Inspector) -> list[PreflightIssue]:
     required_tables = [
         "alerts",
         "summaries",
@@ -68,7 +70,7 @@ def _check_required_tables(inspector) -> list[PreflightIssue]:
     ]
 
 
-def _check_required_columns(inspector, existing_tables: set[str]) -> list[PreflightIssue]:
+def _check_required_columns(inspector: Inspector, existing_tables: set[str]) -> list[PreflightIssue]:
     required_columns = {
         "users": ["email_encrypted", "email_hmac", "notify_push", "notify_email", "notify_sms"],
         "cleanup_runs": ["table_name", "schedule_kind", "cutoff_at", "started_at", "completed_at"],
@@ -99,8 +101,10 @@ def _check_required_columns(inspector, existing_tables: set[str]) -> list[Prefli
     return issues
 
 
-def _check_unique_email_hmac(db) -> list[PreflightIssue]:
-    email_hmac_values = [row[0] for row in db.query(User.email_hmac).filter(User.email_hmac.isnot(None)).all()]
+def _check_unique_email_hmac(db: Session) -> list[PreflightIssue]:
+    email_hmac_values = list(
+        db.execute(select(User.email_hmac).where(User.email_hmac.isnot(None))).scalars().all()
+    )
     duplicate_rows = sum(1 for count in Counter(email_hmac_values).values() if count > 1)
     if duplicate_rows:
         return [
@@ -112,7 +116,7 @@ def _check_unique_email_hmac(db) -> list[PreflightIssue]:
     return []
 
 
-def _check_plaintext_email_leftovers(db) -> list[PreflightIssue]:
+def _check_plaintext_email_leftovers(db: Session) -> list[PreflightIssue]:
     plaintext_count = db.query(User).filter(User.email.isnot(None)).count()
     if plaintext_count:
         return [
@@ -124,7 +128,7 @@ def _check_plaintext_email_leftovers(db) -> list[PreflightIssue]:
     return []
 
 
-def _check_archive_lineage(db) -> list[PreflightIssue]:
+def _check_archive_lineage(db: Session) -> list[PreflightIssue]:
     issues: list[PreflightIssue] = []
 
     inspector = inspect(db.get_bind())
@@ -184,7 +188,7 @@ def _check_archive_lineage(db) -> list[PreflightIssue]:
     return issues
 
 
-def _check_dispatch_references(db) -> list[PreflightIssue]:
+def _check_dispatch_references(db: Session) -> list[PreflightIssue]:
     issues: list[PreflightIssue] = []
 
     inspector = inspect(db.get_bind())
