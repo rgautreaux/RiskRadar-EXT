@@ -1,3 +1,13 @@
+# April 11 Synchronization Note
+This Apr 11 pass synchronized sprint tracking with the completed demo-readiness implementation updates and final users+alerts API verification.
+
+- Added and synchronized the project demo guide (`docs/PROJECT_DEMO.md`) with implemented and planned demo tracks.
+- Implemented demo-path improvements in the mobile app: persisted settings flow, backend-driven alert filters, and backend demo actions in settings.
+- Revalidated backend users + alerts API suites from the root command path (`40 passed, 0 failed`).
+- Documentation tracker files were refreshed for chronology and audit consistency.
+
+---
+
 # April 10 Synchronization Note
 The latest audit-trail pass confirms Rebecca’s implementation work is complete on her side. The remaining dependency is backend/security lead sign-off for the Phase 3 handoff, and the documentation bundle now reflects that boundary explicitly.
 

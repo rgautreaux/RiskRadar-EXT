@@ -1,3 +1,20 @@
+### Apr 11, 2026: Demo Readiness Implementation + Final Cleanup
+- Converted the demo plan into implemented functionality by adding backend-driven alert filtering, persisted demo settings behavior, and in-app backend demonstration actions.
+- Added source-level scrape trigger outcome rendering to make backend pipeline demonstrations clearer in presentation contexts.
+- Completed cleanup validation with the same root users+alerts API test command and confirmed a green pass.
+
+#### Why These Developments Were Made
+- To shift from documentation-only demo preparation into demonstrable, reliable product behavior.
+- To prioritize low-risk, high-value changes that align with existing backend capabilities.
+- To close the session with reproducible test verification on the exact command path used during cleanup.
+
+#### How This Betters the Project
+- Improves demo reliability and credibility for academic/business presentations.
+- Reduces mismatch between planned demos and implemented user-visible behavior.
+- Strengthens confidence in backend API behavior through explicit cleanup validation.
+
+---
+
 ### Apr 10, 2026: Rebecca Task Status Confirmation
 - Confirmed that Rebecca’s UI/UX branding work is complete and that her email-encryption implementation work is finished on the code side but still waiting on external backend/security sign-off.
 - Recorded the updated status in the transcript and reflection so the documentation reflects the current ownership boundary without implying unapproved production rollout.

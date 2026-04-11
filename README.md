@@ -6,6 +6,16 @@ RiskRadar helps residents and travelers identify environmental risks by scraping
 
 ---
 
+## April 11, 2026 Synchronization Note
+
+- Demo-readiness implementation work was completed this session for presentation support paths.
+- `docs/PROJECT_DEMO.md` now tracks implemented demos, to-be-implemented demos, recommended screen order, fallback rules, and presenter notes.
+- Mobile demo flow improvements now include persisted demo settings, backend-driven alert filters, in-app backend health checks, and scrape-trigger summary output.
+- Backend alert preference behavior was hardened so explicit query filters override user defaults, and targeted backend API suites were revalidated.
+- Root command verification for users + alerts API tests completed green in this session (`40 passed, 0 failed`).
+
+---
+
 ## April 10, 2026 Synchronization Note
 
 - Critical backend regression coverage was expanded this session for location ingestion, local summaries, system trigger/health behavior, and user auth/notification paths.

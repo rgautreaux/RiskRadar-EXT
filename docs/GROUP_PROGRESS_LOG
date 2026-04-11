@@ -1,3 +1,41 @@
+# Rebecca Gautreaux Log — 2026-04-11 (Demo Readiness Implementation and Final API Cleanup Pass)
+
+### Session Focus
+- Complete demo-readiness implementation work beyond planning documentation.
+- Implement the safest next-step path: backend-driven alert filtering and clearer backend demo feedback.
+- Execute final cleanup validation for users + alerts API test command from the root workflow.
+
+### Work Completed
+- Created `docs/PROJECT_DEMO.md` and populated implemented demos, to-be-implemented demos, fallback rules, and presentation sequencing.
+- Implemented persisted demo settings and backend preference save support in:
+	- `frontend/RiskRadar/app/main/settings.tsx`
+	- `frontend/RiskRadar/contexts/auth-context.tsx`
+	- `frontend/RiskRadar/app/main/home.tsx`
+- Implemented backend-driven alert filtering in `frontend/RiskRadar/app/(tabs)/explore.tsx` using API query parameters tied to demo filter chips.
+- Added in-app backend demo actions (health check and scrape trigger) plus source-level scrape outcome rendering in `frontend/RiskRadar/app/main/settings.tsx`.
+- Hardened explicit-query override behavior in `backend/api/alerts.py` so user preference defaults do not suppress explicit filters.
+- Updated top-level and tracking documentation to keep chronology and audit alignment intact.
+
+### Validation / Testing
+- Targeted alerts API suite rerun completed green: `16 passed`.
+- Root command rerun completed green for users + alerts API suites: `40 passed, 0 failed`.
+- Frontend edited files validated with no compile/lint diagnostics in the touched paths.
+
+### Issues / Blockers
+- A transient users test mismatch surfaced during cleanup (422 vs expected 200/400) and was resolved by syncing to the current validation baseline and rerunning from the root command.
+- No remaining code blockers in the touched demo-readiness paths.
+
+### Decisions Made
+- Prioritized backend-driven filtering over purely local filtering for demo fidelity and long-term safety.
+- Kept demo tooling additions inside existing settings flow to avoid introducing new navigation complexity.
+- Completed cleanup with the same root command used by the user to ensure practical reproducibility.
+
+### Outcome
+- Demo-readiness moved from planning into implemented, test-verified behavior with improved presentation reliability.
+- Users + alerts API cleanup pass is complete and validated from the root workflow.
+
+---
+
 # Rebecca Gautreaux Log — 2026-04-10 (Critical Regression Expansion and Full Backend Validation)
 
 # Rebecca Gautreaux Log — 2026-04-10 (Checklist Marking - Rebecca-Controlled Items)

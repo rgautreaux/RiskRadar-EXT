@@ -54,6 +54,9 @@ RiskRadar is designed to help you monitor, summarize, and stay informed about en
   - Tracked locations
   - Data sources
 - Save your changes to update your preferences.
+- Use **Backend Demo Tools** in Settings for presentation-safe backend verification:
+  - Check backend health status
+  - Trigger scrape runs and review source-level outcomes
 
 ## Troubleshooting
 - **Can't log in?**
@@ -72,6 +75,10 @@ RiskRadar is designed to help you monitor, summarize, and stay informed about en
 ---
 
 # April 2026 Synchronization Note
-All instructions, onboarding, and feature documentation are fully synchronized as of April 2, 2026. The Apr 2 verification follow-up refreshed the related tracking docs and left the validated code state unchanged.
+All instructions, onboarding, and feature documentation are fully synchronized as of April 11, 2026.
+
+Apr 11 update highlights:
+- Added guidance for in-app backend demonstration actions now available from Settings.
+- Documentation now aligns with the current demo-readiness implementation and API validation state.
 
 ---
