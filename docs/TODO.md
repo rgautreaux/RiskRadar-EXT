@@ -239,6 +239,14 @@ Maintain delivered features, harden security, and keep documentation and verific
 
 ### Stage 5 Session Entries (After Checklist)
 
+#### Stage 5 Demo Verification Pass and FIRMS Warning Risk-Free Fix Session (2026-04-11)
+Summary:
+- Re-ran demo verification commands end-to-end (`npm run demo:setup`, `npm run demo:verify`, `npm run demo:info`) and confirmed stable seeded counts and metadata.
+- Executed automated walkthrough and regenerated evidence (`npm run demo:run`, `npm run demo:report`) in both headless and visible modes with **6/6** pass status.
+- Assessed FIRMS warning severity as non-blocking for seeded demo workflows and scoped it to live-key ingestion behavior.
+- Implemented low-risk settings-first key lookup fix in `backend/scrapers/registry.py` to avoid false skip warnings when `.env` contains required keys.
+- Re-verified post-run dataset integrity and retained generated evidence artifacts for grading workflow.
+
 #### Stage 5 Sprint Remediation Implementation and Verification Closeout Session (2026-04-11)
 Summary:
 - Completed sprint remediation tracks for CORS hardening, feedback identity binding, timestamp filter correctness, frontend API portability, localStorage fallback safety, and map runtime path consolidation.

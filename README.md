@@ -1,5 +1,27 @@
 # Project Progress and Stage Summaries
 
+## Stage 5: Demo Verification Pass and FIRMS Warning Risk-Free Fix Session (2026-04-11)
+
+### Implementation
+Completed repeated demo verification passes in both headless and presenter-visible modes, then applied a minimal-risk backend configuration fix so required scraper-key checks consistently honor `.env` values loaded by settings.
+
+### Functionality
+- Re-ran demo workflow commands (`demo:setup`, `demo:verify`, `demo:info`) and confirmed stable seeded counts and metadata outputs.
+- Executed automated walkthrough and evidence generation (`demo:run`, `demo:report`) with successful end-to-end pass and refreshed artifacts.
+- Confirmed the FIRMS warning severity is non-blocking for seeded demo workflows but relevant for live wildfire ingestion.
+- Updated scraper key-resolution checks to evaluate settings-backed values before process environment fallback.
+
+### Verification Evidence
+- ✅ Demo setup/verify/info commands passed with expected counts (4 users, 15 alerts, 2 summaries).
+- ✅ Automated walkthrough passed **6/6** steps in headless and visible presenter modes.
+- ✅ Evidence artifacts were regenerated (`static/evidence/demo_journey_log.json`, screenshots manifest, `DEMO_REPORT.md`).
+- ✅ Post-run demo verification remained green after walkthrough execution.
+
+### Importance
+- Improves presentation reliability by proving repeatability across multiple demo passes.
+- Reduces false configuration warnings in live-scraper scenarios without changing seeded demo behavior.
+- Preserves safety by using a localized, low-risk code change in scraper registry lookup logic.
+
 ## Stage 5: Sprint Remediation Implementation and Verification Closeout Session (2026-04-11)
 
 ### Implementation
@@ -272,19 +294,36 @@ npm install
 npm run dev
 ```
 
-### 5. Start the Mobile Frontend (Expo)
+### 5. Mobile Frontend Status (Not Required for CMPS 357)
+
+The mobile app is not required for this CMPS 357 repository workflow.
+
+- Required local workflow: backend + web frontend only
+- Mobile app codebase: [RiskRadar Mobile App Repository](https://github.com/QuiHu/Team6Project.git)
+- If you do not have `frontend/mobile/RiskRadar`, that is expected for this project scope
+
+### Safe Commands for This Repository
+
+```bash
+# Backend
+cd backend
+py -m pip install -r requirements.txt
+py -m uvicorn main:app --host 0.0.0.0 --port 8000
+
+# Web frontend
+cd frontend/web
+npm install
+npm run dev
+```
+
+### Commands to Avoid in This Repository
 
 ```bash
 cd frontend/mobile/RiskRadar
-npm install
 npx expo start
 ```
 
-Then press:
-- **`w`** to open in your web browser
-- **Scan the QR code** with the Expo Go app on your phone (same WiFi network)
-
-> **Important:** The mobile app auto-detects your computer's IP address so it can reach the backend. Both devices must be on the same WiFi network.
+Those commands are mobile-repo commands and will fail here if the mobile directory is absent.
 
 ---
 
@@ -806,11 +845,9 @@ As an extension of our RiskRadar mobile app, this repository contains code from 
 
 ### RiskRadar Web-App Extension
 
-The frontend workspace is now explicitly split so the mobile and web clients can evolve independently while both are intended to use the same backend API service in `backend/`.
+This repository is scoped to the web-app extension workflow for CMPS 357 while sharing the backend API service in `backend/`.
 
 **Frontend surfaces:**
-- `frontend/mobile/` — existing Expo/React Native mobile frontend workspace
-- `frontend/mobile/RiskRadar/` — current RiskRadar mobile application files
 - `frontend/web/` — designated CMPS 357 PHP web-app extension workspace
 
 **Web frontend scaffold:**
@@ -821,8 +858,8 @@ The frontend workspace is now explicitly split so the mobile and web clients can
 - `frontend/web/config/` — environment and runtime configuration templates
 
 **Mobile frontend note:**
-- The existing Expo mobile app remains under `frontend/mobile/RiskRadar/`.
-- Mobile setup instructions are in [`frontend/mobile/RiskRadar/README.md`](./frontend/mobile/RiskRadar/README.md).
+- Mobile frontend work is out-of-scope for this repository's required setup path.
+- If needed, use the separate mobile repository linked above.
 
 **Web frontend note:**
 - Stage 1 web-app development should be placed in `frontend/web/`.
@@ -842,7 +879,7 @@ Stage 1 (Web-App Extension) is complete as of **2026-03-13** and includes the fo
 
 2. **Dedicated PHP web-app scaffold under `frontend/web/`**
 	- Established web-native directory boundaries for entrypoints, templates, components, services, and config.
-	- Preserved mobile/web separation by keeping Expo client work under `frontend/mobile/`.
+	- Preserved clean scope boundaries by keeping CMPS 357 work in `frontend/web/`.
 	- Added local override configuration template for backend URL/prefix/timeout settings.
 
 3. **Backend integration and normalization layer**

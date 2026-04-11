@@ -302,40 +302,20 @@ Navigate to <http://127.0.0.1:8080/index.php> in your browser.
 
 ---
 
-## 6. Mobile Frontend (Expo / React Native)
+## 6. Mobile Frontend (Reference Only / Not Required for CMPS 357)
 
-The mobile app is built with Expo and React Native.
+For this repository's required workflow, mobile setup is not required.
 
-### 6.1 Install dependencies
+- Required workflow: backend + web only
+- If `frontend/mobile/RiskRadar` is absent, that is expected for this project scope
+- Mobile app repository (separate): <https://github.com/QuiHu/Team6Project.git>
+
+Commands below are mobile-repository commands and are intentionally not part of required execution in this repo:
 
 ```bash
 cd frontend/mobile/RiskRadar
 npm install
-```
-
-### 6.2 Start the Expo development server
-
-```bash
 npx expo start
-```
-
-This opens the Expo developer tools. From here you can:
-
-- Press **`a`** to open in an Android emulator
-- Press **`i`** to open in an iOS simulator (macOS only)
-- Press **`w`** to open in a web browser
-- Scan the QR code with the **Expo Go** app on a physical device
-
-### 6.3 Other mobile commands
-
-```bash
-# Start directly for a specific platform
-npx expo start --android
-npx expo start --ios
-npx expo start --web
-
-# Lint the codebase
-npm run lint
 ```
 
 ---
@@ -430,10 +410,13 @@ pytest tests/test_scrapers.py
 pytest tests/test_api_alerts.py
 ```
 
-### 8.2 Mobile app linting
+### 8.2 Mobile app linting (reference only)
+
+Mobile linting is not part of required validation for this repository.
+
+If you are working in the separate mobile repository, run:
 
 ```bash
-cd frontend/mobile/RiskRadar
 npm run lint
 ```
 

@@ -1,3 +1,30 @@
+## Stage 5: Demo Verification Pass and FIRMS Warning Risk-Free Fix Session (2026-04-11)
+
+### Implementation
+Ran repeated demo verification passes (headless and presenter-visible) and implemented a minimal-risk registry fix so required-key checks use settings-loaded values from `.env` before process-environment fallback.
+
+### Functionality
+- **Demo Pass Validation:** `npm run demo:setup`, `npm run demo:verify`, and `npm run demo:info` consistently produced expected seeded outputs.
+- **Automation Validation:** `npm run demo:run` and `npm run demo:report` completed successfully and regenerated walkthrough evidence files.
+- **Warning Classification:** Confirmed FIRMS key warning is non-severe for seeded demo mode but relevant for live wildfire ingestion.
+- **Configuration Hardening:** Updated scraper key resolution in `backend/scrapers/registry.py` to check settings values first, then environment variables.
+
+### Execution
+- Performed pre-pass setup/verification, executed walkthrough, regenerated report artifacts, and re-verified post-run consistency.
+- Applied a localized backend fix to registry key checks without changing scraper behavior when keys are truly missing.
+- Preserved demo-first safety by avoiding broader scheduler/scraper refactors.
+
+### Verification Evidence
+- ✅ Demo seed and verification counts remained stable (4 users, 15 alerts, 2 summaries).
+- ✅ Automated walkthrough passed **6/6** steps in both headless and visible modes.
+- ✅ Evidence files refreshed: `static/evidence/demo_journey_log.json`, `static/evidence/demo_screenshots/manifest.json`, `static/evidence/DEMO_REPORT.md`.
+- ✅ Runtime registry import/load check passed after key-resolution update.
+
+### Importance
+- Increases confidence that demo workflows remain grading-ready across repeated runs.
+- Removes avoidable false warning scenarios when keys are configured in `.env` but not shell-exported.
+- Maintains low-risk operational posture by constraining the fix to key-lookup resolution logic.
+
 ## Stage 5: Sprint Remediation Implementation and Verification Closeout Session (2026-04-11)
 
 ### Implementation

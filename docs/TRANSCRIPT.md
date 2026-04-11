@@ -1,3 +1,27 @@
+# Stage 5: Demo Verification Pass and FIRMS Warning Risk-Free Fix Session (2026-04-11)
+
+> Scope note: For CMPS 357 execution and grading in this repository, required workflows are backend + web. Any historical mobile references in transcript entries are archival context, not required setup steps for this repo.
+
+Rebecca: Run this pass now.
+
+GitHub Copilot: Executed the full demo verification pass in presenter-visible mode by running setup, verification, metadata, automated walkthrough, and report generation commands; all checks passed and evidence artifacts were refreshed.
+
+Rebecca: Is this warning a severe one? Can it be fixed? If so, how?
+
+GitHub Copilot: Determined the FIRMS key warning is non-severe for seeded demo workflows but relevant for live wildfire ingestion, and recommended a low-risk settings-first key-resolution fix in scraper registry checks.
+
+Rebecca: Implement the recommended fix for this warning in the most risk free manner possible.
+
+GitHub Copilot: Applied a localized fix in `backend/scrapers/registry.py` so required-key checks resolve settings-loaded `.env` values before process-environment fallback, preserving behavior when keys are truly missing.
+
+Rebecca: Run this pass now.
+
+GitHub Copilot: Re-ran setup/verify/info plus automated walkthrough and report generation; presenter-mode pass completed successfully with 6/6 steps and post-run verification remained green.
+
+Rebecca: Update top level documents of the details and contents of this session while preserving the existing format and style with these new entries.
+
+GitHub Copilot: Added synchronized Stage 5 session entries across README, STAGES, TODO, AUTHORS, REFLECTION, and TRANSCRIPT while preserving chronology and style.
+
 # Stage 5: Demo Workflow Sanity Pass and Documentation Synchronization Session (2026-04-11)
 
 Rebecca: Run this pass and then update top level documents with the contents and details of this session while maintaining their format/style.

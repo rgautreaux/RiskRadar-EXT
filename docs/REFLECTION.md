@@ -2,6 +2,24 @@
 
 ## Session Reflections
 
+### Stage 5 Demo Verification Pass and FIRMS Warning Risk-Free Fix Session (2026-04-11)
+Summary:
+- Ran repeated demo verification passes using `npm run demo:setup`, `npm run demo:verify`, `npm run demo:info`, `npm run demo:run`, and `npm run demo:report`.
+- Confirmed walkthrough stability across headless and visible presenter modes with **6/6** automated step completion.
+- Investigated FIRMS warning severity and determined it is non-blocking for seeded demo mode, while still relevant for live wildfire ingestion.
+- Implemented a low-risk settings-first key-resolution fix in scraper registry lookup logic to prevent false skip warnings when keys are present in `.env`.
+- Revalidated post-run data integrity and preserved refreshed evidence artifacts.
+
+Why this was done:
+- To ensure demo workflows remain repeatable and grading-ready across multiple execution modes.
+- To reduce avoidable configuration confusion from false warning conditions.
+- To apply the safest possible fix with minimal code-surface impact.
+
+How this improved the project:
+- Increased confidence in automated demo reliability and presentation consistency.
+- Improved operational clarity by distinguishing non-blocking demo warnings from live-ingestion configuration requirements.
+- Hardened registry key checks without changing normal behavior when keys are truly missing.
+
 ### Stage 5 Demo Workflow Sanity Pass and Documentation Synchronization Session (2026-04-11)
 Summary:
 - Ran the final demo workflow sanity pass using documented commands: `npm run demo:setup`, `npm run demo:verify`, and `npm run demo:info`.

@@ -96,6 +96,16 @@ Max Compeaux:
 
 ### Stage 5: Ongoing Maintenance, Advanced Features, and Review
 
+#### Stage 5 Demo Verification Pass and FIRMS Warning Risk-Free Fix Session (2026-04-11)
+Rebecca Gautreaux:
+- Directed repeated demo verification passes (headless and presenter-visible) and confirmed end-to-end automation/report regeneration reliability.
+- Classified FIRMS warning impact for demo vs live ingestion scenarios and implemented the lowest-risk settings-first key-resolution fix in scraper registry.
+- Led synchronized top-level documentation updates for this session.
+
+Max Compeaux:
+- Supported verification review of demo outputs/evidence artifacts and post-run consistency checks.
+- Assisted risk assessment review for warning severity and fix scope.
+
 #### Stage 5 Demo Workflow Sanity Pass and Documentation Synchronization Session (2026-04-11)
 Rebecca Gautreaux:
 - Directed final demo command sanity pass and confirmed runbook command reliability.
