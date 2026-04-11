@@ -1,7 +1,5 @@
 
 </section>
-<script src="/frontend/web/risk_map.js"></script>
-
 <!-- Toast/Snackbar for user feedback -->
 <div id="toast" aria-live="polite" style="display:none;position:fixed;bottom:32px;left:50vw;transform:translateX(-50%);background:var(--accent-coral,#ef6f51);color:#fff;padding:13px 28px;border-radius:8px;box-shadow:0 4px 24px rgba(18,34,49,0.13);font-size:1.08em;z-index:300;min-width:160px;text-align:center;transition:opacity 0.2s;opacity:0;"></div>
 

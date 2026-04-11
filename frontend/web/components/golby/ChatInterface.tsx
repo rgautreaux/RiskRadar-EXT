@@ -155,17 +155,21 @@ function readStoredNumber(key: string, fallback: number) {
 		return fallback;
 	}
 
-	const rawValue = window.localStorage.getItem(key);
-	if (!rawValue) {
+	try {
+		const rawValue = window.localStorage.getItem(key);
+		if (!rawValue) {
+			return fallback;
+		}
+
+		const parsed = Number(rawValue);
+		if (Number.isNaN(parsed)) {
+			return fallback;
+		}
+
+		return parsed;
+	} catch {
 		return fallback;
 	}
-
-	const parsed = Number(rawValue);
-	if (Number.isNaN(parsed)) {
-		return fallback;
-	}
-
-	return parsed;
 }
 
 function persistNumber(key: string, value: number) {
@@ -185,14 +189,18 @@ function getSessionId() {
 		return 'server-session';
 	}
 
-	const existing = window.localStorage.getItem(SESSION_STORAGE_KEY);
-	if (existing) {
-		return existing;
-	}
+	try {
+		const existing = window.localStorage.getItem(SESSION_STORAGE_KEY);
+		if (existing) {
+			return existing;
+		}
 
-	const sessionId = createMessageId();
-	window.localStorage.setItem(SESSION_STORAGE_KEY, sessionId);
-	return sessionId;
+		const sessionId = createMessageId();
+		window.localStorage.setItem(SESSION_STORAGE_KEY, sessionId);
+		return sessionId;
+	} catch {
+		return createMessageId();
+	}
 }
 
 function reactionToRating(reaction: FeedbackReaction) {
