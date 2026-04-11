@@ -1,6 +1,7 @@
 """Tests for assistant API endpoint."""
 
 import json
+from datetime import datetime, timedelta, timezone
 
 
 class TestAssistantRespond:
@@ -81,3 +82,80 @@ class TestAssistantRespond:
         data = resp.json()
         assert data["category"] == "fallback"
         assert "for this reply" in data["reply"].lower()
+
+    def test_alert_filter_handles_mixed_timestamp_formats(self, test_client, db_session):
+        from db.models import Alert
+
+        now = datetime.now(timezone.utc)
+
+        active_z = Alert(
+            source="nws",
+            source_id="mix-z",
+            alert_type="weather",
+            severity="high",
+            title="Active Z Alert",
+            description="Active alert with Z format",
+            location_name="Los Angeles, CA",
+            event_start=(now - timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            event_end=(now + timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            fetched_at=now.isoformat(),
+            created_at=now.isoformat(),
+            updated_at=now.isoformat(),
+        )
+        active_naive = Alert(
+            source="epa",
+            source_id="mix-naive",
+            alert_type="pollution",
+            severity="moderate",
+            title="Active Naive Alert",
+            description="Active alert with naive format",
+            location_name="Los Angeles, CA",
+            event_start=(now - timedelta(hours=2)).replace(tzinfo=None).isoformat(),
+            event_end=(now + timedelta(hours=2)).replace(tzinfo=None).isoformat(),
+            fetched_at=now.isoformat(),
+            created_at=now.isoformat(),
+            updated_at=now.isoformat(),
+        )
+        expired = Alert(
+            source="firms",
+            source_id="mix-expired",
+            alert_type="wildfire",
+            severity="high",
+            title="Expired Alert",
+            description="Should be filtered out",
+            location_name="Los Angeles, CA",
+            event_start=(now - timedelta(days=2)).isoformat(),
+            event_end=(now - timedelta(hours=2)).isoformat(),
+            fetched_at=now.isoformat(),
+            created_at=now.isoformat(),
+            updated_at=now.isoformat(),
+        )
+        future = Alert(
+            source="nws",
+            source_id="mix-future",
+            alert_type="weather",
+            severity="low",
+            title="Future Alert",
+            description="Should be filtered out",
+            location_name="Los Angeles, CA",
+            event_start=(now + timedelta(days=3)).isoformat(),
+            event_end=(now + timedelta(days=3, hours=1)).isoformat(),
+            fetched_at=now.isoformat(),
+            created_at=now.isoformat(),
+            updated_at=now.isoformat(),
+        )
+
+        db_session.add_all([active_z, active_naive, expired, future])
+        db_session.commit()
+
+        resp = test_client.post(
+            "/api/v1/assistant/respond",
+            json={"message": "show latest alerts", "location": "Los Angeles"},
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        reply = data["reply"]
+        assert "Active Z Alert" in reply
+        assert "Active Naive Alert" in reply
+        assert "Expired Alert" not in reply
+        assert "Future Alert" not in reply

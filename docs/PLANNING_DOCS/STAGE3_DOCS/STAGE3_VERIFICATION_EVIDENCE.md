@@ -99,6 +99,10 @@ Manual evidence is required for grading and onboarding. Automated verification i
 
 **Artifacts Filing Location:** `static/evidence/` with cross-links in this document and `docs/evidence/` index.
 
+**Prepared manifest (2026-04-11):**
+- `static/evidence/S3_CLOSEOUT_MANIFEST_2026-04-11.md`
+- `docs/evidence/INDEX.md`
+
 **Target:** Final evidence bundle to be captured and filed as S3-06 closeout task for grading readiness.
 
 ## Phase 5 Progress Summary (2026-03-24)

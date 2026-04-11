@@ -1,6 +1,7 @@
 """Tests for forecast API endpoints."""
 
 import json
+from datetime import datetime, timedelta, timezone
 
 
 class TestForecastEndpoint:
@@ -41,3 +42,76 @@ class TestForecastEndpoint:
         assert data["personalized"] is True
         assert data["forecast_points"]
         assert data["risk_zones"]
+
+    def test_forecast_filters_mixed_timestamp_formats(self, test_client, db_session):
+        from db.models import Alert
+
+        now = datetime.now(timezone.utc)
+        rows = [
+            Alert(
+                source="nws",
+                source_id="f-mix-z",
+                alert_type="weather",
+                severity="high",
+                title="Forecast Z",
+                description="Active Z",
+                location_name="Los Angeles, CA",
+                event_start=(now - timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                event_end=(now + timedelta(hours=4)).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                fetched_at=now.isoformat(),
+                created_at=now.isoformat(),
+                updated_at=now.isoformat(),
+            ),
+            Alert(
+                source="epa",
+                source_id="f-mix-naive",
+                alert_type="air_quality",
+                severity="moderate",
+                title="Forecast Naive",
+                description="Active naive",
+                location_name="Los Angeles, CA",
+                event_start=(now - timedelta(hours=1)).replace(tzinfo=None).isoformat(),
+                event_end=(now + timedelta(hours=3)).replace(tzinfo=None).isoformat(),
+                fetched_at=now.isoformat(),
+                created_at=now.isoformat(),
+                updated_at=now.isoformat(),
+            ),
+            Alert(
+                source="firms",
+                source_id="f-mix-expired",
+                alert_type="wildfire",
+                severity="high",
+                title="Forecast Expired",
+                description="Expired",
+                location_name="Los Angeles, CA",
+                event_start=(now - timedelta(days=3)).isoformat(),
+                event_end=(now - timedelta(hours=1)).isoformat(),
+                fetched_at=now.isoformat(),
+                created_at=now.isoformat(),
+                updated_at=now.isoformat(),
+            ),
+            Alert(
+                source="nws",
+                source_id="f-mix-future",
+                alert_type="weather",
+                severity="low",
+                title="Forecast Future",
+                description="Future",
+                location_name="Los Angeles, CA",
+                event_start=(now + timedelta(days=4)).isoformat(),
+                event_end=(now + timedelta(days=4, hours=1)).isoformat(),
+                fetched_at=now.isoformat(),
+                created_at=now.isoformat(),
+                updated_at=now.isoformat(),
+            ),
+        ]
+
+        db_session.add_all(rows)
+        db_session.commit()
+
+        resp = test_client.get("/api/v1/forecast?location=Los Angeles")
+        assert resp.status_code == 200
+        data = resp.json()
+
+        assert len(data["risk_zones"]) == 2
+        assert data["forecast_points"]
