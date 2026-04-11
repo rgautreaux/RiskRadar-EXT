@@ -7,6 +7,15 @@ This folder will contain migration scripts for email encryption and password has
 
 ## Phase 3 (Migration Logging & Monitoring) Scripts
 
+- `2026-04-11_notification_channels_dispatch_log.sql`
+  - Adds persistent notification channel flags on `users`:
+    - `notify_push` (default `1`)
+    - `notify_email` (default `0`)
+    - `notify_sms` (default `0`)
+  - Creates `notification_dispatch_log` table for delivery observability:
+    - per-dispatch recipient totals, sent/failed counts, provider, status, and timestamp
+  - Adds indexes on `notification_dispatch_log.alert_id` and `notification_dispatch_log.created_at`
+
 - `2026-04-10_phase3_email_security_schema.sql`
   - Adds the `users.email_encrypted` and `users.email_hmac` columns required by the email migration.
   - Creates the `migration_log` table used by the Phase 3 logging, validation, and monitoring tools.
@@ -34,8 +43,9 @@ This folder will contain migration scripts for email encryption and password has
 ## Suggested Run Order (Staging)
 
 1. Apply `2026-04-10_phase3_email_security_schema.sql`
-2. `python db/migrations/migrate_email_encryption.py`
-3. `python db/migrations/validate_email_migration.py`
-4. `python db/migrations/monitor_migration_log.py`
+2. Apply `2026-04-11_notification_channels_dispatch_log.sql`
+3. `python db/migrations/migrate_email_encryption.py`
+4. `python db/migrations/validate_email_migration.py`
+5. `python db/migrations/monitor_migration_log.py`
 
 Record all outputs in staging validation notes before requesting backend/security lead sign-off.

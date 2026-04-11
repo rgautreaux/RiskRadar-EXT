@@ -2,6 +2,7 @@
 
 Use `2026-03-03_mariadb_scraper_alignment.sql` to align an existing MariaDB schema with the backend ORM models used by scrapers.
 Use `2026-03-09_mariadb_retention_cleanup.sql` to add scheduled retention archive/delete support.
+Use `2026-04-11_notification_channels_dispatch_log.sql` to add persisted notification channel preferences and delivery observability logging.
 
 ## What it fixes
 
@@ -16,6 +17,7 @@ Use `2026-03-09_mariadb_retention_cleanup.sql` to add scheduled retention archiv
 ```sql
 SOURCE backend/db/migrations/2026-03-03_mariadb_scraper_alignment.sql;
 SOURCE backend/db/migrations/2026-03-09_mariadb_retention_cleanup.sql;
+SOURCE backend/db/migrations/2026-04-11_notification_channels_dispatch_log.sql;
 ```
 
 ## Retention cleanup runtime settings
