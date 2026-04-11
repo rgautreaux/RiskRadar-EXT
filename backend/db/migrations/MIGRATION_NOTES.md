@@ -10,10 +10,15 @@ Use `2026-03-03_mariadb_scraper_alignment.sql` to align an existing MariaDB sche
 - `users` shape to match `db.models.User`
 - Removes constraints/indexes that block recurring scraper inserts
 
+## Additional normalization step
+
+Use `2026-04-11_add_summary_alerts_and_feedback_fk.sql` to introduce the normalized `summary_alerts` junction table and the `feedback.user_id` foreign key without removing the legacy `summaries.alert_ids` JSON column.
+
 ## Apply migration
 
 ```sql
 SOURCE backend/db/migrations/2026-03-03_mariadb_scraper_alignment.sql;
+SOURCE backend/db/migrations/2026-04-11_add_summary_alerts_and_feedback_fk.sql;
 ```
 
 ## Runtime configuration

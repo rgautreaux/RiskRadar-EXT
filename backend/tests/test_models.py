@@ -2,10 +2,11 @@
 
 import json
 import pytest
+from sqlalchemy import inspect
 from sqlalchemy.exc import IntegrityError
 
 from auth.security import decrypt_email, hash_email, password_hash, verify_password
-from db.models import Alert, Summary, User, ScrapeLog
+from db.models import Alert, Summary, SummaryAlertLink, User, ScrapeLog
 from tests.conftest import NOW
 
 
@@ -73,6 +74,31 @@ class TestSummaryModel:
         db_session.add(summary)
         db_session.commit()
         assert json.loads(summary.alert_ids) == ids
+
+    def test_generate_summary_creates_junction_rows(self, db_session, sample_alerts):
+        from unittest.mock import patch
+        from llm.summarizer import Summarizer
+
+        with patch.object(Summarizer, "_call_llm", return_value=("## Digest\nBody", 42)):
+            summary = Summarizer().generate_daily_digest(db_session)
+
+        assert summary is not None
+        links = (
+            db_session.query(SummaryAlertLink)
+            .filter(SummaryAlertLink.summary_id == summary.id)
+            .all()
+        )
+        assert len(links) == len(sample_alerts)
+        assert {link.alert_id for link in links} == {alert.id for alert in sample_alerts}
+
+
+class TestFeedbackModel:
+    def test_feedback_user_fk_exists(self, db_session):
+        foreign_keys = inspect(db_session.bind).get_foreign_keys("feedback")
+        assert any(
+            fk["referred_table"] == "users" and fk["referred_columns"] == ["id"]
+            for fk in foreign_keys
+        )
 
 
 class TestUserModel:

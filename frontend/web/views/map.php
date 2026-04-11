@@ -10,21 +10,72 @@
     height: 480px;
     max-width: 1000px;
     margin: 0 auto 24px auto;
-    background: #fff8ee;
-    border-radius: 12px;
-    box-shadow: 0 2px 12px rgba(18,34,49,0.08);
+    background: linear-gradient(160deg, rgba(255, 249, 241, 0.96), rgba(248, 239, 223, 0.9));
+    border: 1px solid rgba(18,34,49,0.14);
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(18,34,49,0.12), 0 3px 10px rgba(18,34,49,0.08);
     overflow: hidden;
 }
+.map-control-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.map-control-indent {
+    margin-left: 18px;
+}
+
+.map-action-buttons {
+    margin-left: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.map-btn {
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 1em;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(18,34,49,0.08);
+    font-weight: 600;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.map-btn:hover,
+.map-btn:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(18,34,49,0.12);
+    filter: saturate(1.03);
+}
+
+.map-btn-secondary {
+    background: var(--panel-strong,#fff8ee);
+    color: var(--accent-coral,#ef6f51);
+}
+
+.map-btn-primary {
+    background: linear-gradient(135deg, var(--accent-coral,#ef6f51), #db5a3d);
+    color: #fff;
+}
+
 @media (max-width: 1280px) {
     #risk-map-container { max-width: 98vw; }
 }
 @media (max-width: 768px) {
     #risk-map-container { height: 340px; }
     .panel > div { flex-direction: column; gap: 12px !important; }
+    .map-control-indent,
+    .map-action-buttons { margin-left: 0; }
 }
 @media (max-width: 480px) {
     #risk-map-container { height: 220px; }
     .panel > div { flex-direction: column; gap: 8px !important; }
+    .map-btn { width: 100%; text-align: center; }
 }
 /* Focus indicator for all focusable elements */
 :focus {
@@ -133,7 +184,7 @@ rr_render_layout_start('Risk Map', 'map');
 
 <section class="panel">
     <h2 id="risk-map-heading">Interactive Map</h2>
-        <div>
+        <div class="map-control-row">
             <label for="region-filter">Region Filter: </label>
             <select id="region-filter" style="min-width:120px;" aria-label="Region Filter" aria-describedby="region-filter-desc" accesskey="r">
                 <option value="">All Regions</option>
@@ -143,12 +194,12 @@ rr_render_layout_start('Risk Map', 'map');
             </select>
             <span id="region-filter-desc" class="sr-only">Select a region to filter map overlays. Use Tab to move to overlays and toggles. Shortcut: Alt+R.</span>
         </div>
-        <div style="margin-left:18px;">
+        <div class="map-control-row map-control-indent">
             <label for="user-id-input">User ID for Personalized Map: </label>
             <input type="number" id="user-id-input" min="1" value="1" style="width:70px;" aria-label="User ID for Personalized Map" aria-describedby="user-id-desc" accesskey="u" />
             <span id="user-id-desc" class="sr-only">Enter your numeric user ID to enable personalized risk overlays. This is required for personalized map mode. Shortcut: Alt+U.</span>
         </div>
-        <div role="group" aria-label="Overlay Toggles" aria-describedby="overlay-toggles-desc">
+        <div class="map-control-row" role="group" aria-label="Overlay Toggles" aria-describedby="overlay-toggles-desc">
             <span id="overlay-toggles-desc" class="sr-only">Toggle overlays with Space or Enter. Keyboard shortcuts: Alt+1 Alerts, Alt+2 Risk Zones, Alt+3 AQI, Alt+4 Wildfire, Alt+5 Earthquake, Alt+6 Weather, Alt+7 Pollution.</span>
             <label><input type="checkbox" id="toggle-alerts" checked aria-checked="true" aria-label="Show Alerts" accesskey="1"> Show Alerts</label>
             <label style="margin-left:12px;"><input type="checkbox" id="toggle-risk" checked aria-checked="true" aria-label="Show Risk Zones" accesskey="2"> Show Risk Zones</label>
@@ -158,10 +209,10 @@ rr_render_layout_start('Risk Map', 'map');
             <label style="margin-left:12px;"><input type="checkbox" id="toggle-weather" aria-label="Weather Overlay" accesskey="6"> Weather Overlay</label>
             <label style="margin-left:12px;"><input type="checkbox" id="toggle-pollution" aria-label="Pollution Overlay" accesskey="7"> Pollution Overlay</label>
         </div>
-        <div style="margin-left:24px;display:flex;align-items:center;gap:16px;">
+        <div class="map-action-buttons">
             <label><input type="checkbox" id="toggle-personalized" aria-label="Personalized Risk Map"> Personalized Risk Map</label>
-            <button id="darkmode-toggle" aria-label="Toggle dark mode" style="background:var(--panel-strong,#fff8ee);color:var(--accent-coral,#ef6f51);border:none;border-radius:6px;padding:7px 16px;font-size:1em;cursor:pointer;box-shadow:0 2px 8px rgba(18,34,49,0.08);font-weight:500;">🌙 Dark Mode</button>
-            <button id="help-btn" aria-haspopup="dialog" aria-controls="help-modal" aria-label="How to use this map" style="background:var(--accent-coral,#ef6f51);color:#fff;border:none;border-radius:6px;padding:7px 16px;font-size:1em;cursor:pointer;box-shadow:0 2px 8px rgba(18,34,49,0.08);font-weight:500;">Help</button>
+            <button class="map-btn map-btn-secondary" id="darkmode-toggle" aria-label="Toggle dark mode">🌙 Dark Mode</button>
+            <button class="map-btn map-btn-primary" id="help-btn" aria-haspopup="dialog" aria-controls="help-modal" aria-label="How to use this map">Help</button>
         </div>
     <script>
     // Accessible marker details modal
@@ -280,7 +331,7 @@ rr_render_layout_start('Risk Map', 'map');
     });
     </script>
     </div>
-    <div id="risk-map-container" style="width:100%;height:480px;max-width:1000px;margin:0 auto 24px auto;background:#fff8ee;border-radius:12px;box-shadow:0 2px 12px rgba(18,34,49,0.08);overflow:hidden;"
+    <div id="risk-map-container"
         tabindex="0" aria-label="Risk map showing alerts and risk zones. Use arrow keys to pan. Press Enter or Space on a marker for details." aria-describedby="risk-map-legend risk-map-heading risk-map-instructions" role="region">
         <div id="risk-map" style="width:100%;height:100%;position:relative;" role="application" aria-label="Interactive risk map with overlays and markers" aria-describedby="risk-map-instructions"></div>
         <div id="map-loading" style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.7);z-index:2;">

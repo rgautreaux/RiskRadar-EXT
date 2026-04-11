@@ -7,11 +7,11 @@
 
 
 :root {
-  --theme-bg: #f3efe5;
+  --theme-bg: #f4efe3;
   --theme-ink: #122231;
   --theme-accent: #ef6f51;
-  --theme-panel: #fffaf2;
-  --theme-panel-strong: #fff8ee;
+  --theme-panel: #fffbf5;
+  --theme-panel-strong: #fff6ea;
 
   /* Map overlays and marker colors */
   --alert-high: #e74c3c;
@@ -28,9 +28,9 @@
 }
 
 [data-theme="dark"] {
-  --theme-bg: #181c20;
-  --theme-ink: #f3efe5;
+  --theme-bg: #181f25;
+  --theme-ink: #f6efe1;
   --theme-accent: #f2b441;
-  --theme-panel: #23272b;
-  --theme-panel-strong: #2c3136;
+  --theme-panel: #212a32;
+  --theme-panel-strong: #2a353f;
 }

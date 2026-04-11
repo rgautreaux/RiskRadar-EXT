@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import Column, Integer, Text, Float, Boolean, UniqueConstraint, event
+from sqlalchemy import Column, Integer, Text, Float, Boolean, ForeignKey, UniqueConstraint, event
+from sqlalchemy.orm import relationship
 from db.database import Base
 from auth.security import decrypt_email, encrypt_email, hash_email, is_encrypted_email, normalize_email
 
@@ -48,6 +49,23 @@ class Summary(Base):
     token_count = Column(Integer)
     created_at = Column(Text, nullable=False, default=_now)
 
+    summary_alert_links = relationship(
+        "SummaryAlertLink",
+        cascade="all, delete-orphan",
+        back_populates="summary",
+    )
+
+
+class SummaryAlertLink(Base):
+    __tablename__ = "summary_alerts"
+
+    summary_id = Column(Integer, ForeignKey("summaries.id", ondelete="CASCADE"), primary_key=True)
+    alert_id = Column(Integer, ForeignKey("alerts.id", ondelete="CASCADE"), primary_key=True)
+    created_at = Column(Text, nullable=False, default=_now)
+
+    summary = relationship("Summary", back_populates="summary_alert_links")
+    alert = relationship("Alert")
+
 
 class Feedback(Base):
     __tablename__ = "feedback"
@@ -55,7 +73,7 @@ class Feedback(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     session_id = Column(Text, nullable=False)
     message_id = Column(Text, nullable=False)
-    user_id = Column(Integer)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     reaction = Column(Text, nullable=False)
     rating = Column(Integer, nullable=False)
     page_context = Column(Text)
