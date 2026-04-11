@@ -2,7 +2,6 @@ from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from auth.dependencies import get_optional_current_user
@@ -55,19 +54,45 @@ def _guardrail_reply(category: str) -> str:
     )
 
 
+def _parse_datetime(value: str | None) -> datetime | None:
+    if not value:
+        return None
+
+    cleaned = value.strip().replace("Z", "+00:00")
+    try:
+        parsed = datetime.fromisoformat(cleaned)
+    except ValueError:
+        return None
+
+    if parsed.tzinfo is None:
+        return parsed.replace(tzinfo=timezone.utc)
+    return parsed
+
+
 def _query_active_alerts(db: Session, location: str | None = None) -> list[Alert]:
     now = datetime.now(timezone.utc)
     window_end = now + timedelta(hours=48)
 
-    query = db.query(Alert).filter(
-        or_(Alert.event_start.is_(None), Alert.event_start <= window_end.isoformat()),
-        or_(Alert.event_end.is_(None), Alert.event_end >= now.isoformat()),
-    )
+    query = db.query(Alert)
 
     if location:
         query = query.filter(Alert.location_name.ilike(f"%{location}%"))
 
-    return query.order_by(Alert.fetched_at.desc()).limit(100).all()
+    alerts = query.order_by(Alert.fetched_at.desc()).limit(500).all()
+    active_alerts: list[Alert] = []
+
+    for alert in alerts:
+        event_start = _parse_datetime(alert.event_start)
+        event_end = _parse_datetime(alert.event_end)
+
+        if event_start is not None and event_start > window_end:
+            continue
+        if event_end is not None and event_end < now:
+            continue
+
+        active_alerts.append(alert)
+
+    return active_alerts[:100]
 
 
 def _risk_level(score: float) -> str:

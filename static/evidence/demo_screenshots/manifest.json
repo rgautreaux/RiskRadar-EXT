@@ -1,47 +1,47 @@
 {
-  "generatedAt": "2026-04-11T16:43:23.376Z",
+  "generatedAt": "2026-04-11T16:47:29.399Z",
   "count": 6,
   "screenshots": [
     {
       "filename": "demo_01_dashboard.png",
       "path": "C:\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_01_dashboard.png",
       "description": "Dashboard Overview",
-      "capturedAt": "2026-04-11T16:43:17.382Z",
+      "capturedAt": "2026-04-11T16:47:23.257Z",
       "url": "http://127.0.0.1:8080/index.php"
     },
     {
       "filename": "demo_02_risk_scoring.png",
       "path": "C:\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_02_risk_scoring.png",
       "description": "Personalized Risk Scoring",
-      "capturedAt": "2026-04-11T16:43:17.957Z",
+      "capturedAt": "2026-04-11T16:47:23.829Z",
       "url": "http://127.0.0.1:8080/risk.php?user_id=2&radius_km=50"
     },
     {
       "filename": "demo_03_smart_alerts.png",
       "path": "C:\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_03_smart_alerts.png",
       "description": "Smart Alerts Prioritization",
-      "capturedAt": "2026-04-11T16:43:18.525Z",
+      "capturedAt": "2026-04-11T16:47:24.383Z",
       "url": "http://127.0.0.1:8080/smart_alerts.php?user_id=2&radius_km=100&limit=10"
     },
     {
       "filename": "demo_04_map.png",
       "path": "C:\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_04_map.png",
       "description": "Interactive Risk Map",
-      "capturedAt": "2026-04-11T16:43:21.229Z",
+      "capturedAt": "2026-04-11T16:47:27.241Z",
       "url": "http://127.0.0.1:8080/map.php"
     },
     {
       "filename": "demo_05_forecast.png",
       "path": "C:\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_05_forecast.png",
       "description": "Forecast View",
-      "capturedAt": "2026-04-11T16:43:21.807Z",
+      "capturedAt": "2026-04-11T16:47:27.831Z",
       "url": "http://127.0.0.1:8080/forecast.php"
     },
     {
       "filename": "demo_06_assistant.png",
       "path": "C:\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_06_assistant.png",
       "description": "AI Assistant View",
-      "capturedAt": "2026-04-11T16:43:23.376Z",
+      "capturedAt": "2026-04-11T16:47:29.399Z",
       "url": "http://127.0.0.1:8080/assistant.php"
     }
   ]

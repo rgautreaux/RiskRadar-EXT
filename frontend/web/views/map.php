@@ -353,6 +353,8 @@ rr_render_layout_start('Risk Map', 'map');
 const MAP_ALERTS_URL = <?php echo json_encode($alerts_url); ?>;
 const MAP_RISK_URL = <?php echo json_encode($risk_url); ?>;
 const MAP_PERSONALIZED_RISK_URL = <?php echo json_encode(rr_api_url($config, 'risk/map/personalized/')); ?>; // Append user_id
+window.RISKRADAR_MAP_ALERTS_URL = MAP_ALERTS_URL;
+window.RISKRADAR_MAP_RISK_URL = MAP_RISK_URL;
 // Helper: Get current user ID from input
 function getCurrentUserId() {
     var input = document.getElementById('user-id-input');

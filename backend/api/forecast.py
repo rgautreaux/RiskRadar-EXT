@@ -5,7 +5,6 @@ from typing import Any, Optional
 
 import json
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from db.database import get_db
@@ -41,6 +40,9 @@ def _clamp(value: float, minimum: float, maximum: float) -> float:
 def _parse_datetime(value: Optional[str]) -> Optional[datetime]:
     if not value:
         return None
+
+    if isinstance(value, datetime):
+        return value.replace(tzinfo=timezone.utc) if value.tzinfo is None else value
 
     cleaned = value.strip().replace("Z", "+00:00")
     try:
@@ -142,17 +144,11 @@ def _query_alerts(
 ) -> list[Alert]:
     now = datetime.now(timezone.utc)
     window_end = now + timedelta(hours=hours)
-    event_start_column = getattr(Alert, "event_start")
-    event_end_column = getattr(Alert, "event_end")
     latitude_column = getattr(Alert, "latitude")
     longitude_column = getattr(Alert, "longitude")
     location_name_column = getattr(Alert, "location_name")
 
     q = db.query(Alert)
-    q = q.filter(
-        or_(event_start_column.is_(None), event_start_column <= window_end.isoformat()),
-        or_(event_end_column.is_(None), event_end_column >= now.isoformat()),
-    )
 
     if lat is not None and lon is not None:
         lat_min, lat_max = lat - 1.0, lat + 1.0
@@ -166,7 +162,21 @@ def _query_alerts(
     elif location:
         q = q.filter(location_name_column.ilike(f"%{location}%"))
 
-    return q.order_by(Alert.fetched_at.desc()).all()
+    alerts = q.order_by(Alert.fetched_at.desc()).all()
+    active_alerts: list[Alert] = []
+
+    for alert in alerts:
+        event_start = _parse_datetime(getattr(alert, "event_start", None))
+        event_end = _parse_datetime(getattr(alert, "event_end", None))
+
+        if event_start is not None and event_start > window_end:
+            continue
+        if event_end is not None and event_end < now:
+            continue
+
+        active_alerts.append(alert)
+
+    return active_alerts
 
 
 def _forecast_points(base_score: float, alerts: list[Alert], hours: int) -> list[ForecastPoint]:

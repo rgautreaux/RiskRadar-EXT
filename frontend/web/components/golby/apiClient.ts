@@ -11,7 +11,6 @@ export interface GolbyFeedbackPayload {
   response_category?: string;
   response_text?: string;
   comment?: string;
-  user_id?: number;
 }
 
 export interface GolbyLocalProfile {
@@ -27,6 +26,38 @@ export interface AssistantRequestPayload {
   page_context?: string;
   user_id?: number;
   location?: string;
+}
+
+declare global {
+  interface Window {
+    __RISKRADAR_API_BASE__?: string;
+  }
+}
+
+const DEFAULT_API_BASE = '/api/v1';
+
+function getApiBase(): string {
+  if (typeof window === 'undefined') {
+    return DEFAULT_API_BASE;
+  }
+
+  const configured = (window.__RISKRADAR_API_BASE__ || '').trim();
+  if (!configured) {
+    return DEFAULT_API_BASE;
+  }
+
+  return configured.endsWith('/') ? configured.slice(0, -1) : configured;
+}
+
+function buildApiUrl(path: string): string {
+  const base = getApiBase();
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+
+  if (/^https?:\/\//i.test(base)) {
+    return `${base}${normalizedPath}`;
+  }
+
+  return `${base}${normalizedPath}`;
 }
 
 export interface AssistantResponsePayload {
@@ -52,26 +83,28 @@ export interface WeeklyAnalyticsPayload {
 }
 
 export async function fetchCurrentAlerts() {
-  const res = await fetch('/api/v1/alerts?limit=5', { credentials: 'include' });
+  const res = await fetch(`${buildApiUrl('/alerts')}?limit=5`, { credentials: 'include' });
   if (!res.ok) throw new Error('Failed to fetch alerts');
   return await res.json();
 }
 
 export async function fetchRiskOverlay() {
-  const res = await fetch('/api/v1/risk/map', { credentials: 'include' });
+  const res = await fetch(buildApiUrl('/risk/map'), { credentials: 'include' });
   if (!res.ok) throw new Error('Failed to fetch risk overlay');
   return await res.json();
 }
 
 export async function fetchForecast(location = '') {
-  const url = location ? `/api/v1/forecast?location=${encodeURIComponent(location)}` : '/api/v1/forecast';
+  const url = location
+    ? `${buildApiUrl('/forecast')}?location=${encodeURIComponent(location)}`
+    : buildApiUrl('/forecast');
   const res = await fetch(url, { credentials: 'include' });
   if (!res.ok) throw new Error('Failed to fetch forecast');
   return await res.json();
 }
 
 export async function fetchAssistantReply(payload: AssistantRequestPayload): Promise<AssistantResponsePayload> {
-  const res = await fetch('/api/v1/assistant/respond', {
+  const res = await fetch(buildApiUrl('/assistant/respond'), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -88,7 +121,7 @@ export async function fetchAssistantReply(payload: AssistantRequestPayload): Pro
 }
 
 export async function sendGolbyFeedback(payload: GolbyFeedbackPayload) {
-  const res = await fetch('/api/v1/feedback', {
+  const res = await fetch(buildApiUrl('/feedback'), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -105,7 +138,7 @@ export async function sendGolbyFeedback(payload: GolbyFeedbackPayload) {
 }
 
 export async function fetchCurrentUser() {
-  const res = await fetch('/api/v1/auth/me', { credentials: 'include' });
+  const res = await fetch(buildApiUrl('/auth/me'), { credentials: 'include' });
   if (!res.ok) {
     throw new Error('Failed to fetch current user');
   }
@@ -119,7 +152,7 @@ export async function fetchWeeklyFeedbackAnalytics(days = 7, sessionId?: string)
     params.set('session_id', sessionId);
   }
 
-  const res = await fetch(`/api/v1/feedback/analytics/weekly?${params.toString()}`, { credentials: 'include' });
+  const res = await fetch(`${buildApiUrl('/feedback/analytics/weekly')}?${params.toString()}`, { credentials: 'include' });
   if (!res.ok) {
     throw new Error('Failed to fetch weekly feedback analytics');
   }
@@ -163,7 +196,7 @@ export async function syncGolbyStyleProfile(
     },
   };
 
-  const res = await fetch(`/api/v1/users/${userId}/preferences`, {
+  const res = await fetch(buildApiUrl(`/users/${userId}/preferences`), {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',

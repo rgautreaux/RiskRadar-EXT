@@ -598,7 +598,6 @@ export function ChatInterface({
 				page_context: pageContext,
 				response_category: category,
 				response_text: message.text,
-				user_id: currentUserId,
 			});
 		} catch {
 			// Keep the local learning loop working even if the backend call fails.

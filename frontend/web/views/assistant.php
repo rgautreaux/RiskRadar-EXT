@@ -2,6 +2,11 @@
 
 <?php $currentUserResult = rr_fetch_current_user($config); ?>
 <?php $currentUser = $currentUserResult['ok'] ? $currentUserResult['data'] : null; ?>
+<?php $apiBase = rtrim(rr_api_url($config, ''), '/'); ?>
+
+<script>
+window.__RISKRADAR_API_BASE__ = <?php echo json_encode($apiBase); ?>;
+</script>
 
 <!-- RiskRadar AI Assistant Widget Assets -->
 <link rel="stylesheet" href="/public/assets/index.css">
