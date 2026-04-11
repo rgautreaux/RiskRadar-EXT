@@ -31,6 +31,7 @@ from schemas.user import (
     UserCreate,
     UserLogin,
     UserPrefsUpdate,
+    DeviceTokenUpdate,
     UserOut,
     TokenOut,
     NotificationSettingsUpdate,
@@ -155,6 +156,7 @@ def update_preferences(
     if body.longitude is not None:
         user.longitude = body.longitude
     if body.alert_types is not None:
+        # Store as JSON text for compatibility with existing schema.
         user.alert_types = json.dumps(body.alert_types)
     if body.notify_severity is not None:
         user.notify_severity = body.notify_severity
@@ -164,6 +166,45 @@ def update_preferences(
     db.commit()
     db.refresh(user)
     return _user_out_with_email(user)
+
+
+@router.post("/{user_id}/device-token", response_model=NotificationSettingsOut)
+def register_device_token(
+    user_id: int,
+    body: DeviceTokenUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Register or refresh the current user's push notification token."""
+    if current_user.id != user_id:
+        raise HTTPException(status_code=403, detail="Cannot modify another user's device token")
+
+    current_user.device_token = body.device_token
+    db.commit()
+    db.refresh(current_user)
+    return NotificationSettingsOut(
+        notify_severity=current_user.notify_severity,
+        device_token=current_user.device_token,
+    )
+
+
+@router.post("/{user_id}/device-token/revoke", response_model=NotificationSettingsOut)
+def revoke_device_token(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Clear the stored push notification token (e.g., on logout)."""
+    if current_user.id != user_id:
+        raise HTTPException(status_code=403, detail="Cannot modify another user's device token")
+
+    current_user.device_token = None
+    db.commit()
+    db.refresh(current_user)
+    return NotificationSettingsOut(
+        notify_severity=current_user.notify_severity,
+        device_token=current_user.device_token,
+    )
 
 
 @router.get("/notifications", response_model=NotificationSettingsOut)

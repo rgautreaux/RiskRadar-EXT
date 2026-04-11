@@ -1,10 +1,12 @@
 import math
+import json
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 
 from db.database import get_db
-from db.models import Alert
+from db.models import Alert, User
+from auth.security import get_current_user_optional
 from schemas.alert import AlertOut, AlertStats
 
 router = APIRouter(prefix="/alerts", tags=["Alerts"])
@@ -80,13 +82,47 @@ def list_alerts(
     alert_type: str | None = None,
     severity: str | None = None,
     source: str | None = None,
-    zip_code: str | None = None,
+    zip_code: str | None = Query(default=None, min_length=5, max_length=5, pattern=r"^\d{5}$"),
     radius_miles: float = Query(default=150, le=500),
     limit: int = Query(default=50, le=200),
-    offset: int = 0,
+    offset: int = Query(default=0, ge=0),
     db: Session = Depends(get_db),
+    current_user: User | None = Depends(get_current_user_optional),
 ):
+    valid_alert_types = {"weather", "air_quality", "wildfire", "pollution", "earthquake"}
+    valid_severity = {"low", "moderate", "high", "critical"}
+
+    if alert_type and alert_type not in valid_alert_types:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=422, detail="Invalid alert_type")
+
+    if severity and severity not in valid_severity:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=422, detail="Invalid severity")
+
     q = db.query(Alert)
+
+    if current_user:
+        if not alert_type and current_user.alert_types:
+            try:
+                preferred_types = json.loads(current_user.alert_types)
+            except json.JSONDecodeError:
+                preferred_types = ["all"]
+
+            if isinstance(preferred_types, list) and "all" not in preferred_types:
+                filtered_types = [item for item in preferred_types if item in valid_alert_types]
+                if filtered_types:
+                    q = q.filter(Alert.alert_type.in_(filtered_types))
+
+        if not severity and current_user.notify_severity in valid_severity:
+            severity_windows = {
+                "low": ["low", "moderate", "high", "critical"],
+                "moderate": ["moderate", "high", "critical"],
+                "high": ["high", "critical"],
+                "critical": ["critical"],
+            }
+            q = q.filter(Alert.severity.in_(severity_windows[current_user.notify_severity]))
+
     if alert_type:
         q = q.filter(Alert.alert_type == alert_type)
     if severity:
