@@ -34,6 +34,10 @@ class Settings(BaseSettings):
 
     # --- Notifications ---
     NOTIFICATION_PROVIDER: str = "noop"
+    EXPO_PUSH_URL: str = "https://exp.host/--/api/v2/push/send"
+    EXPO_ACCESS_TOKEN: str = ""
+    FCM_PROJECT_ID: str = ""
+    FCM_SERVER_KEY: str = ""
 
     # --- App Defaults ---
     DEFAULT_ZIP_CODE: str = "90001"

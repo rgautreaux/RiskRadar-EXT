@@ -28,6 +28,7 @@ from sqlalchemy import or_
 from db.database import get_db
 from db.models import User
 from auth.security import hash_password, verify_password, create_access_token, get_current_user, encrypt_email, decrypt_email, email_hmac
+from logging_utils import log_event
 from schemas.user import (
     UserCreate,
     UserLogin,
@@ -174,10 +175,11 @@ def update_preferences(
 
     db.commit()
     db.refresh(user)
-    logger.info(
-        "users.preferences_updated user_id=%s changed_fields=%s",
-        user.id,
-        ",".join(changed_fields) if changed_fields else "none",
+    log_event(
+        logger,
+        "users.preferences_updated",
+        user_id=user.id,
+        changed_fields=changed_fields,
     )
     return _user_out_with_email(user)
 
@@ -196,7 +198,7 @@ def register_device_token(
     current_user.device_token = body.device_token
     db.commit()
     db.refresh(current_user)
-    logger.info("users.device_token_registered user_id=%s", current_user.id)
+    log_event(logger, "users.device_token_registered", user_id=current_user.id)
     return NotificationSettingsOut(
         notify_severity=current_user.notify_severity,
         device_token=current_user.device_token,
@@ -216,7 +218,7 @@ def revoke_device_token(
     current_user.device_token = None
     db.commit()
     db.refresh(current_user)
-    logger.info("users.device_token_revoked user_id=%s", current_user.id)
+    log_event(logger, "users.device_token_revoked", user_id=current_user.id)
     return NotificationSettingsOut(
         notify_severity=current_user.notify_severity,
         device_token=current_user.device_token,

@@ -8,8 +8,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Protocol
+import logging
 
 from config.settings import settings
+
+logger = logging.getLogger(__name__)
 
 
 class NotificationProvider(Protocol):
@@ -33,11 +36,48 @@ class NoopNotificationProvider:
         return True
 
 
+@dataclass(frozen=True)
+class ExpoNotificationProvider:
+    """Scaffold provider for future Expo push integration."""
+
+    name: str = "expo"
+
+    def send(self, device_token: str, title: str, body: str) -> bool:
+        # Integration scaffold only: intentionally no outbound API call yet.
+        _ = (device_token, title, body)
+        return False
+
+
+@dataclass(frozen=True)
+class FcmNotificationProvider:
+    """Scaffold provider for future Firebase Cloud Messaging integration."""
+
+    name: str = "fcm"
+
+    def send(self, device_token: str, title: str, body: str) -> bool:
+        # Integration scaffold only: intentionally no outbound API call yet.
+        _ = (device_token, title, body)
+        return False
+
+
 def get_notification_provider() -> NotificationProvider:
     """Return the configured notification provider adapter."""
     provider = settings.NOTIFICATION_PROVIDER.strip().lower()
     if provider in {"", "noop"}:
         return NoopNotificationProvider()
 
+    if provider == "expo":
+        if settings.EXPO_ACCESS_TOKEN:
+            return ExpoNotificationProvider()
+        logger.warning("notifications.provider_fallback provider=expo reason=missing_access_token")
+        return NoopNotificationProvider()
+
+    if provider == "fcm":
+        if settings.FCM_SERVER_KEY and settings.FCM_PROJECT_ID:
+            return FcmNotificationProvider()
+        logger.warning("notifications.provider_fallback provider=fcm reason=missing_credentials")
+        return NoopNotificationProvider()
+
     # Keep unknown provider values safe and explicit until integration is added.
+    logger.warning("notifications.provider_fallback provider=%s reason=unknown", provider)
     return NoopNotificationProvider()

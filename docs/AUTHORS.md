@@ -1,4 +1,4 @@
-## Contributions and Roles (as of Apr 10, 2026)
+## Contributions and Roles (as of Apr 11, 2026)
 
 - All member roles and contributions have been updated to reflect the April 2, 2026 documentation synchronization and audit.
 - All top-level documentation, progress logs, and transcripts are now in sync and audit-ready.
@@ -9,6 +9,7 @@
 - The Apr 10, 2026 audit-trail sync and status-confirmation pass refreshed the transcript, progress log, reflection, TODO, README, and sprint tracking so Rebecca’s current closure boundary remains explicit.
 - The Apr 10, 2026 migration-verification sync pass captured successful migration test/script evidence and propagated it across all audit-facing docs.
 - The Apr 10, 2026 critical regression expansion pass added backend coverage for location, summary, system, and auth/notification paths and validated full backend pytest status at `107 passed`.
+- The Apr 11, 2026 demo-readiness implementation pass delivered server-driven alerts filtering, in-app backend demo tooling, and final users+alerts root command validation (`40 passed, 0 failed`).
 
 ### Qui Huynh
 - Project lead, backend architecture, database design, API development, code review, documentation.
@@ -43,6 +44,7 @@
 - Confirmed on Apr 10, 2026 that Rebecca has no further implementation steps on her side; only external backend/security sign-off remains.
 - Recorded the Apr 10, 2026 migration verification results and synchronized the documentation bundle to keep the audit trail current.
 - Implemented and validated Apr 10, 2026 backend critical regression expansion across location, summary, system, and user/auth flows, followed by a full backend suite pass (`107 passed`, warnings only).
+- Implemented Apr 11, 2026 demo-readiness updates (`docs/PROJECT_DEMO.md`, persisted demo settings, backend-driven alert filters, in-app backend health/scrape demo actions), then completed final root users+alerts API cleanup validation (`40 passed, 0 failed`).
 
 ### Celeste George
 - Frontend developer, UI/UX research, and QA.

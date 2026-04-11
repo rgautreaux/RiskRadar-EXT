@@ -111,7 +111,6 @@ This file is the presentation-facing demo reference for RiskRadar. It lists what
 
 ## Current Demo Status Summary
 
-- Already demoable: landing/login, dashboard, zip search, weather report, alerts list, alert modal, health check, Swagger docs.
 - Already demoable: landing/login, dashboard, zip search, weather report, alerts list, alert modal, health check, scrape trigger, Swagger docs.
 - In progress or still to be strengthened: persistent settings, polished fallback states, richer alert prioritization, and a cleaner operations summary.
 - Best live story today: show the product end to end from entry screen to location-based insight, then close with a brief backend trust proof.

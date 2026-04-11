@@ -5,6 +5,7 @@ import logging
 from auth.security import get_current_user
 from db.database import get_db
 from db.models import Alert, User
+from logging_utils import log_event
 from notifications.provider import get_notification_provider
 
 router = APIRouter(prefix="/notifications", tags=["Notifications"])
@@ -63,13 +64,14 @@ def notify_subscribers_for_alert(
         if recipient.device_token and provider.send(recipient.device_token, title, body):
             sent_count += 1
 
-    logger.info(
-        "notifications.dispatch alert_id=%s initiated_by=%s provider=%s candidates=%s sent=%s",
-        alert.id,
-        current_user.id,
-        provider.name,
-        len(recipients),
-        sent_count,
+    log_event(
+        logger,
+        "notifications.dispatch",
+        alert_id=alert.id,
+        initiated_by=current_user.id,
+        provider=provider.name,
+        candidates=len(recipients),
+        sent=sent_count,
     )
 
     return {
