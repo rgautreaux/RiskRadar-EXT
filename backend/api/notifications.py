@@ -4,7 +4,7 @@ import logging
 
 from auth.security import get_current_user
 from db.database import get_db
-from db.models import Alert, User
+from db.models import Alert, User, NotificationDispatchLog
 from logging_utils import log_event
 from notifications.provider import get_notification_provider
 
@@ -64,6 +64,27 @@ def notify_subscribers_for_alert(
         if recipient.device_token and provider.send(recipient.device_token, title, body):
             sent_count += 1
 
+    failed_count = max(len(recipients) - sent_count, 0)
+    status = "success"
+    if len(recipients) == 0:
+        status = "no_recipients"
+    elif sent_count == 0:
+        status = "failed"
+    elif failed_count > 0:
+        status = "partial"
+
+    dispatch_log = NotificationDispatchLog(
+        alert_id=alert.id,
+        initiated_by_user_id=current_user.id,
+        provider=provider.name,
+        recipients_total=len(recipients),
+        sent_count=sent_count,
+        failed_count=failed_count,
+        status=status,
+    )
+    db.add(dispatch_log)
+    db.commit()
+
     log_event(
         logger,
         "notifications.dispatch",
@@ -72,6 +93,8 @@ def notify_subscribers_for_alert(
         provider=provider.name,
         candidates=len(recipients),
         sent=sent_count,
+        failed=failed_count,
+        status=status,
     )
 
     return {
@@ -81,4 +104,6 @@ def notify_subscribers_for_alert(
         "recipient_user_ids": [u.id for u in recipients],
         "provider": provider.name,
         "sent_count": sent_count,
+        "failed_count": failed_count,
+        "dispatch_status": status,
     }

@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from unittest.mock import Mock, patch
 
 from auth.security import create_access_token
-from db.models import ScrapeLog
+from db.models import NotificationDispatchLog, ScrapeLog
 
 
 def _auth_headers(user_id: int) -> dict[str, str]:
@@ -131,6 +131,17 @@ def test_notify_subscribers_filters_by_preferences(test_client, db_session, samp
     assert sample_user.id in data["recipient_user_ids"]
     assert data["provider"] == "noop"
     assert data["sent_count"] == 1
+    assert data["failed_count"] == 0
+    assert data["dispatch_status"] == "success"
+
+    dispatch = db_session.query(NotificationDispatchLog).order_by(NotificationDispatchLog.id.desc()).first()
+    assert dispatch is not None
+    assert dispatch.alert_id == sample_alerts[0].id
+    assert dispatch.provider == "noop"
+    assert dispatch.recipients_total == 1
+    assert dispatch.sent_count == 1
+    assert dispatch.failed_count == 0
+    assert dispatch.status == "success"
 
 
 def test_notify_subscribers_404_for_missing_alert(test_client, sample_user):

@@ -42,6 +42,9 @@ class UserPrefsUpdate(BaseModel):
     longitude: Optional[float] = Field(default=None, ge=-180, le=180)
     alert_types: Optional[list[str]] = None
     notify_severity: Optional[Literal["low", "moderate", "high", "critical"]] = None
+    notify_push: Optional[bool] = None
+    notify_email: Optional[bool] = None
+    notify_sms: Optional[bool] = None
     device_token: Optional[str] = None
 
     @field_validator("alert_types")
@@ -70,6 +73,9 @@ class DeviceTokenUpdate(BaseModel):
 class NotificationSettingsUpdate(BaseModel):
     """PUT /users/notifications — notification preferences."""
     notify_severity: Optional[Literal["low", "moderate", "high", "critical"]] = None
+    notify_push: Optional[bool] = None
+    notify_email: Optional[bool] = None
+    notify_sms: Optional[bool] = None
     device_token: Optional[str] = None
 
 # --- Response schemas ------------------------------------------------------
@@ -89,6 +95,9 @@ class UserOut(BaseModel):
     longitude: Optional[float] = None
     alert_types: Optional[str] = None
     notify_severity: Optional[str] = None
+    notify_push: Optional[bool] = None
+    notify_email: Optional[bool] = None
+    notify_sms: Optional[bool] = None
     device_token: Optional[str] = None
     created_at: datetime
     model_config = ConfigDict(from_attributes=True)
@@ -96,5 +105,8 @@ class UserOut(BaseModel):
 class NotificationSettingsOut(BaseModel):
     """Response for GET /users/notifications."""
     notify_severity: Optional[str] = None
+    notify_push: Optional[bool] = None
+    notify_email: Optional[bool] = None
+    notify_sms: Optional[bool] = None
     device_token: Optional[str] = None
     model_config = ConfigDict(from_attributes=True)

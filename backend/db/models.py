@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import Column, Integer, Text, Float, UniqueConstraint, DateTime, JSON
+from sqlalchemy import Column, Integer, Text, Float, UniqueConstraint, DateTime, JSON, Boolean
 from db.database import Base
 
 
@@ -66,6 +66,9 @@ class User(Base):
     longitude = Column(Float)
     alert_types = Column(Text, default='["all"]')     # JSON array
     notify_severity = Column(Text, default="high")
+    notify_push = Column(Boolean, nullable=False, default=True)
+    notify_email = Column(Boolean, nullable=False, default=False)
+    notify_sms = Column(Boolean, nullable=False, default=False)
     created_at = Column(DateTime(timezone=True), nullable=False, default=_now)
     updated_at = Column(DateTime(timezone=True), nullable=False, default=_now, onupdate=_now)
 
@@ -175,3 +178,18 @@ class CleanupRun(Base):
     error_message = Column(Text)
     started_at = Column(DateTime(timezone=True), nullable=False, default=_now)
     completed_at = Column(DateTime(timezone=True), nullable=False, default=_now)
+
+
+class NotificationDispatchLog(Base):
+    __tablename__ = "notification_dispatch_log"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    alert_id = Column(Integer, nullable=False)
+    initiated_by_user_id = Column(Integer, nullable=False)
+    provider = Column(Text, nullable=False)
+    recipients_total = Column(Integer, nullable=False, default=0)
+    sent_count = Column(Integer, nullable=False, default=0)
+    failed_count = Column(Integer, nullable=False, default=0)
+    status = Column(Text, nullable=False, default="success")
+    error_message = Column(Text)
+    created_at = Column(DateTime(timezone=True), nullable=False, default=_now)

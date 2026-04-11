@@ -125,21 +125,36 @@ class TestCurrentUserAndNotifications:
         assert resp.status_code == 200
         data = resp.json()
         assert data["notify_severity"] == "high"
+        assert data["notify_push"] is True
+        assert data["notify_email"] is False
+        assert data["notify_sms"] is False
         assert data["device_token"] is None
 
     def test_update_notifications(self, test_client, sample_user, db_session):
         resp = test_client.put(
             "/api/v1/users/notifications",
-            json={"notify_severity": "critical", "device_token": "device-123"},
+            json={
+                "notify_severity": "critical",
+                "notify_push": False,
+                "notify_email": True,
+                "notify_sms": True,
+                "device_token": "device-123",
+            },
             headers=_auth_headers(sample_user.id),
         )
         assert resp.status_code == 200
         data = resp.json()
         assert data["notify_severity"] == "critical"
+        assert data["notify_push"] is False
+        assert data["notify_email"] is True
+        assert data["notify_sms"] is True
         assert data["device_token"] == "device-123"
 
         user = db_session.query(User).filter(User.id == sample_user.id).first()
         assert user.notify_severity == "critical"
+        assert user.notify_push is False
+        assert user.notify_email is True
+        assert user.notify_sms is True
         assert user.device_token == "device-123"
 
 
@@ -156,6 +171,23 @@ class TestUpdatePreferences:
             "alert_types": ["weather", "earthquake"],
         }, headers=_auth_headers(sample_user.id))
         assert resp.status_code == 200
+
+    def test_update_notification_channels(self, test_client, sample_user, db_session):
+        resp = test_client.put(
+            f"/api/v1/users/{sample_user.id}/preferences",
+            json={"notify_push": False, "notify_email": True, "notify_sms": True},
+            headers=_auth_headers(sample_user.id),
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["notify_push"] is False
+        assert data["notify_email"] is True
+        assert data["notify_sms"] is True
+
+        user = db_session.query(User).filter(User.id == sample_user.id).first()
+        assert user.notify_push is False
+        assert user.notify_email is True
+        assert user.notify_sms is True
 
     def test_update_forbidden_for_other_user(self, test_client, sample_user):
         resp = test_client.put("/api/v1/users/9999/preferences", json={

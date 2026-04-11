@@ -169,6 +169,15 @@ def update_preferences(
     if body.notify_severity is not None:
         user.notify_severity = body.notify_severity
         changed_fields.append("notify_severity")
+    if body.notify_push is not None:
+        user.notify_push = body.notify_push
+        changed_fields.append("notify_push")
+    if body.notify_email is not None:
+        user.notify_email = body.notify_email
+        changed_fields.append("notify_email")
+    if body.notify_sms is not None:
+        user.notify_sms = body.notify_sms
+        changed_fields.append("notify_sms")
     if body.device_token is not None:
         user.device_token = body.device_token
         changed_fields.append("device_token")
@@ -230,6 +239,9 @@ def get_notifications(current_user: User = Depends(get_current_user)):
     """Get the current user's notification settings."""
     return NotificationSettingsOut(
         notify_severity=current_user.notify_severity,
+        notify_push=current_user.notify_push,
+        notify_email=current_user.notify_email,
+        notify_sms=current_user.notify_sms,
         device_token=current_user.device_token,
     )
 
@@ -243,6 +255,12 @@ def update_notifications(
     """Update notification preferences for the current user."""
     if body.notify_severity is not None:
         current_user.notify_severity = body.notify_severity
+    if body.notify_push is not None:
+        current_user.notify_push = body.notify_push
+    if body.notify_email is not None:
+        current_user.notify_email = body.notify_email
+    if body.notify_sms is not None:
+        current_user.notify_sms = body.notify_sms
     if body.device_token is not None:
         current_user.device_token = body.device_token
 
@@ -250,5 +268,8 @@ def update_notifications(
     db.refresh(current_user)
     return NotificationSettingsOut(
         notify_severity=current_user.notify_severity,
+        notify_push=current_user.notify_push,
+        notify_email=current_user.notify_email,
+        notify_sms=current_user.notify_sms,
         device_token=current_user.device_token,
     )

@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: str = ""
     DB_PATH: str = str(BASE_DIR / "riskradar.db")
+    CORS_ALLOWED_ORIGINS: str = "*"
 
     # --- JWT Authentication ---
     # IMPORTANT: Change JWT_SECRET_KEY in your .env file before production!
