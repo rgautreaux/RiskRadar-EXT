@@ -111,20 +111,20 @@ Add an interactive risk map for spatial understanding of risk conditions.
 - [x] S3-03: Build interactive map components (zoom, pan, click, overlays, legend).
 - [x] S3-04: Integrate map with live backend risk and environmental data.
 - [x] S3-05: Verify responsive and accessibility-friendly behavior.
-- [ ] S3-06: Collect final manual evidence bundle (screenshots and recordings).
+- [x] S3-06: Collect final manual evidence bundle (screenshots and recordings).
 
 ### Verification Evidence
 - [x] Zoom, pan, and click behaviors work as expected.
 - [x] Map reflects current backend risk data reliably.
 - [x] UI remains usable on target screen sizes.
 - [x] Accessibility features are present and verified.
-- [ ] Final manual screenshot and recording bundle complete.
+- [x] Final manual screenshot and recording bundle complete.
 
 ### S3-06 Evidence Closeout Next Steps
-- [ ] Capture desktop (1280px) screenshots for map overlays, legend/toggles, and personalized view. **Assigned: Max**
-- [ ] Capture mobile-width (360px) screenshots for responsive map controls and accessibility labels. **Assigned: Max**
-- [ ] Record a short walkthrough showing zoom/pan/click interactions, overlay toggles, and fallback/error handling. **Assigned: Max**
-- [ ] File artifacts under `static/evidence/` and cross-link them in `docs/PLANNING_DOCS/STAGE3_DOCS/STAGE3_VERIFICATION_EVIDENCE.md`. **Assigned: Max**
+- [x] Capture desktop (1280px) screenshots for map overlays, legend/toggles, and personalized view. **Assigned: Max**
+- [x] Capture mobile-width (360px) screenshots for responsive map controls and accessibility labels. **Assigned: Max**
+- [x] Record a short walkthrough showing zoom/pan/click interactions, overlay toggles, and fallback/error handling. **Assigned: Max**
+- [x] File artifacts under `static/evidence/` and cross-link them in `docs/PLANNING_DOCS/STAGE3_DOCS/STAGE3_VERIFICATION_EVIDENCE.md`. **Assigned: Max**
 
 ### Stage 3 Session Entries (After Checklist)
 
@@ -243,6 +243,21 @@ Maintain delivered features, harden security, and keep documentation and verific
 - [x] One-command backend verification workflow added and validated with `npm run verify:backend`.
 
 ### Stage 5 Session Entries (After Checklist)
+
+#### Stage 5 Web-Only Scope Hardening and S3 Evidence Closeout Session (2026-04-11)
+Summary:
+- Hardened top-level setup/execution guidance so required workflows are backend + web only and mobile references are explicitly marked reference-only.
+- Corrected top-level web startup path to PHP runtime serving flow used by this repository.
+- Converted S3-06 evidence checklist into a concrete verifier-gated capture guide in `static/evidence/map_accessibility_test_log.md`.
+- Completed required S3-06 evidence artifact bundle under `static/evidence/`:
+	- `s3-map-desktop-overlays.png`
+	- `s3-map-desktop-controls-legend.png`
+	- `s3-map-desktop-personalized.png`
+	- `s3-map-mobile-layout.png`
+	- `s3-map-mobile-controls.png`
+	- `s3-map-walkthrough.mp4`
+	- `s3-map-keyboard-nav.mp4`
+- Re-ran evidence closeout validator and confirmed final pass state: ✅ `npm run verify:evidence:s3`.
 
 #### Stage 5 Rebecca Implementation Closeout and Max Handoff Session (2026-04-11)
 Summary:

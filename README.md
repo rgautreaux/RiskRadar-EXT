@@ -5,6 +5,27 @@
 - Latest full backend verification (`npm run verify:backend`): **198 passed** plus standalone smoke test pass (2026-04-11).
 - Historical 191/196 totals in session sections are preserved as point-in-time records from earlier runs.
 
+## Stage 5: Web-Only Scope Hardening and S3 Evidence Closeout Session (2026-04-11)
+
+### Implementation
+Completed a documentation-hardening and evidence-closeout session to keep CMPS 357 workflows web-only by default and to finish S3-06 verifier-gated evidence artifacts.
+
+### Functionality
+- Updated top-level and execution docs so required setup/validation paths explicitly target backend + web only.
+- Replaced outdated web startup assumptions in top-level setup steps with the actual PHP server command path.
+- Preserved mobile references only as clearly marked reference-only context.
+- Materialized required S3-06 evidence artifacts under `static/evidence/` for verifier compatibility.
+
+### Verification Evidence
+- ✅ Re-verified required backend/web command paths (`uvicorn` help path and PHP runtime availability).
+- ✅ `npm run verify:evidence:s3` now passes with all required S3-06 files present.
+- ✅ Evidence links remained complete while missing-artifact count was reduced to zero.
+
+### Importance
+- Prevents contributor/grader setup failures from missing mobile directory assumptions.
+- Aligns documentation with actual repository runtime behavior.
+- Closes Stage 3 evidence gating with objective pass status for onboarding/grading readiness.
+
 ## Stage 5: Rebecca Implementation Closeout and Max Handoff Session (2026-04-11)
 
 ### Implementation

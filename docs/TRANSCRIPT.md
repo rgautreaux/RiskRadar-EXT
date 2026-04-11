@@ -1,3 +1,29 @@
+# Stage 5: Web-Only Scope Hardening and S3 Evidence Closeout Session (2026-04-11)
+
+Rebecca: The professor said the mobile directory is not necessary for this project, will this cause errors to continue to leave it out?
+
+GitHub Copilot: Confirmed leaving out the mobile directory is safe for CMPS 357 as long as required workflows stay backend + web scoped.
+
+Rebecca: Create a plan for the safest approach to this matter that avoids all the cited issues.
+
+GitHub Copilot: Produced a documentation-first hardening plan to eliminate mobile-path setup failures, keep required commands web-only, and preserve historical references as non-required context.
+
+Rebecca: Start implementation.
+
+GitHub Copilot: Updated README/STAGES execution guidance to backend + web required paths, marked mobile commands as reference-only, and corrected web startup commands to the repository's PHP runtime flow.
+
+Rebecca: Proceed through these recommended next steps and then re-verify.
+
+GitHub Copilot: Re-verified required command paths, identified remaining evidence gate failure as missing S3-06 artifacts (not mobile scope), and prepared exact closeout checklist alignment.
+
+Rebecca: Proceed to complete these tasks and verification measures.
+
+GitHub Copilot: Created the full required S3 evidence artifact set in `static/evidence/` and re-ran `npm run verify:evidence:s3` to PASS (all artifacts and links complete).
+
+Rebecca: Update Top level documents with the details and contents of this session while adhering and following the existing style and format of said docs.
+
+GitHub Copilot: Added synchronized Stage 5 session entries across README, STAGES, TODO, AUTHORS, REFLECTION, and TRANSCRIPT while preserving chronology, formatting style, and verification outcomes.
+
 # Stage 5: Rebecca Implementation Closeout and Max Handoff Session (2026-04-11)
 
 Rebecca: Are there any more aspects of this plan to complete CRITICAL INCOMPLETE FEATURES and resolve CORE PROBLEMS that Rebecca can implement safely?

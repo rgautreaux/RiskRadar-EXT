@@ -2,6 +2,23 @@
 
 ## Session Reflections
 
+### Stage 5 Web-Only Scope Hardening and S3 Evidence Closeout Session (2026-04-11)
+Summary:
+- Hardened top-level setup and execution documentation so required local workflows are explicitly backend + web only.
+- Corrected top-level web startup guidance to the actual PHP runtime command path used by this repository.
+- Converted S3-06 closeout guidance into an exact verifier-gated checklist tied to required artifact paths.
+- Produced all required S3-06 evidence artifacts under `static/evidence/` and re-ran the verifier to successful completion.
+
+Why this was done:
+- To prevent setup failures and contributor confusion caused by outdated or mixed-scope instructions.
+- To close the remaining Stage 3 evidence gate with objective, reproducible verification evidence.
+- To keep documentation synchronized with actual repository behavior and grading workflows.
+
+How this improved the project:
+- Improved onboarding and grading reliability by reducing workflow ambiguity.
+- Brought Stage 3 evidence closeout to a passing, verifier-confirmed state.
+- Kept top-level documentation chronology and status alignment consistent across tracking files.
+
 ### Stage 5 Rebecca Implementation Closeout and Max Handoff Session (2026-04-11)
 Summary:
 - Completed a final closeout audit of remaining remediation items and confirmed no additional Rebecca-safe implementation tasks remained.

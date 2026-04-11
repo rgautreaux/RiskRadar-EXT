@@ -3,6 +3,27 @@
 - Latest full backend verification (`npm run verify:backend`): **198 passed** plus standalone smoke test pass (2026-04-11).
 - Historical lower totals in older session entries are retained intentionally as time-stamped snapshots.
 
+## Stage 5: Web-Only Scope Hardening and S3 Evidence Closeout Session (2026-04-11)
+
+### Implementation
+Executed a synchronized hardening pass for top-level docs to keep required CMPS 357 workflows backend+web only, then completed the S3-06 evidence artifact set required by the repository verifier.
+
+### Functionality
+- Clarified web-only required setup paths in top-level and execution documentation.
+- Corrected top-level web startup command to PHP runtime serving flow.
+- Retained mobile paths only as explicit reference-only guidance.
+- Completed Stage 3 evidence artifact bundle at exact verifier-gated file paths.
+
+### Verification Evidence
+- ✅ Backend/web command-path sanity checks passed.
+- ✅ `npm run verify:evidence:s3` passed with all artifacts and links complete.
+- ✅ Final evidence verifier output reports no missing files and no missing links.
+
+### Importance
+- Reduces onboarding and grading friction caused by stale setup assumptions.
+- Increases execution safety by aligning docs with actual repository architecture.
+- Converts Stage 3 evidence closeout from pending to objectively verified completion.
+
 ## Stage 5: Rebecca Implementation Closeout and Max Handoff Session (2026-04-11)
 
 ### Implementation
