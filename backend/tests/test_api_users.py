@@ -27,7 +27,7 @@ class TestRegisterUser:
         resp = test_client.post("/api/v1/users/register", json={
             "display_name": "Bob",
             "email": "bob@test.com",
-            "password": "pass",
+            "password": "pass123",
             "zip_code": "90210",
         })
         assert resp.status_code == 200
@@ -49,7 +49,7 @@ class TestRegisterUser:
         resp = test_client.post("/api/v1/users/register", json={
             "display_name": "Duplicate",
             "email": "test@example.com",
-            "password": "pass",
+            "password": "pass123",
         })
         assert resp.status_code == 400
         assert "Email already registered" in resp.json()["detail"]

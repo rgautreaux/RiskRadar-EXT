@@ -79,6 +79,9 @@ class Summarizer:
         user_msg = prompts.TRIP_PACKING_USER.format(
             count=len(alerts),
             date=date.today().strftime("%B %d, %Y"),
+            city="the monitored area",
+            state="N/A",
+            zip_code="N/A",
             alerts_json=json.dumps(alerts_data, indent=2),
         )
 

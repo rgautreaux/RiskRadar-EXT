@@ -36,7 +36,7 @@ This file is the presentation-facing demo reference for RiskRadar. It lists what
 ### 5. Alerts exploration
 
 - The alerts view shows active alerts and hazard category chips.
-- The alerts view now includes demo prioritization filters so critical alerts and major hazards can be surfaced first.
+- The alerts view now includes demo prioritization filters backed by API query parameters, so critical alerts and major hazards can be surfaced first from the server.
 - The modal view provides a polished alert detail presentation with recommendations.
 - These screens are useful for showing severity and alert context without leaving the app flow.
 
@@ -70,7 +70,7 @@ This file is the presentation-facing demo reference for RiskRadar. It lists what
 
 - Make the health check and scrape trigger easier to show during the presentation.
 - This is now partially implemented through the settings screen, which offers both health checks and a scrape trigger action.
-- If possible, add a more presenter-friendly summary view for the scrape result so the backend story is even faster to explain.
+- Scrape trigger results are now shown in a source-by-source summary list to make the pipeline outcome easier to explain live.
 
 ### 5. Repeatable demo rehearsal path
 
