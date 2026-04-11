@@ -101,6 +101,16 @@ Week-by-week sprint board for tracking delivery to the goal of having most imple
 - Full backend pytest suite is green in this session: `107 passed, 0 failed` (warnings only).
 - Documentation source-of-truth files are synchronized to this same status state.
 
+## Current Verification Snapshot (Apr 11, 2026)
+
+- Migration verification rerun completed successfully after local schema sync:
+  - `migrate_email_encryption.py`: completed
+  - `validate_email_migration.py`: passed with zero current-batch failed/error logs
+  - `monitor_migration_log.py`: passed, threshold not reached
+- SQL query-plan spot-checks confirmed index usage for `notification_dispatch_log` on `alert_id` and `created_at` access patterns.
+- Full backend pytest suite is green in this session: `159 passed, 3 skipped`.
+- Documentation and migration evidence notes were updated in lockstep.
+
 ---
 
 ## Sprint 1 — Scope Lock
@@ -196,7 +206,7 @@ Week-by-week sprint board for tracking delivery to the goal of having most imple
 **Owners:** All
 
 ### To Do
- - [ ] 🟡 Add regression checklist for scraper + DB + summary flow
+ - [x] 🟢 Add regression checklist for scraper + DB + summary flow (implemented and verified Apr 11, 2026)
  - [x] 🟢 All documentation, QA, and planning docs synchronized and validated as of April 2, 2026 (Rebecca)
 
 ### In Progress

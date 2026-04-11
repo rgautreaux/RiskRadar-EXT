@@ -66,6 +66,15 @@ This checklist is for use during the S3 QA/integration phase and for manual vali
 
 Environment note (Apr 10): Interactive device/emulator validation is still required for transition feel and platform-specific back-stack behavior. This workspace session validated code paths, backend auth behavior, and static frontend checks.
 
+### 8. Backend Regression Checklist (Scraper + DB + Summary) (Apr 11, 2026)
+- [x] `python -m pytest -q backend/tests/test_scrapers.py backend/tests/test_scraper_db_integration.py backend/tests/test_live_data_fetch.py`
+- [x] `python -m pytest -q backend/tests/test_api_summaries.py backend/tests/test_api_alerts.py`
+- [x] `python backend/db/migrations/migrate_email_encryption.py`
+- [x] `python backend/db/migrations/validate_email_migration.py`
+- [x] `python backend/db/migrations/monitor_migration_log.py`
+- [x] SQL spot-checks confirm `notification_dispatch_log` index usage on `alert_id` and `created_at`
+- [x] Full backend confirmation pass completed: `python -m pytest -q` -> `159 passed, 3 skipped`
+
 ---
 
 
@@ -73,4 +82,4 @@ _Full QA pass performed, all checklist items validated, and all UI asset issues 
 
 ---
 
-_Last updated: April 10, 2026_
+_Last updated: April 11, 2026_

@@ -13,6 +13,9 @@ RiskRadar helps residents and travelers identify environmental risks by scraping
 - Mobile demo flow improvements now include persisted demo settings, backend-driven alert filters, in-app backend health checks, and scrape-trigger summary output.
 - Backend alert preference behavior was hardened so explicit query filters override user defaults, and targeted backend API suites were revalidated.
 - Root command verification for users + alerts API tests completed green in this session (`40 passed, 0 failed`).
+- Migration verification reruns and monitoring checks were completed successfully in this session environment.
+- Full backend suite confirmation rerun is green: `159 passed, 3 skipped`.
+- Scraper/DB/summary regression checklist is now documented and validated in `docs/QA_CHECKLIST.md`.
 
 ---
 
@@ -230,7 +233,7 @@ Team6Project/
 - All retention logic, migrations, and tests are documented and validated
 
 ### Stage 3: End-to-End Testing & Validation
-- Full backend pytest suite (87/87 passing) covers API, database, scrapers, retention logic, and user registration/login regressions
+- Full backend pytest suite is green in the latest Apr 11 verification pass (`159 passed, 3 skipped`) and covers API, database, scrapers, retention logic, and user registration/login regressions
 - Integration tests ensure scraper-to-database pipeline is robust and reliable
 - Backend smoke verification script now completes cleanly, including config-driven scraper loading and conditional summary generation when no LLM provider is configured
 - CI/local pre-push checklist ensures code quality and reproducibility

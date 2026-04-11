@@ -6,6 +6,12 @@ This Apr 11 pass synchronized sprint tracking with the completed demo-readiness 
 - Revalidated backend users + alerts API suites from the root command path (`40 passed, 0 failed`).
 - Documentation tracker files were refreshed for chronology and audit consistency.
 
+Apr 11 verification extension:
+- Completed migration verification reruns (`migrate_email_encryption.py`, `validate_email_migration.py`, `monitor_migration_log.py`) with healthy current-batch status.
+- Confirmed dispatch-log query-plan index usage for `alert_id` and `created_at`.
+- Completed full backend suite confirmation: `159 passed, 3 skipped`.
+- Closed the remaining scraper/DB/summary regression-checklist item with validated command evidence in `docs/QA_CHECKLIST.md`.
+
 ---
 
 # April 10 Synchronization Note
@@ -99,7 +105,7 @@ Latest alignment updates:
 | 7 | Define/implement all MVP UI states (loading, error, empty) | Important / Medium | Celeste, Ben | These states improve usability, but they depend on the main screens being wired first. | Add consistent loading and error handling across the completed screens. |
 | 8 | Define/implement minimum personal data policy | Important / Small | Noah, Ben | Privacy alignment is required, but the implementation effort is narrower than the core UI/backend work. | Confirm minimal PII flow and document the approved data handling rule. |
 | 9 | Expand test coverage for critical paths | Important / Medium | All | Broader coverage reduces regression risk after the remaining wiring is done. | Add targeted tests for the finished backend and frontend flows. |
-| 10 | Add regression checklist for scraper, DB, summary flow | Nice-to-have / Small | All | Helpful for release confidence, but it does not block feature completion. | Draft and verify the checklist against the current smoke and integration paths. |
+| 10 | Add regression checklist for scraper, DB, summary flow | Completed / Small | Rebecca, All | Checklist is now documented and validated with migration and full-suite evidence. | Keep checklist current as additional regression paths are added. |
 | 11 | Track known issues with severity and owner | Nice-to-have / Small | All | Useful for coordination, but it is maintenance work rather than delivery work. | Update the issue list and assign owners for any open follow-ups. |
 | 12 | Reconcile/finalize all documentation for demo/audit | Completed / Small | Rebecca, All | This is already complete and serves as the documentation baseline for the sprint. | Keep it synchronized only if new work changes the audit trail. |
 
