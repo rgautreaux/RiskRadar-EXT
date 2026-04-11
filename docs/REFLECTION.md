@@ -2,6 +2,25 @@
 
 ## Session Reflections
 
+### Stage 5 Demo Workflow Sanity Pass and Documentation Synchronization Session (2026-04-11)
+Summary:
+- Ran the final demo workflow sanity pass using documented commands: `npm run demo:setup`, `npm run demo:verify`, and `npm run demo:info`.
+- Confirmed demo seeding, verification checks, and metadata output all execute successfully in sequence.
+- Validated the safest handling for demo artifacts by keeping demo tooling integrated with repository scripts and documentation.
+- Cleaned generated artifacts after verification (`npm run demo:clean`).
+- Synchronized top-level documentation with this session’s results and decisions.
+
+Why this was done:
+- To ensure the documented demo runbook paths are accurate, executable, and grading-ready.
+- To reduce risk around accidental removal of active demo tooling.
+- To preserve top-level documentation consistency after executing the sanity pass.
+
+How this improved the project:
+- Increased reliability of demo setup and verification workflows for contributors and graders.
+- Confirmed end-to-end command parity between docs and runtime behavior.
+- Kept repository hygiene intact by removing generated demo artifacts after verification.
+- Maintained historical traceability with synchronized top-level documentation updates.
+
 ### Stage 5 Golby Personality Learning, Communication Controls, and Cross-Device Sync Session (2026-04-10)
 Summary:
 - Implemented persistent assistant communication-style profiles (`assistant_style_profile`) on user records with a migration path for existing databases.

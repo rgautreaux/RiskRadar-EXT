@@ -239,6 +239,14 @@ Maintain delivered features, harden security, and keep documentation and verific
 
 ### Stage 5 Session Entries (After Checklist)
 
+#### Stage 5 Demo Workflow Sanity Pass and Documentation Synchronization Session (2026-04-11)
+Summary:
+- Executed final demo command sanity pass with `npm run demo:setup`, `npm run demo:verify`, and `npm run demo:info`.
+- Confirmed seeded demo counts and metadata outputs remain consistent with fixture expectations.
+- Validated that demo tooling should remain tracked because package scripts and demo docs depend on `backend/demo/` assets.
+- Completed post-verification cleanup with `npm run demo:clean` to remove generated artifacts.
+- Updated top-level documentation for chronological and status alignment.
+
 #### Stage 5 Golby Personality Learning, Communication Controls, and Cross-Device Sync Session (2026-04-10)
 Summary:
 - Added persistent user-level `assistant_style_profile` to store Golby communication preferences over time.

@@ -19,12 +19,13 @@ import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
-# Add backend to path for imports
+# Add backend directory to path for package imports (auth, db, etc.)
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from auth.security import encrypt_email, hash_email, password_hash, create_session_token
-from db.models import Base, Alert, Summary, User
+from auth.security import create_session_token, encrypt_email, hash_email, password_hash
+from db.models import Alert, Base, Summary, User
 from sqlalchemy import text, create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -38,7 +39,7 @@ def build_demo_session_factory(db_path: str):
     return engine, session_factory
 
 
-def load_fixtures() -> dict:
+def load_fixtures() -> dict[str, Any]:
     """Load fixtures.json from the demo directory."""
     fixtures_path = Path(__file__).parent / "fixtures.json"
     if not fixtures_path.exists():
@@ -61,7 +62,7 @@ def create_demo_db(engine, db_path: str = "demo.db") -> str:
     return str(db_path)
 
 
-def seed_users(session, fixtures: dict) -> dict:
+def seed_users(session, fixtures: dict[str, Any]) -> dict[str, Any]:
     """Seed users from fixtures into database."""
     users_data = fixtures.get("users", [])
     created_users = {}
@@ -109,7 +110,7 @@ def seed_users(session, fixtures: dict) -> dict:
     return {"users": created_users, "session_tokens": session_tokens}
 
 
-def seed_alerts(session, fixtures: dict) -> dict:
+def seed_alerts(session, fixtures: dict[str, Any]) -> dict[int, dict[str, Any]]:
     """Seed alerts from fixtures into database."""
     alerts_data = fixtures.get("alerts", [])
     created_alerts = {}
@@ -154,7 +155,7 @@ def seed_alerts(session, fixtures: dict) -> dict:
     return created_alerts
 
 
-def seed_summaries(session, fixtures: dict) -> dict:
+def seed_summaries(session, fixtures: dict[str, Any]) -> dict[int, dict[str, Any]]:
     """Seed summaries from fixtures into database."""
     summaries_data = fixtures.get("summaries", [])
     created_summaries = {}
@@ -199,7 +200,7 @@ def clear_demo_data(session) -> None:
     print("✓ Cleared all demo data")
 
 
-def save_metadata(metadata: dict, db_path: str = "demo.db") -> None:
+def save_metadata(metadata: dict[str, Any], db_path: str = "demo.db") -> None:
     """Save seeding metadata to JSON file for reference."""
     metadata_path = Path(db_path).parent / "seed_metadata.json"
     metadata["db_path"] = str(Path(db_path).resolve())
@@ -337,6 +338,9 @@ def main():
         # Handle database setup
         if args.mode == "fresh":
             db_path = create_demo_db(engine, args.db_path)
+
+        # Ensure schema exists for seed/reset modes when DB already exists.
+        Base.metadata.create_all(bind=engine)
         
         # Create session
         session = session_factory()
@@ -382,7 +386,10 @@ def main():
         
         return 0
     
-    except Exception as e:
+    except KeyboardInterrupt:
+        print("\n⚠️ Operation cancelled by user.", file=sys.stderr)
+        return 130
+    except (OSError, ValueError, RuntimeError) as e:
         error_result = {
             "status": "error",
             "error_message": str(e),

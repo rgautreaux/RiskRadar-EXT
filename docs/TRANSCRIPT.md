@@ -1,3 +1,21 @@
+# Stage 5: Demo Workflow Sanity Pass and Documentation Synchronization Session (2026-04-11)
+
+Rebecca: Run this pass and then update top level documents with the contents and details of this session while maintaining their format/style.
+
+GitHub Copilot: Executed the final demo/docs sanity pass by running the documented commands end-to-end (`npm run demo:setup`, `npm run demo:verify`, `npm run demo:info`) and confirmed successful outputs for setup, validation, and metadata reporting.
+
+Rebecca: Which of these solutions is most optimal and safe to implement?
+
+GitHub Copilot: Performed a read-only inspection of the unexpected demo artifacts and determined the safest path was to keep and include the demo tooling, since it is referenced by package scripts (`demo:setup`, `demo:verify`, `demo:info`) and newly added demo documentation.
+
+Rebecca: Perform this action to identify the safest fix.
+
+GitHub Copilot: Ran a deeper dependency and script cross-check, identified a real demo-seeding reliability issue, implemented a fix in `backend/demo/seed_demo_data.py`, revalidated all demo commands successfully, and cleaned generated artifacts (`npm run demo:clean`).
+
+Rebecca: Try again.
+
+GitHub Copilot: Re-ran the sanity pass commands successfully and completed synchronized updates across top-level documents to preserve chronological accuracy and format consistency.
+
 # Stage 5: Golby Personality Learning, Communication Controls, and Cross-Device Sync Session (2026-04-10)
 
 Rebecca: Start implementation.
