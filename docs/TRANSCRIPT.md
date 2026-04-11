@@ -1,7 +1,5 @@
 # Stage 5: Demo Verification Pass and FIRMS Warning Risk-Free Fix Session (2026-04-11)
 
-> Scope note: For CMPS 357 execution and grading in this repository, required workflows are backend + web. Any historical mobile references in transcript entries are archival context, not required setup steps for this repo.
-
 Rebecca: Run this pass now.
 
 GitHub Copilot: Executed the full demo verification pass in presenter-visible mode by running setup, verification, metadata, automated walkthrough, and report generation commands; all checks passed and evidence artifacts were refreshed.

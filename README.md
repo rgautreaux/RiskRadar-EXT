@@ -289,10 +289,10 @@ Verify it works by opening http://localhost:8000/docs in your browser (Swagger A
 ### 4. Start the Web Frontend
 
 ```bash
-cd frontend/web
-npm install
-npm run dev
+php -S 127.0.0.1:8080 -t frontend/web/public
 ```
+
+Then open `http://127.0.0.1:8080/index.php`.
 
 ### 5. Mobile Frontend Status (Not Required for CMPS 357)
 
@@ -311,9 +311,7 @@ py -m pip install -r requirements.txt
 py -m uvicorn main:app --host 0.0.0.0 --port 8000
 
 # Web frontend
-cd frontend/web
-npm install
-npm run dev
+php -S 127.0.0.1:8080 -t frontend/web/public
 ```
 
 ### Commands to Avoid in This Repository
