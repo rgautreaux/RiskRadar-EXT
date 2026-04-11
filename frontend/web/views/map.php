@@ -500,7 +500,14 @@ function getRiskLevelColor(level, alpha=1) {
 }
 function alertsToScatterTraces(alerts) {
     if (!Array.isArray(alerts)) return [];
-    return alerts.filter(a => a.lat && a.lon).map(alert => {
+    return alerts
+    .map(alert => {
+        const lat = (typeof alert.lat !== 'undefined' && alert.lat !== null) ? alert.lat : alert.latitude;
+        const lon = (typeof alert.lon !== 'undefined' && alert.lon !== null) ? alert.lon : alert.longitude;
+        return { ...alert, lat, lon };
+    })
+    .filter(a => Number.isFinite(a.lat) && Number.isFinite(a.lon))
+    .map(alert => {
         let icon = '●';
         let color = getSeverityColor(alert.severity);
         let type = (alert.type || alert.alert_type || 'Alert').toLowerCase();
@@ -555,8 +562,24 @@ function riskToOverlayTraces(riskZones) {
     const polygonTraces = [];
     riskZones.forEach(zone => {
         if (Array.isArray(zone.polygon) && zone.polygon.length > 2) {
-            const lats = zone.polygon.map(pt => pt[0]);
-            const lons = zone.polygon.map(pt => pt[1]);
+            const normalized = zone.polygon
+                .map(pt => {
+                    if (Array.isArray(pt) && pt.length >= 2) {
+                        return { lat: pt[0], lon: pt[1] };
+                    }
+                    if (pt && typeof pt === 'object' && Number.isFinite(pt.lat) && Number.isFinite(pt.lon)) {
+                        return { lat: pt.lat, lon: pt.lon };
+                    }
+                    return null;
+                })
+                .filter(Boolean);
+
+            if (normalized.length < 3) {
+                return;
+            }
+
+            const lats = normalized.map(pt => pt.lat);
+            const lons = normalized.map(pt => pt.lon);
             polygonTraces.push({
                 type: 'scattermapbox',
                 lat: lats.concat([lats[0]]),
@@ -566,7 +589,7 @@ function riskToOverlayTraces(riskZones) {
                 fillcolor: getRiskLevelColor(zone.risk_level, 0.25),
                 line: { color: getRiskLevelColor(zone.risk_level, 1), width: 2 },
                 name: `Risk: ${zone.risk_level || 'N/A'}`,
-                text: `Risk: ${zone.risk_level || 'N/A'}<br>Score: ${zone.score || 'N/A'}`,
+                text: `Risk: ${zone.risk_level || 'N/A'}<br>Score: ${zone.score ?? zone.risk_score ?? 'N/A'}`,
                 hoverinfo: 'text',
                 customdata: [zone]
             });
