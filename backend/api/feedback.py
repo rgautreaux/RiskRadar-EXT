@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
@@ -36,13 +36,8 @@ def record_feedback(
     db: Session = Depends(get_db),
     current_user: User | None = Depends(get_optional_current_user),
 ):
-    user = None
-    effective_user_id = current_user.id if current_user is not None else body.user_id
-    if effective_user_id is not None:
-        user = db.query(User).filter(User.id == effective_user_id).first()
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
-        effective_user_id = user.id
+    user = current_user
+    effective_user_id = user.id if user is not None else None
 
     feedback = (
         db.query(Feedback)

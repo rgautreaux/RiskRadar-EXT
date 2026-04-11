@@ -62,6 +62,9 @@ class TestRecordFeedback:
     def test_feedback_updates_user_assistant_profile(self, test_client, sample_user, db_session):
         from db.models import User
 
+        _ = sample_user
+        _login(test_client, "test@example.com", "password123")
+
         before = db_session.query(User).filter(User.id == sample_user.id).first()
         before_profile = json.loads(before.assistant_style_profile)
         before_count = before_profile["learning"]["feedback_count"]
@@ -69,7 +72,6 @@ class TestRecordFeedback:
         resp = test_client.post("/api/v1/feedback", json={
             "session_id": "session-personality",
             "message_id": "msg-personality",
-            "user_id": sample_user.id,
             "reaction": "smile",
             "rating": 5,
             "comment": "Great tone, not robotic",

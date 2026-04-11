@@ -6,6 +6,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from config.settings import settings
 from db.init_db import init_database
 from scrapers.scheduler import start_scheduler
 from api.router import api_router
@@ -25,9 +26,15 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="RiskRadar API", version="1.0.0", lifespan=lifespan)
 
+allowed_origins = [
+    origin.strip()
+    for origin in settings.CORS_ALLOWED_ORIGINS.split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
     allow_methods=["*"],
     allow_headers=["*"],
     allow_credentials=True,

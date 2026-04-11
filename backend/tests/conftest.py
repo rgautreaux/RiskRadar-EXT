@@ -14,6 +14,7 @@ from fastapi.testclient import TestClient
 
 from db.database import Base, get_db
 from db.models import Alert, Summary, User, ScrapeLog
+from config.settings import settings
 
 
 # ---------------------------------------------------------------------------
@@ -54,9 +55,14 @@ def test_client(db_session):
 
     # Build a clean app without the lifespan that starts the scheduler
     test_app = FastAPI(title="RiskRadar API Test")
+    allowed_origins = [
+        origin.strip()
+        for origin in settings.CORS_ALLOWED_ORIGINS.split(",")
+        if origin.strip()
+    ]
     test_app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
+        allow_origins=allowed_origins,
         allow_methods=["*"],
         allow_headers=["*"],
         allow_credentials=True,

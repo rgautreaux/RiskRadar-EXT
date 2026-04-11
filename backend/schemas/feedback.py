@@ -9,7 +9,6 @@ FeedbackReaction = Literal["thumbs_up", "thumbs_down", "smile"]
 class FeedbackCreate(BaseModel):
     session_id: str
     message_id: str
-    user_id: Optional[int] = None
     reaction: FeedbackReaction
     rating: int = Field(ge=1, le=5)
     page_context: Optional[str] = None
