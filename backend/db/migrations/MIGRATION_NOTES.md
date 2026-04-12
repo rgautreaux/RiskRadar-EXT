@@ -14,6 +14,13 @@ Use `2026-03-03_mariadb_scraper_alignment.sql` to align an existing MariaDB sche
 
 Use `2026-04-11_add_summary_alerts_and_feedback_fk.sql` to introduce the normalized `summary_alerts` junction table and the `feedback.user_id` foreign key without removing the legacy `summaries.alert_ids` JSON column.
 
+After applying the SQL migration, backfill existing summary links:
+
+```bash
+python backend/scripts/backfill_summary_alert_links.py --dry-run
+python backend/scripts/backfill_summary_alert_links.py
+```
+
 ## Apply migration
 
 ```sql

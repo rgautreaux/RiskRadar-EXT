@@ -1,7 +1,7 @@
 
 </section>
 <!-- Toast/Snackbar for user feedback -->
-<div id="toast" aria-live="polite" style="display:none;position:fixed;bottom:32px;left:50vw;transform:translateX(-50%);background:var(--accent-coral,#ef6f51);color:#fff;padding:13px 28px;border-radius:8px;box-shadow:0 4px 24px rgba(18,34,49,0.13);font-size:1.08em;z-index:300;min-width:160px;text-align:center;transition:opacity 0.2s;opacity:0;"></div>
+<div class="map-toast" id="toast" aria-live="polite"></div>
 
 <style>
 /* Responsive map container and controls */
@@ -186,7 +186,7 @@ rr_render_layout_start('Risk Map', 'map');
     <h2 id="risk-map-heading">Interactive Map</h2>
         <div class="map-control-row">
             <label for="region-filter">Region Filter: </label>
-            <select id="region-filter" style="min-width:120px;" aria-label="Region Filter" aria-describedby="region-filter-desc" accesskey="r">
+            <select class="map-select-compact" id="region-filter" aria-label="Region Filter" aria-describedby="region-filter-desc" accesskey="r">
                 <option value="">All Regions</option>
                 <option value="LA">Louisiana</option>
                 <option value="TX">Texas</option>
@@ -196,18 +196,18 @@ rr_render_layout_start('Risk Map', 'map');
         </div>
         <div class="map-control-row map-control-indent">
             <label for="user-id-input">User ID for Personalized Map: </label>
-            <input type="number" id="user-id-input" min="1" value="1" style="width:70px;" aria-label="User ID for Personalized Map" aria-describedby="user-id-desc" accesskey="u" />
+            <input class="map-user-id-input" type="number" id="user-id-input" min="1" value="1" aria-label="User ID for Personalized Map" aria-describedby="user-id-desc" accesskey="u" />
             <span id="user-id-desc" class="sr-only">Enter your numeric user ID to enable personalized risk overlays. This is required for personalized map mode. Shortcut: Alt+U.</span>
         </div>
         <div class="map-control-row" role="group" aria-label="Overlay Toggles" aria-describedby="overlay-toggles-desc">
             <span id="overlay-toggles-desc" class="sr-only">Toggle overlays with Space or Enter. Keyboard shortcuts: Alt+1 Alerts, Alt+2 Risk Zones, Alt+3 AQI, Alt+4 Wildfire, Alt+5 Earthquake, Alt+6 Weather, Alt+7 Pollution.</span>
             <label><input type="checkbox" id="toggle-alerts" checked aria-checked="true" aria-label="Show Alerts" accesskey="1"> Show Alerts</label>
-            <label style="margin-left:12px;"><input type="checkbox" id="toggle-risk" checked aria-checked="true" aria-label="Show Risk Zones" accesskey="2"> Show Risk Zones</label>
-            <label style="margin-left:12px;"><input type="checkbox" id="toggle-aqi" aria-label="AQI Overlay" accesskey="3"> AQI Overlay</label>
-            <label style="margin-left:12px;"><input type="checkbox" id="toggle-wildfire" aria-label="Wildfire Overlay" accesskey="4"> Wildfire Overlay</label>
-            <label style="margin-left:12px;"><input type="checkbox" id="toggle-earthquake" aria-label="Earthquake Overlay" accesskey="5"> Earthquake Overlay</label>
-            <label style="margin-left:12px;"><input type="checkbox" id="toggle-weather" aria-label="Weather Overlay" accesskey="6"> Weather Overlay</label>
-            <label style="margin-left:12px;"><input type="checkbox" id="toggle-pollution" aria-label="Pollution Overlay" accesskey="7"> Pollution Overlay</label>
+            <label class="map-overlay-label"><input type="checkbox" id="toggle-risk" checked aria-checked="true" aria-label="Show Risk Zones" accesskey="2"> Show Risk Zones</label>
+            <label class="map-overlay-label"><input type="checkbox" id="toggle-aqi" aria-label="AQI Overlay" accesskey="3"> AQI Overlay</label>
+            <label class="map-overlay-label"><input type="checkbox" id="toggle-wildfire" aria-label="Wildfire Overlay" accesskey="4"> Wildfire Overlay</label>
+            <label class="map-overlay-label"><input type="checkbox" id="toggle-earthquake" aria-label="Earthquake Overlay" accesskey="5"> Earthquake Overlay</label>
+            <label class="map-overlay-label"><input type="checkbox" id="toggle-weather" aria-label="Weather Overlay" accesskey="6"> Weather Overlay</label>
+            <label class="map-overlay-label"><input type="checkbox" id="toggle-pollution" aria-label="Pollution Overlay" accesskey="7"> Pollution Overlay</label>
         </div>
         <div class="map-action-buttons">
             <label><input type="checkbox" id="toggle-personalized" aria-label="Personalized Risk Map"> Personalized Risk Map</label>
@@ -225,27 +225,19 @@ rr_render_layout_start('Risk Map', 'map');
             modal.setAttribute('aria-modal', 'true');
             modal.setAttribute('aria-labelledby', 'marker-modal-title');
             modal.setAttribute('tabindex', '-1');
+            modal.className = 'help-modal map-marker-modal';
             modal.style.display = 'flex';
-            modal.style.position = 'fixed';
-            modal.style.top = '0';
-            modal.style.left = '0';
-            modal.style.width = '100vw';
-            modal.style.height = '100vh';
-            modal.style.background = 'rgba(18,34,49,0.32)';
-            modal.style.zIndex = '300';
-            modal.style.alignItems = 'center';
-            modal.style.justifyContent = 'center';
             modal.innerHTML = `
-                <div style="background:#fffaf2;color:#122231;max-width:420px;width:92vw;padding:28px 22px 18px 22px;border-radius:14px;box-shadow:0 8px 40px rgba(18,34,49,0.18);position:relative;outline:none;">
-                    <button id="marker-modal-close" aria-label="Close alert details" style="position:absolute;top:10px;right:14px;background:none;border:none;font-size:1.3em;color:#b65c00;cursor:pointer;">×</button>
-                    <h2 id="marker-modal-title" style="margin-top:0;font-size:1.15em;">${title}</h2>
-                    <div style="margin-top:10px;">${description}</div>
+                <div class="modal-panel">
+                    <button class="modal-close" id="marker-modal-close" aria-label="Close alert details">×</button>
+                    <h2 class="modal-title" id="marker-modal-title">${title}</h2>
+                    <div class="marker-modal-body">${description}</div>
                 </div>
             `;
             document.body.appendChild(modal);
         } else {
             modal.querySelector('#marker-modal-title').textContent = title;
-            modal.querySelector('div[style*="margin-top:10px;"]').textContent = description;
+            modal.querySelector('.marker-modal-body').textContent = description;
             modal.style.display = 'flex';
         }
         // Focus trap
@@ -290,18 +282,18 @@ rr_render_layout_start('Risk Map', 'map');
     });
     </script>
     <!-- Help Modal -->
-    <div id="help-modal" role="dialog" aria-modal="true" aria-labelledby="help-modal-title" tabindex="-1" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(18,34,49,0.32);z-index:200;align-items:center;justify-content:center;">
-        <div style="background:#fffaf2;color:#122231;max-width:420px;width:92vw;padding:28px 22px 18px 22px;border-radius:14px;box-shadow:0 8px 40px rgba(18,34,49,0.18);position:relative;outline:none;">
-            <button id="help-close" aria-label="Close help" style="position:absolute;top:10px;right:14px;background:none;border:none;font-size:1.3em;color:#b65c00;cursor:pointer;">×</button>
-            <h2 id="help-modal-title" style="margin-top:0;font-size:1.25em;">How to Use This Map</h2>
-            <ul style="margin:14px 0 0 0;padding-left:18px;font-size:1em;">
+    <div class="help-modal" id="help-modal" role="dialog" aria-modal="true" aria-labelledby="help-modal-title" tabindex="-1">
+        <div class="modal-panel">
+            <button class="modal-close" id="help-close" aria-label="Close help">×</button>
+            <h2 class="modal-title" id="help-modal-title">How to Use This Map</h2>
+            <ul class="help-list">
                 <li>Pan and zoom the map with your mouse, touch, or keyboard arrows.</li>
                 <li>Click or tap markers for alert details.</li>
                 <li>Use the region filter and overlay toggles to customize what you see.</li>
                 <li>Keyboard: Tab to controls, Enter/Space to activate, arrows to pan.</li>
                 <li>All features are accessible and color contrast checked.</li>
             </ul>
-            <div style="margin-top:16px;font-size:0.98em;color:#5f6b77;">Need more help? Contact support or see the full user guide.</div>
+            <div class="help-note">Need more help? Contact support or see the full user guide.</div>
         </div>
     </div>
     </section>
@@ -333,37 +325,37 @@ rr_render_layout_start('Risk Map', 'map');
     </div>
     <div id="risk-map-container"
         tabindex="0" aria-label="Risk map showing alerts and risk zones. Use arrow keys to pan. Press Enter or Space on a marker for details." aria-describedby="risk-map-legend risk-map-heading risk-map-instructions" role="region">
-        <div id="risk-map" style="width:100%;height:100%;position:relative;" role="application" aria-label="Interactive risk map with overlays and markers" aria-describedby="risk-map-instructions"></div>
-        <div id="map-loading" style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.7);z-index:2;">
-            <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div class="map-layer" id="risk-map" role="application" aria-label="Interactive risk map with overlays and markers" aria-describedby="risk-map-instructions"></div>
+        <div class="map-loading-overlay" id="map-loading">
+            <div class="map-loading-stack">
                 <div id="map-loading-spinner" aria-label="Loading" role="status"></div>
-                <div style="margin-top:12px;text-align:center;font-size:1.1rem;color:#b65c00;">Loading map data...</div>
-                <div id="map-skeleton" style="margin-top:18px;width:90%;height:38px;"></div>
+                <div class="map-loading-text">Loading map data...</div>
+                <div id="map-skeleton"></div>
             </div>
         </div>
-        <div id="map-fallback" style="display:none;position:absolute;top:0;left:0;width:100%;height:100%;align-items:center;justify-content:center;background:rgba(255,255,255,0.9);z-index:3;font-size:1.1rem;color:#b65c00;text-align:center;" role="alert" aria-live="assertive"></div>
+        <div class="map-fallback" id="map-fallback" role="alert" aria-live="assertive"></div>
         <span id="risk-map-instructions" class="sr-only">Use Tab to focus the map. Use arrow keys to pan. Press Enter or Space on a marker for details. All overlays and controls are accessible by keyboard and screen reader. Markers and overlays are announced to assistive technology.</span>
     </div>
-    <noscript><p style="color:#b65c00">JavaScript is required to view the interactive map.</p></noscript>
-    <div id="risk-map-legend" style="margin-top:10px;" aria-live="polite">
-            <button id="legend-toggle" aria-expanded="true" aria-controls="legend-list" style="background:none;border:none;font-weight:bold;font-size:1.08em;display:flex;align-items:center;gap:6px;cursor:pointer;outline:none;">
-                <span id="legend-toggle-icon" aria-hidden="true" style="font-size:1.2em;transition:transform 0.2s;">▼</span>
+    <noscript><p class="map-noscript">JavaScript is required to view the interactive map.</p></noscript>
+    <div class="legend-wrap" id="risk-map-legend" aria-live="polite">
+            <button class="legend-toggle" id="legend-toggle" aria-expanded="true" aria-controls="legend-list">
+                <span class="legend-toggle-icon" id="legend-toggle-icon" aria-hidden="true">▼</span>
                 Legend
             </button>
-            <ul id="legend-list" style="margin-top:8px;transition:max-height 0.3s cubic-bezier(0.4,0,0.2,1);overflow:hidden;max-height:800px;">
-                <li><span class="icon-slot" aria-label="High Alert" style="background:#fbe9e7;"><svg width="20" height="20" fill="none" stroke="#e74c3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/></svg></span> High severity alert (contrast checked)</li>
-                <li><span class="icon-slot" aria-label="Medium Alert" style="background:#fff8e1;"><svg width="20" height="20" fill="none" stroke="#f39c12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/></svg></span> Medium severity alert (contrast checked)</li>
-                <li><span class="icon-slot" aria-label="Low Alert" style="background:#e8f5e9;"><svg width="20" height="20" fill="none" stroke="#27ae60" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/></svg></span> Low severity alert (contrast checked)</li>
-                <li><span class="icon-slot" aria-label="Extreme/High Risk" style="background:#ffebee;"><svg width="20" height="20" fill="#ff5722" stroke="#ff5722" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="12" height="12" rx="3"/></svg></span> Extreme/High risk zone (contrast checked)</li>
-                <li><span class="icon-slot" aria-label="Medium Risk" style="background:#fffde7;"><svg width="20" height="20" fill="#ffc107" stroke="#ffc107" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="12" height="12" rx="3"/></svg></span> Medium risk zone (contrast checked)</li>
-                <li><span class="icon-slot" aria-label="Low Risk" style="background:#e8f5e9;"><svg width="20" height="20" fill="#4caf50" stroke="#4caf50" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="12" height="12" rx="3"/></svg></span> Low risk zone (contrast checked)</li>
-                <li><span class="icon-slot" aria-label="AQI Overlay" style="background:#ede7f6;"><svg width="20" height="20" fill="none" stroke="#7e57c2" stroke-width="2" aria-hidden="true"><path d="M4 16c4-8 8-8 12 0"/></svg></span> AQI (Air Quality) overlay</li>
-                <li><span class="icon-slot" aria-label="Wildfire Overlay" style="background:#fff3e0;"><svg width="20" height="20" fill="#ff7043" stroke="#ff7043" stroke-width="2" aria-hidden="true"><path d="M10 2C10 8 14 8 14 14C14 17 6 17 6 14C6 8 10 8 10 2Z"/></svg></span> Wildfire overlay</li>
-                <li><span class="icon-slot" aria-label="Earthquake Overlay" style="background:#e0f2f1;"><svg width="20" height="20" fill="none" stroke="#009688" stroke-width="2" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M2 10h16"/></svg></span> Earthquake overlay</li>
-                <li><span class="icon-slot" aria-label="Weather Overlay" style="background:#e3f2fd;"><svg width="20" height="20" fill="none" stroke="#1976d2" stroke-width="2" aria-hidden="true"><path d="M6 14a4 4 0 1 1 8 0"/><path d="M10 2v2"/><path d="M2 10h2"/><path d="M16 10h2"/><path d="M10 16v2"/></svg></span> Weather overlay</li>
-                <li><span class="icon-slot" aria-label="Pollution Overlay" style="background:#ffebee;"><svg width="20" height="20" fill="#c62828" stroke="#c62828" stroke-width="2" aria-hidden="true"><circle cx="10" cy="10" r="8"/><rect x="7" y="7" width="6" height="6"/></svg></span> Pollution overlay</li>
+            <ul class="legend-list" id="legend-list">
+                <li><span class="icon-slot icon-bg-high" aria-label="High Alert"><svg width="20" height="20" fill="none" stroke="#e74c3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/></svg></span> High severity alert (contrast checked)</li>
+                <li><span class="icon-slot icon-bg-medium" aria-label="Medium Alert"><svg width="20" height="20" fill="none" stroke="#f39c12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/></svg></span> Medium severity alert (contrast checked)</li>
+                <li><span class="icon-slot icon-bg-low" aria-label="Low Alert"><svg width="20" height="20" fill="none" stroke="#27ae60" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/></svg></span> Low severity alert (contrast checked)</li>
+                <li><span class="icon-slot icon-bg-extreme" aria-label="Extreme/High Risk"><svg width="20" height="20" fill="#ff5722" stroke="#ff5722" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="12" height="12" rx="3"/></svg></span> Extreme/High risk zone (contrast checked)</li>
+                <li><span class="icon-slot icon-bg-risk-medium" aria-label="Medium Risk"><svg width="20" height="20" fill="#ffc107" stroke="#ffc107" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="12" height="12" rx="3"/></svg></span> Medium risk zone (contrast checked)</li>
+                <li><span class="icon-slot icon-bg-low" aria-label="Low Risk"><svg width="20" height="20" fill="#4caf50" stroke="#4caf50" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="12" height="12" rx="3"/></svg></span> Low risk zone (contrast checked)</li>
+                <li><span class="icon-slot icon-bg-aqi" aria-label="AQI Overlay"><svg width="20" height="20" fill="none" stroke="#7e57c2" stroke-width="2" aria-hidden="true"><path d="M4 16c4-8 8-8 12 0"/></svg></span> AQI (Air Quality) overlay</li>
+                <li><span class="icon-slot icon-bg-wildfire" aria-label="Wildfire Overlay"><svg width="20" height="20" fill="#ff7043" stroke="#ff7043" stroke-width="2" aria-hidden="true"><path d="M10 2C10 8 14 8 14 14C14 17 6 17 6 14C6 8 10 8 10 2Z"/></svg></span> Wildfire overlay</li>
+                <li><span class="icon-slot icon-bg-earthquake" aria-label="Earthquake Overlay"><svg width="20" height="20" fill="none" stroke="#009688" stroke-width="2" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M2 10h16"/></svg></span> Earthquake overlay</li>
+                <li><span class="icon-slot icon-bg-weather" aria-label="Weather Overlay"><svg width="20" height="20" fill="none" stroke="#1976d2" stroke-width="2" aria-hidden="true"><path d="M6 14a4 4 0 1 1 8 0"/><path d="M10 2v2"/><path d="M2 10h2"/><path d="M16 10h2"/><path d="M10 16v2"/></svg></span> Weather overlay</li>
+                <li><span class="icon-slot icon-bg-extreme" aria-label="Pollution Overlay"><svg width="20" height="20" fill="#c62828" stroke="#c62828" stroke-width="2" aria-hidden="true"><circle cx="10" cy="10" r="8"/><rect x="7" y="7" width="6" height="6"/></svg></span> Pollution overlay</li>
             </ul>
-            <div id="personalized-legend-msg" style="margin-top:6px;color:#b65c00;font-size:0.98em;display:none;">
+            <div class="legend-msg" id="personalized-legend-msg">
                 <strong>Personalized Mode:</strong> Risk zones reflect <u>your</u> personalized risk score at each location, based on your profile and health data. Enter your user ID above and enable the toggle to view your own risk overlays. If you do not enter a user ID, a default demo user will be used.
             </div>
             <span class="sr-only">All map overlays and controls are accessible by keyboard and screen reader. Colors have been checked for sufficient contrast. If you have difficulty distinguishing overlays, contact support for alternative patterns.</span>
@@ -733,7 +725,7 @@ function renderMap(alertsData, riskData) {
                     ariaLabel = `${d.title || type} alert details popup. Severity: ${d.severity || 'N/A'}. Region: ${d.region || d.location_name || 'N/A'}.`;
                     html = `<div class="map-popup-card" id="map-popup-card" tabindex="0" role="dialog" aria-modal="true" aria-label="${ariaLabel}">
                         <button class="popup-close" aria-label="Close popup" onclick="this.parentNode.remove()">×</button>
-                        <div style="font-size:1.3em;margin-bottom:6px;">${icon} <strong>${d.title || type}</strong></div>
+                        <div class="map-popup-heading">${icon} <strong>${d.title || type}</strong></div>
                         <div><b>Severity:</b> ${d.severity || 'N/A'}</div>
                         ${d.magnitude ? `<div><b>Magnitude:</b> ${d.magnitude}</div>` : ''}
                         ${d.description ? `<div style='margin:6px 0;'>${d.description}</div>` : ''}
@@ -745,7 +737,7 @@ function renderMap(alertsData, riskData) {
                     ariaLabel = `Risk zone details popup. Risk Level: ${d.risk_level || 'N/A'}. Region: ${d.region || 'N/A'}.`;
                     html = `<div class="map-popup-card" id="map-popup-card" tabindex="0" role="dialog" aria-modal="true" aria-label="${ariaLabel}">
                         <button class="popup-close" aria-label="Close popup" onclick="this.parentNode.remove()">×</button>
-                        <div style="font-size:1.2em;margin-bottom:6px;"><strong>Risk Zone Details</strong></div>
+                        <div class="map-popup-subheading"><strong>Risk Zone Details</strong></div>
                         <div><b>Risk Level:</b> ${d.risk_level || 'N/A'}</div>
                         ${typeof d.risk_score !== 'undefined' && d.risk_score !== null ? `<div><b>Personalized Score:</b> ${d.risk_score}</div>` : ''}
                         ${typeof d.score !== 'undefined' && d.score !== null ? `<div><b>Score:</b> ${d.score}</div>` : ''}

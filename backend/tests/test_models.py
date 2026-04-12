@@ -7,6 +7,7 @@ from sqlalchemy.exc import IntegrityError
 
 from auth.security import decrypt_email, hash_email, password_hash, verify_password
 from db.models import Alert, Summary, SummaryAlertLink, User, ScrapeLog
+from scripts.backfill_summary_alert_links import backfill_summary_alert_links
 from tests.conftest import NOW
 
 
@@ -90,6 +91,44 @@ class TestSummaryModel:
         )
         assert len(links) == len(sample_alerts)
         assert {link.alert_id for link in links} == {alert.id for alert in sample_alerts}
+
+    def test_backfill_creates_missing_junction_rows(self, db_session, sample_alerts):
+        summary = Summary(
+            title="Backfill Me",
+            content="Body",
+            summary_type="daily",
+            alert_ids=json.dumps([sample_alerts[0].id, sample_alerts[1].id]),
+            generated_at=NOW,
+            created_at=NOW,
+        )
+        db_session.add(summary)
+        db_session.commit()
+
+        stats = backfill_summary_alert_links(session=db_session)
+        assert stats["inserted"] == 2
+
+        links = (
+            db_session.query(SummaryAlertLink)
+            .filter(SummaryAlertLink.summary_id == summary.id)
+            .all()
+        )
+        assert {link.alert_id for link in links} == {sample_alerts[0].id, sample_alerts[1].id}
+
+    def test_backfill_skips_missing_alert_ids(self, db_session, sample_alerts):
+        summary = Summary(
+            title="Backfill Missing",
+            content="Body",
+            summary_type="daily",
+            alert_ids=json.dumps([sample_alerts[0].id, 999999]),
+            generated_at=NOW,
+            created_at=NOW,
+        )
+        db_session.add(summary)
+        db_session.commit()
+
+        stats = backfill_summary_alert_links(session=db_session)
+        assert stats["inserted"] == 1
+        assert stats["skipped_missing_alert"] == 1
 
 
 class TestFeedbackModel:
