@@ -137,3 +137,25 @@ Full local closure run completed against `backend/riskradar.db` after creating a
 Result:
 - Local environment is in closure-ready state with no blocking migration or schema drift findings.
 - Remaining stage closure is operational rollout work and should run the same sequence against staging MariaDB credentials.
+
+## Staging/Production Handoff (2026-04-12)
+
+Execution from this workspace could not run against staging/production because no staging/prod DB credentials were present in environment variables during this session (`no_staging_or_prod_db_env_detected`).
+
+Use the same verified sequence below in staging first, then production:
+
+1. `python db/migrations/migrate_email_encryption.py`
+2. `python db/migrations/backfill_summary_alerts.py`
+3. `python db/migrations/backfill_user_alert_type_preferences.py`
+4. `python db/migrations/parity_validator_summaries_alerts.py`
+5. `python db/migrations/parity_validator_user_alert_types.py`
+6. `python db/migrations/preflight.py`
+7. `python db/migrations/schema_drift_check.py`
+8. `MIGRATION_PREFLIGHT_STRICT=true MIGRATION_NORMALIZATION_CONTRACT_REQUIRED=true python db/migrations/safety_gate.py`
+9. `python -m pytest -q backend/tests`
+
+Local verified baseline for comparison:
+- preflight: `status=ok`
+- schema drift: `status=ok`
+- strict contract safety gate: `status=ok`
+- backend tests: `185 passed, 3 skipped`

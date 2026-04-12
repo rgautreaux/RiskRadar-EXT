@@ -1,5 +1,18 @@
 # Documentation Synchronization Note (Apr 12, 2026)
 
+[ ] 🟡 Project-Wide DB Closure (Staging/Prod) Assignment (Apr 12, 2026): execute the verified local closure sequence in staging/prod by access-enabled owners. Local evidence baseline is complete (`preflight=ok`, `schema_drift=ok`, strict contract `safety_gate=ok`, backend `185 passed, 3 skipped`), while staging/prod execution remains pending due unavailable DB access in this workspace.
+
+Owners:
+- Qui Huynh (primary execution/deployment owner)
+- Noah Benoit (security sign-off owner)
+- Rebecca Gautreaux (DBA evidence synchronization owner)
+
+Required outputs to close this item:
+- Staging run logs for backfill/parity/preflight/schema drift/safety gate
+- Production run logs for the same sequence
+- Updated `backend/db/migrations/MIGRATION_NOTES.md` evidence block
+- Updated `docs/GROUP_PROGRESS_LOG` session entry with pass/fail outcomes
+
 [x] 🟢 Data Model Schema Graph Documentation Update (Apr 12, 2026): added a full Mermaid `Database Schema` section in `docs/DATA_MODEL.md` directly under `Key Relationships`, documenting all 13 tables, key PK/FK fields, and current FK relationship edges with an explicit JSON-linkage note for `summaries.alert_ids`.
 
 [x] 🟢 Database Safety Lane Follow-up + Categorized Push Sync (Apr 12, 2026): implemented and verified schema drift + unified migration safety-gate utilities, hardened new-user email handling to avoid plaintext persistence with legacy-login compatibility retained, updated migration runbook sequencing, split remaining local/unpushed changes into subsystem-aligned commits, and pushed the categorized stack for cleaner PR review (`176 passed, 3 skipped` backend baseline).

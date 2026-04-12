@@ -6,6 +6,8 @@
 
 RiskRadar uses a **MariaDB 10.4** relational database (`riskradar_db`) managed via **SQLAlchemy ORM**, consisting of **13 tables** organized into four functional groups: **Content**, **Users**, **Alerts & AI**, and **Operations**.
 
+> **Closure status (Apr 12, 2026):** Local database closure sequence is fully verified (`preflight=ok`, `schema_drift=ok`, strict contract `safety_gate=ok`, backend tests `185 passed, 3 skipped`). Staging/production closure remains **pending environment access** and must be executed by team members with staging/prod DB credentials and deployment permissions.
+
 ---
 
 ## Entity-Relationship Overview
@@ -429,26 +431,30 @@ erDiagram
 
 ## Normalization Analysis
 
-The current schema **does not fully satisfy Third Normal Form (3NF)** due to the following violations:
+> **Current status (2026-04-12):** Normalization remediation is implemented and locally verified. Remaining project-wide closure work is operational rollout in staging/production and optional contract retirement of legacy compatibility columns after environment-level safety-gate approval.
 
-> **Remediation status (2026-04-12)**: Relational remediation structures were implemented in `backend/db/migrations/2026-04-12_phase2_phase4_normalization_tables.sql` with companion backfill and parity validators. Legacy JSON/text columns remain as compatibility fields during dual-write verification windows. Final contract retirement is staged via `backend/db/migrations/2026-04-12_phase5_contract_retire_legacy_columns.sql` and should be executed only after contract safety-gate checks pass.
+### Verified Closure State (Local)
 
-### First Normal Form (1NF) Violations
+- `python backend/db/migrations/preflight.py` -> `status=ok`
+- `python backend/db/migrations/schema_drift_check.py` -> `status=ok`
+- `MIGRATION_PREFLIGHT_STRICT=true MIGRATION_NORMALIZATION_CONTRACT_REQUIRED=true python backend/db/migrations/safety_gate.py` -> `status=ok`
+- `python -m pytest -q backend/tests` -> `185 passed, 3 skipped`
 
-- **`alerts.raw_data`** (`JSON`): Stores the entire raw alert payload as a single JSON object rather than in normalized relational columns or a related table.
-- **`summaries.alert_ids`** (`JSON`): Stores an array of alert IDs as JSON instead of using a junction table (e.g., `summary_alerts`).
-- **`users.alert_types`** (`JSON`): Stores user alert-type preferences as a JSON array instead of a relational structure.
+### Staging/Production Closure State
 
-### Third Normal Form (3NF) Violations — Transitive Dependencies
+- Not executed from this workspace session because no staging/prod database access credentials were present in the environment.
+- Required next action: run the exact verified closure sequence in staging and production with deployment-access owners, then attach pass/fail evidence to `backend/db/migrations/MIGRATION_NOTES.md` and `docs/GROUP_PROGRESS_LOG`.
 
-- **`users.zip_code` → `latitude`, `longitude`**: A zip code determines geographic coordinates. These should be in a separate `zip_codes` lookup table.
-- **`alerts.latitude`, `alerts.longitude` → `location_name`**: Geographic coordinates determine the location name. This could be extracted to a `locations` table.
+### Remaining Open Items
+
+- Staging/production closure execution is pending required DB/deployment access in those environments.
+- Contract retirement migration (`2026-04-12_phase5_contract_retire_legacy_columns.sql`) is pending final environment-level safety-gate approval.
 
 ---
 
-## Known Schema Issues
+## Resolved Database Issues
 
-The following schema and normalization issues are tracked with remediation status:
+The following schema and normalization issues are resolved in the codebase/local verified closure path:
 
 | Table | Column/Name | Issue |
 |---|---|---|
