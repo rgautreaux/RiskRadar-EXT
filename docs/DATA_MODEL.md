@@ -431,6 +431,8 @@ erDiagram
 
 The current schema **does not fully satisfy Third Normal Form (3NF)** due to the following violations:
 
+> **Remediation status (2026-04-12)**: Relational remediation structures were implemented in `backend/db/migrations/2026-04-12_phase2_phase4_normalization_tables.sql` with companion backfill and parity validators. Legacy JSON/text columns remain as compatibility fields during dual-write verification windows.
+
 ### First Normal Form (1NF) Violations
 
 - **`alerts.raw_data`** (`JSON`): Stores the entire raw alert payload as a single JSON object rather than in normalized relational columns or a related table.
@@ -446,10 +448,15 @@ The current schema **does not fully satisfy Third Normal Form (3NF)** due to the
 
 ## Known Schema Issues
 
-The following schema typo issues are tracked with remediation status:
+The following schema and normalization issues are tracked with remediation status:
 
 | Table | Column/Name | Issue |
 |---|---|---|
 | `user_prefernces` | (table name) | Remediated by `2026-04-12_phase1_typo_schema_fixes.sql` |
 | `user_reads` | `articlle_id` | Remediated by `2026-04-12_phase1_typo_schema_fixes.sql` |
 | `summaries` | `reigon` | Remediated by `2026-03-03_mariadb_scraper_alignment.sql` |
+| `summaries` | `alert_ids` JSON linkage | Relational replacement implemented via `summary_alerts` + backfill/parity tooling (Phase 2) |
+| `users` | `alert_types` JSON linkage | Relational replacement implemented via `user_alert_type_preferences` + backfill/parity tooling (Phase 3) |
+| `users` | `zip_code -> latitude/longitude` transitive dependency | Lookup remediation implemented via `zip_geo` with override-compatible runtime behavior (Phase 4) |
+| `alerts` | `latitude/longitude -> location_name` transitive dependency | Canonical location mapping implemented via `locations` + `alerts.location_id` (Phase 4) |
+| `alerts` | `raw_data` JSON payload in base row | Canonical payload extraction implemented via `alert_raw_payloads` (Phase 4) |

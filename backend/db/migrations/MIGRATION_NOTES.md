@@ -3,6 +3,7 @@
 Use `2026-03-03_mariadb_scraper_alignment.sql` to align an existing MariaDB schema with the backend ORM models used by scrapers.
 Use `2026-03-09_mariadb_retention_cleanup.sql` to add scheduled retention archive/delete support.
 Use `2026-04-11_notification_channels_dispatch_log.sql` to add persisted notification channel preferences and delivery observability logging.
+Use `2026-04-12_phase2_phase4_normalization_tables.sql` to create relational replacements for legacy JSON and geo dependency fields.
 
 ## What it fixes
 
@@ -14,6 +15,12 @@ Use `2026-04-11_notification_channels_dispatch_log.sql` to add persisted notific
 - Legacy typo remediations for compatibility snapshots:
 	- `user_prefernces` table renamed to `user_preferences`
 	- `user_reads.articlle_id` renamed to `user_reads.article_id`
+- Normalization remediations:
+	- `summary_alerts` junction table replaces `summaries.alert_ids` JSON linkage
+	- `user_alert_type_preferences` junction table replaces `users.alert_types` JSON linkage
+	- `zip_geo` lookup supports normalized `users.zip_code -> coordinates`
+	- `locations` + `alerts.location_id` canonicalize location naming from coordinates
+	- `alert_raw_payloads` canonicalizes raw alert payload storage separate from alerts row
 
 ## Apply migration
 

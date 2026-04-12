@@ -52,6 +52,11 @@ def _check_required_tables(inspector: Inspector) -> list[PreflightIssue]:
         "summaries",
         "users",
         "scrape_log",
+        "summary_alerts",
+        "user_alert_type_preferences",
+        "zip_geo",
+        "locations",
+        "alert_raw_payloads",
         "alerts_archive",
         "summaries_archive",
         "scrape_log_archive",
@@ -83,6 +88,7 @@ def _check_required_columns(inspector: Inspector, existing_tables: set[str]) -> 
         "alerts_archive": ["original_id", "cleanup_run_id", "archived_at"],
         "summaries_archive": ["original_id", "cleanup_run_id", "archived_at"],
         "scrape_log_archive": ["original_id", "cleanup_run_id", "archived_at"],
+        "alerts": ["location_id"],
     }
 
     issues: list[PreflightIssue] = []

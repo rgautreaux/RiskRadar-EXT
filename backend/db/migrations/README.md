@@ -19,6 +19,26 @@ This folder will contain migration scripts for email encryption and password has
     - Renames `user_reads.article_id` -> `user_reads.articlle_id`
   - Restores legacy primary key shapes if rollback is required.
 
+- `2026-04-12_phase2_phase4_normalization_tables.sql`
+  - Creates normalized structures for schema remediation:
+    - `summary_alerts` (replaces `summaries.alert_ids` JSON relation)
+    - `user_alert_type_preferences` (replaces `users.alert_types` JSON relation)
+    - `zip_geo` (zip-code to coordinate lookup)
+    - `locations` + `alerts.location_id` (canonical location mapping)
+    - `alert_raw_payloads` (canonical raw alert payload storage)
+
+- `backfill_summary_alerts.py`
+  - Backfills `summary_alerts` from legacy `summaries.alert_ids` JSON.
+
+- `backfill_user_alert_type_preferences.py`
+  - Backfills `user_alert_type_preferences` from legacy `users.alert_types` JSON.
+
+- `parity_validator_summaries_alerts.py`
+  - Validates relational `summary_alerts` parity against legacy `summaries.alert_ids`.
+
+- `parity_validator_user_alert_types.py`
+  - Validates relational `user_alert_type_preferences` parity against legacy `users.alert_types`.
+
 - `2026-04-12_phase0_index_hardening.sql`
   - Adds idempotent baseline indexes that preflight now requires:
     - `alerts`: `idx_alerts_source_fetched_at`, `idx_alerts_type_severity_fetched_at`
@@ -98,12 +118,17 @@ This folder will contain migration scripts for email encryption and password has
 5. Apply `2026-04-12_foreign_key_integrity_hardening.sql`
 6. Apply `2026-04-12_mariadb_email_hmac_index_fix.sql` (MariaDB only)
 7. Apply `2026-04-12_phase1_typo_schema_fixes.sql` (legacy schema snapshots only)
-8. `python db/migrations/preflight.py`
-9. `python db/migrations/schema_drift_check.py`
-10. `python db/migrations/safety_gate.py`
-11. `python db/migrations/migrate_email_encryption.py`
-12. `python db/migrations/validate_email_migration.py`
-13. `python db/migrations/monitor_migration_log.py`
+8. Apply `2026-04-12_phase2_phase4_normalization_tables.sql`
+9. `python db/migrations/backfill_summary_alerts.py`
+10. `python db/migrations/backfill_user_alert_type_preferences.py`
+11. `python db/migrations/parity_validator_summaries_alerts.py`
+12. `python db/migrations/parity_validator_user_alert_types.py`
+13. `python db/migrations/preflight.py`
+14. `python db/migrations/schema_drift_check.py`
+15. `python db/migrations/safety_gate.py`
+16. `python db/migrations/migrate_email_encryption.py`
+17. `python db/migrations/validate_email_migration.py`
+18. `python db/migrations/monitor_migration_log.py`
 
 Record all outputs in staging validation notes before requesting backend/security lead sign-off.
 
