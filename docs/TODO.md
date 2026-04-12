@@ -1,5 +1,7 @@
 # Documentation Synchronization Note (Apr 12, 2026)
 
+[x] 🟢 Database Safety Lane Follow-up + Categorized Push Sync (Apr 12, 2026): implemented and verified schema drift + unified migration safety-gate utilities, hardened new-user email handling to avoid plaintext persistence with legacy-login compatibility retained, updated migration runbook sequencing, split remaining local/unpushed changes into subsystem-aligned commits, and pushed the categorized stack for cleaner PR review (`176 passed, 3 skipped` backend baseline).
+
 [x] 🟢 Rebecca-Safe Plan Closeout Sync (Apr 12, 2026): completed the remaining Rebecca-owned low-risk coordination tasks (shared owner snapshot maintenance, evidence-index upkeep, and final-review checklist scaffolding) and left only owner-dependent follow-ups open (frontend static-check code fixes + external security approval gate).
 
 [x] 🟢 Phase 3 Coordination Verification Attempt (Apr 12, 2026): cleared frontend environment/tooling blocker via `npm install` in `frontend/RiskRadar`, reran `npm run lint; npx tsc --noEmit`, and recorded ownership-safe escalation for remaining frontend code issues (`app/main/weather-report.tsx` parse/type errors, `app/(tabs)/explore.tsx` hook dependency warning).
@@ -240,6 +242,7 @@ Week-by-week sprint board for tracking delivery to the goal of having most imple
 
 ### Done
 - [x] 🟢 Complete DB safety hardening cycle (preflight + index/FK integrity + guarded write transactions) and verify with full backend suite (`165 passed, 3 skipped`) (Apr 12, 2026)
+- [x] 🟢 Complete DB safety follow-up lane (schema drift + unified safety gate + new-user plaintext-email protection + categorized push split) with full backend verification (`176 passed, 3 skipped`) (Apr 12, 2026)
 
 ---
 

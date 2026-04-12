@@ -17,6 +17,9 @@ RiskRadar helps residents and travelers identify environmental risks by scraping
 - Coordination verification refresh updated backend baseline evidence to `172 passed, 3 skipped` after additional migration/schema safety tests landed.
 - Frontend static-check environment blocker was cleared (`npm install` in `frontend/RiskRadar`), and remaining lint/typecheck issues were documented as frontend-owner follow-ups (`app/main/weather-report.tsx`, `app/(tabs)/explore.tsx`).
 - Rebecca-safe coordination/documentation closeout tasks are complete; remaining open items are owner-dependent follow-ups.
+- Apr 12 follow-up (database safety implementation lane): added and validated `schema_drift_check.py`, unified `safety_gate.py`, registration plaintext-email hardening for new users, and legacy-login compatibility regression coverage.
+- Apr 12 follow-up verification: full backend pytest baseline advanced to `176 passed, 3 skipped` after safety-lane additions.
+- Apr 12 follow-up review prep: remaining local/unpushed work was split into categorized commits (security, DB safety commands/tests, migration evidence docs, top-level sync docs, frontend generated artifacts) and pushed to `origin/Rebecca-Gautreaux-Work-Branch` for clearer PR review.
 
 ---
 
