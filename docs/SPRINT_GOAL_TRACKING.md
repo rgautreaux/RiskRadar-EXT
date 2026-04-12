@@ -1,3 +1,27 @@
+# April 12 Synchronization Note
+This Apr 12 pass finalized the LLM settings contract across environment configuration, API specifications, and backend tests, ensuring enterprise provider flexibility (OpenRouter, OpenAI, DeepSeek, Anthropic) with safe demo defaults.
+
+Apr 12 LLM settings and documentation sync completion:
+- Finalized canonical LLM settings contract: `LLM_PROVIDER` selector, dual API key fields (`LLM_API_KEY` + `OPENROUTER_API_KEY` compatibility), guest/premium model differentiation, and optional `LLM_MAX_TOKENS` for web-scraper LLM calls.
+- Updated `.env.example` with safe defaults (`openrouter` provider, `gpt-4o-mini` for guest/default, `gpt-4o` for premium, `4000` max tokens).
+- Synchronized environment variable documentation across `docs/SPEC.md` and `docs/PROJECT_DESCRIPTION.md` to reflect all four providers and new model/token fields.
+- Fixed flaky test in `backend/tests/test_api_summaries.py`: model resolution now returns deterministic `gpt-4o-mini` when settings are patched, eliminating environment-dependent test failures.
+- Updated `docs/ARCHITECTURE.md` data-flow section to reflect multi-provider LLM support.
+- All documentation files now maintain consistent provider and setting descriptions across the audit trail.
+
+---
+
+# April 12 Synchronization Note
+This Apr 12 pass completed the web frontend visual-refresh closeout and final verification cycle.
+
+- Completed shared web template/CSS accessibility + branding hardening while preserving backend/API behavior.
+- Finalized shell accessibility semantics (skip-link/main landmark), ARIA labels/live regions, and keyboard-visible focus state coverage.
+- Removed remaining inline template presentation styles and normalized reusable styling classes.
+- Hardened live external-data test reliability by skipping transient timeout/network transport failures.
+- Full backend pytest verification rerun is green for this session: `165 passed, 3 skipped`.
+
+---
+
 # April 11 Synchronization Note
 This Apr 11 pass synchronized sprint tracking with the completed demo-readiness implementation updates and final users+alerts API verification.
 

@@ -75,7 +75,12 @@ RiskRadar is designed to help you monitor, summarize, and stay informed about en
 ---
 
 # April 2026 Synchronization Note
-All instructions, onboarding, and feature documentation are fully synchronized as of April 11, 2026.
+All instructions, onboarding, and feature documentation are fully synchronized as of April 12, 2026.
+
+Apr 12 update highlights:
+- Completed final web frontend visual-refresh pass for the template-based UI with accessibility hardening.
+- Updated shared shell guidance now reflects skip-link/main landmark semantics and improved keyboard/screen-reader support.
+- Verification state is synchronized with the latest backend test closeout (`165 passed, 3 skipped`).
 
 Apr 11 update highlights:
 - Added guidance for in-app backend demonstration actions now available from Settings.

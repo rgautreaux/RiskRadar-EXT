@@ -1,4 +1,10 @@
+# Documentation Synchronization Note (Apr 12, 2026)
+
+[x] 🟢 LLM Settings Contract Finalization and Documentation Sync (Apr 12, 2026): canonicalized LLM provider selector with multi-provider support (openrouter default, openai, deepseek, anthropic), added dual API key fields and guest/premium model differentiation, updated `.env.example` with safe demo defaults, synchronized environment variable definitions across `docs/SPEC.md` and `docs/PROJECT_DESCRIPTION.md`, updated `docs/ARCHITECTURE.md` data-flow section for multi-provider support, and fixed flaky model-resolution test for environment-independent validation.
+
 # Documentation Synchronization Note (Apr 10, 2026)
+
+[x] 🟢 Web Frontend Visual Refresh Final Pass + Verification Sync (Apr 12, 2026): completed shared web template/CSS accessibility-and-branding refresh (skip-link/landmark shell, ARIA/live-region updates, consistent visual tokens/classes, inline-style cleanup), hardened live scraper timeout handling for transient external network failures, and revalidated full backend suite at `165 passed, 3 skipped`.
 
 [x] 🟢 Merge Blocker Remediation + Branch Conflict Resolution Sync (Apr 11, 2026): resolved GitHub-reported merge blockers by fixing `email_hmac` migration type/index compatibility, constraining Phase 3 schema bootstrap behavior to migration prerequisites, tightening migration-test monkeypatch strictness, aligning handoff metadata date context, and validating focused migration suites (`6 passed`) after merging `main` into the branch.
 
@@ -113,6 +119,14 @@ Week-by-week sprint board for tracking delivery to the goal of having most imple
 - Full backend pytest suite is green in this session: `159 passed, 3 skipped`.
 - Documentation and migration evidence notes were updated in lockstep.
 
+## Current Verification Snapshot (Apr 12, 2026)
+
+- Final web frontend visual-refresh pass completed for the template-driven web UI (`backend/templates/*` + `backend/static/css/style.css`) with accessibility hardening and RiskRadar-branded token alignment.
+- Shell-level accessibility updates are in place: skip-link, `main` content landmark, ARIA labels/live regions, keyboard-visible focus states, and reusable error/success display classes.
+- Inline template presentation styles were removed in favor of reusable CSS classes.
+- Live external-data test stability was improved by treating transient timeout/network exceptions as skip conditions in `backend/tests/test_live_data_fetch.py`.
+- Full backend pytest suite is green in this session: `165 passed, 3 skipped`.
+
 ---
 
 ## Sprint 1 — Scope Lock
@@ -214,6 +228,7 @@ Week-by-week sprint board for tracking delivery to the goal of having most imple
 ### In Progress
 
 ### Done
+- [x] 🟢 Complete DB safety hardening cycle (preflight + index/FK integrity + guarded write transactions) and verify with full backend suite (`165 passed, 3 skipped`) (Apr 12, 2026)
 
 ---
 
