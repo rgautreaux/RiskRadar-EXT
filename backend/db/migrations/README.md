@@ -64,6 +64,15 @@ This folder will contain migration scripts for email encryption and password has
   - Supports threshold-based alert behavior via `MIGRATION_ERROR_THRESHOLD`.
   - Returns non-zero exit code when threshold is reached.
 
+- `schema_drift_check.py`
+  - Compares SQLAlchemy model metadata with the current database schema.
+  - Fails when required tables, columns, indexes, or foreign keys are missing.
+
+- `safety_gate.py`
+  - Runs preflight, schema drift, validation, and monitoring checks as one command.
+  - Supports strict preflight via `MIGRATION_PREFLIGHT_STRICT=true|false`.
+  - Returns non-zero exit code when any safety check fails.
+
 - `phase3_staging_evidence_template.md`
   - Fill-in worksheet for staging execution evidence collection and SQL spot-check output.
   - Intended to be attached to the Phase 3 review handoff package before approval request.
@@ -77,9 +86,11 @@ This folder will contain migration scripts for email encryption and password has
 5. Apply `2026-04-12_foreign_key_integrity_hardening.sql`
 6. Apply `2026-04-12_mariadb_email_hmac_index_fix.sql` (MariaDB only)
 7. `python db/migrations/preflight.py`
-8. `python db/migrations/migrate_email_encryption.py`
-9. `python db/migrations/validate_email_migration.py`
-10. `python db/migrations/monitor_migration_log.py`
+8. `python db/migrations/schema_drift_check.py`
+9. `python db/migrations/safety_gate.py`
+10. `python db/migrations/migrate_email_encryption.py`
+11. `python db/migrations/validate_email_migration.py`
+12. `python db/migrations/monitor_migration_log.py`
 
 Record all outputs in staging validation notes before requesting backend/security lead sign-off.
 

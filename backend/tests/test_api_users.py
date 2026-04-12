@@ -1,6 +1,6 @@
 """Tests for user API endpoints."""
 
-from auth.security import create_access_token, verify_password, email_hmac
+from auth.security import create_access_token, verify_password, email_hmac, hash_password
 from db.models import User
 
 
@@ -58,6 +58,7 @@ class TestRegisterUser:
         assert user.email_encrypted is not None
 
     def test_duplicate_email_rejected(self, test_client, sample_user):
+        assert sample_user.email == "test@example.com"
         resp = test_client.post("/api/v1/users/register", json={
             "display_name": "Duplicate",
             "email": "test@example.com",
@@ -86,6 +87,7 @@ class TestRegisterUser:
 
 class TestLoginUser:
     def test_login_success(self, test_client, sample_user):
+        assert sample_user.id is not None
         resp = test_client.post("/api/v1/users/login", json={
             "email": "test@example.com",
             "password": "password123",
@@ -96,6 +98,7 @@ class TestLoginUser:
         assert data["token_type"] == "bearer"
 
     def test_login_invalid_password_rejected(self, test_client, sample_user):
+        assert sample_user.display_name == "Test User"
         resp = test_client.post("/api/v1/users/login", json={
             "email": "test@example.com",
             "password": "wrong-password",
@@ -109,6 +112,26 @@ class TestLoginUser:
             "password": "password123",
         })
         assert resp.status_code == 401
+
+    def test_login_legacy_plaintext_email_user_still_supported(self, test_client, db_session):
+        legacy_user = User(
+            display_name="Legacy",
+            email="legacy_login@test.com",
+            email_encrypted=None,
+            email_hmac=None,
+            password_hash=hash_password("legacy-pass"),
+        )
+        db_session.add(legacy_user)
+        db_session.commit()
+
+        resp = test_client.post("/api/v1/users/login", json={
+            "email": "legacy_login@test.com",
+            "password": "legacy-pass",
+        })
+
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "access_token" in data
 
 
 class TestCurrentUserAndNotifications:
