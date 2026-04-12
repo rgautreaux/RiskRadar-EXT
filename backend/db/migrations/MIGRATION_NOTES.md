@@ -39,6 +39,15 @@ Backfill existing user health condition rows:
 ```bash
 python backend/scripts/backfill_user_health_conditions.py --dry-run
 python backend/scripts/backfill_user_health_conditions.py
+
+# Optional one-shot guardrail check (safe in pre-migration envs)
+python backend/scripts/verify_normalization_guardrails.py --allow-missing-tables
+
+# Strict mode for migrated environments (fails on summary-link drift)
+python backend/scripts/verify_normalization_guardrails.py --strict
+
+# Full verification with guardrails
+python backend/scripts/run_full_verification.py --include-normalization-guardrails
 ```
 
 ## Apply migration

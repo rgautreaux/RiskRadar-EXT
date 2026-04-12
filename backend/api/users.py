@@ -1,4 +1,6 @@
 import json
+import logging
+from collections import defaultdict
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -10,6 +12,18 @@ from schemas.user import UserCreate, UserPrefsUpdate, UserOut
 from services.assistant_personality import default_profile_json
 
 router = APIRouter(prefix="/users", tags=["Users"])
+LOGGER = logging.getLogger(__name__)
+_FALLBACK_COUNTERS: dict[str, int] = defaultdict(int)
+
+
+def _record_fallback(event_name: str, user_id: int):
+    _FALLBACK_COUNTERS[event_name] += 1
+    LOGGER.info(
+        "normalization_fallback event=%s user_id=%s count=%s",
+        event_name,
+        user_id,
+        _FALLBACK_COUNTERS[event_name],
+    )
 
 
 def _normalize_alert_types(values: list[str] | None) -> list[str]:
@@ -104,6 +118,8 @@ def _serialize_user(user: User, db: Session | None = None) -> UserOut:
             .all()
         )
         alert_types = [row.alert_type for row in pref_rows]
+        if alert_types:
+            _record_fallback("user.alert_types.relational_fallback", int(user.id))
 
     health_conditions = _parse_health_conditions_json(user.health_conditions)
     if db is not None and not health_conditions:
@@ -114,6 +130,8 @@ def _serialize_user(user: User, db: Session | None = None) -> UserOut:
             .all()
         )
         health_conditions = [row.condition_key for row in condition_rows]
+        if health_conditions:
+            _record_fallback("user.health_conditions.relational_fallback", int(user.id))
 
     serialized_alert_types = json.dumps(alert_types) if alert_types else user.alert_types
     serialized_health_conditions = (

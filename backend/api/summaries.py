@@ -1,4 +1,6 @@
 import json
+import logging
+from collections import defaultdict
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -8,6 +10,18 @@ from db.models import Summary, SummaryAlertLink
 from schemas.summary import SummaryAlertIdsOut, SummaryOut
 
 router = APIRouter(prefix="/summaries", tags=["Summaries"])
+LOGGER = logging.getLogger(__name__)
+_FALLBACK_COUNTERS: dict[str, int] = defaultdict(int)
+
+
+def _record_fallback(event_name: str, summary_id: int):
+    _FALLBACK_COUNTERS[event_name] += 1
+    LOGGER.info(
+        "normalization_fallback event=%s summary_id=%s count=%s",
+        event_name,
+        summary_id,
+        _FALLBACK_COUNTERS[event_name],
+    )
 
 
 def _parse_alert_ids_json(raw_alert_ids: str | None) -> list[int]:
@@ -46,7 +60,10 @@ def resolve_summary_alert_ids(summary: Summary, db: Session) -> tuple[list[int],
     if linked_ids:
         return linked_ids, "summary_alerts"
 
-    return _parse_alert_ids_json(summary.alert_ids), "summaries.alert_ids"
+    fallback_ids = _parse_alert_ids_json(summary.alert_ids)
+    if fallback_ids:
+        _record_fallback("summary.alert_ids.json_fallback", int(summary.id))
+    return fallback_ids, "summaries.alert_ids"
 
 
 @router.get("", response_model=list[SummaryOut])
