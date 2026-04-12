@@ -8,6 +8,7 @@ from sqlalchemy.exc import IntegrityError
 from auth.security import decrypt_email, hash_email, password_hash, verify_password
 from db.models import Alert, Summary, SummaryAlertLink, User, UserAlertPreference, ScrapeLog
 from scripts.backfill_summary_alert_links import backfill_summary_alert_links
+from scripts.backfill_user_health_conditions import backfill_user_health_conditions
 from scripts.backfill_user_alert_preferences import backfill_user_alert_preferences
 from scripts.reconcile_summary_alert_links import reconcile_summary_alert_links
 from tests.conftest import NOW
@@ -237,6 +238,31 @@ class TestUserModel:
             .all()
         )
         assert [row.alert_type for row in rows] == ["weather", "wildfire"]
+
+    def test_backfill_user_health_conditions_from_json(self, db_session):
+        from db.models import UserHealthCondition
+
+        user = User(
+            display_name="Health",
+            email="health@test.com",
+            password_hash=password_hash("HealthPass123!"),
+            health_conditions=json.dumps(["respiratory", "cardiovascular", "respiratory"]),
+            created_at=NOW,
+            updated_at=NOW,
+        )
+        db_session.add(user)
+        db_session.commit()
+
+        stats = backfill_user_health_conditions(session=db_session)
+        assert stats["inserted"] == 2
+
+        rows = (
+            db_session.query(UserHealthCondition)
+            .filter(UserHealthCondition.user_id == user.id)
+            .order_by(UserHealthCondition.condition_key.asc())
+            .all()
+        )
+        assert [row.condition_key for row in rows] == ["cardiovascular", "respiratory"]
 
 
 class TestScrapeLogModel:

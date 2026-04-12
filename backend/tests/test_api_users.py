@@ -143,6 +143,19 @@ class TestUpdatePreferences:
         alert_types = json.loads(resp.json()["alert_types"])
         assert alert_types == ["wildfire"]
 
+    def test_health_conditions_fallbacks_to_relational_rows_when_json_missing(self, test_client, db_session, sample_user):
+        from db.models import UserHealthCondition
+
+        db_session.query(UserHealthCondition).filter(UserHealthCondition.user_id == sample_user.id).delete()
+        db_session.add(UserHealthCondition(user_id=sample_user.id, condition_key="respiratory"))
+        sample_user.health_conditions = None
+        db_session.commit()
+
+        resp = test_client.put(f"/api/v1/users/{sample_user.id}/preferences", json={"zip_code": "90003"})
+        assert resp.status_code == 200
+        conditions = json.loads(resp.json()["health_conditions"])
+        assert conditions == ["respiratory"]
+
     def test_update_not_found(self, test_client):
         resp = test_client.put("/api/v1/users/9999/preferences", json={
             "zip_code": "00000",

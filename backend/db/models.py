@@ -121,6 +121,11 @@ class User(Base):
         cascade="all, delete-orphan",
         back_populates="user",
     )
+    health_condition_rows = relationship(
+        "UserHealthCondition",
+        cascade="all, delete-orphan",
+        back_populates="user",
+    )
 
 
 class UserAlertPreference(Base):
@@ -131,6 +136,16 @@ class UserAlertPreference(Base):
     created_at = Column(Text, nullable=False, default=_now)
 
     user = relationship("User", back_populates="alert_preferences")
+
+
+class UserHealthCondition(Base):
+    __tablename__ = "user_health_conditions"
+
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    condition_key = Column(Text, primary_key=True)
+    created_at = Column(Text, nullable=False, default=_now)
+
+    user = relationship("User", back_populates="health_condition_rows")
 
 
 def _secure_user_email(target: User):

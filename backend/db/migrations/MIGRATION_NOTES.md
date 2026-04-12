@@ -32,12 +32,22 @@ python backend/scripts/backfill_user_alert_preferences.py --dry-run
 python backend/scripts/backfill_user_alert_preferences.py
 ```
 
+Use `2026-04-12_add_user_health_conditions.sql` to add the normalized `user_health_conditions` mapping table without removing the legacy `users.health_conditions` JSON field.
+
+Backfill existing user health condition rows:
+
+```bash
+python backend/scripts/backfill_user_health_conditions.py --dry-run
+python backend/scripts/backfill_user_health_conditions.py
+```
+
 ## Apply migration
 
 ```sql
 SOURCE backend/db/migrations/2026-03-03_mariadb_scraper_alignment.sql;
 SOURCE backend/db/migrations/2026-04-11_add_summary_alerts_and_feedback_fk.sql;
 SOURCE backend/db/migrations/2026-04-12_add_user_alert_preferences.sql;
+SOURCE backend/db/migrations/2026-04-12_add_user_health_conditions.sql;
 ```
 
 ## Runtime configuration

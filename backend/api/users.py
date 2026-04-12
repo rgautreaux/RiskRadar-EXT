@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from auth.security import decrypt_email, hash_email, normalize_email, password_hash, validate_password_strength
 from db.database import get_db
-from db.models import User, UserAlertPreference
+from db.models import User, UserAlertPreference, UserHealthCondition
 from schemas.user import UserCreate, UserPrefsUpdate, UserOut
 from services.assistant_personality import default_profile_json
 
@@ -13,6 +13,19 @@ router = APIRouter(prefix="/users", tags=["Users"])
 
 
 def _normalize_alert_types(values: list[str] | None) -> list[str]:
+    if values is None:
+        return []
+
+    cleaned: list[str] = []
+    for value in values:
+        normalized = (value or "").strip().lower()
+        if normalized:
+            cleaned.append(normalized)
+
+    return list(dict.fromkeys(cleaned))
+
+
+def _normalize_health_conditions(values: list[str] | None) -> list[str]:
     if values is None:
         return []
 
@@ -40,6 +53,21 @@ def _parse_alert_types_json(raw_alert_types: str | None) -> list[str]:
     return _normalize_alert_types([str(item) for item in parsed])
 
 
+def _parse_health_conditions_json(raw_health_conditions: str | None) -> list[str]:
+    if not raw_health_conditions:
+        return []
+
+    try:
+        parsed = json.loads(raw_health_conditions)
+    except (json.JSONDecodeError, TypeError):
+        return []
+
+    if not isinstance(parsed, list):
+        return []
+
+    return _normalize_health_conditions([str(item) for item in parsed])
+
+
 def _sync_user_alert_preferences(db: Session, user: User, alert_types: list[str]):
     db.query(UserAlertPreference).filter(UserAlertPreference.user_id == user.id).delete()
     if not alert_types:
@@ -49,6 +77,19 @@ def _sync_user_alert_preferences(db: Session, user: User, alert_types: list[str]
         [
             UserAlertPreference(user_id=user.id, alert_type=alert_type)
             for alert_type in alert_types
+        ]
+    )
+
+
+def _sync_user_health_conditions(db: Session, user: User, condition_keys: list[str]):
+    db.query(UserHealthCondition).filter(UserHealthCondition.user_id == user.id).delete()
+    if not condition_keys:
+        return
+
+    db.add_all(
+        [
+            UserHealthCondition(user_id=user.id, condition_key=condition_key)
+            for condition_key in condition_keys
         ]
     )
 
@@ -64,7 +105,20 @@ def _serialize_user(user: User, db: Session | None = None) -> UserOut:
         )
         alert_types = [row.alert_type for row in pref_rows]
 
+    health_conditions = _parse_health_conditions_json(user.health_conditions)
+    if db is not None and not health_conditions:
+        condition_rows = (
+            db.query(UserHealthCondition)
+            .filter(UserHealthCondition.user_id == user.id)
+            .order_by(UserHealthCondition.condition_key.asc())
+            .all()
+        )
+        health_conditions = [row.condition_key for row in condition_rows]
+
     serialized_alert_types = json.dumps(alert_types) if alert_types else user.alert_types
+    serialized_health_conditions = (
+        json.dumps(health_conditions) if health_conditions else user.health_conditions
+    )
 
     return UserOut(
         id=user.id,
@@ -76,7 +130,7 @@ def _serialize_user(user: User, db: Session | None = None) -> UserOut:
         longitude=user.longitude,
         alert_types=serialized_alert_types,
         notify_severity=user.notify_severity,
-        health_conditions=user.health_conditions,
+        health_conditions=serialized_health_conditions,
         assistant_style_profile=user.assistant_style_profile,
         created_at=user.created_at,
     )
@@ -132,7 +186,9 @@ def update_preferences(user_id: int, body: UserPrefsUpdate, db: Session = Depend
     if body.device_token is not None:
         user.device_token = body.device_token
     if body.health_conditions is not None:
-        user.health_conditions = json.dumps(body.health_conditions)
+        normalized_health_conditions = _normalize_health_conditions(body.health_conditions)
+        user.health_conditions = json.dumps(normalized_health_conditions)
+        _sync_user_health_conditions(db, user, normalized_health_conditions)
     if body.assistant_style_profile is not None:
         user.assistant_style_profile = json.dumps(body.assistant_style_profile)
 
