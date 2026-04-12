@@ -75,3 +75,26 @@ SQLite dispatch log index checks (`EXPLAIN QUERY PLAN`) also confirmed expected 
 
 - `WHERE alert_id = ?` via `idx_notification_dispatch_alert_id`
 - `ORDER BY created_at DESC LIMIT ?` via `idx_notification_dispatch_created_at`
+
+## Verification evidence (2026-04-12)
+
+Local coordination verification run completed to refresh migration safety evidence.
+
+- `python -m pytest -q backend/tests/`
+	- `172 passed, 3 skipped, 66 warnings in 22.17s`
+- `python -m pytest -q backend/tests/test_migrate_email_encryption.py backend/tests/test_migration_preflight.py backend/tests/test_migration_validation_monitoring.py backend/tests/test_migration_rollback_email_encryption.py`
+	- `13 passed in 0.16s`
+- `python backend/db/migrations/preflight.py`
+	- Returned non-zero (`exit code 1`)
+	- Blocking findings: missing required index/FK baseline in local DB snapshot (`blocking_issue_count=9`)
+- `python backend/db/migrations/validate_email_migration.py`
+	- Returned non-zero (`exit code 1`)
+	- `users_total=0`, `migration_failed_or_error_logs=1`, `batch_completed_records=1`
+- `python backend/db/migrations/monitor_migration_log.py`
+	- `error_count=0`
+	- `threshold=1`
+	- `OK: migration error threshold not reached`
+
+Coordination note:
+- This evidence run is documentation-grade verification for current local state.
+- Preflight/validator non-zero outcomes indicate migration baseline is not fully applied in this local snapshot and should be treated as a staging/prod readiness gate, not as a code regression.
