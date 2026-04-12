@@ -3,6 +3,27 @@
 - Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
 - Historical lower totals in older session entries are retained intentionally as time-stamped snapshots.
 
+## Stage 5: Review-Ready Commit Split and Push Session (2026-04-12)
+
+### Implementation
+Split the remaining uncommitted and unpushed changes into review-friendly commits by concern, then pushed the categorized commit stack to the branch.
+
+### Functionality
+- Grouped backend normalization and guardrail changes into one focused commit.
+- Grouped evidence-index/checklist additions into a separate docs commit.
+- Grouped top-level status-document updates into a distinct docs sync commit.
+- Isolated the local SQLite runtime artifact into its own commit for reviewer convenience.
+
+### Verification Evidence
+- ✅ Categorized commits were created successfully and pushed to the remote branch.
+- ✅ The push completed without error and the branch is up to date on the remote.
+- ✅ The commit history is now split by project area for easier PR review.
+
+### Importance
+- Improves reviewability by separating backend, evidence docs, top-level docs, and runtime artifact changes.
+- Preserves the repository history style used in prior closeout sessions.
+- Keeps the review surface cleaner without changing any project behavior.
+
 ## Stage 5: Rebecca-Safe Database Normalization Guardrails and Closeout Session (2026-04-12)
 
 ### Implementation

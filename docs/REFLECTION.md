@@ -2,6 +2,22 @@
 
 ## Session Reflections
 
+# Stage 5 Review-Ready Commit Split and Push Session (2026-04-12)
+Summary:
+- Grouped the remaining uncommitted/unpushed work into review-friendly commits by project area and pushed the branch successfully.
+- Separated backend normalization/guardrail logic, evidence docs, top-level status docs, and the runtime SQLite artifact into distinct commits.
+- Preserved the repository’s existing low-risk style by avoiding any code changes during the documentation-only wrap-up.
+
+Why this was done:
+- To make the PR easier to review by reducing change-set overlap.
+- To keep the commit history aligned with project boundaries that reviewers can reason about independently.
+- To avoid mixing runtime artifacts with documentation or backend implementation changes.
+
+How this improved the project:
+- Produced a cleaner commit stack that is simpler to inspect and discuss.
+- Reduced reviewer burden by separating implementation concerns from docs-only updates.
+- Preserved traceability between each part of the project and the corresponding commit.
+
 ### Stage 5 Frontend Visual Refresh Low-Risk Implementation and Max Validation Handoff Session (2026-04-12)
 Summary:
 - Completed the Rebecca-safe frontend visual refresh implementation using shared token/style updates and low-risk page polish on dashboard, alerts, summaries, and map.
