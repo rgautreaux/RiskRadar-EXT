@@ -1,6 +1,14 @@
 # April 12 Synchronization Note
 This Apr 12 pass finalized the LLM settings contract across environment configuration, API specifications, and backend tests, ensuring enterprise provider flexibility (OpenRouter, OpenAI, DeepSeek, Anthropic) with safe demo defaults.
 
+Apr 12 coordination verification addendum:
+- Phase 1 verification rerun completed this session with updated backend baseline: `172 passed, 3 skipped`.
+- Migration execution/validation/monitor sequence was rerun for evidence refresh; monitor threshold remained healthy (`error_count=0`).
+- Preflight gate returned non-zero in this local snapshot (`blocking_issue_count=9`), indicating required index/FK migration baseline is not fully applied in the local DB state.
+- Frontend static-check dependency blocker was cleared (`npm install`), but lint/typecheck now report frontend-owner code issues in `app/main/weather-report.tsx` and `app/(tabs)/explore.tsx`; owner follow-up remains required before static-check closure.
+- Rebecca-safe coordination/documentation plan is now complete for this cycle.
+- Remaining open steps are owner-dependent only (frontend code fixes and external backend/security sign-off).
+
 Apr 12 LLM settings and documentation sync completion:
 - Finalized canonical LLM settings contract: `LLM_PROVIDER` selector, dual API key fields (`LLM_API_KEY` + `OPENROUTER_API_KEY` compatibility), guest/premium model differentiation, and optional `LLM_MAX_TOKENS` for web-scraper LLM calls.
 - Updated `.env.example` with safe defaults (`openrouter` provider, `gpt-4o-mini` for guest/default, `gpt-4o` for premium, `4000` max tokens).
@@ -189,6 +197,18 @@ Latest alignment updates:
 - **Backend:** Harden validation and errors, then complete the remaining security review/sign-off on Rebecca's Phase 3 migration handoff.
 - **AI/Quality:** Refine summary rubric, prompt behavior, and fallback logic after the core flow is stable.
 - **QA/Docs:** Expand regression coverage, write the checklist, and keep the audit trail synchronized with final changes; Rebecca's documentation baseline is already complete.
+
+---
+
+## Apr 12 Shared Coordination Snapshot (Rebecca-Safe)
+
+| Open Shared Task | Primary Owner(s) | Rebecca-Safe Follow-up | Evidence Source | Next Check |
+|---|---|---|---|---|
+| Home/auth/navigation final wiring | Ben, Celeste | Track status and capture post-merge verification notes only | `docs/QA_CHECKLIST.md` Route/Auth matrix | Apr 14, 2026 |
+| Backend input validation + error hardening | Qui, Max | Re-run backend suite and log deltas after owner merges | `python -m pytest -q` snapshots in `docs/TODO.md` and `docs/QA_CHECKLIST.md` | Apr 14, 2026 |
+| Security/least-privilege sign-off gate | Noah, Backend/Security lead | Maintain handoff evidence references and approval status trail | Migration evidence docs + `docs/GROUP_PROGRESS_LOG` | Apr 15, 2026 |
+| LLM quality/prompt tuning completion | Max | Record verification outcomes after owner-delivered changes | API summary test outputs + sprint notes | Apr 15, 2026 |
+| Sprint 6 final review/submission checks | All | Build/checklist package and route missing evidence to owners | `docs/QA_CHECKLIST.md` final-review checklist | Apr 16, 2026 |
 
 ---
 
