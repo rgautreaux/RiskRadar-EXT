@@ -9,6 +9,7 @@ from auth.security import decrypt_email, hash_email, password_hash, verify_passw
 from db.models import Alert, Summary, SummaryAlertLink, User, UserAlertPreference, ScrapeLog
 from scripts.backfill_summary_alert_links import backfill_summary_alert_links
 from scripts.backfill_user_alert_preferences import backfill_user_alert_preferences
+from scripts.reconcile_summary_alert_links import reconcile_summary_alert_links
 from tests.conftest import NOW
 
 
@@ -130,6 +131,41 @@ class TestSummaryModel:
         stats = backfill_summary_alert_links(session=db_session)
         assert stats["inserted"] == 1
         assert stats["skipped_missing_alert"] == 1
+
+    def test_reconcile_reports_no_mismatch_when_synced(self, db_session, sample_alerts):
+        summary = Summary(
+            title="Synced",
+            content="Body",
+            summary_type="daily",
+            alert_ids=json.dumps([sample_alerts[0].id]),
+            generated_at=NOW,
+            created_at=NOW,
+        )
+        db_session.add(summary)
+        db_session.commit()
+        db_session.add(SummaryAlertLink(summary_id=summary.id, alert_id=sample_alerts[0].id))
+        db_session.commit()
+
+        report = reconcile_summary_alert_links(session=db_session)
+        assert report["mismatch_count"] == 0
+
+    def test_reconcile_reports_json_only_mismatch(self, db_session, sample_alerts):
+        summary = Summary(
+            title="Drifted",
+            content="Body",
+            summary_type="daily",
+            alert_ids=json.dumps([sample_alerts[1].id]),
+            generated_at=NOW,
+            created_at=NOW,
+        )
+        db_session.add(summary)
+        db_session.commit()
+
+        report = reconcile_summary_alert_links(session=db_session)
+        assert report["mismatch_count"] >= 1
+        first = report["mismatches"][0]
+        assert first["summary_id"] == summary.id
+        assert first["json_only"] == [sample_alerts[1].id]
 
 
 class TestFeedbackModel:

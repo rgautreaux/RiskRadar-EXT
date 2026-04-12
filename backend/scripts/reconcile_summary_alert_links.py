@@ -108,6 +108,11 @@ def build_parser() -> argparse.ArgumentParser:
         description="Compare summaries.alert_ids JSON links against summary_alerts relational links."
     )
     parser.add_argument("--limit", type=int, default=25, help="Maximum mismatch rows to print")
+    parser.add_argument(
+        "--fail-on-mismatch",
+        action="store_true",
+        help="Exit with non-zero status if any mismatches are detected.",
+    )
     return parser
 
 
@@ -124,6 +129,10 @@ def main() -> int:
             mismatch["json_only"],
             mismatch["relational_only"],
         )
+
+    if args.fail_on_mismatch and int(report["mismatch_count"]) > 0:
+        LOGGER.error("Detected summary link mismatches while --fail-on-mismatch is enabled.")
+        return 1
 
     return 0
 

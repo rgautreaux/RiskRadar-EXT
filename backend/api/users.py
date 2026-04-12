@@ -53,9 +53,9 @@ def _sync_user_alert_preferences(db: Session, user: User, alert_types: list[str]
     )
 
 
-def _serialize_user(user: User, db: Session) -> UserOut:
+def _serialize_user(user: User, db: Session | None = None) -> UserOut:
     alert_types = _parse_alert_types_json(user.alert_types)
-    if not alert_types:
+    if db is not None and not alert_types:
         pref_rows = (
             db.query(UserAlertPreference)
             .filter(UserAlertPreference.user_id == user.id)

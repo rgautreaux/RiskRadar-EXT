@@ -20,6 +20,7 @@ After applying the SQL migration, backfill existing summary links:
 python backend/scripts/backfill_summary_alert_links.py --dry-run
 python backend/scripts/backfill_summary_alert_links.py
 python backend/scripts/reconcile_summary_alert_links.py
+python backend/scripts/reconcile_summary_alert_links.py --fail-on-mismatch
 ```
 
 Use `2026-04-12_add_user_alert_preferences.sql` to add the normalized `user_alert_preferences` mapping table without removing the legacy `users.alert_types` JSON field.
