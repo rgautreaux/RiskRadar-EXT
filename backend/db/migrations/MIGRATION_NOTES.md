@@ -19,6 +19,16 @@ After applying the SQL migration, backfill existing summary links:
 ```bash
 python backend/scripts/backfill_summary_alert_links.py --dry-run
 python backend/scripts/backfill_summary_alert_links.py
+python backend/scripts/reconcile_summary_alert_links.py
+```
+
+Use `2026-04-12_add_user_alert_preferences.sql` to add the normalized `user_alert_preferences` mapping table without removing the legacy `users.alert_types` JSON field.
+
+Backfill existing user alert preference rows:
+
+```bash
+python backend/scripts/backfill_user_alert_preferences.py --dry-run
+python backend/scripts/backfill_user_alert_preferences.py
 ```
 
 ## Apply migration
@@ -26,6 +36,7 @@ python backend/scripts/backfill_summary_alert_links.py
 ```sql
 SOURCE backend/db/migrations/2026-03-03_mariadb_scraper_alignment.sql;
 SOURCE backend/db/migrations/2026-04-11_add_summary_alerts_and_feedback_fk.sql;
+SOURCE backend/db/migrations/2026-04-12_add_user_alert_preferences.sql;
 ```
 
 ## Runtime configuration

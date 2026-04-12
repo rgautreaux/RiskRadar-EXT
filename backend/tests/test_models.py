@@ -6,8 +6,9 @@ from sqlalchemy import inspect
 from sqlalchemy.exc import IntegrityError
 
 from auth.security import decrypt_email, hash_email, password_hash, verify_password
-from db.models import Alert, Summary, SummaryAlertLink, User, ScrapeLog
+from db.models import Alert, Summary, SummaryAlertLink, User, UserAlertPreference, ScrapeLog
 from scripts.backfill_summary_alert_links import backfill_summary_alert_links
+from scripts.backfill_user_alert_preferences import backfill_user_alert_preferences
 from tests.conftest import NOW
 
 
@@ -177,6 +178,29 @@ class TestUserModel:
         db_session.add(user)
         db_session.commit()
         assert user.email_lookup_hash == hash_email("hash@test.com")
+
+    def test_backfill_user_alert_preferences_from_json(self, db_session):
+        user = User(
+            display_name="Prefs",
+            email="prefs@test.com",
+            password_hash=password_hash("PrefsPass123!"),
+            alert_types=json.dumps(["weather", "wildfire", "weather"]),
+            created_at=NOW,
+            updated_at=NOW,
+        )
+        db_session.add(user)
+        db_session.commit()
+
+        stats = backfill_user_alert_preferences(session=db_session)
+        assert stats["inserted"] == 2
+
+        rows = (
+            db_session.query(UserAlertPreference)
+            .filter(UserAlertPreference.user_id == user.id)
+            .order_by(UserAlertPreference.alert_type.asc())
+            .all()
+        )
+        assert [row.alert_type for row in rows] == ["weather", "wildfire"]
 
 
 class TestScrapeLogModel:

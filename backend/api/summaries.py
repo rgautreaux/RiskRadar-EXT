@@ -1,11 +1,52 @@
+import json
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from db.database import get_db
-from db.models import Summary
-from schemas.summary import SummaryOut
+from db.models import Summary, SummaryAlertLink
+from schemas.summary import SummaryAlertIdsOut, SummaryOut
 
 router = APIRouter(prefix="/summaries", tags=["Summaries"])
+
+
+def _parse_alert_ids_json(raw_alert_ids: str | None) -> list[int]:
+    if not raw_alert_ids:
+        return []
+
+    try:
+        parsed = json.loads(raw_alert_ids)
+    except (json.JSONDecodeError, TypeError):
+        return []
+
+    if not isinstance(parsed, list):
+        return []
+
+    normalized: list[int] = []
+    for item in parsed:
+        if isinstance(item, bool):
+            continue
+        try:
+            value = int(item)
+        except (TypeError, ValueError):
+            continue
+        if value > 0:
+            normalized.append(value)
+    return list(dict.fromkeys(normalized))
+
+
+def resolve_summary_alert_ids(summary: Summary, db: Session) -> tuple[list[int], str]:
+    linked_ids = [
+        int(row[0])
+        for row in db.query(SummaryAlertLink.alert_id)
+        .filter(SummaryAlertLink.summary_id == summary.id)
+        .order_by(SummaryAlertLink.alert_id.asc())
+        .all()
+    ]
+    if linked_ids:
+        return linked_ids, "summary_alerts"
+
+    return _parse_alert_ids_json(summary.alert_ids), "summaries.alert_ids"
 
 
 @router.get("", response_model=list[SummaryOut])
@@ -31,6 +72,16 @@ def get_summary(summary_id: int, db: Session = Depends(get_db)):
     if not summary:
         raise HTTPException(status_code=404, detail="Summary not found")
     return summary
+
+
+@router.get("/{summary_id}/alert-ids", response_model=SummaryAlertIdsOut)
+def get_summary_alert_ids(summary_id: int, db: Session = Depends(get_db)):
+    summary = db.query(Summary).filter(Summary.id == summary_id).first()
+    if not summary:
+        raise HTTPException(status_code=404, detail="Summary not found")
+
+    alert_ids, source = resolve_summary_alert_ids(summary, db)
+    return SummaryAlertIdsOut(summary_id=summary.id, alert_ids=alert_ids, source=source)
 
 
 @router.post("/generate", response_model=SummaryOut)

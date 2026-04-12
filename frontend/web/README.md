@@ -238,12 +238,12 @@ If backend port `8000` is unavailable, set `RISKRADAR_API_BASE_URL` (for example
 - [ ] Update documentation and add screenshots/evidence
 
 ### Manual Verification Checklist
-- [ ] Map loads with overlays and toggles work
-- [ ] Personalized risk overlay is accessible and visually distinct
-- [ ] All controls are keyboard accessible and ARIA-labeled
-- [ ] Error/fallback states are user-friendly
-- [ ] Documentation and user guide are updated
-- [ ] Screenshots and recordings are collected for grading
+- [ ] Map loads with overlays and toggles work. Assigned: Max
+- [ ] Personalized risk overlay is accessible and visually distinct. Assigned: Max
+- [ ] All controls are keyboard accessible and ARIA-labeled. Assigned: Max
+- [ ] Error/fallback states are user-friendly. Assigned: Max
+- [ ] Documentation and user guide are updated with validation/signoff outcome. Assigned: Max
+- [ ] Screenshots and recordings are collected for grading. Assigned: Max
 
 ### How to Use the Map Feature
 1. Start backend and PHP server as usual (see above)

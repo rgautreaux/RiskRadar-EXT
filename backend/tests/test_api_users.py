@@ -1,5 +1,7 @@
 """Tests for user API endpoints."""
 
+import json
+
 from auth.security import decrypt_email, hash_email, verify_password
 
 
@@ -79,6 +81,7 @@ class TestRegisterUser:
         assert "Email already registered" in resp.json()["detail"]
 
     def test_duplicate_email_rejected(self, test_client, sample_user):
+        _ = sample_user
         resp = test_client.post("/api/v1/users/register", json={
             "display_name": "Duplicate",
             "email": "test@example.com",
@@ -86,6 +89,22 @@ class TestRegisterUser:
         })
         assert resp.status_code == 400
         assert "Email already registered" in resp.json()["detail"]
+
+    def test_register_creates_default_alert_preference(self, test_client, db_session):
+        from db.models import User, UserAlertPreference
+
+        resp = test_client.post("/api/v1/users/register", json={
+            "display_name": "DefaultPref",
+            "email": "defaultpref@test.com",
+            "password": "DefaultPref123!",
+        })
+        assert resp.status_code == 200
+
+        user = db_session.query(User).filter(User.email_lookup_hash == hash_email("defaultpref@test.com")).first()
+        assert user is not None
+        rows = db_session.query(UserAlertPreference).filter(UserAlertPreference.user_id == user.id).all()
+        assert len(rows) == 1
+        assert rows[0].alert_type == "all"
 
 
 class TestUpdatePreferences:
@@ -96,11 +115,33 @@ class TestUpdatePreferences:
         assert resp.status_code == 200
         assert resp.json()["zip_code"] == "10001"
 
-    def test_update_alert_types(self, test_client, sample_user):
+    def test_update_alert_types(self, test_client, db_session, sample_user):
+        from db.models import UserAlertPreference
+
         resp = test_client.put(f"/api/v1/users/{sample_user.id}/preferences", json={
             "alert_types": ["weather", "earthquake"],
         })
         assert resp.status_code == 200
+        rows = (
+            db_session.query(UserAlertPreference)
+            .filter(UserAlertPreference.user_id == sample_user.id)
+            .order_by(UserAlertPreference.alert_type.asc())
+            .all()
+        )
+        assert [row.alert_type for row in rows] == ["earthquake", "weather"]
+
+    def test_alert_types_fallbacks_to_relational_rows_when_json_missing(self, test_client, db_session, sample_user):
+        from db.models import UserAlertPreference
+
+        db_session.query(UserAlertPreference).filter(UserAlertPreference.user_id == sample_user.id).delete()
+        db_session.add(UserAlertPreference(user_id=sample_user.id, alert_type="wildfire"))
+        sample_user.alert_types = None
+        db_session.commit()
+
+        resp = test_client.put(f"/api/v1/users/{sample_user.id}/preferences", json={"zip_code": "90002"})
+        assert resp.status_code == 200
+        alert_types = json.loads(resp.json()["alert_types"])
+        assert alert_types == ["wildfire"]
 
     def test_update_not_found(self, test_client):
         resp = test_client.put("/api/v1/users/9999/preferences", json={

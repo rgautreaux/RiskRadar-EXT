@@ -116,6 +116,22 @@ class User(Base):
     created_at = Column(Text, nullable=False, default=_now)
     updated_at = Column(Text, nullable=False, default=_now, onupdate=_now)
 
+    alert_preferences = relationship(
+        "UserAlertPreference",
+        cascade="all, delete-orphan",
+        back_populates="user",
+    )
+
+
+class UserAlertPreference(Base):
+    __tablename__ = "user_alert_preferences"
+
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    alert_type = Column(Text, primary_key=True)
+    created_at = Column(Text, nullable=False, default=_now)
+
+    user = relationship("User", back_populates="alert_preferences")
+
 
 def _secure_user_email(target: User):
     if not target.email:

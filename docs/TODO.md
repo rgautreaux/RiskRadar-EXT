@@ -273,6 +273,17 @@ Summary:
 - Implemented low-risk settings-first key lookup fix in `backend/scrapers/registry.py` to avoid false skip warnings when `.env` contains required keys.
 - Re-verified post-run dataset integrity and retained generated evidence artifacts for grading workflow.
 
+#### Stage 5 Frontend Visual Refresh Validation and Signoff (Open)
+Summary:
+- Visual refresh implementation is complete; remaining closeout is manual validation and signoff.
+- Ownership for all remaining items in this block is assigned to Max.
+
+Open Tasks (Assigned: Max):
+- [ ] Run manual browser QA for refreshed frontend pages (desktop/tablet/mobile), including dashboard, alerts, summaries, and map.
+- [ ] Run manual accessibility spot-check for keyboard flow, focus visibility, and readable contrast on refreshed UI states.
+- [ ] Confirm map visual behavior after style extraction (legend collapse/expand, modals, loading/fallback, overlay toggles).
+- [ ] Add final signoff note in documentation confirming validation date, owner, and outcome.
+
 #### Stage 5 Sprint Remediation Implementation and Verification Closeout Session (2026-04-11)
 Summary:
 - Completed sprint remediation tracks for CORS hardening, feedback identity binding, timestamp filter correctness, frontend API portability, localStorage fallback safety, and map runtime path consolidation.
