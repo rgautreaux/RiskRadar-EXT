@@ -7,6 +7,15 @@ This folder will contain migration scripts for email encryption and password has
 
 ## Phase 3 (Migration Logging & Monitoring) Scripts
 
+- `2026-04-12_phase0_index_hardening.sql`
+  - Adds idempotent baseline indexes that preflight now requires:
+    - `alerts`: `idx_alerts_source_fetched_at`, `idx_alerts_type_severity_fetched_at`
+    - `summaries`: `idx_summaries_summary_type_generated_at`
+    - `scrape_log`: `idx_scrape_log_source_started_at`, `idx_scrape_log_status_completed_at`
+    - `cleanup_runs`: `idx_cleanup_runs_status_started_at`
+    - `notification_dispatch_log`: `idx_notification_dispatch_status_created_at`
+  - Uses MariaDB 10.4-compatible `information_schema.statistics` checks for idempotent index creation.
+
 - `2026-04-11_notification_channels_dispatch_log.sql`
   - Adds persistent notification channel flags on `users`:
     - `notify_push` (default `1`)
@@ -44,9 +53,11 @@ This folder will contain migration scripts for email encryption and password has
 
 1. Apply `2026-04-10_phase3_email_security_schema.sql`
 2. Apply `2026-04-11_notification_channels_dispatch_log.sql`
-3. `python db/migrations/migrate_email_encryption.py`
-4. `python db/migrations/validate_email_migration.py`
-5. `python db/migrations/monitor_migration_log.py`
+3. Apply `2026-04-12_phase0_index_hardening.sql`
+4. `python db/migrations/preflight.py`
+5. `python db/migrations/migrate_email_encryption.py`
+6. `python db/migrations/validate_email_migration.py`
+7. `python db/migrations/monitor_migration_log.py`
 
 Record all outputs in staging validation notes before requesting backend/security lead sign-off.
 

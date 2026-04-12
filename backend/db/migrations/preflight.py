@@ -232,7 +232,10 @@ def _check_required_indexes(inspector: Inspector, existing_tables: set[str]) -> 
         "summaries": ["idx_summaries_summary_type_generated_at"],
         "scrape_log": ["idx_scrape_log_source_started_at", "idx_scrape_log_status_completed_at"],
         "cleanup_runs": ["idx_cleanup_runs_status_started_at"],
-        "notification_dispatch_log": ["idx_notification_dispatch_status_created_at"],
+        "notification_dispatch_log": [
+            "idx_notification_dispatch_status_created_at",
+            "idx_notification_dispatch_initiated_by_user_id",
+        ],
     }
 
     issues: list[PreflightIssue] = []
@@ -247,6 +250,44 @@ def _check_required_indexes(inspector: Inspector, existing_tables: set[str]) -> 
                 PreflightIssue(
                     severity="blocking",
                     message=f"{table_name} is missing indexes: {', '.join(missing_indexes)}",
+                )
+            )
+
+    return issues
+
+
+def _check_required_foreign_keys(inspector: Inspector, existing_tables: set[str]) -> list[PreflightIssue]:
+    required_foreign_keys = {
+        "alerts_archive": {("cleanup_run_id", "cleanup_runs", "id")},
+        "summaries_archive": {("cleanup_run_id", "cleanup_runs", "id")},
+        "scrape_log_archive": {("cleanup_run_id", "cleanup_runs", "id")},
+        "notification_dispatch_log": {
+            ("alert_id", "alerts", "id"),
+            ("initiated_by_user_id", "users", "id"),
+        },
+    }
+
+    issues: list[PreflightIssue] = []
+    for table_name, expected_fks in required_foreign_keys.items():
+        if table_name not in existing_tables:
+            continue
+
+        actual_fks: set[tuple[str, str, str]] = set()
+        for fk in inspector.get_foreign_keys(table_name):
+            constrained_columns = fk.get("constrained_columns") or []
+            referred_columns = fk.get("referred_columns") or []
+            referred_table = fk.get("referred_table")
+            if len(constrained_columns) != 1 or len(referred_columns) != 1 or referred_table is None:
+                continue
+            actual_fks.add((constrained_columns[0], referred_table, referred_columns[0]))
+
+        missing_fks = expected_fks - actual_fks
+        if missing_fks:
+            formatted = [f"{column}->{ref_table}.{ref_column}" for (column, ref_table, ref_column) in sorted(missing_fks)]
+            issues.append(
+                PreflightIssue(
+                    severity="blocking",
+                    message=f"{table_name} is missing foreign keys: {', '.join(formatted)}",
                 )
             )
 
@@ -271,6 +312,7 @@ def run_preflight(strict: bool = False) -> int:
         if strict:
             issues.extend(_check_plaintext_email_leftovers(db))
         issues.extend(_check_required_indexes(inspector, existing_tables))
+        issues.extend(_check_required_foreign_keys(inspector, existing_tables))
         issues.extend(_check_archive_lineage(db))
         issues.extend(_check_dispatch_references(db))
 

@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 import logging
 
 from auth.security import get_current_user
-from db.database import get_db
+from db.database import get_db, db_write
 from db.models import Alert, User, NotificationDispatchLog
 from logging_utils import log_event
 from notifications.provider import get_notification_provider
@@ -82,8 +82,8 @@ def notify_subscribers_for_alert(
         failed_count=failed_count,
         status=status,
     )
-    db.add(dispatch_log)
-    db.commit()
+    with db_write(db):
+        db.add(dispatch_log)
 
     log_event(
         logger,

@@ -25,7 +25,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 
-from db.database import get_db
+from db.database import get_db, db_write
 from db.models import User
 from auth.security import hash_password, verify_password, create_access_token, get_current_user, encrypt_email, decrypt_email, email_hmac
 from logging_utils import log_event
@@ -82,8 +82,8 @@ def register_user(body: UserCreate, db: Session = Depends(get_db)):
         password_hash=hash_password(body.password),
         zip_code=body.zip_code,
     )
-    db.add(user)
-    db.commit()
+    with db_write(db):
+        db.add(user)
     db.refresh(user)
     # Return user with decrypted email for API response
     user_out = UserOut.model_validate(user)
@@ -182,7 +182,8 @@ def update_preferences(
         user.device_token = body.device_token
         changed_fields.append("device_token")
 
-    db.commit()
+    with db_write(db):
+        pass
     db.refresh(user)
     log_event(
         logger,
@@ -205,7 +206,8 @@ def register_device_token(
         raise HTTPException(status_code=403, detail="Cannot modify another user's device token")
 
     current_user.device_token = body.device_token
-    db.commit()
+    with db_write(db):
+        pass
     db.refresh(current_user)
     log_event(logger, "users.device_token_registered", user_id=current_user.id)
     return NotificationSettingsOut(
@@ -225,7 +227,8 @@ def revoke_device_token(
         raise HTTPException(status_code=403, detail="Cannot modify another user's device token")
 
     current_user.device_token = None
-    db.commit()
+    with db_write(db):
+        pass
     db.refresh(current_user)
     log_event(logger, "users.device_token_revoked", user_id=current_user.id)
     return NotificationSettingsOut(
@@ -264,7 +267,8 @@ def update_notifications(
     if body.device_token is not None:
         current_user.device_token = body.device_token
 
-    db.commit()
+    with db_write(db):
+        pass
     db.refresh(current_user)
     return NotificationSettingsOut(
         notify_severity=current_user.notify_severity,

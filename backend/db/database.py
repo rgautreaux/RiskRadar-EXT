@@ -1,5 +1,7 @@
+from contextlib import contextmanager
+
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker, declarative_base, Session
 
 from config.settings import settings
 
@@ -25,3 +27,14 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+@contextmanager
+def db_write(db: Session):
+    """Guarded write block that commits once or rolls back on failure."""
+    try:
+        yield db
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise

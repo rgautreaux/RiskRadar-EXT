@@ -21,7 +21,7 @@ This document is in sync with README.md, GROUP_PROGRESS_LOG, AUTHORS.md, and UI_
 
 **Description**: OpenAI provides large language model APIs (e.g., GPT-4o-mini) for natural language understanding and text generation. Anthropic provides the Claude model family as an alternative.
 
-**Usage**: In RiskRadar, the LLM API generates daily digest summaries and breaking alert analyses from collected environmental alerts. The provider is configurable via `LLM_PROVIDER` environment variable (`openai` or `anthropic`).
+**Usage**: In RiskRadar, the LLM API generates daily digest summaries and breaking alert analyses from collected environmental alerts. The provider is configurable via `LLM_PROVIDER` environment variable (`openrouter`, `openai`, `deepseek`, or `anthropic`).
 
 ### 2. Firecrawl API
 

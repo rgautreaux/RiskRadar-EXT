@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import Column, Integer, Text, Float, UniqueConstraint, DateTime, JSON, Boolean, Index
+from sqlalchemy import Column, Integer, Text, Float, UniqueConstraint, DateTime, JSON, Boolean, Index, ForeignKey
 from db.database import Base
 
 
@@ -121,7 +121,7 @@ class AlertArchive(Base):
     created_at = Column(DateTime(timezone=True), nullable=False)
     updated_at = Column(DateTime(timezone=True), nullable=False)
     archived_at = Column(DateTime(timezone=True), nullable=False, default=_now)
-    cleanup_run_id = Column(Integer)
+    cleanup_run_id = Column(Integer, ForeignKey("cleanup_runs.id", ondelete="SET NULL"))
 
 
 class SummaryArchive(Base):
@@ -139,7 +139,7 @@ class SummaryArchive(Base):
     token_count = Column(Integer)
     created_at = Column(DateTime(timezone=True), nullable=False)
     archived_at = Column(DateTime(timezone=True), nullable=False, default=_now)
-    cleanup_run_id = Column(Integer)
+    cleanup_run_id = Column(Integer, ForeignKey("cleanup_runs.id", ondelete="SET NULL"))
 
 
 
@@ -157,7 +157,7 @@ class ScrapeLogArchive(Base):
     started_at = Column(DateTime(timezone=True), nullable=False)
     completed_at = Column(DateTime(timezone=True), nullable=False)
     archived_at = Column(DateTime(timezone=True), nullable=False, default=_now)
-    cleanup_run_id = Column(Integer)
+    cleanup_run_id = Column(Integer, ForeignKey("cleanup_runs.id", ondelete="SET NULL"))
 
 
 # Migration logging table for email/password migration
@@ -199,8 +199,8 @@ class NotificationDispatchLog(Base):
     __tablename__ = "notification_dispatch_log"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    alert_id = Column(Integer, nullable=False)
-    initiated_by_user_id = Column(Integer, nullable=False)
+    alert_id = Column(Integer, ForeignKey("alerts.id", ondelete="RESTRICT"), nullable=False)
+    initiated_by_user_id = Column(Integer, ForeignKey("users.id", ondelete="RESTRICT"), nullable=False)
     provider = Column(Text, nullable=False)
     recipients_total = Column(Integer, nullable=False, default=0)
     sent_count = Column(Integer, nullable=False, default=0)
@@ -211,4 +211,5 @@ class NotificationDispatchLog(Base):
 
     __table_args__ = (
         Index("idx_notification_dispatch_status_created_at", "status", "created_at"),
+        Index("idx_notification_dispatch_initiated_by_user_id", "initiated_by_user_id"),
     )
