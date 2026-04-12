@@ -294,6 +294,30 @@ def _check_required_foreign_keys(inspector: Inspector, existing_tables: set[str]
     return issues
 
 
+def _check_legacy_typo_schema(inspector: Inspector, existing_tables: set[str]) -> list[PreflightIssue]:
+    issues: list[PreflightIssue] = []
+
+    if "user_prefernces" in existing_tables:
+        issues.append(
+            PreflightIssue(
+                severity="blocking",
+                message="legacy typo table detected: user_prefernces (expected user_preferences)",
+            )
+        )
+
+    if "user_reads" in existing_tables:
+        user_reads_columns = {column["name"] for column in inspector.get_columns("user_reads")}
+        if "articlle_id" in user_reads_columns:
+            issues.append(
+                PreflightIssue(
+                    severity="blocking",
+                    message="legacy typo column detected: user_reads.articlle_id (expected article_id)",
+                )
+            )
+
+    return issues
+
+
 def run_preflight(strict: bool = False) -> int:
     """Run safety checks before applying a schema or data migration.
 
@@ -313,6 +337,7 @@ def run_preflight(strict: bool = False) -> int:
             issues.extend(_check_plaintext_email_leftovers(db))
         issues.extend(_check_required_indexes(inspector, existing_tables))
         issues.extend(_check_required_foreign_keys(inspector, existing_tables))
+        issues.extend(_check_legacy_typo_schema(inspector, existing_tables))
         issues.extend(_check_archive_lineage(db))
         issues.extend(_check_dispatch_references(db))
 

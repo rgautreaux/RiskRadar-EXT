@@ -5,6 +5,16 @@ All project description, functionality, and importance sections are fully synchr
 
 ---
 
+# April 12, 2026 Session Addendum
+This Apr 12 documentation pass added a full database schema graph in `docs/DATA_MODEL.md` under the existing `Key Relationships` section.
+
+- Added a Mermaid ER diagram covering all 13 tables in the current MariaDB schema.
+- Included key PK/FK structure and relationship edges matching the live schema documentation.
+- Preserved current schema naming (including known typoed identifiers) for implementation accuracy.
+- Clarified JSON-modeled linkage in summaries (`alert_ids`) where no direct FK edge currently exists.
+
+---
+
 # Documentation Synchronization Note (Apr 2, 2026)
 
 All documentation, QA, and planning docs are synchronized and validated as of April 2, 2026. Rebecca's code work is complete across the assigned UI/UX and Phase 3 security tasks, and the remaining backend/security lead sign-off is an external approval gate before production rollout. The follow-up verification pass on Apr 2 refreshed the narrative docs without changing implementation state.

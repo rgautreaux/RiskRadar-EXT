@@ -97,3 +97,48 @@ def test_preflight_blocks_missing_required_foreign_keys(db_session, monkeypatch)
     code = migration_preflight.run_preflight()
 
     assert code == 2
+
+
+def test_preflight_blocks_legacy_user_prefernces_table(db_session, monkeypatch):
+    db_session.execute(
+        text(
+            """
+            CREATE TABLE user_prefernces (
+                user_id INTEGER NOT NULL,
+                category_id INTEGER NOT NULL,
+                is_enabled INTEGER NOT NULL,
+                PRIMARY KEY (user_id, category_id)
+            )
+            """
+        )
+    )
+    db_session.commit()
+
+    monkeypatch.setattr(migration_preflight, "SessionLocal", lambda: db_session)
+
+    code = migration_preflight.run_preflight()
+
+    assert code == 2
+
+
+def test_preflight_blocks_legacy_user_reads_articlle_id_column(db_session, monkeypatch):
+    db_session.execute(
+        text(
+            """
+            CREATE TABLE user_reads (
+                user_id INTEGER NOT NULL,
+                articlle_id INTEGER NOT NULL,
+                read_at DATETIME,
+                progress_pct INTEGER,
+                PRIMARY KEY (user_id, articlle_id)
+            )
+            """
+        )
+    )
+    db_session.commit()
+
+    monkeypatch.setattr(migration_preflight, "SessionLocal", lambda: db_session)
+
+    code = migration_preflight.run_preflight()
+
+    assert code == 2

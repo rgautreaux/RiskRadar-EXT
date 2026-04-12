@@ -20,6 +20,7 @@ RiskRadar helps residents and travelers identify environmental risks by scraping
 - Apr 12 follow-up (database safety implementation lane): added and validated `schema_drift_check.py`, unified `safety_gate.py`, registration plaintext-email hardening for new users, and legacy-login compatibility regression coverage.
 - Apr 12 follow-up verification: full backend pytest baseline advanced to `176 passed, 3 skipped` after safety-lane additions.
 - Apr 12 follow-up review prep: remaining local/unpushed work was split into categorized commits (security, DB safety commands/tests, migration evidence docs, top-level sync docs, frontend generated artifacts) and pushed to `origin/Rebecca-Gautreaux-Work-Branch` for clearer PR review.
+- Apr 12 documentation follow-up: added a full Mermaid ER `Database Schema` graph in `docs/DATA_MODEL.md` under `Key Relationships`, capturing all 13 tables, key PK/FK fields, and current FK relationship edges.
 
 ---
 

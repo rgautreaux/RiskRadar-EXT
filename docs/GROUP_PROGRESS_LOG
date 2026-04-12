@@ -1,3 +1,31 @@
+# Rebecca Gautreaux Log — 2026-04-12 (Database Schema Graph Documentation Update)
+
+### Session Focus
+- Add a complete schema-table relationship graph to the data-model documentation for clearer database structure visibility.
+- Preserve current schema naming and relationship fidelity, including known typoed identifiers that remain in the live schema.
+
+### Work Completed
+- Added a new `Database Schema` section under `Key Relationships` in `docs/DATA_MODEL.md`.
+- Authored a Mermaid `erDiagram` that documents all 13 tables with PK/FK markers and key columns.
+- Mapped direct FK relationship edges for content, user, alert, and operations table groups based on the current schema.
+- Added an explicit note clarifying that `summaries.alert_ids` is JSON-based and therefore not represented as a direct FK edge.
+
+### Validation / Testing
+- Documentation-only change; no runtime/backend/frontend code paths were modified.
+- Verified section placement and continuity: the new schema graph appears directly below `Key Relationships` and before `Normalization Analysis`.
+
+### Issues / Blockers
+- No blockers in this documentation lane.
+
+### Decisions Made
+- Kept schema names aligned to the current database state for accuracy (including existing typoed names still present in SQL schema).
+- Chose Mermaid ER format to keep the graph versionable in-repo and easy to review in pull requests.
+
+### Outcome
+- Data-model docs now include a full visual schema graph that complements the relationship table and improves audit/review usability.
+
+---
+
 # Rebecca Gautreaux Log — 2026-04-12 (Database Safety Lane Follow-up, Categorized Commit Split, and Push Sync)
 
 ### Session Focus

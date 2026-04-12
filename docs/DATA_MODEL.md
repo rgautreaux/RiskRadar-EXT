@@ -268,6 +268,163 @@ Audit log for each scraping run.
 | `users` | `user_reads` | Many-to-many (via junction) | `user_id` |
 | `articles` | `user_reads` | Many-to-many (via junction) | `articlle_id` |
 
+## Database Schema
+
+```mermaid
+erDiagram
+  SOURCES {
+    INT source_id PK
+    VARCHAR source_name
+    VARCHAR base_url
+    INT scrape_freq_min
+    TINYINT is_active
+    TIMESTAMP created_at
+  }
+
+  CATEGORIES {
+    INT category_id PK
+    VARCHAR category_name
+    TEXT description
+  }
+
+  ARTICLES {
+    INT article_id PK
+    INT source_id FK
+    INT category_id FK
+    VARCHAR title
+    VARCHAR source_url
+    TEXT raw_content
+    TEXT formatted_body
+    VARCHAR summary
+    SMALLINT read_time_min
+    VARCHAR status
+    DATE scraped_at
+    DATE published_at
+    DATE created_at
+  }
+
+  TAGS {
+    INT tag_id PK
+    VARCHAR tag_name
+  }
+
+  ARTICLE_TAGS {
+    INT article_id PK, FK
+    INT tag_id PK, FK
+  }
+
+  ALERTS {
+    INT alert_id PK
+    INT article_id FK
+    TEXT source
+    TEXT source_id
+    TEXT alert_type
+    TEXT severity
+    TEXT title
+    TEXT description
+    VARCHAR priority
+    JSON raw_data
+    FLOAT latitude
+    FLOAT longitude
+    TEXT location_name
+    TEXT event_start
+    TEXT event_end
+    TEXT fetched_at
+    TIMESTAMP created_at
+    TEXT updated_at
+  }
+
+  SUMMARIES {
+    INT id PK
+    TEXT title
+    TEXT content
+    TEXT summary_type
+    JSON alert_ids
+    TEXT reigon
+    TEXT generated_at
+    TEXT model_used
+    INT token_count
+    TEXT created_at
+  }
+
+  USERS {
+    INT user_id PK
+    INT token_id FK
+    TEXT display_name
+    TEXT email
+    TEXT password_hash
+    TEXT zip_code
+    FLOAT latitude
+    FLOAT longitude
+    JSON alert_types
+    TEXT notify_severity
+    TINYINT is_active
+    TIMESTAMP last_login_at
+    TEXT created_at
+    TEXT updated_at
+  }
+
+  DEVICE_TOKENS {
+    INT token_id PK
+    INT user_id FK
+    VARCHAR device_token
+    VARCHAR platform
+    TINYINT is_active
+    TIMESTAMP created_at
+  }
+
+  NOTIFICATION_SETTINGS {
+    INT user_id PK, FK
+    TINYINT alerts_enabled
+    TINYINT daily_digest
+    TIME quiet_start
+    TIME quiet_end
+  }
+
+  USER_PREFERNCES {
+    INT user_id PK, FK
+    INT category_id PK, FK
+    TINYINT is_enabled
+  }
+
+  USER_READS {
+    INT user_id PK, FK
+    INT articlle_id PK, FK
+    TIMESTAMP read_at
+    SMALLINT progress_pct
+  }
+
+  SCRAPE_LOG {
+    INT log_id PK
+    TEXT source
+    TEXT status
+    INT alerts_fetched
+    INT alerts_new
+    TIMESTAMP scraped_at
+    SMALLINT http_status
+    INT articles_found
+    INT articles_inserted
+    TEXT error_message
+    INT duration_ms
+    TEXT started_at
+    TEXT completed_at
+  }
+
+  SOURCES ||--o{ ARTICLES : source_id
+  CATEGORIES ||--o{ ARTICLES : category_id
+  ARTICLES ||--|| ALERTS : article_id
+  ARTICLES ||--o{ ARTICLE_TAGS : article_id
+  TAGS ||--o{ ARTICLE_TAGS : tag_id
+  USERS ||--|| DEVICE_TOKENS : user_id
+  USERS ||--|| NOTIFICATION_SETTINGS : user_id
+  USERS ||--o{ USER_PREFERNCES : user_id
+  CATEGORIES ||--o{ USER_PREFERNCES : category_id
+  USERS ||--o{ USER_READS : user_id
+  ARTICLES ||--o{ USER_READS : articlle_id
+```
+
+> Note: `SUMMARIES.alert_ids` stores alert linkage as JSON rather than a normalized junction table, so no direct FK edge is present.
+
 ---
 
 ## Normalization Analysis

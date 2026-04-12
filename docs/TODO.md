@@ -1,5 +1,7 @@
 # Documentation Synchronization Note (Apr 12, 2026)
 
+[x] 🟢 Data Model Schema Graph Documentation Update (Apr 12, 2026): added a full Mermaid `Database Schema` section in `docs/DATA_MODEL.md` directly under `Key Relationships`, documenting all 13 tables, key PK/FK fields, and current FK relationship edges with an explicit JSON-linkage note for `summaries.alert_ids`.
+
 [x] 🟢 Database Safety Lane Follow-up + Categorized Push Sync (Apr 12, 2026): implemented and verified schema drift + unified migration safety-gate utilities, hardened new-user email handling to avoid plaintext persistence with legacy-login compatibility retained, updated migration runbook sequencing, split remaining local/unpushed changes into subsystem-aligned commits, and pushed the categorized stack for cleaner PR review (`176 passed, 3 skipped` backend baseline).
 
 [x] 🟢 Rebecca-Safe Plan Closeout Sync (Apr 12, 2026): completed the remaining Rebecca-owned low-risk coordination tasks (shared owner snapshot maintenance, evidence-index upkeep, and final-review checklist scaffolding) and left only owner-dependent follow-ups open (frontend static-check code fixes + external security approval gate).

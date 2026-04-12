@@ -1,6 +1,8 @@
 # April 12 Synchronization Note
 This Apr 12 pass finalized the LLM settings contract across environment configuration, API specifications, and backend tests, ensuring enterprise provider flexibility (OpenRouter, OpenAI, DeepSeek, Anthropic) with safe demo defaults.
 
+- Added database schema documentation depth in `docs/DATA_MODEL.md` by introducing a full Mermaid `Database Schema` ER graph under `Key Relationships`, covering all 13 tables, key PK/FK columns, and current FK edges.
+
 Apr 12 implementation follow-up addendum:
 - Added and validated database safety follow-up utilities in this branch: `schema_drift_check.py` and unified `safety_gate.py`, both backed by dedicated pytest coverage.
 - Hardened user registration path to avoid plaintext email persistence for new accounts while preserving legacy plaintext-email login compatibility during migration transition.
