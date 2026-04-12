@@ -15,7 +15,7 @@ Optional stretch goals:
 
 ## Verification Snapshot (Latest)
 
-- Latest full backend verification (`npm run verify:backend`): **198 passed** plus standalone smoke test pass (2026-04-11).
+- Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
 - S3-06 closeout command added: `npm run verify:evidence:s3` (passes when all required evidence files and links are present).
 
 ## Documentation Sync Checklist
@@ -243,6 +243,15 @@ Maintain delivered features, harden security, and keep documentation and verific
 - [x] One-command backend verification workflow added and validated with `npm run verify:backend`.
 
 ### Stage 5 Session Entries (After Checklist)
+
+#### Stage 5 Rebecca-Safe Database Normalization Guardrails and Closeout Session (2026-04-12)
+Summary:
+- Completed remaining Rebecca-safe normalization hardening tasks using compatibility-first changes only.
+- Added normalization fallback observability in summaries/users API compatibility paths.
+- Added `backend/scripts/verify_normalization_guardrails.py` to run dry-run backfills and reconciliation checks (with strict option for drift failure).
+- Extended `backend/scripts/run_full_verification.py` with optional normalization guardrail execution flags.
+- Added staging evidence checklist and evidence-index link for normalization rollout proof.
+- Re-validated backend after updates: **211/211 tests passed**.
 
 #### Stage 5 Frontend Visual Refresh Low-Risk Implementation and Max Validation Handoff Session (2026-04-12)
 Summary:

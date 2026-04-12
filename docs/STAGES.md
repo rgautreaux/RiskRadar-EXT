@@ -1,7 +1,33 @@
 ## Verification Snapshot (Latest)
 
-- Latest full backend verification (`npm run verify:backend`): **198 passed** plus standalone smoke test pass (2026-04-11).
+- Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
 - Historical lower totals in older session entries are retained intentionally as time-stamped snapshots.
+
+## Stage 5: Rebecca-Safe Database Normalization Guardrails and Closeout Session (2026-04-12)
+
+### Implementation
+Completed remaining Rebecca-safe normalization hardening tasks by adding compatibility fallback observability, low-risk guardrail automation, and staging evidence checklists without removing legacy JSON fields.
+
+### Functionality
+- Added fallback observability events for:
+   - summary alert-link JSON fallback
+   - user alert-type relational fallback
+   - user health-condition relational fallback
+- Added normalization guardrail command path:
+   - `backend/scripts/verify_normalization_guardrails.py`
+   - optional strict failure mode for reconciliation drift
+- Extended full verification runner with optional guardrail execution flags.
+- Added normalization evidence checklist under `docs/evidence/` and linked it in the evidence index.
+
+### Verification Evidence
+- ✅ Focused suites passed after guardrail/observability additions.
+- ✅ Full backend suite passed: **211/211**.
+- ✅ Full verification with guardrails (`--include-normalization-guardrails`) completed successfully.
+
+### Importance
+- Adds deployment-safe detection for normalization drift before runtime impact.
+- Keeps implementation within Rebecca-safe boundaries (non-destructive, compatibility-first).
+- Improves grading/onboarding evidence readiness via explicit normalization checklist artifacts.
 
 ## Stage 5: Frontend Visual Refresh Low-Risk Implementation and Max Validation Handoff Session (2026-04-12)
 
