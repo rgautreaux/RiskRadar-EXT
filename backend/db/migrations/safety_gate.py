@@ -36,12 +36,20 @@ def run_safety_gate() -> int:
         "yes",
         "on",
     }
+    normalization_contract_required = os.getenv(
+        "MIGRATION_NORMALIZATION_CONTRACT_REQUIRED",
+        "false",
+    ).lower() in {"1", "true", "yes", "on"}
 
     print(f"[{_now_utc().isoformat()}] Migration safety gate")
     print(f"preflight_strict={preflight_strict}")
+    print(f"normalization_contract_required={normalization_contract_required}")
 
     checks: list[tuple[str, int]] = [
-        ("preflight", run_preflight(strict=preflight_strict)),
+        (
+            "preflight",
+            run_preflight(strict=preflight_strict, enforce_contract=normalization_contract_required),
+        ),
         ("schema_drift", run_schema_drift_check()),
         ("validation", run_validation()),
         ("monitor", run_monitoring()),

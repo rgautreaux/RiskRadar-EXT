@@ -431,7 +431,7 @@ erDiagram
 
 The current schema **does not fully satisfy Third Normal Form (3NF)** due to the following violations:
 
-> **Remediation status (2026-04-12)**: Relational remediation structures were implemented in `backend/db/migrations/2026-04-12_phase2_phase4_normalization_tables.sql` with companion backfill and parity validators. Legacy JSON/text columns remain as compatibility fields during dual-write verification windows.
+> **Remediation status (2026-04-12)**: Relational remediation structures were implemented in `backend/db/migrations/2026-04-12_phase2_phase4_normalization_tables.sql` with companion backfill and parity validators. Legacy JSON/text columns remain as compatibility fields during dual-write verification windows. Final contract retirement is staged via `backend/db/migrations/2026-04-12_phase5_contract_retire_legacy_columns.sql` and should be executed only after contract safety-gate checks pass.
 
 ### First Normal Form (1NF) Violations
 

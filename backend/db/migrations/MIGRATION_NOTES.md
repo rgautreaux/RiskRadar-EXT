@@ -4,6 +4,7 @@ Use `2026-03-03_mariadb_scraper_alignment.sql` to align an existing MariaDB sche
 Use `2026-03-09_mariadb_retention_cleanup.sql` to add scheduled retention archive/delete support.
 Use `2026-04-11_notification_channels_dispatch_log.sql` to add persisted notification channel preferences and delivery observability logging.
 Use `2026-04-12_phase2_phase4_normalization_tables.sql` to create relational replacements for legacy JSON and geo dependency fields.
+Use `2026-04-12_phase5_contract_retire_legacy_columns.sql` only after parity validation to remove legacy compatibility columns.
 
 ## What it fixes
 
@@ -21,6 +22,7 @@ Use `2026-04-12_phase2_phase4_normalization_tables.sql` to create relational rep
 	- `zip_geo` lookup supports normalized `users.zip_code -> coordinates`
 	- `locations` + `alerts.location_id` canonicalize location naming from coordinates
 	- `alert_raw_payloads` canonicalizes raw alert payload storage separate from alerts row
+	- Contract-phase retirement script is available for `summaries.alert_ids`, `users.alert_types`, and `alerts.raw_data` after safety checks pass
 
 ## Apply migration
 

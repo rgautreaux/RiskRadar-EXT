@@ -27,8 +27,11 @@ NotificationDispatchLog = models_module.NotificationDispatchLog
 ScrapeLog = models_module.ScrapeLog
 ScrapeLogArchive = models_module.ScrapeLogArchive
 Summary = models_module.Summary
+SummaryAlert = models_module.SummaryAlert
 SummaryArchive = models_module.SummaryArchive
 User = models_module.User
+UserAlertTypePreference = models_module.UserAlertTypePreference
+AlertRawPayload = models_module.AlertRawPayload
 
 
 @dataclass(frozen=True)
@@ -324,7 +327,77 @@ def _check_legacy_typo_schema(inspector: Inspector, existing_tables: set[str]) -
     return issues
 
 
-def run_preflight(strict: bool = False) -> int:
+def _check_normalization_contract_readiness(
+    db: Session,
+    inspector: Inspector,
+    existing_tables: set[str],
+) -> list[PreflightIssue]:
+    issues: list[PreflightIssue] = []
+
+    required_contract_tables = {
+        "summary_alerts",
+        "user_alert_type_preferences",
+        "alert_raw_payloads",
+    }
+    missing = [name for name in sorted(required_contract_tables) if name not in existing_tables]
+    if missing:
+        issues.append(
+            PreflightIssue(
+                severity="blocking",
+                message=f"normalization contract blocked: missing required table(s): {', '.join(missing)}",
+            )
+        )
+        return issues
+
+    summary_columns = {column["name"] for column in inspector.get_columns("summaries")}
+    if "alert_ids" in summary_columns:
+        legacy_summaries = db.query(Summary).filter(Summary.alert_ids.isnot(None)).count()
+        relational_summaries = db.query(SummaryAlert.summary_id).distinct().count()
+        if relational_summaries < legacy_summaries:
+            issues.append(
+                PreflightIssue(
+                    severity="blocking",
+                    message=(
+                        "normalization contract blocked: summary_alerts parity incomplete "
+                        f"(legacy_summaries={legacy_summaries}, relational_summaries={relational_summaries})"
+                    ),
+                )
+            )
+
+    user_columns = {column["name"] for column in inspector.get_columns("users")}
+    if "alert_types" in user_columns:
+        legacy_users = db.query(User).filter(User.alert_types.isnot(None)).count()
+        relational_users = db.query(UserAlertTypePreference.user_id).distinct().count()
+        if relational_users < legacy_users:
+            issues.append(
+                PreflightIssue(
+                    severity="blocking",
+                    message=(
+                        "normalization contract blocked: user_alert_type_preferences parity incomplete "
+                        f"(legacy_users={legacy_users}, relational_users={relational_users})"
+                    ),
+                )
+            )
+
+    alert_columns = {column["name"] for column in inspector.get_columns("alerts")}
+    if "raw_data" in alert_columns:
+        legacy_alerts = db.query(Alert).filter(Alert.raw_data.isnot(None)).count()
+        relational_alerts = db.query(AlertRawPayload.alert_id).count()
+        if relational_alerts < legacy_alerts:
+            issues.append(
+                PreflightIssue(
+                    severity="blocking",
+                    message=(
+                        "normalization contract blocked: alert_raw_payloads parity incomplete "
+                        f"(legacy_alerts={legacy_alerts}, relational_alerts={relational_alerts})"
+                    ),
+                )
+            )
+
+    return issues
+
+
+def run_preflight(strict: bool = False, enforce_contract: bool = False) -> int:
     """Run safety checks before applying a schema or data migration.
 
     Returns 0 when no blocking issues are found and 2 when at least one
@@ -344,6 +417,8 @@ def run_preflight(strict: bool = False) -> int:
         issues.extend(_check_required_indexes(inspector, existing_tables))
         issues.extend(_check_required_foreign_keys(inspector, existing_tables))
         issues.extend(_check_legacy_typo_schema(inspector, existing_tables))
+        if enforce_contract:
+            issues.extend(_check_normalization_contract_readiness(db, inspector, existing_tables))
         issues.extend(_check_archive_lineage(db))
         issues.extend(_check_dispatch_references(db))
 
@@ -352,6 +427,7 @@ def run_preflight(strict: bool = False) -> int:
             print("mode=strict")
         else:
             print("mode=standard")
+        print(f"normalization_contract_enforced={enforce_contract}")
 
         if not issues:
             print("status=ok")

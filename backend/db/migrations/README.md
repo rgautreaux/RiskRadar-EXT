@@ -39,6 +39,16 @@ This folder will contain migration scripts for email encryption and password has
 - `parity_validator_user_alert_types.py`
   - Validates relational `user_alert_type_preferences` parity against legacy `users.alert_types`.
 
+- `2026-04-12_phase5_contract_retire_legacy_columns.sql`
+  - Contract-phase migration to retire legacy compatibility columns once parity has been verified:
+    - Drops `summaries.alert_ids`
+    - Drops `users.alert_types`
+    - Drops `alerts.raw_data`
+  - Must be run only after backfill/parity/safety checks pass.
+
+- `2026-04-12_phase5_contract_retire_legacy_columns_rollback.sql`
+  - Rollback companion to restore legacy columns if Phase 5 needs reversal.
+
 - `2026-04-12_phase0_index_hardening.sql`
   - Adds idempotent baseline indexes that preflight now requires:
     - `alerts`: `idx_alerts_source_fetched_at`, `idx_alerts_type_severity_fetched_at`
@@ -103,6 +113,7 @@ This folder will contain migration scripts for email encryption and password has
 - `safety_gate.py`
   - Runs preflight, schema drift, validation, and monitoring checks as one command.
   - Supports strict preflight via `MIGRATION_PREFLIGHT_STRICT=true|false`.
+  - Supports contract enforcement via `MIGRATION_NORMALIZATION_CONTRACT_REQUIRED=true|false`.
   - Returns non-zero exit code when any safety check fails.
 
 - `phase3_staging_evidence_template.md`
@@ -129,6 +140,8 @@ This folder will contain migration scripts for email encryption and password has
 16. `python db/migrations/migrate_email_encryption.py`
 17. `python db/migrations/validate_email_migration.py`
 18. `python db/migrations/monitor_migration_log.py`
+19. (Optional contract phase) set `MIGRATION_NORMALIZATION_CONTRACT_REQUIRED=true` and run `python db/migrations/safety_gate.py`
+20. (Optional contract phase) apply `2026-04-12_phase5_contract_retire_legacy_columns.sql`
 
 Record all outputs in staging validation notes before requesting backend/security lead sign-off.
 
