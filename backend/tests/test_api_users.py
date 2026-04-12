@@ -1,6 +1,6 @@
 """Tests for user API endpoints."""
 
-from auth.security import create_access_token, verify_password
+from auth.security import create_access_token, verify_password, email_hmac
 from db.models import User
 
 
@@ -34,16 +34,28 @@ class TestRegisterUser:
         assert resp.json()["zip_code"] == "90210"
 
     def test_password_is_hashed(self, test_client, db_session):
-        from db.models import User
-
+        email_value = "carol@test.com"
         test_client.post("/api/v1/users/register", json={
             "display_name": "Carol",
-            "email": "carol@test.com",
+            "email": email_value,
             "password": "mypassword",
         })
-        user = db_session.query(User).filter(User.email == "carol@test.com").first()
+        user = db_session.query(User).filter(User.email_hmac == email_hmac(email_value)).first()
         assert user.password_hash != "mypassword"
         assert verify_password("mypassword", user.password_hash)
+
+    def test_register_does_not_store_plaintext_email(self, test_client, db_session):
+        email_value = "privacy@test.com"
+        test_client.post("/api/v1/users/register", json={
+            "display_name": "Privacy User",
+            "email": email_value,
+            "password": "secret123",
+        })
+
+        user = db_session.query(User).filter(User.email_hmac == email_hmac(email_value)).first()
+        assert user is not None
+        assert user.email is None
+        assert user.email_encrypted is not None
 
     def test_duplicate_email_rejected(self, test_client, sample_user):
         resp = test_client.post("/api/v1/users/register", json={

@@ -76,7 +76,8 @@ def register_user(body: UserCreate, db: Session = Depends(get_db)):
 
     user = User(
         display_name=body.display_name,
-        email=body.email,
+        # New records should avoid plaintext email persistence.
+        email=None,
         email_encrypted=encrypt_email(body.email),
         email_hmac=hmac_val,
         password_hash=hash_password(body.password),
@@ -101,9 +102,10 @@ def login_user(body: UserLogin, db: Session = Depends(get_db)):
     - Return { access_token, token_type: "bearer" }.
     """
     hmac_val = email_hmac(body.email)
-    user = db.query(User).filter(
-        or_(User.email_hmac == hmac_val, User.email == body.email)
-    ).first()
+    # Prefer HMAC lookup; allow plaintext fallback only for legacy rows.
+    user = db.query(User).filter(User.email_hmac == hmac_val).first()
+    if not user:
+        user = db.query(User).filter(User.email == body.email).first()
     if not user or not verify_password(body.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Invalid email or password")
     token = create_access_token(data={"sub": str(user.id)})
