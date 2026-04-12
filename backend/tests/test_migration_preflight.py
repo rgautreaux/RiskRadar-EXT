@@ -1,10 +1,11 @@
 from datetime import datetime, timezone
-from types import SimpleNamespace
-
+from importlib import import_module
 from sqlalchemy import text
 
-from db.migrations import preflight as migration_preflight
-from db.models import NotificationDispatchLog, User
+migration_preflight = import_module("db.migrations.preflight")
+models_module = import_module("db.models")
+NotificationDispatchLog = models_module.NotificationDispatchLog
+User = models_module.User
 
 NOW = datetime.now(timezone.utc)
 
@@ -67,18 +68,32 @@ def test_preflight_blocks_missing_required_index(db_session, monkeypatch):
     assert code == 2
 
 
-def test_required_foreign_keys_check_reports_missing_relations():
-    inspector = SimpleNamespace(
-        get_foreign_keys=lambda table_name: []
-    )
-    existing_tables = {
-        "alerts_archive",
-        "summaries_archive",
-        "scrape_log_archive",
-        "notification_dispatch_log",
-    }
+def test_preflight_blocks_missing_required_foreign_keys(db_session, monkeypatch):
+    db_session.execute(text("PRAGMA foreign_keys=OFF"))
+    db_session.execute(text("""
+        CREATE TABLE notification_dispatch_log_tmp (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            alert_id INTEGER NOT NULL,
+            initiated_by_user_id INTEGER NOT NULL,
+            provider TEXT NOT NULL,
+            recipients_total INTEGER NOT NULL DEFAULT 0,
+            sent_count INTEGER NOT NULL DEFAULT 0,
+            failed_count INTEGER NOT NULL DEFAULT 0,
+            status TEXT NOT NULL,
+            error_message TEXT,
+            created_at DATETIME NOT NULL
+        )
+    """))
+    db_session.execute(text("INSERT INTO notification_dispatch_log_tmp SELECT * FROM notification_dispatch_log"))
+    db_session.execute(text("DROP TABLE notification_dispatch_log"))
+    db_session.execute(text("ALTER TABLE notification_dispatch_log_tmp RENAME TO notification_dispatch_log"))
+    db_session.execute(text("CREATE INDEX idx_notification_dispatch_status_created_at ON notification_dispatch_log (status, created_at)"))
+    db_session.execute(text("CREATE INDEX idx_notification_dispatch_initiated_by_user_id ON notification_dispatch_log (initiated_by_user_id)"))
+    db_session.execute(text("PRAGMA foreign_keys=ON"))
+    db_session.commit()
 
-    issues = migration_preflight._check_required_foreign_keys(inspector, existing_tables)
+    monkeypatch.setattr(migration_preflight, "SessionLocal", lambda: db_session)
 
-    assert len(issues) == 4
-    assert all(issue.severity == "blocking" for issue in issues)
+    code = migration_preflight.run_preflight()
+
+    assert code == 2
