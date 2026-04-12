@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import Column, Integer, Text, Float, UniqueConstraint, DateTime, JSON, Boolean, Index, ForeignKey
+from sqlalchemy import Column, Integer, Text, Float, UniqueConstraint, DateTime, JSON, Boolean, Index, ForeignKey, String
 from db.database import Base
 
 
@@ -65,7 +65,7 @@ class User(Base):
     # New: AES-encrypted email storage
     email_encrypted = Column(Text, nullable=True)
     # HMAC of email for uniqueness lookup (not reversible)
-    email_hmac = Column(Text, unique=True, nullable=True)
+    email_hmac = Column(String(64), unique=True, nullable=True)
     password_hash = Column(Text)
     zip_code = Column(Text)
     latitude = Column(Float)
