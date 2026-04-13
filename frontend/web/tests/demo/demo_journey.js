@@ -12,8 +12,8 @@ const SESSION_COOKIE_NAME = 'riskradar_session';
 
 function parseArgs(argv) {
   const args = {
-    baseUrl: 'http://localhost:8000',
-    apiBaseUrl: null,
+    baseUrl: 'http://127.0.0.1:8080',
+    apiBaseUrl: 'http://127.0.0.1:8000',
     headless: true,
     pauseOnStep: false,
     screenshots: true,
@@ -387,8 +387,8 @@ async function runJourney(options = {}) {
       await openWidgetButton.waitFor({ timeout: 10000 });
       await openWidgetButton.click();
 
-      const diagnosticsToggle = page.getByRole('button', { name: 'Show Panels' });
-      await diagnosticsToggle.waitFor({ timeout: 10000 });
+      const diagnosticsToggle = page.getByRole('button', { name: 'Toggle diagnostics panel' });
+      await diagnosticsToggle.waitFor({ timeout: 20000 });
       await diagnosticsToggle.click();
 
       if (options.screenshots) {
