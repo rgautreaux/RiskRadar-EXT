@@ -1,3 +1,4 @@
+<!-- Archived session log. For current project status, see README.md -->
 # GitHub Copilot Session 20 - Documentation Updates for Rebecca (Apr 2, 2026)
 
 **User:** Perform the following Documentation Updates for Rebecca now:
