@@ -16,6 +16,7 @@ export default defineConfig({
       input: {
         'golby-widget': path.resolve(__dirname, 'src/golby-widget.tsx'),
         'assistant-welcome': path.resolve(__dirname, 'src/assistant-welcome.tsx'),
+        'golby-expression-mockup': path.resolve(__dirname, 'src/golby-expression-mockup.tsx'),
       },
       output: {
         entryFileNames: '[name].js',
