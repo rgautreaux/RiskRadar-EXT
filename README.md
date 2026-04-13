@@ -5,6 +5,31 @@
 - Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
 - Historical 191/196 totals in session sections are preserved as point-in-time records from earlier runs.
 
+## Stage 5: Connectivity Preflight, Canonical Local Topology, and Documentation Synchronization Session (2026-04-12)
+
+### Implementation
+Implemented a fail-fast pre-demo connectivity preflight, standardized a canonical local runtime topology, and synchronized all top-level progress/history documentation to reflect this session.
+
+### Functionality
+- Added a new connectivity preflight command (`npm run verify:connectivity`) that validates backend/API/frontend wiring, map API URL injection, and CORS preflight behavior.
+- Added preflight scripts at `backend/scripts/pre_demo_connectivity_check.py` and `backend/scripts/run_connectivity_preflight.mjs`.
+- Updated `demo:run` to include connectivity preflight before demo journey execution.
+- Standardized canonical local demo topology to backend `127.0.0.1:8001` and frontend `127.0.0.1:8080`.
+- Updated frontend API defaults and local config example to canonical backend port.
+- Updated runbook/execution docs to include the connectivity preflight in the required pre-demo flow.
+
+### Execution
+- Added npm script: `verify:connectivity`.
+- Updated package flow: `demo:run` now runs build, preflight, and then demo journey.
+- Updated canonical config defaults in `frontend/web/config/app.php` and `frontend/web/config/config.local.example.php`.
+- Updated and synchronized top-level docs: TODO, STAGES, TRANSCRIPT, REFLECTION, AUTHORS, README.
+- Ran pass and validated preflight reaches full PASS state.
+
+### Importance
+- Catches frontend/backend/API wiring failures before demos with actionable output.
+- Reduces local-environment drift by enforcing one default topology across docs and scripts.
+- Improves grading/demo reliability by making connectivity verification explicit and repeatable.
+
 ## Stage 5: Golby Operational Frontend Wiring, Verification, and Documentation Synchronization Session (2026-04-12)
 
 ### Implementation
