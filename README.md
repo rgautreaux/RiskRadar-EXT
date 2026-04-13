@@ -5,6 +5,27 @@
 - Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
 - Historical 191/196 totals in session sections are preserved as point-in-time records from earlier runs.
 
+## Stage 5: RiskRadar Top-Text Removal and Documentation Synchronization Session (2026-04-12)
+
+### Implementation
+Applied a focused frontend fix to remove distracting raw text from the top of RiskRadar pages by correcting PHP opening-tag/comment placement in shared layout and API helper files, then synchronized top-level documentation for this session.
+
+### Functionality
+- Corrected `frontend/web/services/api_client.php` so map/forecast helper code is parsed within PHP instead of leaking plain text into page output.
+- Corrected `frontend/web/components/layout.php` so the layout-shell metadata block remains a non-rendered PHP comment.
+- Performed a transcript hygiene pass to remove duplicate replay-style transcript sections and preserve unique chronological history.
+- Added synchronized session updates across progress-tracking and contributor-history docs.
+
+### Verification Evidence
+- ✅ `php -l frontend/web/services/api_client.php` passed.
+- ✅ `php -l frontend/web/components/layout.php` passed.
+- ✅ Shared frontend files no longer emit file-header/helper text into rendered HTML output.
+
+### Importance
+- Restores polished UI presentation by removing non-product text from page output.
+- Uses low-risk, localized edits in shared files for broad visual impact without route/API behavior changes.
+- Maintains grading/onboarding traceability by keeping top-level docs in sync with implementation changes.
+
 ## Stage 5: Review-Ready Commit Split and Push Session (2026-04-12)
 
 ### Implementation

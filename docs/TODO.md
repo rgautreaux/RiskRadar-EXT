@@ -253,6 +253,22 @@ Maintain delivered features, harden security, and keep documentation and verific
 
 ### Stage 5 Session Entries (After Checklist)
 
+#### Stage 5 Frontend Contrast Accessibility Final Pass and Documentation Synchronization Session (2026-04-12)
+Summary:
+- Completed a final frontend visual polish pass to tighten edge-case contrast while preserving the richer, energetic color direction.
+- Applied WCAG-focused contrast hardening for navigation active state, primary actions, links, muted/supporting text, placeholder text, and keyboard focus visibility.
+- Added targeted small-text chip/pill/badge contrast improvements (`.severity-pill`, `.meta-chip`, `.summary-meta-inline`, `.icon-badge`, and shared button states) in `frontend/web/public/assets/app.css`.
+- Re-validated edited frontend stylesheet with diagnostics: no CSS errors reported after the final pass.
+- Synchronized top-level documentation updates for TODO/STAGES/README/TRANSCRIPT/REFLECTION/AUTHORS in chronological Stage 5 order.
+
+#### Stage 5 RiskRadar Top-Text Removal and Documentation Synchronization Session (2026-04-12)
+Summary:
+- Removed distracting top-of-page raw text output on RiskRadar web pages by correcting PHP file-header/tag placement in shared frontend files.
+- Fixed `frontend/web/services/api_client.php` so helper declarations are parsed inside PHP scope and no raw helper text leaks into rendered pages.
+- Corrected `frontend/web/components/layout.php` header-comment placement to prevent non-HTML text injection in the global layout shell.
+- Re-validated edited files with PHP lint checks and then synchronized top-level documentation for this session.
+- Performed transcript hygiene pass to remove duplicate replay-style transcript entries and preserve unique chronological history.
+
 #### Stage 5 Rebecca-Safe Database Normalization Guardrails and Closeout Session (2026-04-12)
 Summary:
 - Completed remaining Rebecca-safe normalization hardening tasks using compatibility-first changes only.

@@ -1,3 +1,25 @@
+﻿# Stage 5: RiskRadar Top-Text Removal and Documentation Synchronization Session (2026-04-12)
+
+Rebecca: Remove the uneccessary, distracting text at the top of the RiskRadar Pages that disrupt its appearance
+
+GitHub Copilot: Iâ€™m going to locate where that Stage 3 debug/comment text is being injected into the page output, then Iâ€™ll remove it from the shared layout so all RiskRadar pages render cleanly.
+
+Rebecca: Perform the following Documentation Updates for Rebecca now:
+
+- Add a summary of all developments of this session to all relevant files whlie preserving the existing formatting/style of the document (maintain chronological order and stage categorization)
+- Update TODO, STAGES, and all progress-tracking documentation
+- Add an entry in TRANSCRIPT with a verbatim, word-for-word, exact transcript of this session in its correct chronological place for historical accuracy
+- Run a pass and eliminate all duplicate TRANSCRIPT entries so that all entries are unique/distinct and are listed in the correct chronological order for historical accuracy
+- Update REFLECTION with a summary of this session, the developments made, why they were made, and how it betters the project all within its correct chronological place for historical accuracy
+- Update REFLECTION so it contains a summary of each TRANSCRIPT entry and are listed in the correct chronological order for historical accuracy
+- Run a pass and update all top-level documetation so that they are all in sync and agreement
+- Update AUTHORS with each member's contributions to the project so far and the roles they have assumed within project development in the correct chronological order for historical accuracy
+- Add sections to README regarding the implementation, functionality, execution, and importance of the major developments for this project and are listed in the correct chronological order and stage categorization for historical accuracy
+
+GitHub Copilot: Iâ€™m gathering the current state of the key documentation files first so I can append this session in the right chronological locations, preserve each fileâ€™s existing style, and then do a clean dedupe pass on Transcript entries.
+
+GitHub Copilot: Completed: fixed the top-of-page text leak in shared frontend PHP files, synchronized top-level docs with this session, and removed duplicate transcript replay entries while preserving chronological order.
+
 # Stage 5: Review-Ready Commit Split and Push Session (2026-04-12)
 
 Rebecca: Split these and all unpushed/uncommitted changes into commits based on what part of the project they affect (categorize them for easy PR review).
@@ -132,7 +154,7 @@ GitHub Copilot: Implemented a complete Golby soft-learning loop using the existi
 
 Rebecca: Proceed through all natural steps until all are complete and verified, resolve all issues that arise in the process.
 
-GitHub Copilot: Completed all follow-on steps end-to-end: added explicit style commands in `/api/v1/assistant/respond` (for example: “be shorter,” “be warmer,” “be goofy,” “expand”), persisted directives for identified users, added frontend-to-backend profile sync from local Golby learning state, and added migration support for existing databases. Ran targeted suites (**27 passed**) and full backend verification (**196 passed, 0 failed**) with no regressions.
+GitHub Copilot: Completed all follow-on steps end-to-end: added explicit style commands in `/api/v1/assistant/respond` (for example: â€œbe shorter,â€ â€œbe warmer,â€ â€œbe goofy,â€ â€œexpandâ€), persisted directives for identified users, added frontend-to-backend profile sync from local Golby learning state, and added migration support for existing databases. Ran targeted suites (**27 passed**) and full backend verification (**196 passed, 0 failed**) with no regressions.
 
 Rebecca: Update Top Level Documents with the contents and details of this session now, while maintaining the existing style and format.
 
@@ -193,7 +215,7 @@ Rebecca: Then perform the following Documentation Updates for Rebecca now:
 - Update AUTHORS with each member's contributions to the project so far and the roles they have assumed within project development in the correct chronological order for historical accuracy
 - Add sections to README regarding the implementation, functionality, execution, and importance of the major developments for this project and are listed in the correct chronological order and stage categorization for historical accuracy
 
-GitHub Copilot: The session transcript, reflection, TODO, STAGES, AUTHORS, and README have all been reviewed and are ready for synchronized updates. Here’s the plan for the documentation update:
+GitHub Copilot: The session transcript, reflection, TODO, STAGES, AUTHORS, and README have all been reviewed and are ready for synchronized updates. Hereâ€™s the plan for the documentation update:
 
 1. Add a summary of all developments of this session to all relevant files (TODO, STAGES, README, etc.)
 2. Update TODO, STAGES, and all progress-tracking documentation
@@ -211,7 +233,7 @@ I will now begin applying these updates, starting with TODO, STAGES, and README.
 Rebecca: Perform the following Documentation Updates for Rebecca now:
 
 
-GitHub Copilot: All relevant documentation files have been located and their current content reviewed. Here’s the plan for your requested updates:
+GitHub Copilot: All relevant documentation files have been located and their current content reviewed. Hereâ€™s the plan for your requested updates:
 
 Planned Actions:
 1. Add a summary of all developments from this session to all relevant files, preserving formatting, order, and stage categorization.
@@ -221,7 +243,7 @@ Planned Actions:
 5. Update REFLECTION with a summary of this session, why changes were made, and how they improve the project, in the correct place.
 6. Update REFLECTION so it contains a summary of each TRANSCRIPT entry, in order.
 7. Ensure all top-level docs are in sync and agreement.
-8. Update AUTHORS with each member’s contributions and roles, in order.
+8. Update AUTHORS with each memberâ€™s contributions and roles, in order.
 9. Add/expand README sections on implementation, functionality, execution, and importance of these developments, in order and by stage.
 
 I will now begin applying these updates step by step, starting with the TODO and STAGES files.
@@ -243,7 +265,7 @@ Rebecca: Perform the following Documentation Updates for Rebecca now:
 - Update AUTHORS with each member's contributions to the project so far and the roles they have assumed within project development in the correct chronological order for historical accuracy
 - Add sections to README regarding the implementation, functionality, execution, and importance of the major developments for this project and are listed in the correct chronological order and stage categorization for historical accuracy
 
-GitHub Copilot: All relevant documentation files have been located and their current content reviewed. Here’s the plan for your requested updates:
+GitHub Copilot: All relevant documentation files have been located and their current content reviewed. Hereâ€™s the plan for your requested updates:
 
 Planned Actions:
 1. Add a summary of all developments from this session to all relevant files, preserving formatting, order, and stage categorization.
@@ -253,7 +275,7 @@ Planned Actions:
 5. Update REFLECTION with a summary of this session, why changes were made, and how they improve the project, in the correct place.
 6. Update REFLECTION so it contains a summary of each TRANSCRIPT entry, in order.
 7. Ensure all top-level docs are in sync and agreement.
-8. Update AUTHORS with each member’s contributions and roles, in order.
+8. Update AUTHORS with each memberâ€™s contributions and roles, in order.
 9. Add/expand README sections on implementation, functionality, execution, and importance of these developments, in order and by stage.
 
 I will now begin applying these updates step by step, starting with the TODO and STAGES files.
@@ -327,7 +349,7 @@ I've reviewed the top-level and progress-tracking documentation against the Proj
    **Action**: The proposal needs updating to reflect the PHP requirement, or there's a stack decision pending (S1-00 in TODO.md flags this as "In Progress").
 
 ### 2. **Development Timeline vs. Current Dates**
-   - **Proposal timeline**: March 16 – May 1, 2026
+   - **Proposal timeline**: March 16 â€“ May 1, 2026
    - **README checkpoint date**: May 6, 2026 (due date)
    - **Current progress snapshot** (TODO.md by 2026-03-10): Week of 2026-03-10 shows S1-00 ("frontend stack decision") still in progress, with targets pushing into late May for Stage 4 completion.
    
@@ -335,10 +357,10 @@ I've reviewed the top-level and progress-tracking documentation against the Proj
 
 ### 3. **Scope Alignment**
    - **Proposal calls these "Stretch Goals"**: Predictive forecasting, Interactive Map, AI Assistant
-   - **STAGES.md treats them as** required Stages 3–4
+   - **STAGES.md treats them as** required Stages 3â€“4
    - **README.md status**: All marked as `Not Started`
    
-   **Clarification needed**: Are Stages 3–4 required deliverables, or are they contingent stretch goals?
+   **Clarification needed**: Are Stages 3â€“4 required deliverables, or are they contingent stretch goals?
 
 ### 4. **Web Dashboard vs. Stage 1 MVP Scope**
    - **Proposal Week 4 checkpoint expects**: "functioning backend Risk Scoring Engine" + "working web dashboard displaying environmental data"
@@ -350,17 +372,17 @@ I've reviewed the top-level and progress-tracking documentation against the Proj
 
 | Aspect | Proposal | STAGES.md | README.md | Status |
 |--------|----------|-----------|----------|--------|
-| **Core Features** | Risk Scoring + Prioritization + Map + Forecast/Assistant | Same (4 stages) | Same (4 stages, all Not Started) | ✅ Aligned |
-| **Frontend Stack** | React + Tailwind | PHP (per INSTRUCTIONS) | PHP | ⚠️ Needs proposal update |
-| **Backend** | FastAPI + MySQL | FastAPI + MySQL/MariaDB | Same | ✅ Aligned |
-| **Stage 1 Scope** | Risk Engine + Dashboard | Dashboard MVP (alerts/summaries only) | "Building unique PHP web interface" | ⚠️ Proposal assumes more than Stage 1 scope |
-| **Timeline** | March 16 – May 1 | Week targets to May 26+ | Due May 6 | ⚠️ Tight/misaligned |
-| **Stretch Goals** | Features 3–4 contingent | Required Stages 3–4 | Not Started | ⚠️ Scope ambiguity |
+| **Core Features** | Risk Scoring + Prioritization + Map + Forecast/Assistant | Same (4 stages) | Same (4 stages, all Not Started) | âœ… Aligned |
+| **Frontend Stack** | React + Tailwind | PHP (per INSTRUCTIONS) | PHP | âš ï¸ Needs proposal update |
+| **Backend** | FastAPI + MySQL | FastAPI + MySQL/MariaDB | Same | âœ… Aligned |
+| **Stage 1 Scope** | Risk Engine + Dashboard | Dashboard MVP (alerts/summaries only) | "Building unique PHP web interface" | âš ï¸ Proposal assumes more than Stage 1 scope |
+| **Timeline** | March 16 â€“ May 1 | Week targets to May 26+ | Due May 6 | âš ï¸ Tight/misaligned |
+| **Stretch Goals** | Features 3â€“4 contingent | Required Stages 3â€“4 | Not Started | âš ï¸ Scope ambiguity |
 
 ### Recommendations
 
 1. **Update PROJECT_PROPOSAL.md** (Section 5) to reflect PHP frontend requirement, not React.
-2. **Clarify scope decision**: Are Stages 3–4 required or stretch goals? Update proposal and README accordingly.
+2. **Clarify scope decision**: Are Stages 3â€“4 required or stretch goals? Update proposal and README accordingly.
 3. **Revise Week 4 checkpoint expectations** in proposal to match actual Stage 1 (alerts/summaries dashboard, no risk scoring yet).
 4. **Validate timeline feasibility**: Current target dates suggest Stage 4 work extends past May 6 due date; confirm whether all stages are in-scope or if prioritization is needed.
 
@@ -392,7 +414,7 @@ Read [](PROJECT_PROPOSAL.md#30-30), lines 30 to 50
 
 Read [](docs/TODO.md#1-1), lines 1 to 100
 
-I'll analyze the timeline and adjust it to meet your April 29 target (one week before May 6) with priorities: Web-app → Risk Scoring → Alert Prioritization. Let me review and update all relevant documentation.  
+I'll analyze the timeline and adjust it to meet your April 29 target (one week before May 6) with priorities: Web-app â†’ Risk Scoring â†’ Alert Prioritization. Let me review and update all relevant documentation.  
 
 Read [](README.md#90-90), lines 90 to 105
 
@@ -510,40 +532,40 @@ Perfect! I've successfully aligned all top-level documentation with your timelin
 
 ### Documentation Updates Complete
 
-### 1. **README.md** — Updated Stage Status Table
+### 1. **README.md** â€” Updated Stage Status Table
 - Marked Stages 1-2 as **Required** (target: April 29, 2026)
 - Marked Stages 3-4 as **Optional/Stretch Goals**
 - Added week-by-week targets for priority stages
 
-### 2. **PROJECT_PROPOSAL.md** — Restructured Goals
+### 2. **PROJECT_PROPOSAL.md** â€” Restructured Goals
 - Split Section 3 into "Core Deliverables (Required)" and "Optional Stretch Goals"
 - Clarified April 29 deadline for core features
 - Already updated Section 5 to reflect PHP frontend (not React)
 
-### 3. **STAGES.md** — Added Scope Clarification
+### 3. **STAGES.md** â€” Added Scope Clarification
 - New "Scope and Timeline" section at top
 - Stage 1 objective: *(REQUIRED - Target: Week of March 31, 2026)*
 - Stage 2 objective: *(REQUIRED - Target: Week of April 28, 2026)*
 - Stage 3 objective: *(OPTIONAL STRETCH GOAL)*
 - Stage 4 objective: *(OPTIONAL STRETCH GOAL)*
 
-### 4. **TODO.md** — Updated Task Tracking
+### 4. **TODO.md** â€” Updated Task Tracking
 - Scope section now clarifies required vs. optional deliverables
 - Stage 3-4 Master Task Tracker rows now include "**OPTIONAL/STRETCH**" prefix in Notes
 - Stage 3 & 4 section headers marked as "Optional Stretch Goal"
 
-### 5. **INSTRUCTIONS.md** — Added Scope Section
+### 5. **INSTRUCTIONS.md** â€” Added Scope Section
 - New "Scope and Timeline" section clarifying required vs. optional stages
 
 ### Timeline Validation
 
-✅ **Feasible Timeline Confirmed:**
+âœ… **Feasible Timeline Confirmed:**
 - **Week of 2026-03-31**: Stage 1 (Web-App) Complete
 - **Week of 2026-04-28**: Stage 2 (Risk Scoring + Alert Prioritization) Complete
 - **By April 29**: All required deliverables finished (one week before May 6 deadline)
-- **May 1–6**: Buffer week (optional Stages 3-4 if time permits)
+- **May 1â€“6**: Buffer week (optional Stages 3-4 if time permits)
 
-All documentation is now in agreement with priorities (Web-app → Risk Scoring → Alert Prioritization) and the April 29 completion target.
+All documentation is now in agreement with priorities (Web-app â†’ Risk Scoring â†’ Alert Prioritization) and the April 29 completion target.
 
 Made changes.
 
@@ -551,7 +573,7 @@ Made changes.
 
 GitHub Copilot: I'll do a comprehensive alignment check across all top-level and progress-tracking documentation against the updated PROJECT_PROPOSAL.
 
-**✅ Areas of Strong Agreement (All Aligned)**
+**âœ… Areas of Strong Agreement (All Aligned)**
 
 | Aspect | PROJECT_PROPOSAL | README.md | STAGES.md | TODO.md | INSTRUCTIONS.md |
 |--------|---|---|---|---|---|
@@ -560,43 +582,43 @@ GitHub Copilot: I'll do a comprehensive alignment check across all top-level and
 | **Optional Stages** | 3-4 (Stretch) | 3-4 (Stretch) | 3-4 (Stretch) | 3-4 (Stretch) | 3-4 (Stretch) |
 | **Core Deliverables** | Web-App + Risk Scoring + Alert Prioritization | Same | Same | Same | Same |
 | **Frontend Tech** | PHP | PHP | PHP | PHP | PHP |
-| **Stage 1 Target** | (Implicit in April 29) | Week of 2026-03-31 | Week of 2026-03-31 | Week of 2026-03-17–2026-03-31 | (Not specified) |
-| **Stage 2 Target** | (Implicit in April 29) | Week of 2026-04-28 | Week of 2026-04-28 | Week of 2026-04-07–2026-04-28 | (Not specified) |
+| **Stage 1 Target** | (Implicit in April 29) | Week of 2026-03-31 | Week of 2026-03-31 | Week of 2026-03-17â€“2026-03-31 | (Not specified) |
+| **Stage 2 Target** | (Implicit in April 29) | Week of 2026-04-28 | Week of 2026-04-28 | Week of 2026-04-07â€“2026-04-28 | (Not specified) |
 | **Status: Stage 1** | In Progress (implied) | In Progress | In Progress | In Progress | (Not specified) |
 | **Status: Stage 2** | Not Started (implied) | Not Started | Not Started | Not Started | (Not Started) |
 
 ---
 
-**⚠️ Minor Gaps (Non-Critical)**
+**âš ï¸ Minor Gaps (Non-Critical)**
 
 ### 1. **PROJECT_PROPOSAL Lacks Explicit Week Targets**
 - **Issue**: Section 3 lists deliverables but doesn't specify "Week of March 31" and "Week of April 28" targets.
-- **Status**: ✅ Acceptable—the April 29 overall deadline satisfies course requirements. Week targets are housekeeping detail in README/STAGES.
-- **Recommendation**: Optional enhancement—could add "Target: Completed by March 31 (Stage 1) and April 28 (Stage 2)" as sub-bullets if more explicitness is desired.
+- **Status**: âœ… Acceptableâ€”the April 29 overall deadline satisfies course requirements. Week targets are housekeeping detail in README/STAGES.
+- **Recommendation**: Optional enhancementâ€”could add "Target: Completed by March 31 (Stage 1) and April 28 (Stage 2)" as sub-bullets if more explicitness is desired.
 
 ### 2. **INSTRUCTIONS.md Lacks Stage Status Values**
 - **Issue**: INSTRUCTIONS.md defines stages but doesn't include current status (In Progress/Not Started).
-- **Status**: ✅ Expected—INSTRUCTIONS.md is requirements/spec, not progress tracking. README.md is the source of truth for status.
+- **Status**: âœ… Expectedâ€”INSTRUCTIONS.md is requirements/spec, not progress tracking. README.md is the source of truth for status.
 - **Recommendation**: No change needed; task tracking belongs in README/TODO, not INSTRUCTIONS.
 
 ### 3. **PLANNING_STAGES.md Not Updated with April 29 Deadline**
 - **Issue**: PLANNING_STAGES.md is the "kickoff phase" plan but doesn't explicitly reference the April 29 deadline at the top.
-- **Status**: ⚠️ Minor—this file appears to be more of a tactical MVP sub-plan rather than strategic stage doc.
-- **Recommendation**: Optional—add a note at the top linking to STAGES.md scope deadlines, or leave as-is since it's post-implementation guidance rather than requirements.
+- **Status**: âš ï¸ Minorâ€”this file appears to be more of a tactical MVP sub-plan rather than strategic stage doc.
+- **Recommendation**: Optionalâ€”add a note at the top linking to STAGES.md scope deadlines, or leave as-is since it's post-implementation guidance rather than requirements.
 
 ---
 
-**✅ Summary: Documentation is Aligned**
+**âœ… Summary: Documentation is Aligned**
 
 All core agreements are in place:
-- ✅ April 29, 2026 deadline for Stages 1-2
-- ✅ Stages 3-4 marked as optional/stretch contingent on earlier completion
-- ✅ Priorities clear: Web-app → Risk Scoring → Alert Prioritization
-- ✅ PHP frontend consistently specified
-- ✅ Timeline feasible (Stage 1 by March 31, Stage 2 by April 28)
-- ✅ README.md serves as source of truth for status
+- âœ… April 29, 2026 deadline for Stages 1-2
+- âœ… Stages 3-4 marked as optional/stretch contingent on earlier completion
+- âœ… Priorities clear: Web-app â†’ Risk Scoring â†’ Alert Prioritization
+- âœ… PHP frontend consistently specified
+- âœ… Timeline feasible (Stage 1 by March 31, Stage 2 by April 28)
+- âœ… README.md serves as source of truth for status
 
-**No corrective action needed**—all updates from the previous task have successfully synchronized the documentation.
+**No corrective action needed**â€”all updates from the previous task have successfully synchronized the documentation.
 
 **Rebecca:** Check TODO and PLANNING_STAGES to make sure they reflect the changes made so that going forward all top-level and planning documents are in agreement and there is no confusion moving forward
 
@@ -620,12 +642,12 @@ Perfect! Here's the alignment status:
 
 | Document | Scope | Deadline | Status |
 |----------|-------|----------|--------|
-| **PROJECT_PROPOSAL.md** | Stages 1-2 required, 3-4 optional | April 29, 2026 | ✅ Updated |
-| **README.md** | Stages 1-2 required, 3-4 optional | April 29, 2026 | ✅ Aligned |
-| **STAGES.md** | Stages 1-2 required, 3-4 optional | April 29, 2026 | ✅ Aligned |
-| **INSTRUCTIONS.md** | Scope and timeline section added | April 29, 2026 | ✅ Aligned |
-| **TODO.md** | Scope alignment section present | April 29, 2026 | ✅ Aligned |
-| **PLANNING_STAGES.md** | Stage 1 context added (kickoff) | March 31, 2026 | ✅ Just updated |
+| **PROJECT_PROPOSAL.md** | Stages 1-2 required, 3-4 optional | April 29, 2026 | âœ… Updated |
+| **README.md** | Stages 1-2 required, 3-4 optional | April 29, 2026 | âœ… Aligned |
+| **STAGES.md** | Stages 1-2 required, 3-4 optional | April 29, 2026 | âœ… Aligned |
+| **INSTRUCTIONS.md** | Scope and timeline section added | April 29, 2026 | âœ… Aligned |
+| **TODO.md** | Scope alignment section present | April 29, 2026 | âœ… Aligned |
+| **PLANNING_STAGES.md** | Stage 1 context added (kickoff) | March 31, 2026 | âœ… Just updated |
 
 ---
 
@@ -633,31 +655,31 @@ Perfect! Here's the alignment status:
 
 **All top-level and progress-tracking documentation is now in full agreement:**
 
-✅ **Consistent Timeline:**
+âœ… **Consistent Timeline:**
 - Web-App (Stage 1): Week of March 31, 2026
 - Risk Scoring + Alert Prioritization (Stage 2): Week of April 28, 2026
 - Final deadline for required deliverables: **April 29, 2026**
 
-✅ **Consistent Scope:**
+âœ… **Consistent Scope:**
 - Required: Stages 1-2
 - Optional/Stretch (contingent): Stages 3-4
 
-✅ **Consistent Priorities:**
+âœ… **Consistent Priorities:**
 - Priority 1: Web-App Extension (PHP frontend)
 - Priority 2: Personal Risk Scoring Engine + Smart Alert Prioritization
 
-✅ **Consistent Technical Details:**
+âœ… **Consistent Technical Details:**
 - Frontend: PHP scripts (confirmed across all docs)
 - Backend: Existing FastAPI + Python
 - Database: MySQL/MariaDB
 
-✅ **Cross-References Working:**
+âœ… **Cross-References Working:**
 - README.md remains source of truth for status
 - PLANNING_STAGES.md now explicitly links to STAGES.md and README.md
 - TODO.md references all supporting docs
 - All docs point to April 29 deadline
 
-**No confusion moving forward—all documentation is synchronized.** ✅
+**No confusion moving forwardâ€”all documentation is synchronized.** âœ…
 
 Made changes.
 
@@ -685,7 +707,7 @@ Made changes.
 
 **GitHub Copilot:** Ran a non-historical doc audit and cleaned remaining wording drift in tracker/frontend notes to keep Stage 1 status phrasing consistent with completed state.
 
-**Rebecca:** Perform a pass to normalize phrasing style (for example, always “Stage 1: Web-App Extension (Completed)”) across headings for editorial consistency.
+**Rebecca:** Perform a pass to normalize phrasing style (for example, always â€œStage 1: Web-App Extension (Completed)â€) across headings for editorial consistency.
 
 **GitHub Copilot:** Normalized Stage 1 heading style across active status/planning/progress documentation and confirmed consistency with heading-focused scans.
 
@@ -711,9 +733,9 @@ The Personalized Environmental Risk Scoring Engine transforms raw environmental 
 
 Instead of simply presenting environmental alerts, the system answers the question:
 
-“How risky are current environmental conditions for me?”
+â€œHow risky are current environmental conditions for me?â€
 
-The risk score will range from 0–100, representing overall environmental risk based on multiple contributing factors.
+The risk score will range from 0â€“100, representing overall environmental risk based on multiple contributing factors.
 
 Example Output
 
@@ -724,7 +746,7 @@ Contributing Factors:
 
 Air Quality Index: 145 (Unhealthy for Sensitive Groups)
 
-Heat Index: 103°F
+Heat Index: 103Â°F
 
 Wildfire Smoke: Moderate
 
@@ -750,10 +772,10 @@ Wildfire smoke data
 These metrics will be combined using a weighted scoring algorithm:
 
 Risk Score =
-(AQI weight × AQI value) +
-(Heat weight × Heat index) +
-(Smoke weight × Smoke level) +
-(Pollen weight × Pollen level)
+(AQI weight Ã— AQI value) +
+(Heat weight Ã— Heat index) +
+(Smoke weight Ã— Smoke level) +
+(Pollen weight Ã— Pollen level)
 
 User-specific health sensitivities will modify these weights.
 
@@ -789,11 +811,11 @@ Example Alert Ranking
 
 Ranked Alerts for **Rebecca:**
 
-Wildfire Smoke Alert – 5 miles away – Critical
+Wildfire Smoke Alert â€“ 5 miles away â€“ Critical
 
-Air Quality Warning – Citywide – High
+Air Quality Warning â€“ Citywide â€“ High
 
-Heat Advisory – Regional – Moderate
+Heat Advisory â€“ Regional â€“ Moderate
 
 Implementation / Architecture
 
@@ -899,23 +921,23 @@ The API sends processed results to the web dashboard.
 
 Architecture Diagram
 External Environmental APIs
-        │
-        ▼
+        â”‚
+        â–¼
 Data Scrapers
-        │
-        ▼
+        â”‚
+        â–¼
 Environmental Database
-        │
-        ▼
+        â”‚
+        â–¼
 Risk Scoring Engine
-        │
-        ▼
+        â”‚
+        â–¼
 Smart Alert Prioritization
-        │
-        ▼
+        â”‚
+        â–¼
 REST API Layer
-        │
-        ▼
+        â”‚
+        â–¼
 RiskRadar Web Dashboard
 
 This layered architecture separates:
@@ -932,9 +954,9 @@ This separation improves maintainability and scalability.
 
 7. Development Timeline
 
-The project timeline spans 7 weeks (March 16 – May 1).
+The project timeline spans 7 weeks (March 16 â€“ May 1).
 
-Week 1 (March 16 – March 22)
+Week 1 (March 16 â€“ March 22)
 
 Project setup
 
@@ -946,7 +968,7 @@ design database schema for risk engine
 
 design API endpoints
 
-Week 2 (March 23 – March 29)
+Week 2 (March 23 â€“ March 29)
 
 Risk Engine Development
 
@@ -956,7 +978,7 @@ implement risk score calculation algorithm
 
 begin backend integration
 
-Week 3 (March 30 – April 5)
+Week 3 (March 30 â€“ April 5)
 
 Smart Alert Prioritization
 
@@ -966,7 +988,7 @@ integrate severity and proximity calculations
 
 build backend API endpoints
 
-Week 4 (April 6 – April 12) – Checkpoint
+Week 4 (April 6 â€“ April 12) â€“ Checkpoint
 
 Web Dashboard Development
 
@@ -982,7 +1004,7 @@ functioning backend risk engine
 
 basic web dashboard displaying live data
 
-Week 5 (April 13 – April 19)
+Week 5 (April 13 â€“ April 19)
 
 User Personalization
 
@@ -992,7 +1014,7 @@ integrate personalized weighting into risk calculations
 
 add explanatory risk summaries
 
-Week 6 (April 20 – April 26)
+Week 6 (April 20 â€“ April 26)
 
 UI Improvements and Testing
 
@@ -1002,7 +1024,7 @@ improve data visualizations
 
 perform system testing
 
-Week 7 (April 27 – May 1)
+Week 7 (April 27 â€“ May 1)
 
 Finalization
 
@@ -1022,7 +1044,7 @@ Predictive Environmental Risk (AI/Data Extension)
 
 Idea
 
-The Predictive Environmental Risk system forecasts environmental risk levels for the next 24–48 hours.
+The Predictive Environmental Risk system forecasts environmental risk levels for the next 24â€“48 hours.
 
 Implementation
 
@@ -1099,11 +1121,11 @@ An AI assistant integrated into the platform will help users interpret environme
 
 Users could ask questions such as:
 
-“Is it safe to run outside today?”
+â€œIs it safe to run outside today?â€
 
-“Why is my risk score high?”
+â€œWhy is my risk score high?â€
 
-“What should I do during a wildfire smoke alert?”
+â€œWhat should I do during a wildfire smoke alert?â€
 
 Implementation
 
@@ -1113,11 +1135,11 @@ This could be implemented using an LLM API integrated with backend data queries.
 
 Example
 
-**Rebecca:** “Can I go jogging today?”
+**Rebecca:** â€œCan I go jogging today?â€
 
 AI Assistant:
 
-“Current AQI is 155, which is unhealthy for sensitive groups. Because your profile indicates asthma sensitivity, outdoor exercise is not recommended today.”
+â€œCurrent AQI is 155, which is unhealthy for sensitive groups. Because your profile indicates asthma sensitivity, outdoor exercise is not recommended today.â€
 
 Technical Complexity
 
@@ -1168,7 +1190,7 @@ Once both students have joined the team, GitHub Classroom will create a single s
 After the repository is created, copy the repository URL and include it in the proposal document. The instructor will automatically have access to all repositories created through GitHub Classroom.
 
 2. Project Overview
-A high-level summary (1–2 well-developed paragraphs) that explains:
+A high-level summary (1â€“2 well-developed paragraphs) that explains:
 
 What the application/system does
 Who it is for
@@ -1232,7 +1254,7 @@ The timeline must demonstrate realistic scope management and clear progress towa
 List optional enhancements that you may implement if core functionality is completed early. These should add value without being essential to project viability.
 
 9. Why This Project Matters
-In 1–2 paragraphs, explain:
+In 1â€“2 paragraphs, explain:
 
 What skills this project demonstrates
 What technical concepts it applies
@@ -1247,7 +1269,7 @@ The proposal should demonstrate awareness of integration complexity.
 If AI tools are included, you must clearly describe how they will be used and evaluated critically.
 You are responsible for ensuring your scope is appropriate.
 Formatting Requirements
-2–4 pages
+2â€“4 pages
 Professional formatting
 Clear section headings
 No excessive white-space
@@ -1270,9 +1292,9 @@ AI tools may propose features, architectures, or integrations that are unrealist
 
 If not, how can this be rewritten to result in a well-written, professional, informative, and cohesive Project Proposal
 
-**ChatGPT:** I wasn’t able to access the contents of the Google Doc from that link because it requires permission to view. When a document isn’t publicly accessible, I can’t read or analyze it directly.
+**ChatGPT:** I wasnâ€™t able to access the contents of the Google Doc from that link because it requires permission to view. When a document isnâ€™t publicly accessible, I canâ€™t read or analyze it directly.
 
-So I can’t verify whether the contents match the rubric yet.
+So I canâ€™t verify whether the contents match the rubric yet.
 
 What you can do
 
@@ -1280,19 +1302,19 @@ Please do one of the following:
 
 Paste the text of the proposal here, or
 
-Change the document sharing setting to “Anyone with the link can view” and send the link again.
+Change the document sharing setting to â€œAnyone with the link can viewâ€ and send the link again.
 
 Once I can see the contents, I will:
 
-✔ Evaluate it section-by-section against the rubric
+âœ” Evaluate it section-by-section against the rubric
 
-✔ Identify missing or weak areas
+âœ” Identify missing or weak areas
 
-✔ Suggest specific improvements
+âœ” Suggest specific improvements
 
-✔ Provide a revised version if needed
+âœ” Provide a revised version if needed
 
-✔ Ensure it fits the 2–4 page professional proposal expectation
+âœ” Ensure it fits the 2â€“4 page professional proposal expectation
 
 I can also help refine it so it scores well on:
 
@@ -1306,7 +1328,7 @@ realistic scope
 
 professional writing quality
 
-Just paste the document or update the sharing settings and I’ll go through it carefully.
+Just paste the document or update the sharing settings and Iâ€™ll go through it carefully.
 
 **Rebecca:** Below is the text of the proposal as is:
 
@@ -1325,7 +1347,7 @@ GitHub Classroom
 
 2. Project Overview
 The idea behind our Final Project for this semester is to create a web-based extension of the RiskRadar mobile application we are building for our Senior Project in CMPS 490.  We thought that extending our Senior Project work for this project would be beneficial in ensuring we have a strong starting foundation, but further improve upon what already exists by creating new, innovative features.  RiskRadar is designed to provide users with deeper insight into environmental hazards that may impact their health, daily activities, and travel plans. While the original mobile application aggregates environmental alerts and generates summarized reports from sources such as weather alerts and air quality monitoring systems, we plan for the RiskRadar Web platform to analyze further and interpret this data to present personalized environmental risk insights.
-The primary innovation of the web application to differentiate it from its Senior Project Origins is the addition of a Personalized Environmental Risk Scoring Engine combined with a Smart Alert Prioritization System. These systems analyze environmental data—including air quality, weather alerts, wildfire smoke, and pollution reports—and translate them into a personalized risk score for each user based on their sensitivities. Alerts are then dynamically ranked based on the user’s risk score, distance from the hazard, and severity of the event. This allows users to quickly understand which environmental data and threats are most relevant to them.  This project is valuable because environmental hazard information can often be difficult for individuals to interpret. Users may receive numerous alerts without a clear context regarding their personal risk level. RiskRadar Web addresses this problem by transforming complex environmental data into actionable insights, helping individuals make safer decisions about outdoor activities, travel, and exposure to hazardous conditions.
+The primary innovation of the web application to differentiate it from its Senior Project Origins is the addition of a Personalized Environmental Risk Scoring Engine combined with a Smart Alert Prioritization System. These systems analyze environmental dataâ€”including air quality, weather alerts, wildfire smoke, and pollution reportsâ€”and translate them into a personalized risk score for each user based on their sensitivities. Alerts are then dynamically ranked based on the userâ€™s risk score, distance from the hazard, and severity of the event. This allows users to quickly understand which environmental data and threats are most relevant to them.  This project is valuable because environmental hazard information can often be difficult for individuals to interpret. Users may receive numerous alerts without a clear context regarding their personal risk level. RiskRadar Web addresses this problem by transforming complex environmental data into actionable insights, helping individuals make safer decisions about outdoor activities, travel, and exposure to hazardous conditions.
 
 3. Project Goals
 The completed system will achieve the following goals:
@@ -1344,14 +1366,14 @@ Core System Features
 Idea
 The Personalized Environmental Risk Scoring Engine transforms raw environmental data into a user-specific risk score that reflects how dangerous current conditions may be for an individual.
 Instead of simply presenting environmental alerts, the system answers the question:
-“How risky are current environmental conditions for me?”
-The risk score will range from 0–100, representing overall environmental risk based on multiple contributing factors.
+â€œHow risky are current environmental conditions for me?â€
+The risk score will range from 0â€“100, representing overall environmental risk based on multiple contributing factors.
 Example Output
 User Location: Baton Rouge, LA
 Risk Score: 72 (High Risk)
 Contributing Factors:
 Air Quality Index: 145 (Unhealthy for Sensitive Groups)
-Heat Index: 103°F
+Heat Index: 103Â°F
 Wildfire Smoke: Moderate
 Pollen Level: High
 Recommendation:
@@ -1365,10 +1387,10 @@ Pollution levels
 Wildfire smoke data
 These metrics will be combined using a weighted scoring algorithm:
 Risk Score =
-(AQI weight × AQI value) +
-(Heat weight × Heat index) +
-(Smoke weight × Smoke level) +
-(Pollen weight × Pollen level)
+(AQI weight Ã— AQI value) +
+(Heat weight Ã— Heat index) +
+(Smoke weight Ã— Smoke level) +
+(Pollen weight Ã— Pollen level)
 User-specific health sensitivities will modify these weights.
 Technical Complexity
 This component introduces:
@@ -1387,9 +1409,9 @@ Severity of the alert
 This prioritization helps users focus on the alerts that matter most.
 Example Alert Ranking
 Ranked Alerts for **Rebecca:**
-Wildfire Smoke Alert – 5 miles away – Critical
-Air Quality Warning – Citywide – High
-Heat Advisory – Regional – Moderate
+Wildfire Smoke Alert â€“ 5 miles away â€“ Critical
+Air Quality Warning â€“ Citywide â€“ High
+Heat Advisory â€“ Regional â€“ Moderate
 Implementation / Architecture
 Alerts will be evaluated using a scoring formula:
 Alert Priority Score =
@@ -1454,23 +1476,23 @@ The Smart Alert Prioritization System ranks alerts.
 The API sends processed results to the web dashboard.
 Architecture Diagram
 External Environmental APIs
-       │
-       ▼
+       â”‚
+       â–¼
 Data Scrapers
-       │
-       ▼
+       â”‚
+       â–¼
 Environmental Database
-       │
-       ▼
+       â”‚
+       â–¼
 Risk Scoring Engine
-       │
-       ▼
+       â”‚
+       â–¼
 Smart Alert Prioritization
-       │
-       ▼
+       â”‚
+       â–¼
 REST API Layer
-       │
-       ▼
+       â”‚
+       â–¼
 RiskRadar Web Dashboard
 This layered architecture separates:
 data collection
@@ -1480,27 +1502,27 @@ presentation
 This separation improves maintainability and scalability.
 
 7. Development Timeline
-The project timeline spans 7 weeks (March 16 – May 1).
-Week 1 (March 16 – March 22)
+The project timeline spans 7 weeks (March 16 â€“ May 1).
+Week 1 (March 16 â€“ March 22)
 Project setup
 create repository
 review RiskRadar mobile codebase
 design database schema for risk engine
 design API endpoints
 
-Week 2 (March 23 – March 29)
+Week 2 (March 23 â€“ March 29)
 Risk Engine Development
 implement environmental data aggregation
 implement risk score calculation algorithm
 begin backend integration
 
-Week 3 (March 30 – April 5)
+Week 3 (March 30 â€“ April 5)
 Smart Alert Prioritization
 implement alert ranking system
 integrate severity and proximity calculations
 build backend API endpoints
 
-Week 4 (April 6 – April 12) – Checkpoint
+Week 4 (April 6 â€“ April 12) â€“ Checkpoint
 Web Dashboard Development
 create React interface
 display risk score
@@ -1509,19 +1531,19 @@ Demonstrable progress:
 functioning backend risk engine
 basic web dashboard displaying live data
 
-Week 5 (April 13 – April 19)
+Week 5 (April 13 â€“ April 19)
 User Personalization
 implement user sensitivity profiles
 integrate personalized weighting into risk calculations
 add explanatory risk summaries
 
-Week 6 (April 20 – April 26)
+Week 6 (April 20 â€“ April 26)
 UI Improvements and Testing
 refine web dashboard
 improve data visualizations
 perform system testing
 
-Week 7 (April 27 – May 1)
+Week 7 (April 27 â€“ May 1)
 Finalization
 documentation
 bug fixes
@@ -1533,7 +1555,7 @@ If core functionality is completed early, the following enhancements will be imp
 
 Predictive Environmental Risk (AI/Data Extension)
 Idea
-The Predictive Environmental Risk system forecasts environmental risk levels for the next 24–48 hours.
+The Predictive Environmental Risk system forecasts environmental risk levels for the next 24â€“48 hours.
 Implementation
 Historical environmental data collected by scrapers will be used to build a lightweight forecasting model using time-series analysis.
 Potential inputs include:
@@ -1574,16 +1596,16 @@ AI Environmental Assistant
 Idea
 An AI assistant integrated into the platform will help users interpret environmental conditions.
 Users could ask questions such as:
-“Is it safe to run outside today?”
-“Why is my risk score high?”
-“What should I do during a wildfire smoke alert?”
+â€œIs it safe to run outside today?â€
+â€œWhy is my risk score high?â€
+â€œWhat should I do during a wildfire smoke alert?â€
 Implementation
 The assistant would use environmental data, alerts, and risk scores as context when generating responses.
 This could be implemented using an LLM API integrated with backend data queries.
 Example
-**Rebecca:** “Can I go jogging today?”
+**Rebecca:** â€œCan I go jogging today?â€
 AI Assistant:
-“Current AQI is 155, which is unhealthy for sensitive groups. Because your profile indicates asthma sensitivity, outdoor exercise is not recommended today.”
+â€œCurrent AQI is 155, which is unhealthy for sensitive groups. Because your profile indicates asthma sensitivity, outdoor exercise is not recommended today.â€
 Technical Complexity
 This feature involves:
 AI integration
@@ -1609,7 +1631,7 @@ Feature categories could be more clearly structured
 
 Technical stack justification could be slightly stronger
 
-Architecture explanation could mention frontend ↔ backend interaction more explicitly
+Architecture explanation could mention frontend â†” backend interaction more explicitly
 
 Some sections read slightly informal or repetitive
 
@@ -1655,10 +1677,10 @@ Status: Meets rubric requirements
 
 You successfully explain:
 
-✔ what the system does
-✔ who it is for
-✔ the problem it solves
-✔ why it is valuable
+âœ” what the system does
+âœ” who it is for
+âœ” the problem it solves
+âœ” why it is valuable
 
 However, the first paragraph is a little wordy and references the course context too much.
 
@@ -1700,11 +1722,11 @@ This section is actually one of the best parts of your proposal.
 
 You clearly describe:
 
-✔ the risk scoring engine
-✔ the prioritization system
-✔ example outputs
-✔ algorithm ideas
-✔ technical complexity
+âœ” the risk scoring engine
+âœ” the prioritization system
+âœ” example outputs
+âœ” algorithm ideas
+âœ” technical complexity
 
 However, the rubric asks that features be organized into clear categories.
 
@@ -1750,9 +1772,9 @@ Status: Good but slightly incomplete
 
 The rubric specifically asks you to explain:
 
-✔ frontend/backend interaction
-✔ data flow
-✔ component separation
+âœ” frontend/backend interaction
+âœ” data flow
+âœ” component separation
 
 You already explain data flow very well.
 
@@ -1772,9 +1794,9 @@ This section is very strong.
 
 It includes:
 
-✔ weekly milestones
-✔ checkpoint around April 8
-✔ realistic progress stages
+âœ” weekly milestones
+âœ” checkpoint around April 8
+âœ” realistic progress stages
 
 Nothing major needs changing.
 
@@ -1784,15 +1806,15 @@ Status: Excellent
 
 You clearly describe:
 
-✔ predictive analytics
-✔ interactive map
-✔ AI assistant
+âœ” predictive analytics
+âœ” interactive map
+âœ” AI assistant
 
 And you explain:
 
-✔ the idea
-✔ implementation
-✔ technical complexity
+âœ” the idea
+âœ” implementation
+âœ” technical complexity
 
 This is exactly what instructors want.
 
@@ -1802,9 +1824,9 @@ Status: Strong
 
 You successfully discuss:
 
-✔ skills demonstrated
-✔ technical concepts
-✔ real-world value
+âœ” skills demonstrated
+âœ” technical concepts
+âœ” real-world value
 
 One small improvement would be explicitly mentioning:
 
@@ -1838,13 +1860,13 @@ After small revisions: A
 
 5 Quick Improvements That Will Make This Proposal Much Stronger
 
-Replace “GitHub Classroom” text with the full URL.
+Replace â€œGitHub Classroomâ€ text with the full URL.
 
 Slightly rewrite the first paragraph of the overview.
 
 Turn Project Goals into clearer capability statements.
 
-Add one paragraph explaining frontend ↔ backend communication.
+Add one paragraph explaining frontend â†” backend communication.
 
 Format Key Features into numbered subsections.
 
@@ -1864,11 +1886,11 @@ clear AI integration plan
 
 Most student proposals fail because they are too vague. Yours is specific and technically grounded, which professors typically reward.
 
-✅ If you'd like, I can also produce a polished “final submission version” of this proposal that:
+âœ… If you'd like, I can also produce a polished â€œfinal submission versionâ€ of this proposal that:
 
 reads more professionally
 
-fits neatly in 2–4 pages
+fits neatly in 2â€“4 pages
 
 aligns perfectly with the rubric
 
@@ -1878,9 +1900,9 @@ It would essentially be your proposal, but cleaned up to professor-level expecta
 
 **Rebecca:** Yes, produce a polished version of the existing document that aligns perfectly with the requirements outlined in the rubric.
 
-**ChatGPT:** Below is a polished, professional version of your proposal that keeps your ideas intact but improves clarity, structure, tone, and alignment with the rubric. It is written so it should fit comfortably within a 2–4 page submission when placed in a document with normal formatting.
+**ChatGPT:** Below is a polished, professional version of your proposal that keeps your ideas intact but improves clarity, structure, tone, and alignment with the rubric. It is written so it should fit comfortably within a 2â€“4 page submission when placed in a document with normal formatting.
 
-CMPS 357 – Team 3 Final Project Proposal
+CMPS 357 â€“ Team 3 Final Project Proposal
 1. Project Title and Project Information
 
 Project Title:
@@ -1902,9 +1924,9 @@ The project repository will be managed through the GitHub Classroom assignment l
 
 RiskRadar Web is a web-based analytical extension of the RiskRadar mobile application. The goal of the system is to help users better understand environmental hazards that may impact their health, daily activities, or travel plans. The existing RiskRadar mobile application aggregates environmental alerts and generates summarized reports from sources such as weather alerts, air quality monitoring systems, and pollution data services. While these alerts provide useful information, interpreting their personal relevance can be difficult for many users.
 
-The proposed web platform expands upon the existing system by introducing advanced data interpretation and personalized risk analysis features. Specifically, RiskRadar Web will incorporate a Personalized Environmental Risk Scoring Engine and a Smart Alert Prioritization System. These systems will analyze environmental data such as air quality levels, weather alerts, wildfire smoke data, and pollution reports, then compute a personalized environmental risk score based on each user’s health sensitivities and environmental preferences.
+The proposed web platform expands upon the existing system by introducing advanced data interpretation and personalized risk analysis features. Specifically, RiskRadar Web will incorporate a Personalized Environmental Risk Scoring Engine and a Smart Alert Prioritization System. These systems will analyze environmental data such as air quality levels, weather alerts, wildfire smoke data, and pollution reports, then compute a personalized environmental risk score based on each userâ€™s health sensitivities and environmental preferences.
 
-Alerts will also be dynamically prioritized according to three primary factors: the user’s risk score, the geographic proximity of the hazard, and the severity of the alert. This allows users to quickly identify which environmental threats are most relevant to them. By transforming complex environmental data into personalized, actionable insights, RiskRadar Web helps users make safer decisions regarding outdoor activity, travel planning, and exposure to hazardous environmental conditions.
+Alerts will also be dynamically prioritized according to three primary factors: the userâ€™s risk score, the geographic proximity of the hazard, and the severity of the alert. This allows users to quickly identify which environmental threats are most relevant to them. By transforming complex environmental data into personalized, actionable insights, RiskRadar Web helps users make safer decisions regarding outdoor activity, travel planning, and exposure to hazardous environmental conditions.
 
 3. Project Goals
 
@@ -1934,7 +1956,7 @@ The Personalized Environmental Risk Scoring Engine converts raw environmental da
 
 Instead of simply presenting environmental alerts, the system answers the question:
 
-“How risky are the current environmental conditions for me?”
+â€œHow risky are the current environmental conditions for me?â€
 
 The system will compute a risk score ranging from 0 to 100, representing the overall environmental risk level based on several contributing environmental factors.
 
@@ -1947,7 +1969,7 @@ Contributing Factors:
 
 Air Quality Index: 145 (Unhealthy for Sensitive Groups)
 
-Heat Index: 103°F
+Heat Index: 103Â°F
 
 Wildfire Smoke: Moderate
 
@@ -1961,13 +1983,13 @@ Implementation Approach
 Environmental data collected by existing RiskRadar scrapers will be aggregated and analyzed. The risk score will be calculated using a weighted scoring model that combines multiple environmental metrics:
 
 Risk Score =
-(AQI Weight × AQI Value)
+(AQI Weight Ã— AQI Value)
 
-(Heat Weight × Heat Index)
+(Heat Weight Ã— Heat Index)
 
-(Smoke Weight × Smoke Level)
+(Smoke Weight Ã— Smoke Level)
 
-(Pollen Weight × Pollen Level)
+(Pollen Weight Ã— Pollen Level)
 
 User-defined health sensitivities will modify these weights to personalize the risk score.
 
@@ -1989,7 +2011,7 @@ Environmental monitoring systems frequently produce numerous alerts, many of whi
 
 Alerts will be evaluated based on three key factors:
 
-Contribution to the user’s environmental risk score
+Contribution to the userâ€™s environmental risk score
 
 Geographic distance between the user and the hazard
 
@@ -1997,11 +2019,11 @@ Severity level of the alert
 
 Example ranked alert output:
 
-Wildfire Smoke Alert – 5 miles away – Critical
+Wildfire Smoke Alert â€“ 5 miles away â€“ Critical
 
-Air Quality Warning – Citywide – High
+Air Quality Warning â€“ Citywide â€“ High
 
-Heat Advisory – Regional – Moderate
+Heat Advisory â€“ Regional â€“ Moderate
 
 Implementation Approach
 
@@ -2104,33 +2126,33 @@ System Interaction
 
 Environmental data is first collected through automated scraper processes that retrieve information from external environmental APIs. This data is stored in the system database and made available for analysis.
 
-The Risk Scoring Engine processes environmental metrics and generates personalized risk scores for users. The Smart Alert Prioritization System then evaluates and ranks environmental alerts based on their impact on the user’s calculated risk level.
+The Risk Scoring Engine processes environmental metrics and generates personalized risk scores for users. The Smart Alert Prioritization System then evaluates and ranks environmental alerts based on their impact on the userâ€™s calculated risk level.
 
 The web frontend communicates with the backend through REST API endpoints implemented with FastAPI. These endpoints provide access to processed environmental data, risk scores, user profiles, and ranked alerts. The frontend retrieves this information dynamically and updates the dashboard interface accordingly.
 
 System Architecture Diagram
 
 External Environmental APIs
-↓
+â†“
 Data Scrapers
-↓
+â†“
 Environmental Database
-↓
+â†“
 Risk Scoring Engine
-↓
+â†“
 Smart Alert Prioritization
-↓
+â†“
 REST API Layer
-↓
+â†“
 RiskRadar Web Dashboard
 
 This layered architecture separates responsibilities between data collection, risk analysis, alert prioritization, and user presentation, improving maintainability and scalability.
 
 7. Development Timeline
 
-The project development timeline spans approximately seven weeks (March 16 – May 1).
+The project development timeline spans approximately seven weeks (March 16 â€“ May 1).
 
-Week 1 (March 16 – March 22)
+Week 1 (March 16 â€“ March 22)
 
 Project setup and planning
 
@@ -2142,7 +2164,7 @@ Design database schema extensions
 
 Define API endpoints
 
-Week 2 (March 23 – March 29)
+Week 2 (March 23 â€“ March 29)
 
 Risk Engine development
 
@@ -2152,7 +2174,7 @@ Develop initial risk scoring algorithm
 
 Begin backend integration
 
-Week 3 (March 30 – April 5)
+Week 3 (March 30 â€“ April 5)
 
 Alert prioritization implementation
 
@@ -2162,7 +2184,7 @@ Integrate severity and proximity calculations
 
 Develop backend API endpoints
 
-Week 4 (April 6 – April 12) – Project Checkpoint
+Week 4 (April 6 â€“ April 12) â€“ Project Checkpoint
 
 Web dashboard development
 
@@ -2178,7 +2200,7 @@ functioning backend risk scoring engine
 
 working web dashboard displaying environmental data
 
-Week 5 (April 13 – April 19)
+Week 5 (April 13 â€“ April 19)
 
 User personalization features
 
@@ -2188,7 +2210,7 @@ integrate personalization into risk calculations
 
 add explanatory risk summaries
 
-Week 6 (April 20 – April 26)
+Week 6 (April 20 â€“ April 26)
 
 User interface improvements and testing
 
@@ -2198,7 +2220,7 @@ implement data visualizations
 
 perform system testing and debugging
 
-Week 7 (April 27 – May 1)
+Week 7 (April 27 â€“ May 1)
 
 Project finalization
 
@@ -2216,7 +2238,7 @@ If core functionality is completed ahead of schedule, several additional feature
 
 Predictive Environmental Risk (AI/Data Extension)
 
-This feature will forecast environmental risk levels for the next 24–48 hours using historical environmental data collected by the system.
+This feature will forecast environmental risk levels for the next 24â€“48 hours using historical environmental data collected by the system.
 
 Potential model inputs include:
 
@@ -2230,7 +2252,7 @@ pollution trends
 
 Example forecast:
 
-Tomorrow’s Environmental Risk Forecast
+Tomorrowâ€™s Environmental Risk Forecast
 
 Morning: Moderate Risk
 Afternoon: High Risk (predicted AQI spike)
@@ -2255,11 +2277,11 @@ AI Environmental Assistant
 
 An integrated AI assistant will help users interpret environmental data and alerts. Users will be able to ask questions such as:
 
-“Is it safe to exercise outdoors today?”
+â€œIs it safe to exercise outdoors today?â€
 
-“Why is my environmental risk score high?”
+â€œWhy is my environmental risk score high?â€
 
-“What precautions should I take during a wildfire smoke alert?”
+â€œWhat precautions should I take during a wildfire smoke alert?â€
 
 The assistant will generate responses using environmental data, alerts, and risk scores as contextual input.
 
@@ -2285,23 +2307,23 @@ However, based on the polished version you pasted earlier (which looked very str
 
 If the document now contains exactly that polished version
 
-Then yes — it should align extremely well with the rubric requirements. The revised version satisfies every required section:
+Then yes â€” it should align extremely well with the rubric requirements. The revised version satisfies every required section:
 
 Rubric Requirement	Present in Your Proposal
-Project Title & Project Information	✔ Included
-Group Members	✔ Included
-Repository URL	✔ Included
-GitHub Classroom Assignment link	✔ Included
-Project Overview (problem, audience, value)	✔ Clearly explained
-Project Goals (specific capabilities)	✔ Clearly listed
-Key Features organized by categories	✔ Core system, UI, data
-Technical Stack with justification	✔ Included
-Architecture explanation	✔ Includes data flow + API interaction
-Architecture Diagram	✔ Included
-Development Timeline (7 weeks + checkpoint)	✔ Included
-Stretch Goals	✔ Clearly defined
-Why This Project Matters	✔ Included
-Professional formatting and structure	✔ Strong
+Project Title & Project Information	âœ” Included
+Group Members	âœ” Included
+Repository URL	âœ” Included
+GitHub Classroom Assignment link	âœ” Included
+Project Overview (problem, audience, value)	âœ” Clearly explained
+Project Goals (specific capabilities)	âœ” Clearly listed
+Key Features organized by categories	âœ” Core system, UI, data
+Technical Stack with justification	âœ” Included
+Architecture explanation	âœ” Includes data flow + API interaction
+Architecture Diagram	âœ” Included
+Development Timeline (7 weeks + checkpoint)	âœ” Included
+Stretch Goals	âœ” Clearly defined
+Why This Project Matters	âœ” Included
+Professional formatting and structure	âœ” Strong
 Based on the rubric, your proposal demonstrates
 
 Architectural thinking
@@ -2342,7 +2364,7 @@ Add spacing between sections for readability.
 
 Honest Professor-Level Evaluation
 
-If the polished version you pasted earlier is what’s in the document, the proposal would likely score approximately:
+If the polished version you pasted earlier is whatâ€™s in the document, the proposal would likely score approximately:
 
 Category	Expected Score
 Clarity of Vision	Excellent
@@ -2353,7 +2375,7 @@ Writing Quality	Very Strong
 
 Overall: A / A-
 
-✅ Bottom line:
+âœ… Bottom line:
 Your proposal is already strong and aligned with the rubric. It clearly goes beyond a basic CRUD project and shows real architectural planning.
 
 If you'd like, I can also quickly show you one optional improvement professors really like: a slightly stronger architecture diagram with labeled components and APIs. That can push a proposal from A- to A+ with very little extra work.
@@ -2412,12 +2434,12 @@ Note:
 
 Then update REFLECTION with a summarization of all developments made within this session, including this command
 
-**GitHub Copilot:** I�m going to append a new transcript block to [docs/TRANSCRIPT.md](docs/TRANSCRIPT.md) with verbatim session dialogue (using Rebecca as the user label), then add a matching reflection entry in [docs/REFLECTION.md](docs/REFLECTION.md) summarizing everything completed in this session including this command.
+**GitHub Copilot:** Iï¿½m going to append a new transcript block to [docs/TRANSCRIPT.md](docs/TRANSCRIPT.md) with verbatim session dialogue (using Rebecca as the user label), then add a matching reflection entry in [docs/REFLECTION.md](docs/REFLECTION.md) summarizing everything completed in this session including this command.
 
 ---
 User: Run a git status check to make sure this branch is synced with main, and if not, execute the necessary pull/fetch to ensure that it is
 
-GitHub Copilot: I’m going to check your current branch state against `main`, fetch the latest remote refs, and then merge `origin/main` into your branch only if it’s behind so we can confirm it is synced.
+GitHub Copilot: Iâ€™m going to check your current branch state against `main`, fetch the latest remote refs, and then merge `origin/main` into your branch only if itâ€™s behind so we can confirm it is synced.
 
 Ran terminal command: git status -sb; git branch --show-current; git remote -v; git fetch origin; git rev-list --left-right --count HEAD...origin/main
 
@@ -2425,11 +2447,11 @@ Optimizing tool selection...
 
 User: @agent Try Again
 
-GitHub Copilot: I fetched the remote, but the ahead/behind count didn’t print in that combined command output. I’ll run a focused comparison now and then sync if needed.
+GitHub Copilot: I fetched the remote, but the ahead/behind count didnâ€™t print in that combined command output. Iâ€™ll run a focused comparison now and then sync if needed.
 
 Ran terminal command: git rev-list --left-right --count HEAD...origin/main; git log --oneline --decorate --max-count=1 HEAD; git log --oneline --decorate --max-count=1 origin/main
 
-Your branch is currently `2` commits ahead and `6` commits behind `origin/main`, so it is not synced yet. I’ll merge `origin/main` into your branch now to bring it up to date.
+Your branch is currently `2` commits ahead and `6` commits behind `origin/main`, so it is not synced yet. Iâ€™ll merge `origin/main` into your branch now to bring it up to date.
 
 Ran terminal command: git status --porcelain; git merge origin/main
 
@@ -2461,7 +2483,7 @@ User: Update REFLECTION and AUTHORS to reflect the data and work history recorde
 - Make sure REFLECTION is synchronized and up-to-date with summarizing all entries in the TRANSCRIPT
 - Update '''CMPS 357 Final Project Role''' of team members based on controbutions to the project (as recorded in TRANSCRIPT, as well as the commits in each member's personal work branch), and detail said contributions to accurately track work history
 
-GitHub Copilot: I’m going to audit the current REFLECTION.md, TRANSCRIPT.md, and AUTHORS.md first, then map gaps and apply precise updates so both files reflect the full recorded history.
+GitHub Copilot: Iâ€™m going to audit the current REFLECTION.md, TRANSCRIPT.md, and AUTHORS.md first, then map gaps and apply precise updates so both files reflect the full recorded history.
 
 Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/REFLECTION.md#1-1), lines 1 to 400
 
@@ -2471,7 +2493,7 @@ Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-p
 
 Read memory
 
-I found that the current reflection file is extensive but likely incomplete near the end, and the transcript read was truncated mid-document. Next I’m pulling the remaining sections plus branch/commit evidence so we can update both files accurately.
+I found that the current reflection file is extensive but likely incomplete near the end, and the transcript read was truncated mid-document. Next Iâ€™m pulling the remaining sections plus branch/commit evidence so we can update both files accurately.
 
 Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/REFLECTION.md#401-401), lines 401 to 900
 
@@ -2481,7 +2503,7 @@ Searched for regex `^## ` (`**/docs/REFLECTION.md`), 20 results
 
 Searched for regex `^## ` (`**/docs/TRANSCRIPT.md`), 20 results
 
-I now need the full heading inventory and git-authorship evidence, so I’ll pull complete section lists from both docs and collect per-branch commit summaries before editing.
+I now need the full heading inventory and git-authorship evidence, so Iâ€™ll pull complete section lists from both docs and collect per-branch commit summaries before editing.
 
 Searched for regex `^## ` (`**/docs/TRANSCRIPT.md`), 26 results
 
@@ -2491,7 +2513,7 @@ Ran terminal command: git -C . branch -a
 
 Ran terminal command: git -C . shortlog -sne --all
 
-I’ve confirmed both personal branches and author-level commit counts; next I’m pulling the tail of REFLECTION.md and specific transcript segments that still need to be reflected.
+Iâ€™ve confirmed both personal branches and author-level commit counts; next Iâ€™m pulling the tail of REFLECTION.md and specific transcript segments that still need to be reflected.
 
 Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/REFLECTION.md#880-880), lines 880 to 912
 
@@ -2503,11 +2525,11 @@ Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-p
 
 Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TRANSCRIPT.md#7765-7765), lines 7765 to 7865
 
-I’ve identified a likely gap at the end of the transcript (including the wireframe planning session), so I’m now doing a full heading diff and gathering branch-specific commit histories to update both reflection coverage and author roles/contributions precisely.
+Iâ€™ve identified a likely gap at the end of the transcript (including the wireframe planning session), so Iâ€™m now doing a full heading diff and gathering branch-specific commit histories to update both reflection coverage and author roles/contributions precisely.
 
 Ran terminal command: $ErrorActionPreference='Stop'; Write-Host 'TRANSCRIPT_HEADINGS'; rg '^## ' docs/TRANSCRIPT.md; Write-Host '---'; Write-Host 'REFLECTION_HEADINGS'; rg '^## ' docs/REFLECTION.md; Write-Host '---'; Write-Host 'MAX_BRANCH_COMMITS'; git log --oneline --decorate --date=short --pretty=format:'%ad | %an | %s' origin/Max-Compeaux-Work-Branch; Write-Host ''; Write-Host '---'; Write-Host 'REBECCA_BRANCH_RECENT_80'; git log --oneline --decorate --date=short --pretty=format:'%ad | %an | %s' -n 80 origin/Rebecca-Gautreaux-Work-Branch
 
-The shell here doesn’t have ripgrep installed, so I’m switching to PowerShell-native searches to produce the same heading diff and commit evidence.
+The shell here doesnâ€™t have ripgrep installed, so Iâ€™m switching to PowerShell-native searches to produce the same heading diff and commit evidence.
 
 Ran terminal command: $ErrorActionPreference='Stop'; Write-Host 'TRANSCRIPT_HEADINGS'; Select-String -Path docs/TRANSCRIPT.md -Pattern '^## ' | ForEach-Object { $_.LineNumber.ToString() + ': ' + $_.Line }; Write-Host '---'; Write-Host 'REFLECTION_HEADINGS'; Select-String -Path docs/REFLECTION.md -Pattern '^## ' | ForEach-Object { $_.LineNumber.ToString() + ': ' + $_.Line }; Write-Host '---'; Write-Host 'MAX_BRANCH_COMMITS'; git log --date=short --pretty=format:'%ad | %an | %s' origin/Max-Compeaux-Work-Branch; Write-Host ''; Write-Host '---'; Write-Host 'REBECCA_BRANCH_RECENT_100'; git log --date=short --pretty=format:'%ad | %an | %s' -n 100 origin/Rebecca-Gautreaux-Work-Branch
 
@@ -2515,7 +2537,7 @@ Read [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/efc5
 
 Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TRANSCRIPT.md#7780-7780), lines 7780 to 7907
 
-I’ve confirmed the transcript now includes a newer wireframe-planning session that is not yet reflected. I’ll now gather branch-unique commit evidence to update team roles and contribution bullets in AUTHORS.md.
+Iâ€™ve confirmed the transcript now includes a newer wireframe-planning session that is not yet reflected. Iâ€™ll now gather branch-unique commit evidence to update team roles and contribution bullets in AUTHORS.md.
 
 Ran terminal command: $ErrorActionPreference='Stop'; Write-Host 'UNIQUE_COMMIT_COUNTS'; git rev-list --count main..origin/Max-Compeaux-Work-Branch; git rev-list --count main..origin/Rebecca-Gautreaux-Work-Branch; Write-Host '---'; Write-Host 'MAX_UNIQUE_COMMITS'; git log --date=short --pretty=format:'%ad | %an | %s' main..origin/Max-Compeaux-Work-Branch; Write-Host ''; Write-Host '---'; Write-Host 'REBECCA_UNIQUE_RECENT_120'; git log --date=short --pretty=format:'%ad | %an | %s' -n 120 main..origin/Rebecca-Gautreaux-Work-Branch; Write-Host ''; Write-Host '---'; Write-Host 'SHORTLOG_MAX_BRANCH'; git shortlog -sne origin/Max-Compeaux-Work-Branch; Write-Host '---'; Write-Host 'SHORTLOG_REBECCA_BRANCH'; git shortlog -sne origin/Rebecca-Gautreaux-Work-Branch
 
@@ -2533,7 +2555,7 @@ Ran terminal command: $ErrorActionPreference='Stop'; git log --all --date=short 
 
 Ran terminal command: $commits=@('15db5c96090d5a374ef92eaf44364e510f40767e','5357ecbf8e56d27fab2f342a416ae685dcdc1dea','cf9271deadc591881c99bc410d95e9d80cac3f7b','2175f3d7dfba2a447dc4b1d31b3dc391511ec49c'); foreach($c in $commits){ Write-Host ('COMMIT ' + $c); git show --name-only --pretty=format:'%ad | %an | %s' --date=short $c; Write-Host ''; Write-Host '---'; }
 
-I’m ready to edit now: I’ll append the missing transcript-driven reflection entries (especially the wireframe planning session) and then rewrite team roles/contribution bullets in AUTHORS.md using the branch commit evidence.
+Iâ€™m ready to edit now: Iâ€™ll append the missing transcript-driven reflection entries (especially the wireframe planning session) and then rewrite team roles/contribution bullets in AUTHORS.md using the branch commit evidence.
 
 Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/REFLECTION.md#850-850), lines 850 to 912
 
@@ -2553,7 +2575,7 @@ Generating patch (37 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/Gi
 ```
 
 ```
-I’ve applied both edits; I’m running a quick readback to verify the new reflection sections and updated author roles/contributions are present and clean.
+Iâ€™ve applied both edits; Iâ€™m running a quick readback to verify the new reflection sections and updated author roles/contributions are present and clean.
 
 Read changed files in the active git repository
 
@@ -2604,7 +2626,7 @@ User: Update the TRANSCRIPT with an exact, word-for-word transcript of this enti
 
 Then update REFLECTION with a summarization of all developments made within this session, including this command
 
-GitHub Copilot: I’m going to append a new transcript block to TRANSCRIPT.md with verbatim session dialogue (using Rebecca as the user label), then add a matching reflection entry in REFLECTION.md summarizing everything completed in this session including this command.
+GitHub Copilot: Iâ€™m going to append a new transcript block to TRANSCRIPT.md with verbatim session dialogue (using Rebecca as the user label), then add a matching reflection entry in REFLECTION.md summarizing everything completed in this session including this command.
 
 Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TRANSCRIPT.md#7907-7907), lines 7907 to 7907
 
@@ -2616,7 +2638,7 @@ Read [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/efc5
 
 Read [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/efc527fbc52ea141903e763507674dc7/GitHub.copilot-chat/chat-session-resources/c22fefb7-330e-4879-9b77-13c44dbcb72b/call_7xYUvvis51zrXX7sy0SYrA5J__vscode-1773694847828/content.txt#280-280), lines 280 to 335
 
-I’ve gathered the exact tail of the transcript and I’m now appending this session’s verbatim dialogue (with Rebecca as user), then adding a new reflection entry that summarizes all work done this session, including this transcript-update command itself.
+Iâ€™ve gathered the exact tail of the transcript and Iâ€™m now appending this sessionâ€™s verbatim dialogue (with Rebecca as user), then adding a new reflection entry that summarizes all work done this session, including this transcript-update command itself.
 
 Generating patch (59 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TRANSCRIPT.md)
 
@@ -2632,7 +2654,7 @@ Generating patch (30 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/Gi
 ```
 
 ```
-I’ve finished both updates and I’m doing a quick verification read to ensure the new transcript section and reflection entry were inserted correctly at the end of each file.
+Iâ€™ve finished both updates and Iâ€™m doing a quick verification read to ensure the new transcript section and reflection entry were inserted correctly at the end of each file.
 
 Read changed files in the active git repository
 
@@ -2652,7 +2674,7 @@ Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-p
 
 Ran terminal command: $files=@('docs/TRANSCRIPT.md','docs/REFLECTION.md'); foreach($p in $files){ $lines=Get-Content $p; Write-Output ('FILE=' + $p + ' LINE_COUNT=' + $lines.Count); $start=[Math]::Max(1,$lines.Count-40); for($i=$start;$i -le $lines.Count;$i++){ '{0}: {1}' -f $i,$lines[$i-1] }; Write-Output '---'; }
 
-I found the new sections landed near the top of both files instead of the end, so I’m now moving them to the bottom to keep chronology correct and preserve your existing transcript/reflection order.
+I found the new sections landed near the top of both files instead of the end, so Iâ€™m now moving them to the bottom to keep chronology correct and preserve your existing transcript/reflection order.
 
 Generating patch (61 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/TRANSCRIPT.md)
 
@@ -2684,7 +2706,7 @@ Generating patch (30 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/Gi
 ```
 
 ```
-The chronological placement is fixed now. I’m running one final check to confirm the new transcript and reflection entries are at the end of their files and not duplicated near the top.
+The chronological placement is fixed now. Iâ€™m running one final check to confirm the new transcript and reflection entries are at the end of their files and not duplicated near the top.
 
 Searched for regex `^## Reflection and Authors Synchronization Session \(2026-03-16\)$|^## Transcript and Reflection Synchronization Command \(2026-03-16\)$` (`**/docs/TRANSCRIPT.md`), 2 results
 
@@ -2716,59 +2738,13 @@ Generating patch (61 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/Gi
 
 Ran terminal command: @'
 
-### Reflection and Authors Synchronization Session (2026-03-16) (Transcript Replay Copy)
-
-**Rebecca:** Update REFLECTION and AUTHORS to reflect the data and work history recorded in TRANSCRIPT:
-
-- Make sure REFLECTION is synchronized and up-to-date with summarizing all entries in the TRANSCRIPT
-- Update '''CMPS 357 Final Project Role''' of team members based on controbutions to the project (as recorded in TRANSCRIPT, as well as the commits in each member's personal work branch), and detail said contributions to accurately track work history
-
-**GitHub Copilot:** Updated both requested files and synchronized them against transcript history plus personal-branch commit evidence.
-
-Changes made:
-
-1. Reflection synchronization
-- Added missing reflection coverage in [docs/REFLECTION.md](docs/REFLECTION.md) for transcript sessions that were not explicitly represented:
-- Stage 1 Planning and Setup Session
-- TODO Creation Session
-- Wireframe-Accurate Web Planning Session
-- Each new section uses the same required four-part format:
-- Tool used
-- Components benefited
-- Review/verification approach
-- Worked immediately vs iteration vs manual work
-
-2. Author roles and contribution history
-- Updated role titles and contribution bullets in [docs/AUTHORS.md](docs/AUTHORS.md) to reflect recorded work history from transcript and branch commits.
-
-What was updated for each member:
-- Max Compeaux:
-- Role updated to Backend Configuration Contributor and Foundational Documentation Author
-- Contributions now include foundational docs creation, README schedule update, backend settings/auth/API-key configuration work, and execution-guide documentation support
-- Rebecca Gautreaux:
-- Role expanded to include Web Frontend Implementation Lead (alongside Project Manager, Documentation Lead, Database Administrator)
-- Contributions now reflect planning leadership, transcript/reflection maintenance, Stage 1 web implementation and verification work, UI/icon/wireframe execution support, and git/merge reliability coordination
-
-Commit/history basis used:
-- Personal branch and author history from origin/Max-Compeaux-Work-Branch and origin/Rebecca-Gautreaux-Work-Branch
-- Example Max commits used for evidence included:
-- backend/config/settings.py updates (JWT/API key/OpenAQ placeholder)
-- docs/PROGRAM_EXECUTION.md addition
-- Foundational docs initialization commits
-- Rebecca branch history reflected ongoing documentation synchronization, Stage 1 implementation, wireframe planning, and coordination/merge activity consistent with transcript sessions
-
-Note:
-- I only edited [docs/REFLECTION.md](docs/REFLECTION.md) and [docs/AUTHORS.md](docs/AUTHORS.md). I did not modify transcript content.
-
----
-
 ### Transcript and Reflection Synchronization Command (2026-03-16) (Transcript Replay Copy)
 
 **Rebecca:** Update the TRANSCRIPT with an exact, word-for-word transcript of this entire session with the user being '''Rebecca'''
 
 Then update REFLECTION with a summarization of all developments made within this session, including this command
 
-**GitHub Copilot:** I’m going to append a new transcript block to [docs/TRANSCRIPT.md](docs/TRANSCRIPT.md) with verbatim session dialogue (using Rebecca as the user label), then add a matching reflection entry in [docs/REFLECTION.md](docs/REFLECTION.md) summarizing everything completed in this session including this command.
+**GitHub Copilot:** Iâ€™m going to append a new transcript block to [docs/TRANSCRIPT.md](docs/TRANSCRIPT.md) with verbatim session dialogue (using Rebecca as the user label), then add a matching reflection entry in [docs/REFLECTION.md](docs/REFLECTION.md) summarizing everything completed in this session including this command.
 '@ | Add-Content -Path 'docs/TRANSCRIPT.md'
 
 Ran terminal command: @'
@@ -2832,7 +2808,7 @@ Made changes.
 
 User: Create a Plan to make the web-app pages Wireframe Accurate to the RiskRadar_Web_Wireframes, while using the icons within /wireframe_icons
 
-GitHub Copilot: I will map the current web app structure against the wireframe assets and icon set, then produce a concrete implementation plan you can hand off for execution. I’m starting with a quick discovery pass of the web frontend, available wireframes, and the icon files.
+GitHub Copilot: I will map the current web app structure against the wireframe assets and icon set, then produce a concrete implementation plan you can hand off for execution. Iâ€™m starting with a quick discovery pass of the web frontend, available wireframes, and the icon files.
 
 Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web)
 
@@ -2842,7 +2818,7 @@ Read memory stage1-web-frontend.md
 
 Read memory git-onedrive-maintenance.md
 
-Discovery found the frontend is a PHP app with page entrypoints and the wireframe icon set is present; next I’ll use the Explore subagent to map existing page/component structure and identify where each wireframe element should be implemented.
+Discovery found the frontend is a PHP app with page entrypoints and the wireframe icon set is present; next Iâ€™ll use the Explore subagent to map existing page/component structure and identify where each wireframe element should be implemented.
 
 Map web UI structure
 
@@ -2912,13 +2888,13 @@ Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-p
 
 Read [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/efc527fbc52ea141903e763507674dc7/GitHub.copilot-chat/chat-session-resources/db6c38af-b30a-4a23-8fb9-264009d73894/call_T0A7JbkTJNRQbiB0bQj7sWJe__vscode-1773682544767/content.txt)
 
-I now have the frontend mapping and key gaps; before drafting the final plan, I need to lock scope and fidelity expectations so the execution handoff is unambiguous. I’ll ask a few targeted questions to finalize what “wireframe accurate” means for your team.
+I now have the frontend mapping and key gaps; before drafting the final plan, I need to lock scope and fidelity expectations so the execution handoff is unambiguous. Iâ€™ll ask a few targeted questions to finalize what â€œwireframe accurateâ€ means for your team.
 
 Analyzing your answers...
 
 Read memory
 
-I have your scope decisions and will now draft the full execution-ready plan, including phase dependencies and verification gates for every page in scope. I’ll do one quick directory check so file targets are precise in the handoff.
+I have your scope decisions and will now draft the full execution-ready plan, including phase dependencies and verification gates for every page in scope. Iâ€™ll do one quick directory check so file targets are precise in the handoff.
 
 Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/views)
 
@@ -2932,7 +2908,7 @@ Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-p
 
 Analyzing your answers...
 
-Scope is now confirmed to include every web page including Risk; I’ll inspect the Risk route and then finalize a phase-by-phase plan with clear parallel workstreams and acceptance criteria.
+Scope is now confirmed to include every web page including Risk; Iâ€™ll inspect the Risk route and then finalize a phase-by-phase plan with clear parallel workstreams and acceptance criteria.
 
 Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public/risk.php)
 
@@ -3008,7 +2984,7 @@ User: Yes, refine this into an execution order by teammate role (layout, page te
 
 Then create a WIREFRAME_STYLE_IMPLEMENTATION.md flie containing this order/plan for future reference in implementing these steps
 
-GitHub Copilot: I will convert the plan into a dependency-aware execution order grouped by teammate role, then write it into a new reference document so your team can execute in parallel without blocking collisions. I’m quickly checking the docs folder and existing markdown style first, then I’ll create the file.
+GitHub Copilot: I will convert the plan into a dependency-aware execution order grouped by teammate role, then write it into a new reference document so your team can execute in parallel without blocking collisions. Iâ€™m quickly checking the docs folder and existing markdown style first, then Iâ€™ll create the file.
 
 Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs)
 
@@ -3018,7 +2994,7 @@ I confirmed the docs style and will now create a dedicated implementation docume
 
 Created [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/WIREFRAME_STYLE_IMPLEMENTATION.md)
 
-I created the document and caught a small formatting typo while reviewing; I’m applying a quick cleanup so the checklist reads correctly.
+I created the document and caught a small formatting typo while reviewing; Iâ€™m applying a quick cleanup so the checklist reads correctly.
 
 Generating patch (10 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/WIREFRAME_STYLE_IMPLEMENTATION.md)
 
@@ -3043,7 +3019,7 @@ Made changes.
 
 User: Yes
 
-GitHub Copilot: I’ll add a compact standup-friendly progress table at the top of the wireframe implementation doc, with owner and due-date fields ready to fill, so your team can track execution immediately.
+GitHub Copilot: Iâ€™ll add a compact standup-friendly progress table at the top of the wireframe implementation doc, with owner and due-date fields ready to fill, so your team can track execution immediately.
 
 Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/WIREFRAME_STYLE_IMPLEMENTATION.md#1-1), lines 1 to 120
 
@@ -3104,34 +3080,34 @@ The SVG files are located in your project at these paths:
 Icons (19 files):
 
 /src/assets/icons/
-├── alert-circle.svg
-├── arrow-right.svg
-├── calendar.svg
-├── chart.svg
-├── check-circle.svg
-├── close.svg
-├── home.svg
-├── info.svg
-├── location-pin.svg
-├── logo.svg
-├── menu.svg
-├── notification.svg
-├── plus.svg
-├── profile.svg
-├── safe.svg
-├── search.svg
-├── settings.svg
-├── shield.svg
-└── warning.svg
+â”œâ”€â”€ alert-circle.svg
+â”œâ”€â”€ arrow-right.svg
+â”œâ”€â”€ calendar.svg
+â”œâ”€â”€ chart.svg
+â”œâ”€â”€ check-circle.svg
+â”œâ”€â”€ close.svg
+â”œâ”€â”€ home.svg
+â”œâ”€â”€ info.svg
+â”œâ”€â”€ location-pin.svg
+â”œâ”€â”€ logo.svg
+â”œâ”€â”€ menu.svg
+â”œâ”€â”€ notification.svg
+â”œâ”€â”€ plus.svg
+â”œâ”€â”€ profile.svg
+â”œâ”€â”€ safe.svg
+â”œâ”€â”€ search.svg
+â”œâ”€â”€ settings.svg
+â”œâ”€â”€ shield.svg
+â””â”€â”€ warning.svg
 Illustrations (6 files):
 
 /src/assets/illustrations/
-├── drought.svg
-├── earthquake.svg
-├── fire.svg
-├── flood.svg
-├── pandemic.svg
-└── storm.svg
+â”œâ”€â”€ drought.svg
+â”œâ”€â”€ earthquake.svg
+â”œâ”€â”€ fire.svg
+â”œâ”€â”€ flood.svg
+â”œâ”€â”€ pandemic.svg
+â””â”€â”€ storm.svg
 These files are part of your Figma Make project's source code. In the Figma Make interface, you should be able to see them in the file explorer/sidebar on the left side of the screen. You can click on any of these files to view their contents or use them in your React components.
 
 **Rebecca:** While all necessary assets and styles are present, these versions look plain/basic and lack the style/aesthetics of the given wireframes.
@@ -3159,7 +3135,7 @@ Premium Illustrations (6 files):
 
 Flood: Realistic house with gradient blues, animated wave patterns, and rain drops
 Earthquake: Tilted building with cracks, seismic waves, and dust particles
-Fire: Multi-layered flames with gradients from red→orange→yellow, animated sparks
+Fire: Multi-layered flames with gradients from redâ†’orangeâ†’yellow, animated sparks
 Storm: Dark gradient clouds, glowing lightning bolt with filters, rain effects
 Pandemic: Detailed virus with radial gradients, spike proteins, surface details
 Drought: Gradient sun with rays and glow, cracked earth, heat wave effects
@@ -3181,12 +3157,12 @@ Check that the style/aesthetics for screen visuals emulate the style/color schem
 Complete Illustration Set (10 files):
 Natural Disasters:
 
-✅ Flood - House with gradient blue tones, realistic water waves, rain effects
-✅ Earthquake - Tilted building, ground cracks, seismic waves, dust particles
-✅ Fire - Multi-layered flames with red→orange→yellow gradients, animated sparks
-✅ Storm - Dark clouds, glowing lightning bolt, rain, wind effects
-✅ Drought - Bright sun with rays/glow, cracked earth, heat waves
-Health & Environmental Risks: 6. ✅ Pandemic - Detailed virus with spike proteins, radial gradients, 3D effect 7. ✅ Pollen (NEW) - Vibrant flower with pink/red petals, yellow center, floating pollen particles with animations 8. ✅ Air Quality (NEW) - Split view showing clean (blue/green) vs polluted air (gray), with AQI indicators 9. ✅ Weather (NEW) - Multi-weather display: sun with rays, clouds, rain, snow, wind, thermometer 10. ✅ Pollution (NEW) - Industrial factory with smokestacks, toxic smoke, polluted water, waste barrels, hazard symbols
+âœ… Flood - House with gradient blue tones, realistic water waves, rain effects
+âœ… Earthquake - Tilted building, ground cracks, seismic waves, dust particles
+âœ… Fire - Multi-layered flames with redâ†’orangeâ†’yellow gradients, animated sparks
+âœ… Storm - Dark clouds, glowing lightning bolt, rain, wind effects
+âœ… Drought - Bright sun with rays/glow, cracked earth, heat waves
+Health & Environmental Risks: 6. âœ… Pandemic - Detailed virus with spike proteins, radial gradients, 3D effect 7. âœ… Pollen (NEW) - Vibrant flower with pink/red petals, yellow center, floating pollen particles with animations 8. âœ… Air Quality (NEW) - Split view showing clean (blue/green) vs polluted air (gray), with AQI indicators 9. âœ… Weather (NEW) - Multi-weather display: sun with rays, clouds, rain, snow, wind, thermometer 10. âœ… Pollution (NEW) - Industrial factory with smokestacks, toxic smoke, polluted water, waste barrels, hazard symbols
 
 Design Features Matching Wireframe Aesthetics:
 Gradients: Linear and radial gradients for depth and modern look
@@ -3347,7 +3323,7 @@ GitHub Copilot: **SVG and CSS Implementation in the Frontend**
     - Should be extended to include styles for SVG icons (e.g., sizing, color overrides, hover/focus effects).
   - **theme_tokens.css:**
     - Defines color variables and theme tokens for consistent styling.
-    - Should be referenced in SVGs (via CSS variables or inline styles) to ensure icons match the app’s color palette.
+    - Should be referenced in SVGs (via CSS variables or inline styles) to ensure icons match the appâ€™s color palette.
 
 ### 3. **How to Implement**
 - **SVGs:**  
@@ -3442,13 +3418,13 @@ Then complete the following tasks:
 - Update TRANSCRIPT for '''Rebecca''' with an exact, word-for-word transcript of this entire session (including this command and what comes after it)
 - Update REFLECTION for '''Rebecca''' with a reflection of the developments in this session, and all other transcript entries that are missing a corresponding reflection entry
 
-**GitHub Copilot:** I’m going to read the current AUTHORS, TRANSCRIPT, and REFLECTION files first, then align them by adding missing author details and synchronizing transcript/reflection entries for Rebecca in this session.
+**GitHub Copilot:** Iâ€™m going to read the current AUTHORS, TRANSCRIPT, and REFLECTION files first, then align them by adding missing author details and synchronizing transcript/reflection entries for Rebecca in this session.
 
-**GitHub Copilot:** I’ve loaded the existing docs and memory; next I’m checking section coverage and the ends of TRANSCRIPT/REFLECTION so I can append exact-matching entries without breaking structure.
+**GitHub Copilot:** Iâ€™ve loaded the existing docs and memory; next Iâ€™m checking section coverage and the ends of TRANSCRIPT/REFLECTION so I can append exact-matching entries without breaking structure.
 
-**GitHub Copilot:** I found the docs are very long, so I’m now extracting clean heading comparisons, duplicate checks, and file tails to safely append a new Rebecca session entry and avoid creating duplicate sections.
+**GitHub Copilot:** I found the docs are very long, so Iâ€™m now extracting clean heading comparisons, duplicate checks, and file tails to safely append a new Rebecca session entry and avoid creating duplicate sections.
 
-**GitHub Copilot:** I confirmed there are currently no transcript headings missing in reflection; I’m now editing AUTHORS plus appending a new Rebecca transcript/reflection pair for this exact session so coverage stays complete.
+**GitHub Copilot:** I confirmed there are currently no transcript headings missing in reflection; Iâ€™m now editing AUTHORS plus appending a new Rebecca transcript/reflection pair for this exact session so coverage stays complete.
 
 **GitHub Copilot:** Executed work in this session:
 - Updated `docs/AUTHORS.md` with contribution details supported by transcript/reflection history, including backend auth-test compatibility remediation and Stage 2 documentation synchronization responsibilities.
@@ -3472,7 +3448,7 @@ Validation snapshot for this session:
 
 - Quick navigation hubs linking scope, planning, tracker, status, evidence, and user guide docs
 
-- Explicit “update order” instructions connecting TODO → STAGES → README.
+- Explicit â€œupdate orderâ€ instructions connecting TODO â†’ STAGES â†’ README.
 References to USER_GUIDE.md, PLANNING_STAGES.md, Stage 1 Documents (API_STAGE1_CONTRACT.md and STAGE1_VERIFICATION_EVIDENCE.md), Stage 2 documents (STAGE2_IMPLEMENTATION_SPEC.md), and other planning/tracking/historical/referencial socuments where relevant
 
 **GitHub Copilot:** Implemented lightweight cross-reference navigation across the main grading docs without restructuring existing content.
@@ -3532,7 +3508,7 @@ Validation notes recorded for this command:
 
 Then include descriptions/details for all major Stage 1 developments and deliverables in README
 
-**GitHub Copilot:** You want a live validation pass, so I’ll execute Stage 1 runtime checks (backend tests + web runtime sanity checks) and then update README.md with a complete Stage 1 deliverables summary based on what actually passes now.
+**GitHub Copilot:** You want a live validation pass, so Iâ€™ll execute Stage 1 runtime checks (backend tests + web runtime sanity checks) and then update README.md with a complete Stage 1 deliverables summary based on what actually passes now.
 
 Ran terminal command: pytest from backend context. Result summary: `71 passed, 5 failed, 3 errors`.
 
@@ -3553,7 +3529,7 @@ Updated `README.md` with major Stage 1 developments/deliverables and live re-val
 
 **Rebecca:** Explain why 5 failed, and 3 errors occured. Then resolve these problems and fix the bcrypt/passlib test breakage, so that the backend suite is fully clean and all tests pass without errors occurring.
 
-**GitHub Copilot:** You asked for root-cause plus a full fix, so I’m going to inspect the user auth hashing code and dependency versions first, then patch the bcrypt/passlib compatibility issue and re-run the backend suite until it’s clean.
+**GitHub Copilot:** You asked for root-cause plus a full fix, so Iâ€™m going to inspect the user auth hashing code and dependency versions first, then patch the bcrypt/passlib compatibility issue and re-run the backend suite until itâ€™s clean.
 
 Applied code updates:
 - `backend/api/users.py`: changed passlib context scheme to `pbkdf2_sha256`
@@ -3569,17 +3545,17 @@ Result summary: `79 passed in 1.30s`.
 
 GitHub Copilot: I will locate the Stage 1 contract and verification evidence documents first, then create matching Stage 2 versions with equivalent structure and updated content.
 
-GitHub Copilot: I found the Stage 1 file names referenced in the stage tracker, so next I’m reading those documents and the Stage 2 section to mirror their format accurately.
+GitHub Copilot: I found the Stage 1 file names referenced in the stage tracker, so next Iâ€™m reading those documents and the Stage 2 section to mirror their format accurately.
 
-GitHub Copilot: The Stage 1 links currently point to missing files, so I’m now locating where the dedicated Stage 1 contract and evidence files actually live to mirror them exactly for Stage 2.
+GitHub Copilot: The Stage 1 links currently point to missing files, so Iâ€™m now locating where the dedicated Stage 1 contract and evidence files actually live to mirror them exactly for Stage 2.
 
-GitHub Copilot: I have the Stage 1 templates and Stage 2 spec; I’m quickly checking current Stage 2 code scaffolding so the new Stage 2 contract/evidence files reflect real routes, models, and verification points.
+GitHub Copilot: I have the Stage 1 templates and Stage 2 spec; Iâ€™m quickly checking current Stage 2 code scaffolding so the new Stage 2 contract/evidence files reflect real routes, models, and verification points.
 
-GitHub Copilot: I’m ready to add two new Stage 2 docs in the Stage 2 planning folder, modeled after the Stage 1 contract/evidence format, and then I’ll wire links into the stage planning docs so they’re discoverable.
+GitHub Copilot: Iâ€™m ready to add two new Stage 2 docs in the Stage 2 planning folder, modeled after the Stage 1 contract/evidence format, and then Iâ€™ll wire links into the stage planning docs so theyâ€™re discoverable.
 
-GitHub Copilot: The two Stage 2 files are now created; next I’m adding references in the stage planning docs so they mirror how Stage 1 dedicated artifacts are surfaced.
+GitHub Copilot: The two Stage 2 files are now created; next Iâ€™m adding references in the stage planning docs so they mirror how Stage 1 dedicated artifacts are surfaced.
 
-GitHub Copilot: I’ve finished the new files and STAGES links; I’m doing one quick patch retry in the planning file with exact context so the Stage 2 asset list includes these new artifacts too.
+GitHub Copilot: Iâ€™ve finished the new files and STAGES links; Iâ€™m doing one quick patch retry in the planning file with exact context so the Stage 2 asset list includes these new artifacts too.
 
 GitHub Copilot: Created the Stage 2 dedicated documentation artifacts, mirroring the Stage 1 contract/evidence pattern, and linked them into planning docs.
 
@@ -3603,11 +3579,11 @@ Validation:
 - Update TRANSCRIPT for '''Rebecca''' with an exact, word-for-word transcript of this entire session (including this command and what comes after it)
 - Update REFLECTION for '''Rebecca''' with a reflection of the developments in this session, and all other transcript entries that are missing a corresponding reflection entry
 
-GitHub Copilot: I’ll inspect the existing transcript and reflection formats first, then append this session in the same style and add any missing reflection coverage mapped to transcript entries.
+GitHub Copilot: Iâ€™ll inspect the existing transcript and reflection formats first, then append this session in the same style and add any missing reflection coverage mapped to transcript entries.
 
-GitHub Copilot: I’ve confirmed formatting style; next I’ll compare section headings between transcript and reflection to identify missing reflection entries, then append both files in one pass.
+GitHub Copilot: Iâ€™ve confirmed formatting style; next Iâ€™ll compare section headings between transcript and reflection to identify missing reflection entries, then append both files in one pass.
 
-GitHub Copilot: I verified heading coverage and there were no older transcript sessions lacking a reflection entry; I’m now appending one new transcript block for this session and one matching reflection block.
+GitHub Copilot: I verified heading coverage and there were no older transcript sessions lacking a reflection entry; Iâ€™m now appending one new transcript block for this session and one matching reflection block.
 
 
 ---
@@ -3621,13 +3597,13 @@ GitHub Copilot: I verified heading coverage and there were no older transcript s
 - Update TRANSCRIPT for '''Rebecca''' with an exact, word-for-word transcript of this entire session (including this command and what comes after it)
 - Update REFLECTION for '''Rebecca''' with a reflection of the developments in this session, and all other transcript entries that are missing a corresponding reflection entry
 
-**GitHub Copilot:** I’m going to gather the current contents of the planning doc, AUTHORS, TRANSCRIPT, and REFLECTION so I can apply all requested updates consistently in one pass and avoid breaking existing structure.
+**GitHub Copilot:** Iâ€™m going to gather the current contents of the planning doc, AUTHORS, TRANSCRIPT, and REFLECTION so I can apply all requested updates consistently in one pass and avoid breaking existing structure.
 
-**GitHub Copilot:** I’ve loaded the core files and next I’m checking the current tail sections so I can append new transcript/reflection entries cleanly and ensure heading coverage stays in sync.
+**GitHub Copilot:** Iâ€™ve loaded the core files and next Iâ€™m checking the current tail sections so I can append new transcript/reflection entries cleanly and ensure heading coverage stays in sync.
 
-**GitHub Copilot:** I’m ready to edit next; first I’ll run one quick coverage check on both doc sets so REFLECTION updates include any genuinely missing transcript entries before I append the new session records.
+**GitHub Copilot:** Iâ€™m ready to edit next; first Iâ€™ll run one quick coverage check on both doc sets so REFLECTION updates include any genuinely missing transcript entries before I append the new session records.
 
-**GitHub Copilot:** I’m now applying the document edits: role descriptions and Rebecca/Max assignments in the wireframe plan, then synchronized updates to AUTHORS, TRANSCRIPT, and REFLECTION based on verified history.
+**GitHub Copilot:** Iâ€™m now applying the document edits: role descriptions and Rebecca/Max assignments in the wireframe plan, then synchronized updates to AUTHORS, TRANSCRIPT, and REFLECTION based on verified history.
 
 **GitHub Copilot:** Executed work in this session:
 - Updated `docs/PLANNING_DOCS/WIREFRAME_STYLE_IMPLEMENTATION.md` by adding role descriptions, role explanations, role contributions, and a concrete two-person assignment model for Rebecca and Max.
@@ -3690,7 +3666,7 @@ This section records the command and all actions that followed it in this sessio
 
 **Rebecca:** Now that Stage 1 is complete, create a plan for how to execute Stage 2 of this project, keeping in line the Project Goals
 
-**GitHub Copilot:** I’ll map out a concrete Stage 2 execution plan tied directly to your project goals by first gathering codebase context on backend scoring/pipeline touchpoints, frontend integration points, and the current Stage 2 requirement docs. Then I’ll synthesize that into an actionable phased plan and save it to session memory.
+**GitHub Copilot:** Iâ€™ll map out a concrete Stage 2 execution plan tied directly to your project goals by first gathering codebase context on backend scoring/pipeline touchpoints, frontend integration points, and the current Stage 2 requirement docs. Then Iâ€™ll synthesize that into an actionable phased plan and save it to session memory.
 
 **GitHub Copilot:** Completed discovery and alignment, then delivered a Stage 2 execution plan with phase dependencies, ownership mapping, verification gates, and file-level targets. Saved working plan to `/memories/session/plan.md`.
 
@@ -3750,7 +3726,7 @@ Validation performed:
 - Run a check to ensure all entries within TRANSCRIPT and REFLECTION are unique & distinct, with no duplicate entries
 - Run a check to make sure formtting, grammer, and phrasing is consistient across TRANSCRIPT and REFLECTION entries
 
-**GitHub Copilot:** I’m going to audit `README.md`, `docs/TRANSCRIPT.md`, and `docs/REFLECTION.md` first, then patch them for completeness, uniqueness, and style consistency in one coordinated pass.
+**GitHub Copilot:** Iâ€™m going to audit `README.md`, `docs/TRANSCRIPT.md`, and `docs/REFLECTION.md` first, then patch them for completeness, uniqueness, and style consistency in one coordinated pass.
 
 **GitHub Copilot:** Completed this command by:
 - Updating `README.md` quick links to include transcript/reflection references.
@@ -3763,9 +3739,9 @@ Validation performed:
 ---
 
 
-I’m going to read the bottom of TRANSCRIPT.md and the current placeholder location in REFLECTION.md, then I’ll replace [...] with a complete reflection entry covering both the “Documentation Continuity and Clarity” segment and this latest session’s actions, implementations, and rationale.
+Iâ€™m going to read the bottom of TRANSCRIPT.md and the current placeholder location in REFLECTION.md, then Iâ€™ll replace [...] with a complete reflection entry covering both the â€œDocumentation Continuity and Clarityâ€ segment and this latest sessionâ€™s actions, implementations, and rationale.
 
-I’ve located the placeholder and transcript details; I’m now inserting a full reflection section in the same four-part format, explicitly covering all actions implemented and the reasons behind each step.
+Iâ€™ve located the placeholder and transcript details; Iâ€™m now inserting a full reflection section in the same four-part format, explicitly covering all actions implemented and the reasons behind each step.
 
 Edited
 REFLECTION.md+31-1
@@ -3779,9 +3755,9 @@ the implementations made (by file/group),
 the reasons for each action,
 how outputs were reviewed/verified,
 what worked immediately vs. what required iteration/manual decisions.
-If you want, I can also append a matching short “session closeout” block to TRANSCRIPT.md so both files stay synchronized one-to-one.
+If you want, I can also append a matching short â€œsession closeoutâ€ block to TRANSCRIPT.md so both files stay synchronized one-to-one.
 
-GPT-5.3-Codex • 0.9x
+GPT-5.3-Codex â€¢ 0.9x
 
 
 ---
@@ -3840,7 +3816,7 @@ Made changes.
 
 **Rebecca:** Yes
 
-GitHub Copilot: I’ll add a compact standup-friendly progress table at the top of the wireframe implementation doc, with owner and due-date fields ready to fill, so your team can track execution immediately.
+GitHub Copilot: Iâ€™ll add a compact standup-friendly progress table at the top of the wireframe implementation doc, with owner and due-date fields ready to fill, so your team can track execution immediately.
 
 Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/WIREFRAME_STYLE_IMPLEMENTATION.md#1-1), lines 1 to 120
 
@@ -3908,9 +3884,9 @@ Create an API_STAGE3_CONTRACT.md, STAGE3_VERIFICATION_EVICENCE.md, and other doc
 **GitHub Copilot:**
 The following Stage 3 planning documents have been created in docs/PLANNING_DOCS/STAGE3_DOCS/:
 
-- API_STAGE3_CONTRACT.md — Defines the API contract for map and risk visualization endpoints, request/response schemas, and error handling.
-- STAGE3_VERIFICATION_EVIDENCE.md — Outlines verification checkpoints for map rendering, geospatial accuracy, responsive UX, and fallback/performance validation.
-- STAGE3_IMPLEMENTATION_SPEC.md — Details the implementation plan, policy lock, and step-by-step requirements for interactive risk map and user experience enhancements.
+- API_STAGE3_CONTRACT.md â€” Defines the API contract for map and risk visualization endpoints, request/response schemas, and error handling.
+- STAGE3_VERIFICATION_EVIDENCE.md â€” Outlines verification checkpoints for map rendering, geospatial accuracy, responsive UX, and fallback/performance validation.
+- STAGE3_IMPLEMENTATION_SPEC.md â€” Details the implementation plan, policy lock, and step-by-step requirements for interactive risk map and user experience enhancements.
 
 These files follow the structure and conventions of the Stage 1 and Stage 2 planning docs. Let me know if you need additional templates or want to start filling in implementation details!
 
@@ -3929,7 +3905,7 @@ Complete the following Documentation Updates for Rebecca:
 - Add sections to README regarding the implementation, functionality, execution, and importance of the major developments for this project
 
 **GitHub Copilot:**
-Here’s a summary of the next steps I will take to fulfill your documentation update request:
+Hereâ€™s a summary of the next steps I will take to fulfill your documentation update request:
 
 1. TRANSCRIPT.md
   - Add a verbatim transcript of this session.
@@ -3941,10 +3917,10 @@ Here’s a summary of the next steps I will take to fulfill your documentation u
 
 3. Top-level Documentation Sync
   - Ensure README.md, STAGES.md, TODO.md, and AUTHORS.md are in agreement and reflect the latest project state.
-  - Update AUTHORS.md with each member’s contributions and roles.
+  - Update AUTHORS.md with each memberâ€™s contributions and roles.
   - Add README.md sections on the implementation, functionality, execution, and importance of the major developments.
 
-I will begin by appending the verbatim transcript of this session to TRANSCRIPT.md and ensuring all entries are unique. Then, I’ll proceed with the other documentation updates in sequence.
+I will begin by appending the verbatim transcript of this session to TRANSCRIPT.md and ensuring all entries are unique. Then, Iâ€™ll proceed with the other documentation updates in sequence.
 
 ## Stage 2 Documentation and Synchronization Session (2026-03-23)
 
@@ -3962,7 +3938,7 @@ I will begin by appending the verbatim transcript of this session to TRANSCRIPT.
 1. Append a verbatim transcript of this session to TRANSCRIPT.md and remove duplicates.
 2. Summarize this session and each transcript entry in REFLECTION.md.
 3. Sync all top-level documentation (README, TODO, STAGES, USER_GUIDE, planning docs) for consistency and agreement.
-4. Update AUTHORS.md with each member’s contributions and roles.
+4. Update AUTHORS.md with each memberâ€™s contributions and roles.
 5. Add README sections on implementation, functionality, execution, and the importance of major developments.
 
 Proceeding with these documentation updates in sequence.
@@ -4018,7 +3994,7 @@ Why This Extension Is the Best Fit
 Compared to other options:
 
 Extension	Difficulty	Fit with Existing Code
-Predictive ML	Medium–High	Needs historical data training
+Predictive ML	Mediumâ€“High	Needs historical data training
 Interactive Map	Medium	Mostly frontend work
 Alert Ranking	Medium	Limited user personalization
 Risk Scoring Engine	Medium	Uses existing scrapers + APIs perfectly
@@ -4036,7 +4012,7 @@ Adds new frontend UI
 
 This clearly satisfies the requirement:
 
-“meaningful technical complexity beyond basic CRUD”
+â€œmeaningful technical complexity beyond basic CRUDâ€
 
 What the Extension Will Do
 The system will calculate a Personal Environmental Risk Score for each user.
@@ -4049,7 +4025,7 @@ Risk Score: 68 (High)
 
 Factors:
 AQI: 142 (Unhealthy for Sensitive Groups)
-Heat Index: 101°F
+Heat Index: 101Â°F
 Wildfire Smoke: Moderate
 Pollen: High
 
@@ -4060,10 +4036,10 @@ You will add a Risk Analysis Layer between the database and API.
 
 Current architecture:
 
-Scrapers → Database → API → Mobile App
+Scrapers â†’ Database â†’ API â†’ Mobile App
 New architecture:
 
-Scrapers → Database → Risk Engine → API → Mobile App
+Scrapers â†’ Database â†’ Risk Engine â†’ API â†’ Mobile App
 System Architecture Diagram (Ideal Extension)
                     +-----------------------+
                     |  External Data APIs   |
@@ -4106,7 +4082,7 @@ You will create a new module.
 New Backend Directory
 backend/risk_engine/
 Files
-1️⃣ Risk Score Calculator
+1ï¸âƒ£ Risk Score Calculator
 backend/risk_engine/risk_calculator.py
 Responsibilities:
 
@@ -4124,14 +4100,14 @@ risk = (
     smoke_weight * smoke_level +
     pollen_weight * pollen_level
 )
-2️⃣ Recommendation Generator
+2ï¸âƒ£ Recommendation Generator
 backend/risk_engine/recommendations.py
 Produces messages like:
 
 "Limit outdoor exercise"
 "Wear an N95 mask outdoors"
 "Air quality safe for outdoor activity"
-3️⃣ Risk Data Aggregator
+3ï¸âƒ£ Risk Data Aggregator
 backend/risk_engine/data_aggregator.py
 Pulls latest metrics from DB:
 
@@ -4143,7 +4119,7 @@ weather alerts
 
 heat index
 
-4️⃣ Risk API Endpoint
+4ï¸âƒ£ Risk API Endpoint
 backend/api/risk.py
 Example endpoint:
 
@@ -4163,7 +4139,7 @@ Response:
 Then register it in:
 
 backend/api/router.py
-5️⃣ User Sensitivity Model
+5ï¸âƒ£ User Sensitivity Model
 Extend:
 
 backend/db/models.py
@@ -4176,7 +4152,7 @@ asthma: bool
 heat_sensitive: bool
 pollen_sensitive: bool
 outdoor_activity_level: int
-6️⃣ Schema for API
+6ï¸âƒ£ Schema for API
 Add:
 
 backend/schemas/risk.py
@@ -4205,22 +4181,22 @@ Updated Repository Structure
 Simplified:
 
 backend
- ├ api
- │   ├ alerts.py
- │   ├ summaries.py
- │   ├ users.py
- │   └ risk.py   NEW
- │
- ├ risk_engine   NEW
- │   ├ risk_calculator.py
- │   ├ data_aggregator.py
- │   └ recommendations.py
- │
- ├ db
- │   └ models.py (updated)
- │
- └ schemas
-     └ risk.py   NEW
+ â”œ api
+ â”‚   â”œ alerts.py
+ â”‚   â”œ summaries.py
+ â”‚   â”œ users.py
+ â”‚   â”” risk.py   NEW
+ â”‚
+ â”œ risk_engine   NEW
+ â”‚   â”œ risk_calculator.py
+ â”‚   â”œ data_aggregator.py
+ â”‚   â”” recommendations.py
+ â”‚
+ â”œ db
+ â”‚   â”” models.py (updated)
+ â”‚
+ â”” schemas
+     â”” risk.py   NEW
 Why This Will Impress Your Professor
 This extension demonstrates:
 
@@ -4299,7 +4275,7 @@ All four documentation files (TRANSCRIPT.md, REFLECTION.md, AUTHORS.md, README.m
 
 1. Append a verbatim, word-for-word transcript of this session to TRANSCRIPT.md, ensuring all entries are unique.
 2. Update REFLECTION.md with a summary of this session, including a summary for each unique transcript entry.
-3. Update AUTHORS.md with each member’s contributions and roles, reflecting all recent work.
+3. Update AUTHORS.md with each memberâ€™s contributions and roles, reflecting all recent work.
 4. Add/expand README.md sections regarding the implementation, functionality, execution, and importance of the major developments for this project.
 5. Ensure all top-level documentation is in sync and agreement.
 
@@ -4316,7 +4292,7 @@ Proceed to execute all these steps now
 **GitHub Copilot:**
 
 Summary of this session:
-- Compared the backend of this project to Team6’s backend to assess feasibility of syncing and merging improvements.
+- Compared the backend of this project to Team6â€™s backend to assess feasibility of syncing and merging improvements.
 - Generated a file-by-file breakdown of changes, summarized which Team6 improvements are beneficial to merge, and created a markdown table for team review.
 - Developed a detailed, actionable plan for merging improvements and updated BACKEND_REMOTE_UPDATE.md with all findings, tables, and plans.
 - Located all relevant documentation files (TRANSCRIPT, REFLECTION, AUTHORS, README, etc.) and prepared to update them with session results, summaries, deduplication, and synchronization.
@@ -4349,10 +4325,10 @@ Rebecca: Perform the following Documentation Updates for Rebecca now to document
 - Update AUTHORS with each member's contributions to the project so far and the roles they have assumed within project development in the correct chronological order for historical accuracy
 - Add sections to README regarding the implementation, functionality, execution, and importance of the major developments for this project and are listed in the correct chronological order and stage categorization for historical accuracy
 
-GitHub Copilot: I have gathered all relevant documentation and progress files. Here’s the plan for your requested updates:
+GitHub Copilot: I have gathered all relevant documentation and progress files. Hereâ€™s the plan for your requested updates:
 
 1. Add a summary of all developments of this session to all relevant files (chronological, stage-categorized):
-- I will add a new “Stage 4: Forecast UI & Asset Integration Session (2026-03-30)” summary to TODO.md, STAGES.md, and README.md, preserving formatting and order.
+- I will add a new â€œStage 4: Forecast UI & Asset Integration Session (2026-03-30)â€ summary to TODO.md, STAGES.md, and README.md, preserving formatting and order.
 2. Update TODO, STAGES, and all progress-tracking documentation:
 - I will add a new entry for the Forecast UI/icon integration and documentation sync to the TODO tracker, Master Task Tracker, and Weekly Check-In Log.
 3. Add an entry in TRANSCRIPT with a verbatim, word-for-word, exact transcript of this session:
@@ -4365,7 +4341,7 @@ GitHub Copilot: I have gathered all relevant documentation and progress files. H
 - Each transcript entry will have a corresponding summary in REFLECTION.md.
 7. Update all top-level documentation so they are in sync and agreement:
 - I will ensure README, STAGES, TODO, AUTHORS, TRANSCRIPT, and REFLECTION are all consistent and reference the new developments.
-8. Update AUTHORS with each member’s contributions and roles, in order:
+8. Update AUTHORS with each memberâ€™s contributions and roles, in order:
 - I will add new entries for Stage 4 work, including asset integration, UI implementation, and documentation leadership.
 9. Add sections to README regarding the implementation, functionality, execution, and importance of the major developments, in order:
 - I will add/expand README sections for Stage 4, focusing on the Forecast UI, asset integration, and documentation governance.
@@ -4385,7 +4361,7 @@ Rebecca: Now that Stage 3 is complete, perform the following Documentation Updat
 - Update AUTHORS with each member's contributions to the project so far and the roles they have assumed within project development in the correct chronological order for historical accuracy
 - Add sections to README regarding the implementation, functionality, execution, and importance of the major developments for this project and are listed in the correct chronological order and stage categorization for historical accuracy
 
-GitHub Copilot: I have gathered the contents and structure of all relevant documentation files. Here’s the plan for your requested updates:
+GitHub Copilot: I have gathered the contents and structure of all relevant documentation files. Hereâ€™s the plan for your requested updates:
 
 Planned Actions:
 1. Add a summary of all developments from this session to all relevant files, preserving formatting, order, and stage categorization.
@@ -4395,7 +4371,7 @@ Planned Actions:
 5. Update REFLECTION with a summary of this session, why changes were made, and how they improve the project, in the correct place.
 6. Update REFLECTION so it contains a summary of each TRANSCRIPT entry, in order.
 7. Ensure all top-level docs are in sync and agreement.
-8. Update AUTHORS with each member’s contributions and roles, in order.
+8. Update AUTHORS with each memberâ€™s contributions and roles, in order.
 9. Add/expand README sections on implementation, functionality, execution, and importance of these developments, in order and by stage.
 
 I will now begin applying these updates step by step, starting with the TODO and STAGES files.
@@ -4481,7 +4457,7 @@ Python backend (likely FastAPI)
 
 Scrapers pulling data from sources like EPA, NWS, AirNow
 
-LLM summarization for “5-minute summaries”
+LLM summarization for â€œ5-minute summariesâ€
 
 Alerts + users + summaries APIs
 
@@ -4510,7 +4486,7 @@ Create a personalized environmental risk score for each user based on location, 
 What it adds
 Instead of just showing raw alerts, the app answers:
 
-“How risky is the environment for me right now?”
+â€œHow risky is the environment for me right now?â€
 
 Features
 Users set preferences such as:
@@ -4525,7 +4501,7 @@ outdoor activity level
 
 travel plans
 
-The backend then computes a Risk Score (0–100) using:
+The backend then computes a Risk Score (0â€“100) using:
 
 AQI (AirNow)
 
@@ -4542,7 +4518,7 @@ Your Risk Score: 72 (High)
 
 Reasons:
 - AQI: 155 (Unhealthy)
-- Heat Index: 103°F
+- Heat Index: 103Â°F
 - Pollen Level: High
 
 Recommendation:
@@ -4560,16 +4536,16 @@ recommendation generator
 
 Architecture:
 
-Scrapers → Database
-        → Risk Engine
-        → Personalized Score
-        → API → Mobile App
+Scrapers â†’ Database
+        â†’ Risk Engine
+        â†’ Personalized Score
+        â†’ API â†’ Mobile App
 Why professors like this
 # Stage 4: AI Assistant Widget Integration & Documentation Sync Session (2026-03-31)
 It shows:
 
 algorithm design
-Predict environmental risk 24–48 hours ahead.
+Predict environmental risk 24â€“48 hours ahead.
 
 Features
 Use historical data collected by your scrapers to:
@@ -4619,7 +4595,7 @@ Example
 2. AQI Unhealthy (High)
 3. Heat Advisory (Moderate)
 Architecture
-Alerts → Scoring Engine → Ranked Alerts API
+Alerts â†’ Scoring Engine â†’ Ranked Alerts API
 Technical complexity
 Features
 Users see a map showing:
@@ -4643,7 +4619,7 @@ Frontend:
 
 map framework (Leaflet / Mapbox / Google Maps)
 
-Why it’s good
+Why itâ€™s good
 visual data interpretation
 
 spatial data handling
@@ -4687,19 +4663,19 @@ Mobile UI risk dashboard
 
 Example Architecture (Professors love this)
 Environmental Data Sources
-        ↓
+        â†“
 Data Scrapers
-        ↓
+        â†“
 Database
-        ↓
+        â†“
 Risk Analysis Engine
-        ↓
+        â†“
 Recommendation Generator
-        ↓
+        â†“
 API Layer
-        ↓
+        â†“
 Mobile App Dashboard
-💡 If you want, I can also help you:
+ðŸ’¡ If you want, I can also help you:
 
 Pick the best extension based on your codebase
 
@@ -4709,7 +4685,7 @@ Write the Final Project proposal
 
 Suggest specific files to add to this repository
 
-Just tell me and I’ll break it down step-by-step.
+Just tell me and Iâ€™ll break it down step-by-step.
 
 ---
 
@@ -4717,23 +4693,23 @@ Just tell me and I’ll break it down step-by-step.
 
 **Rebecca:** Fix this error so I can push my changes
 
-GitHub Copilot: I’m going to inspect your local Git remote-tracking refs to find and remove the broken one, then refresh from `origin` and verify you can push cleanly.
+GitHub Copilot: Iâ€™m going to inspect your local Git remote-tracking refs to find and remove the broken one, then refresh from `origin` and verify you can push cleanly.
 
 Ran terminal command: Get-Location; git status -sb; git remote -v; git show-ref --verify refs/remotes/origin/Rebecca-Gautreaux-Work-Branch-DESKTOP-L0II1KA
 
-I confirmed the branch itself is fine and you’re ahead by 1 commit; next I’ll check packed refs for a stale/broken `DESKTOP-L0II1KA` entry and remove it safely.
+I confirmed the branch itself is fine and youâ€™re ahead by 1 commit; next Iâ€™ll check packed refs for a stale/broken `DESKTOP-L0II1KA` entry and remove it safely.
 
 Ran terminal command: git for-each-ref refs/remotes/origin | Select-Object -First 30 | Out-String; if (Test-Path .git\packed-refs) { Select-String -Path .git\packed-refs -Pattern 'Rebecca-Gautreaux-Work-Branch-DESKTOP-L0II1KA|DESKTOP-L0II1KA' | Out-String }
 
 Ran terminal command: if (Test-Path .git\refs\remotes\origin\Rebecca-Gautreaux-Work-Branch-DESKTOP-L0II1KA) { Write-Host 'Found loose ref:'; Get-Content .git\refs\remotes\origin\Rebecca-Gautreaux-Work-Branch-DESKTOP-L0II1KA }; if (Test-Path .git\logs\refs\remotes\origin\Rebecca-Gautreaux-Work-Branch-DESKTOP-L0II1KA) { Write-Host 'Found reflog for broken ref' }
 
-I found a local broken loose ref file (it’s effectively empty), which is the root cause. I’m removing that stale ref and reflog, then pruning/fetching to fully repair the repo metadata.
+I found a local broken loose ref file (itâ€™s effectively empty), which is the root cause. Iâ€™m removing that stale ref and reflog, then pruning/fetching to fully repair the repo metadata.
 
 Ran terminal command: if (Test-Path .git\refs\remotes\origin\Rebecca-Gautreaux-Work-Branch-DESKTOP-L0II1KA) { Remove-Item .git\refs\remotes\origin\Rebecca-Gautreaux-Work-Branch-DESKTOP-L0II1KA -Force }; if (Test-Path .git\logs\refs\remotes\origin\Rebecca-Gautreaux-Work-Branch-DESKTOP-L0II1KA) { Remove-Item .git\logs\refs\remotes\origin\Rebecca-Gautreaux-Work-Branch-DESKTOP-L0II1KA -Force }; git remote prune origin; git fetch --prune --tags origin
 
 Ran terminal command: git pull --tags origin Rebecca-Gautreaux-Work-Branch; git push --dry-run origin Rebecca-Gautreaux-Work-Branch
 
-I’ve applied the fix and now I’m validating with your exact pull/push flow; the terminal output switched buffers, so I’m checking command completion and status directly.
+Iâ€™ve applied the fix and now Iâ€™m validating with your exact pull/push flow; the terminal output switched buffers, so Iâ€™m checking command completion and status directly.
 
 Ran terminal command: git status -sb; git branch -vv; git log --oneline --decorate -n 3
 
@@ -4758,23 +4734,23 @@ If you want, I can also clean up any other stale remote-tracking refs to prevent
 
 **Rebecca:** Yes, eliminate any stale references and files to make sure that there are no git commit/oull/fetech issues in the future
 
-GitHub Copilot: I’ll do a full Git hygiene pass now: detect any broken/stale refs, prune remotes, clean unreachable metadata, and run integrity checks so future `pull`/`fetch`/`push` operations stay reliable.
+GitHub Copilot: Iâ€™ll do a full Git hygiene pass now: detect any broken/stale refs, prune remotes, clean unreachable metadata, and run integrity checks so future `pull`/`fetch`/`push` operations stay reliable.
 
 Ran terminal command: $ErrorActionPreference='Stop'; Write-Host '== Pre-check: broken refs =='; git for-each-ref --format='%(refname)' refs/remotes 2>&1 | Out-String; Write-Host '== Scan loose remote ref files =='; Get-ChildItem -Path .git\refs\remotes -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object { $content = Get-Content $_.FullName -Raw -ErrorAction SilentlyContinue; if ([string]::IsNullOrWhiteSpace($content)) { Write-Host "EMPTY_REF_FILE $($_.FullName)" } }
 
-Audit is clean so far (no broken refs found). Next I’ll run pruning and maintenance commands (`remote prune`, aggressive `fetch --prune`, `gc`, `fsck`) to eliminate stale metadata and validate repo integrity.
+Audit is clean so far (no broken refs found). Next Iâ€™ll run pruning and maintenance commands (`remote prune`, aggressive `fetch --prune`, `gc`, `fsck`) to eliminate stale metadata and validate repo integrity.
 
 Ran terminal command: $ErrorActionPreference='Stop'; git remote prune origin; git fetch --all --prune --prune-tags --tags; git reflog expire --expire=now --expire-unreachable=now --all; git gc --prune=now; git fsck --full --strict
 
 Ran terminal command: $ErrorActionPreference='Stop'; $env:GIT_PAGER='cat'; git --no-pager status -sb; git --no-pager pull --ff-only --tags origin Rebecca-Gautreaux-Work-Branch; git --no-pager fetch --all --prune --prune-tags --tags; git --no-pager push --dry-run origin Rebecca-Gautreaux-Work-Branch
 
-The stale-ref cleanup succeeded, and Git integrity is healthy; the remaining issue is separate: there’s an unfinished merge (`MERGE_HEAD`) plus your branch is behind remote, which blocks pull/push. I’ll inspect merge state and safely clean that up next.
+The stale-ref cleanup succeeded, and Git integrity is healthy; the remaining issue is separate: thereâ€™s an unfinished merge (`MERGE_HEAD`) plus your branch is behind remote, which blocks pull/push. Iâ€™ll inspect merge state and safely clean that up next.
 
 Ran terminal command: $env:GIT_PAGER='cat'; git --no-pager status; if (Test-Path .git\MERGE_HEAD) { Write-Host 'MERGE_HEAD exists'; Get-Content .git\MERGE_HEAD } else { Write-Host 'No MERGE_HEAD' }; if (Test-Path .git\MERGE_MSG) { Write-Host 'MERGE_MSG exists' }
 
 Ran terminal command: $ErrorActionPreference='Stop'; git merge --quit; if (Test-Path .git\MERGE_HEAD) { Write-Host 'MERGE_HEAD still exists' } else { Write-Host 'MERGE_HEAD cleared' }; git config --local fetch.prune true; git config --local fetch.pruneTags true; git config --local gc.auto 256; git config --local pull.ff only; git config --local --get-regexp '^(fetch\.prune|fetch\.pruneTags|gc\.auto|pull\.ff)$'
 
-I cleared the stuck merge state and added auto-prune safeguards; I’ll run one final validation check and confirm what remains for push readiness.
+I cleared the stuck merge state and added auto-prune safeguards; Iâ€™ll run one final validation check and confirm what remains for push readiness.
 
 Ran terminal command: $env:GIT_PAGER='cat'; git --no-pager status -sb; git --no-pager fetch --all --prune --tags; git config --local --get fetch.prune; git config --local --get fetch.pruneTags; git config --local --get remote.origin.prune; git --no-pager push --dry-run origin Rebecca-Gautreaux-Work-Branch
 
@@ -4785,19 +4761,19 @@ Ran terminal command: $env:GIT_PAGER='cat'; git --no-pager status -sb; git --no-
 - Cleared the stuck merge state with `git merge --quit` (no forced commit).
 - Hardened local Git config to prevent stale refs: `fetch.prune=true`, `fetch.pruneTags=true`, `pull.ff=only`.
 
-**What’s still blocking push**
+**Whatâ€™s still blocking push**
 - Push is now failing only because your branch is behind remote (`non-fast-forward`), not because of ref corruption.
 
 **Next step**
-- I can safely run a no-loss sync flow now (`stash` → `pull --rebase` → `stash pop`) and then re-check push. Want me to do that?
+- I can safely run a no-loss sync flow now (`stash` â†’ `pull --rebase` â†’ `stash pop`) and then re-check push. Want me to do that?
 
 **Rebecca:** Yes, make these checks to ensure I can push future changes
 
-GitHub Copilot: I’m going to run the safe sync sequence now (`stash` → `pull --rebase` → `stash pop`) and then validate with a dry-run push so you’re set for future pushes.
+GitHub Copilot: Iâ€™m going to run the safe sync sequence now (`stash` â†’ `pull --rebase` â†’ `stash pop`) and then validate with a dry-run push so youâ€™re set for future pushes.
 
 Ran terminal command: $ErrorActionPreference='Stop'; $env:GIT_PAGER='cat'; git --no-pager status -sb; git stash push -u -m "pre-rebase-safety-$(Get-Date -Format yyyyMMdd-HHmmss)"; git pull --rebase --tags origin Rebecca-Gautreaux-Work-Branch; git stash pop
 
-Sync succeeded cleanly and your branch is now ahead by 1 with no local merge state. I’ll run final health checks (`fetch`, `pull --ff-only`, dry-run push, fsck) to confirm future operations are clean.
+Sync succeeded cleanly and your branch is now ahead by 1 with no local merge state. Iâ€™ll run final health checks (`fetch`, `pull --ff-only`, dry-run push, fsck) to confirm future operations are clean.
 
 Ran terminal command: $ErrorActionPreference='Stop'; $env:GIT_PAGER='cat'; git --no-pager status -sb; git fetch --all --prune --prune-tags --tags; git pull --ff-only --tags origin Rebecca-Gautreaux-Work-Branch; git push --dry-run origin Rebecca-Gautreaux-Work-Branch; git fsck --full --strict
 
@@ -4805,7 +4781,7 @@ Ran terminal command: $ErrorActionPreference='Stop'; git gc --prune=now; git fsc
 
 All requested checks are complete, and your repo is now push-ready.
 
-- Ran safe sync flow: `stash` → `pull --rebase` → `stash pop` with no conflicts.
+- Ran safe sync flow: `stash` â†’ `pull --rebase` â†’ `stash pop` with no conflicts.
 - Verified branch state: `Rebecca-Gautreaux-Work-Branch` is now clean and `ahead 1`.
 - Verified operations: `fetch --all --prune --prune-tags --tags` and `pull --ff-only` both succeed.
 - Verified push path: `git push --dry-run origin Rebecca-Gautreaux-Work-Branch` succeeds.
@@ -4818,7 +4794,7 @@ Want me to execute the actual push for you now?
 
 **Rebecca:** Yes
 
-GitHub Copilot: I’m pushing your branch to `origin` now and will confirm the remote update completed successfully.
+GitHub Copilot: Iâ€™m pushing your branch to `origin` now and will confirm the remote update completed successfully.
 
 Ran terminal command: $ErrorActionPreference='Stop'; $env:GIT_PAGER='cat'; git push origin Rebecca-Gautreaux-Work-Branch; git --no-pager status -sb
 
@@ -4838,13 +4814,13 @@ Your future `fetch/pull/push` flow should now be stable with the cleanup and pru
 
 Delete `CMPS490_contents/CMPS490_frontend` so there are no redundant directories
 
-GitHub Copilot: I’ll remove the redundant CMPS490_frontend directory and then quickly verify it’s gone while leaving mobile untouched.
+GitHub Copilot: Iâ€™ll remove the redundant CMPS490_frontend directory and then quickly verify itâ€™s gone while leaving mobile untouched.
 
 Read [](CMPS490_contents)
 
 Read [](frontend)
 
-I confirmed both paths exist. Next I’m deleting CMPS490_frontend and then listing CMPS490_contents again to verify removal.
+I confirmed both paths exist. Next Iâ€™m deleting CMPS490_frontend and then listing CMPS490_contents again to verify removal.
 
 Ran terminal command: $target = "./CMPS490_contents/CMPS490_frontend"; if (Test-Path $target) { Remove-Item -LiteralPath $target -Recurse -Force }; Get-ChildItem -LiteralPath "./CMPS490_contents" | Select-Object -ExpandProperty Name
 
@@ -4861,11 +4837,11 @@ Want me to also check git status and stage this deletion for you?
 - Check that the /mobile and /web directories connect to the backend
 - Stage and commit the deletion
 
-GitHub Copilot: I’ll do this in three passes: capture current git status, inspect mobile and web for backend API wiring, then stage and commit the deletion. I’m starting with status and directory inspection now.
+GitHub Copilot: Iâ€™ll do this in three passes: capture current git status, inspect mobile and web for backend API wiring, then stage and commit the deletion. Iâ€™m starting with status and directory inspection now.
 
 Created 3 todos
 
-I’m gathering status and frontend context in parallel so I can quickly confirm exactly what changed and what backend connections exist.
+Iâ€™m gathering status and frontend context in parallel so I can quickly confirm exactly what changed and what backend connections exist.
 
 Read changed files in [](.)
 
@@ -4873,13 +4849,13 @@ Read [](frontend/mobile)
 
 Read [](frontend/web)
 
-Status shows the deletion is tracked, mobile contains `RiskRadar`, and web is currently empty. I’ll now scan the mobile app for API base URLs and connection code.
+Status shows the deletion is tracked, mobile contains `RiskRadar`, and web is currently empty. Iâ€™ll now scan the mobile app for API base URLs and connection code.
 
 Searched for regex `http://|https://|localhost|127\.0\.0\.1|/api|API_URL|BASE_URL|fetch\(|axios` (`**/frontend/mobile/**`), 20 results
 
 Searched for files matching `**/frontend/mobile/RiskRadar/**/*.{ts,tsx,js,json,env,md}`, 20 matches
 
-I found no obvious API wiring hits yet in mobile code (mostly docs and lockfile links), so I’m broadening the search to all frontend files for concrete backend endpoints or API client code.
+I found no obvious API wiring hits yet in mobile code (mostly docs and lockfile links), so Iâ€™m broadening the search to all frontend files for concrete backend endpoints or API client code.
 
 Searched for regex `localhost:8000|127\.0\.0\.1:8000|/api/|API_BASE|BASE_URL|backend|FastAPI|fetch\(|axios\.` (`**/frontend/**`), no results
 
@@ -4887,11 +4863,11 @@ Searched for files matching `**/frontend/**/*.{py,ts,tsx,js,jsx,json,md,yaml,yml
 
 Starting: *Verify mobile/web backend wiring* (2/3)
 
-I’ve confirmed the deletion is the only current change; I’m doing one deeper scan including ignored files so we can be confident about whether `mobile`/`web` actually connect to the backend.
+Iâ€™ve confirmed the deletion is the only current change; Iâ€™m doing one deeper scan including ignored files so we can be confident about whether `mobile`/`web` actually connect to the backend.
 
 Searched for regex `localhost:8000|127\.0\.0\.1:8000|/api/|API_BASE|BASE_URL|backend|FastAPI|fetch\(|axios\.` (`**/frontend/**`), no results
 
-The deeper scan found no backend URL/API calls in `frontend/**`, so these frontend folders currently do not appear wired to the backend. I’ll now stage the deleted directory and create the commit.
+The deeper scan found no backend URL/API calls in `frontend/**`, so these frontend folders currently do not appear wired to the backend. Iâ€™ll now stage the deleted directory and create the commit.
 
 Ran `git_add_or_commit` 
 Completed with input: {
@@ -4909,7 +4885,7 @@ Completed with input: {
   "message": "Remove redundant CMPS490_frontend directory"
 }
 
-Commit is in. I’m doing one final status check to confirm the working tree is clean after the commit.
+Commit is in. Iâ€™m doing one final status check to confirm the working tree is clean after the commit.
 
 Read changed files in [](.)
 
@@ -4934,7 +4910,7 @@ Want me to push this branch to remote now?
 
 **Rebecca:** How much progress is left to complete for Stage 1?
 
-GitHub Copilot: You’re asking for remaining Stage 1 work, so I’ll quickly verify current status from TODO.md and README.md and then calculate a clear “what’s left” summary.
+GitHub Copilot: Youâ€™re asking for remaining Stage 1 work, so Iâ€™ll quickly verify current status from TODO.md and README.md and then calculate a clear â€œwhatâ€™s leftâ€ summary.
 
 Read [](docs/TODO.md)
 
@@ -4956,11 +4932,11 @@ A simple estimate is:
 - `1` task partially remaining (`S1-00`)
 - `3` verification items still remaining
 
-If you want, I can turn this into a week-by-week “what to finish next” plan from now to the Week of `2026-03-31` target.
+If you want, I can turn this into a week-by-week â€œwhat to finish nextâ€ plan from now to the Week of `2026-03-31` target.
 
 **Rebecca:** Is the /frontend directory for the mobile-app or web-app extension
 
-GitHub Copilot: I’ll quickly check the existing frontend docs to confirm whether that path currently refers to the mobile app or the planned web extension, then give you a direct answer.
+GitHub Copilot: Iâ€™ll quickly check the existing frontend docs to confirm whether that path currently refers to the mobile app or the planned web extension, then give you a direct answer.
 
 Read [](frontend/RiskRadar/README.md)
 
@@ -4982,13 +4958,13 @@ So in your current repo state, frontend is hosting mobile frontend content, whil
 
 - Update all documents accordingly once this is made, so that the developments for creating a new, unique Web-App front-end for the Project are designated the corresponding `frontend/web/`  directory
 
-GitHub Copilot: I’m going to restructure the directories first, then I’ll sweep docs for any frontend path references and update them to web or mobile where appropriate.
+GitHub Copilot: Iâ€™m going to restructure the directories first, then Iâ€™ll sweep docs for any frontend path references and update them to web or mobile where appropriate.
 
 Read [](frontend)
 
 Searched for regex `frontend/RiskRadar|/frontend|frontend\\RiskRadar|frontend\\` (`**/*.{md,txt,yml,yaml,json}`), 21 results
 
-I found mobile and web already present, so next I’ll verify their contents and then update the docs that still mention the old single frontend layout.
+I found mobile and web already present, so next Iâ€™ll verify their contents and then update the docs that still mention the old single frontend layout.
 
 Searched for files matching `**/frontend/**`, 39 matches
 
@@ -4996,7 +4972,7 @@ Read [](frontend/README.md)
 
 Read [](frontend/web)
 
-I confirmed the split exists physically (mobile populated, web empty). I’ll now update all planning/status docs so Stage 1 work clearly targets web and mobile remains under mobile.
+I confirmed the split exists physically (mobile populated, web empty). Iâ€™ll now update all planning/status docs so Stage 1 work clearly targets web and mobile remains under mobile.
 
 Searched for regex ``frontend/|`/frontend|/frontend`|frontend\\`` (`**/*.md`), 24 results
 
@@ -5008,7 +4984,7 @@ Read [](docs/TODO.md)
 
 Searched for regex `frontend|Expo|PHP web|web app` (`**/README.md`), 60 results
 
-Next I’m applying doc edits plus a `frontend/web/README.md` so the split is explicit in both project planning and directory-level guidance.
+Next Iâ€™m applying doc edits plus a `frontend/web/README.md` so the split is explicit in both project planning and directory-level guidance.
 
 Read [](README.md#70-70), lines 70 to 111
 
@@ -5028,7 +5004,7 @@ Generating patch (30 lines) in [](docs/PLANNING_STAGES.md)
 ```
 
 ```
-I’ve updated the core Stage 1 planning doc and frontend root README; next I’m aligning STAGES.md, TODO.md, and README.md so every active planning/status document uses the same web target.
+Iâ€™ve updated the core Stage 1 planning doc and frontend root README; next Iâ€™m aligning STAGES.md, TODO.md, and README.md so every active planning/status document uses the same web target.
 
 Generating patch (9 lines) in [](docs/STAGES.md)
 
@@ -5064,7 +5040,7 @@ Generating patch (8 lines) in [](docs/REFLECTION.md)
 
 Created [](frontend/web/README.md)
 
-I’ve finished the edits and added README.md; I’ll run a quick verification search to ensure no active planning docs still point to the old unsplit path.
+Iâ€™ve finished the edits and added README.md; Iâ€™ll run a quick verification search to ensure no active planning docs still point to the old unsplit path.
 
 Read changed files in the active git repository
 
@@ -5108,7 +5084,7 @@ Implemented. The frontend is now clearly designated as split, and docs now consi
 - Historical references in TRANSCRIPT.md were left unchanged because they are archival session logs.
 - No backend code was changed; this is directory designation/documentation alignment work only.
 
-If you want, I can do one more pass to add a short “Run Mobile vs Run Web” section in README.md so onboarding is immediate.
+If you want, I can do one more pass to add a short â€œRun Mobile vs Run Webâ€ section in README.md so onboarding is immediate.
 
 Made changes.
 
@@ -5312,7 +5288,7 @@ Verification:
 Note:
 - Historical transcript logs in TRANSCRIPT.md and TRANSCRIPT-BECCA-COMPUTER.md were left unchanged because they are archival records of earlier session history.
 
-If needed, the next step is to add the initial PHP entry files inside README.md’s scaffold.
+If needed, the next step is to add the initial PHP entry files inside README.mdâ€™s scaffold.
 
 Made changes.
 
@@ -5366,14 +5342,14 @@ Double-checked and fixed one remaining inconsistency.
 
 Updated:
 - TODO.md
-  - resolved the stale “frontend stack not finalized” wording
+  - resolved the stale â€œfrontend stack not finalizedâ€ wording
   - marked `S1-00` complete
   - moved `S1-02` to `In Progress`
   - updated the weekly log to reflect the confirmed mobile + web split
 - README.md
   - updated Stage 1 status wording so it explicitly says Stage 1 targets web and mobile remains under mobile
 - STAGES.md
-  - updated “Progress So Far” to match the confirmed split
+  - updated â€œProgress So Farâ€ to match the confirmed split
 
 Verified alignment:
 - README.md
@@ -5401,23 +5377,23 @@ Made changes.
 
 Once this is done, check this project for any similarly duplicated files.
 
-GitHub Copilot: I’ll compare both transcript files, merge only unique missing entries into TRANSCRIPT.md if needed, remove TRANSCRIPT-BECCA-COMPUTER.md, then scan the repository for other likely duplicate files and report what should be consolidated next.
+GitHub Copilot: Iâ€™ll compare both transcript files, merge only unique missing entries into TRANSCRIPT.md if needed, remove TRANSCRIPT-BECCA-COMPUTER.md, then scan the repository for other likely duplicate files and report what should be consolidated next.
 
 Created 5 todos
 
-I’m gathering the exact filenames and then running a content comparison so I can make a safe merge decision before deleting anything.
+Iâ€™m gathering the exact filenames and then running a content comparison so I can make a safe merge decision before deleting anything.
 
 Read [](docs)
 
 Read changed files in [](.)
 
-I found both transcript files present; next I’m running a direct file diff to identify whether `TRANSCRIPT-BECCA-COMPUTER.md` contains unique entries not already in `TRANSCRIPT.md`.
+I found both transcript files present; next Iâ€™m running a direct file diff to identify whether `TRANSCRIPT-BECCA-COMPUTER.md` contains unique entries not already in `TRANSCRIPT.md`.
 
 Ran terminal command: (Get-Item docs\TRANSCRIPT.md).Length; (Get-Item docs\TRANSCRIPT-BECCA-COMPUTER.md).Length; git diff --no-index -- docs/TRANSCRIPT.md docs/TRANSCRIPT-BECCA-COMPUTER.md | Out-String
 
 Read []([redacted-local-cache-path]), lines 1 to 400
 
-The diff shows `TRANSCRIPT-BECCA-COMPUTER.md` is larger with additional tail content; I’m now verifying whether `TRANSCRIPT.md` is a prefix so I can safely append only the missing unique block.
+The diff shows `TRANSCRIPT-BECCA-COMPUTER.md` is larger with additional tail content; Iâ€™m now verifying whether `TRANSCRIPT.md` is a prefix so I can safely append only the missing unique block.
 
 Ran terminal command: $a = Get-Content docs\TRANSCRIPT.md; $b = Get-Content docs\TRANSCRIPT-BECCA-COMPUTER.md; "A_lines=$($a.Count)"; "B_lines=$($b.Count)"; $min=[Math]::Min($a.Count,$b.Count); $idx=-1; for($i=0;$i -lt $min;$i++){ if($a[$i] -cne $b[$i]){ $idx=$i; break } }; if($idx -eq -1){ "first_diff=None_in_overlap" } else { "first_diff_line=$($idx+1)"; "A:"; $a[$idx]; "B:"; $b[$idx] }; if($idx -eq -1 -and $a.Count -le $b.Count){ "A_is_prefix_of_B=True" } else { "A_is_prefix_of_B=False" }
 
@@ -5427,7 +5403,7 @@ Read [](docs/TRANSCRIPT-BECCA-COMPUTER.md#3968-3968), lines 3968 to 4055
 
 Searched for regex `` There appear to be redundant directories|How much progress is left to complete for Stage 1\?|Delete `CMPS490_contents/CMPS490_frontend` `` (`**/docs/TRANSCRIPT*.md`), 3 results
 
-I confirmed each transcript has unique sections after the same point, so I’ll preserve both by appending the unique tail from TRANSCRIPT-BECCA-COMPUTER.md into TRANSCRIPT.md, then remove the duplicate file.
+I confirmed each transcript has unique sections after the same point, so Iâ€™ll preserve both by appending the unique tail from TRANSCRIPT-BECCA-COMPUTER.md into TRANSCRIPT.md, then remove the duplicate file.
 
 Read [](docs/TRANSCRIPT-BECCA-COMPUTER.md#3989-3989), lines 3989 to 4450
 
@@ -5443,7 +5419,7 @@ Generating patch (470 lines) in [](docs/TRANSCRIPT.md)
 
 Generating patch (3 lines) in [](docs/TRANSCRIPT-BECCA-COMPUTER.md)
 
-I’ve merged and removed the extra transcript file; now I’m scanning the full repository for other likely duplicates (machine-suffixed names, copy variants, and duplicate proposal/transcript files).
+Iâ€™ve merged and removed the extra transcript file; now Iâ€™m scanning the full repository for other likely duplicates (machine-suffixed names, copy variants, and duplicate proposal/transcript files).
 
 Ran terminal command: Write-Host "-- likely duplicate filename patterns --"; Get-ChildItem -Recurse -File | Where-Object { $_.Name -match 'BECCA-COMPUTER|\(\d+\)| - Copy|_copy|copy\.' } | Select-Object FullName; Write-Host "-- duplicated basenames in different paths --"; Get-ChildItem -Recurse -File | Group-Object Name | Where-Object { $_.Count -gt 1 } | Sort-Object Name | Select-Object Name,Count | Format-Table -AutoSize | Out-String
 
@@ -5459,7 +5435,7 @@ Read changed files in [](.)
 
 Read changed files in [](.)
 
-I’ve finished the merge/delete operation and duplicate scan; I’m running one final `git status` check to confirm the repository reflects exactly these changes.
+Iâ€™ve finished the merge/delete operation and duplicate scan; Iâ€™m running one final `git status` check to confirm the repository reflects exactly these changes.
 
 Ran terminal command: git status --short
 
@@ -5482,21 +5458,21 @@ Made changes.
 -  Remove the -BECCA-COMPUTER duplicates where a canonical counterpart exist
 - If a canonical counterpart does NOT exsist and this is the only copy of the file, Remove the '''-BECCA-COMPUTER''' part of the file name
 
-GitHub Copilot: I’ll run a safe, automated cleanup across the workspace (excluding .git) to delete `-BECCA-COMPUTER` files when a canonical filename already exists, and rename them when they are the only copy.
+GitHub Copilot: Iâ€™ll run a safe, automated cleanup across the workspace (excluding .git) to delete `-BECCA-COMPUTER` files when a canonical filename already exists, and rename them when they are the only copy.
 
 Created 5 todos
 
-I’m first generating a dry-run report so we can confirm exactly which files will be deleted versus renamed before applying changes.
+Iâ€™m first generating a dry-run report so we can confirm exactly which files will be deleted versus renamed before applying changes.
 
 Ran terminal command: $files = Get-ChildItem -Recurse -File -Filter "*BECCA-COMPUTER*" | Where-Object { $_.FullName -notmatch '\\.git\\' }; $rows = foreach($f in $files){ $canonName = $f.Name -replace '-BECCA-COMPUTER',''; $canonPath = Join-Path $f.DirectoryName $canonName; $action = if (Test-Path -LiteralPath $canonPath) { 'DELETE_DUPLICATE' } else { 'RENAME_TO_CANONICAL' }; [PSCustomObject]@{ Action=$action; BeccaPath=$f.FullName.Substring((Get-Location).Path.Length+1); CanonPath=$canonPath.Substring((Get-Location).Path.Length+1) } }; "TOTAL=$($rows.Count)"; "DELETE=$((($rows | Where-Object Action -eq 'DELETE_DUPLICATE')).Count)"; "RENAME=$((($rows | Where-Object Action -eq 'RENAME_TO_CANONICAL')).Count)"; $rows | Sort-Object Action,BeccaPath | Format-Table -AutoSize | Out-String
 
-The dry-run found 28 `-BECCA-COMPUTER` files: 1 true duplicate to delete and 27 files to rename to canonical names. I’m applying that cleanup now.
+The dry-run found 28 `-BECCA-COMPUTER` files: 1 true duplicate to delete and 27 files to rename to canonical names. Iâ€™m applying that cleanup now.
 
 Ran terminal command: $files = Get-ChildItem -Recurse -File -Filter "*BECCA-COMPUTER*" | Where-Object { $_.FullName -notmatch '\\.git\\' }; $deleted=0; $renamed=0; foreach($f in $files){ $canonName = $f.Name -replace '-BECCA-COMPUTER',''; $canonPath = Join-Path $f.DirectoryName $canonName; if(Test-Path -LiteralPath $canonPath){ Remove-Item -LiteralPath $f.FullName -Force; $deleted++ } else { Rename-Item -LiteralPath $f.FullName -NewName $canonName; $renamed++ } }; "DELETED=$deleted"; "RENAMED=$renamed"; "REMAINING=$((Get-ChildItem -Recurse -File -Filter '*BECCA-COMPUTER*' | Where-Object { $_.FullName -notmatch '\\.git\\' }).Count)"
 
 Starting: *Verify no BECCA suffix remains* (4/5)
 
-Cleanup is applied successfully; next I’m verifying final state with `git status` and a suffix scan to ensure no workspace files still contain `-BECCA-COMPUTER`.
+Cleanup is applied successfully; next Iâ€™m verifying final state with `git status` and a suffix scan to ensure no workspace files still contain `-BECCA-COMPUTER`.
 
 Searched for files matching `**/*BECCA-COMPUTER*`, no matches
 
@@ -5523,11 +5499,11 @@ Want me to stage these rename/deletion changes so Git records them cleanly as re
 
 **Rebecca:** Yes, stage these rename/deletion changes so Git records them cleanly as renames.  Then commit and push these changes.
 
-GitHub Copilot: I’ll stage all current changes now so Git can detect rename pairs, then I’ll commit with a clear cleanup message and push your branch to `origin`.
+GitHub Copilot: Iâ€™ll stage all current changes now so Git can detect rename pairs, then Iâ€™ll commit with a clear cleanup message and push your branch to `origin`.
 
 Ran terminal command: git status --short
 
-I confirmed the rename/delete set is ready; next I’m staging everything and creating one cleanup commit so the diff is tracked as renames where possible.
+I confirmed the rename/delete set is ready; next Iâ€™m staging everything and creating one cleanup commit so the diff is tracked as renames where possible.
 
 Ran `git_add_or_commit` 
 Completed with input: {
@@ -5547,11 +5523,11 @@ Completed with input: {
   "directory": "."
 }
 
-The commit and push commands completed; I’m doing a quick final verification of branch status and latest commit on remote-tracking state.
+The commit and push commands completed; Iâ€™m doing a quick final verification of branch status and latest commit on remote-tracking state.
 
 Ran terminal command: git status -sb; git log --oneline --decorate -n 2
 
-Completed — the rename/deletion set is now staged, committed, and pushed.
+Completed â€” the rename/deletion set is now staged, committed, and pushed.
 
 - Commit created: `3e380e1`
 - Commit message: `Normalize mobile frontend filenames by removing -BECCA-COMPUTER suffixes`
@@ -5562,11 +5538,11 @@ Git recorded the changes cleanly as renames (plus the one duplicate deletion), s
 ---
 
 
-I’ll compare all session headings in TRANSCRIPT.md against existing entries in REFLECTION.md, identify missing sessions, then append one reflection section per missing transcript session.
+Iâ€™ll compare all session headings in TRANSCRIPT.md against existing entries in REFLECTION.md, identify missing sessions, then append one reflection section per missing transcript session.
 
-I found the heading gaps; next I’m reading the missing transcript sections directly so each new reflection entry is accurate to what actually happened in those sessions.
+I found the heading gaps; next Iâ€™m reading the missing transcript sections directly so each new reflection entry is accurate to what actually happened in those sessions.
 
-I identified six transcript session headings that don’t currently have explicit matching reflection sections, so I’m appending one new four-part reflection entry for each of those missing sessions.
+I identified six transcript session headings that donâ€™t currently have explicit matching reflection sections, so Iâ€™m appending one new four-part reflection entry for each of those missing sessions.
 
 Updated REFLECTION.md to cover transcript sessions that were missing explicit reflection entries.
 
@@ -5584,7 +5560,7 @@ tool used
 components benefited
 review/verification method
 what worked vs needed iteration vs manual implementation
-If you want, I can also run a quick consistency pass to normalize section-title style (some currently use “Follow-Up Reflection: …” while others now use direct session names).
+If you want, I can also run a quick consistency pass to normalize section-title style (some currently use â€œFollow-Up Reflection: â€¦â€ while others now use direct session names).
 
 ---
 
@@ -5593,7 +5569,7 @@ If you want, I can also run a quick consistency pass to normalize section-title 
 - Need to be further fleshed out for clean implementation (if so, then how?)
 - Do not reflect how to most effectively fulfill Stage 1's Goal of creating a unique web-app frontend (if not, how can it be updated to suit the project's needs?)
 
-GitHub Copilot: Reviewing STAGES.md now to assess Stage 1 for implementation readiness and whether it truly drives a distinct web frontend; next I’ll return a focused gap analysis with concrete wording updates you can apply.
+GitHub Copilot: Reviewing STAGES.md now to assess Stage 1 for implementation readiness and whether it truly drives a distinct web frontend; next Iâ€™ll return a focused gap analysis with concrete wording updates you can apply.
 
 Read [docs/STAGES.md](docs/STAGES.md)
 
@@ -5603,7 +5579,7 @@ Read [docs/TODO.md](docs/TODO.md)
 
 Read memory
 
-I’ve identified the main Stage 1 sections; next I’m pulling exact line numbers so I can point to precise spots and propose targeted edits rather than general advice.
+Iâ€™ve identified the main Stage 1 sections; next Iâ€™m pulling exact line numbers so I can point to precise spots and propose targeted edits rather than general advice.
 
 Ran terminal command: $p='c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\docs\STAGES.md'; $i=0; Get-Content -Path $p | ForEach-Object { $i++; '{0,4}: {1}' -f $i, $_ }
 
@@ -5611,7 +5587,7 @@ Ran terminal command: $p='c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26
 
 Read [tool output]
 
-Yes. Stage 1 is directionally solid, but a few parts should be sharpened so implementation is clean and the “unique web-app frontend” goal is actually measurable.
+Yes. Stage 1 is directionally solid, but a few parts should be sharpened so implementation is clean and the â€œunique web-app frontendâ€ goal is actually measurable.
 
 **What Needs More Detail (And How)**
 1. **Scope guardrails are too broad in STAGES.md**
@@ -5622,12 +5598,12 @@ Yes. Stage 1 is directionally solid, but a few parts should be sharpened so impl
   - `deferred`: full CRUD/profile completion
 - Why: avoids scope creep before March 31.
 
-2. **“Unique frontend experience” is not operationalized**
-- `docs/STAGES.md:32` and `docs/STAGES.md:69` say “unique/distinct” but no criteria define what counts.
-- Update: add a short “Web Distinctness Criteria” section with 3-5 required differences from mobile, for example:
+2. **â€œUnique frontend experienceâ€ is not operationalized**
+- `docs/STAGES.md:32` and `docs/STAGES.md:69` say â€œunique/distinctâ€ but no criteria define what counts.
+- Update: add a short â€œWeb Distinctness Criteriaâ€ section with 3-5 required differences from mobile, for example:
   - Information density (table/cards + trends) optimized for desktop
   - Persistent multi-panel layout (sidebar + content)
-  - Comparative widgets (e.g., “top risks now” vs “latest summary”)
+  - Comparative widgets (e.g., â€œtop risks nowâ€ vs â€œlatest summaryâ€)
   - Keyboard navigability and desktop-first interactions
 - Why: makes reviews objective instead of subjective.
 
@@ -5638,7 +5614,7 @@ Yes. Stage 1 is directionally solid, but a few parts should be sharpened so impl
 - Why: reduces rework in wrapper/service layer (`S1-03`) and template rendering.
 
 4. **Verification checklist is too coarse**
-- `docs/STAGES.md:66` to `docs/STAGES.md:69` doesn’t define pass/fail or evidence quality.
+- `docs/STAGES.md:66` to `docs/STAGES.md:69` doesnâ€™t define pass/fail or evidence quality.
 - Update: convert to measurable checks:
   - `Home page loads <2s on local dev`
   - `Timeout produces user-visible retry message`
@@ -5653,7 +5629,7 @@ Yes. Stage 1 is directionally solid, but a few parts should be sharpened so impl
   - CSRF token for preference form
   - Input allowlists for query params
   - Request timeout + retry/backoff policy
-- Why: transforms “intent” into implementable requirements.
+- Why: transforms â€œintentâ€ into implementable requirements.
 
 ### Does Anything Undermine the Stage 1 Goal?
 Not fundamentally, but one risk is **blended scope**: STAGES.md reads like full-page delivery while PLANNING_STAGES.md is MVP-first. That mismatch can dilute focus and make the web experience less intentionally unique.
@@ -5668,7 +5644,7 @@ If you want, I can directly patch STAGES.md with these exact additions so it sta
 
 **Rebecca:** Yes, run a patch so all documentation agrees and reflects the goals of this project
 
-GitHub Copilot: Applying a documentation sync pass now: I’ll update STAGES.md first, then align PLANNING_STAGES.md, TODO.md, and README.md so Stage 1 scope, uniqueness criteria, and verification expectations all match.
+GitHub Copilot: Applying a documentation sync pass now: Iâ€™ll update STAGES.md first, then align PLANNING_STAGES.md, TODO.md, and README.md so Stage 1 scope, uniqueness criteria, and verification expectations all match.
 
 Read [README.md](README.md)
 
@@ -5678,7 +5654,7 @@ Read [docs/PLANNING_STAGES.md](docs/PLANNING_STAGES.md)
 
 Read [docs/TODO.md](docs/TODO.md)
 
-I found the sync points and am now patching four docs (`STAGES`, `PLANNING_STAGES`, `TODO`, `README`) to enforce MVP boundaries, define “unique web frontend” criteria, and add measurable verification targets.
+I found the sync points and am now patching four docs (`STAGES`, `PLANNING_STAGES`, `TODO`, `README`) to enforce MVP boundaries, define â€œunique web frontendâ€ criteria, and add measurable verification targets.
 
 Generating patch (70 lines) in [docs/STAGES.md](docs/STAGES.md)
 
@@ -5702,7 +5678,7 @@ Generating patch (30 lines) in [docs/TODO.md](docs/TODO.md)
 ```
 
 ```
-The first three docs are now aligned on scope and acceptance criteria; I’m making the final README update so the status/source-of-truth summary matches the same Stage 1 boundaries.
+The first three docs are now aligned on scope and acceptance criteria; Iâ€™m making the final README update so the status/source-of-truth summary matches the same Stage 1 boundaries.
 
 Generating patch (8 lines) in [README.md](README.md)
 
@@ -5726,7 +5702,7 @@ Ran terminal command: $p='c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26
 
 Ran terminal command: $p='c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\README.md'; $i=0; Get-Content $p | ForEach-Object { $i++; if($i -ge 118 -and $i -le 136){ '{0,4}: {1}' -f $i, $_ }}
 
-Patched and aligned the Stage 1 documentation across all key planning/status docs so they now consistently reflect a clean, MVP-first implementation path and a measurable “unique web frontend” goal.
+Patched and aligned the Stage 1 documentation across all key planning/status docs so they now consistently reflect a clean, MVP-first implementation path and a measurable â€œunique web frontendâ€ goal.
 
 **What I updated**
 
@@ -5758,14 +5734,14 @@ Patched and aligned the Stage 1 documentation across all key planning/status doc
 No code behavior was changed; this was a documentation alignment patch only.
 
 Natural next steps:
-1. I can now patch STAGES.md “Progress So Far” text to explicitly mention the new MVP/distinctness criteria (it still has older wording).  
-2. I can draft the Stage 1 endpoint contract table in STAGES.md or a new `docs/API_STAGE1_CONTRACT.md` so `S1-01` can move from “Not Started” to “In Progress.”
+1. I can now patch STAGES.md â€œProgress So Farâ€ text to explicitly mention the new MVP/distinctness criteria (it still has older wording).  
+2. I can draft the Stage 1 endpoint contract table in STAGES.md or a new `docs/API_STAGE1_CONTRACT.md` so `S1-01` can move from â€œNot Startedâ€ to â€œIn Progress.â€
 
 Made changes.
 
 **Rebecca:** Yes, implement these steps you mentioned so that the plan for Stage 1 implementation is clean and refined
 
-GitHub Copilot: Refining Stage 1 now by implementing both follow-ups: I’ll update `Progress So Far` language in STAGES.md and add a concrete Stage 1 endpoint contract section sourced from the actual backend routes so `S1-01` has actionable detail.
+GitHub Copilot: Refining Stage 1 now by implementing both follow-ups: Iâ€™ll update `Progress So Far` language in STAGES.md and add a concrete Stage 1 endpoint contract section sourced from the actual backend routes so `S1-01` has actionable detail.
 
 Search complete: Locate Stage 1 API routes
 
@@ -5783,7 +5759,7 @@ Read [backend/api/summaries.py](backend/api/summaries.py)
 
 Read [backend/api/users.py](backend/api/users.py)
 
-I’ve pulled the exact backend routes and schemas; next I’m patching docs with a concrete API contract artifact (`docs/API_STAGE1_CONTRACT.md`), linking it in Stage 1, and updating progress tracking so `S1-01` reflects real implementation movement.
+Iâ€™ve pulled the exact backend routes and schemas; next Iâ€™m patching docs with a concrete API contract artifact (`docs/API_STAGE1_CONTRACT.md`), linking it in Stage 1, and updating progress tracking so `S1-01` reflects real implementation movement.
 
 Generating patch (33 lines) in [docs/STAGES.md](docs/STAGES.md)
 
@@ -5815,7 +5791,7 @@ Generating patch (6 lines) in [docs/TODO.md](docs/TODO.md)
 ```
 
 ```
-Core refinements are in place and linked; I’m doing a quick verification diff and then I’ll summarize exactly what changed and where to continue next (likely `S1-03` wrapper implementation details).
+Core refinements are in place and linked; Iâ€™m doing a quick verification diff and then Iâ€™ll summarize exactly what changed and where to continue next (likely `S1-03` wrapper implementation details).
 
 Read changed files in the active git repository
 
@@ -5887,7 +5863,7 @@ Made changes.
 
 **Rebecca:** Begin Stage 1 Implementation to create a  Web-App Extension that works from the existing backend
 
-GitHub Copilot: I’m starting Stage 1 as an actual implementation pass, not just planning. First I’m checking the existing web scaffold and backend API shape so I can wire a PHP MVP against the current backend without guessing.
+GitHub Copilot: Iâ€™m starting Stage 1 as an actual implementation pass, not just planning. First Iâ€™m checking the existing web scaffold and backend API shape so I can wire a PHP MVP against the current backend without guessing.
 
 Read [frontend/web](frontend/web)
 
@@ -5899,7 +5875,7 @@ Read [backend/api/summaries.py](backend/api/summaries.py)
 
 Read [backend/api/users.py](backend/api/users.py)
 
-The backend routes match the Stage 1 contract closely, and the web app folder is mostly empty. Next I’m checking what already exists under the web frontend and the project docs so I can add a minimal but usable PHP implementation without fighting the current structure.
+The backend routes match the Stage 1 contract closely, and the web app folder is mostly empty. Next Iâ€™m checking what already exists under the web frontend and the project docs so I can add a minimal but usable PHP implementation without fighting the current structure.
 
 Searched for files matching `**/frontend/web/**/*`, 7 matches
 
@@ -5911,11 +5887,11 @@ Read [README.md](README.md)
 
 Read [backend/main.py](backend/main.py)
 
-There’s no existing PHP implementation yet, just the intended folders. I have enough context to build the Stage 1 MVP slice now: config template, API client layer, shared page components, dashboard plus scaffolded alerts/summaries/profile pages, and run docs.
+Thereâ€™s no existing PHP implementation yet, just the intended folders. I have enough context to build the Stage 1 MVP slice now: config template, API client layer, shared page components, dashboard plus scaffolded alerts/summaries/profile pages, and run docs.
 
 Created 7 todos
 
-I’m checking the exact response models and current workspace state before I write files, so the PHP normalization layer matches the backend fields and I don’t trample unrelated work.
+Iâ€™m checking the exact response models and current workspace state before I write files, so the PHP normalization layer matches the backend fields and I donâ€™t trample unrelated work.
 
 Read changed files in [tool output]
 
@@ -5925,7 +5901,7 @@ Read [backend/schemas/alert.py](backend/schemas/alert.py)
 
 Read [backend/schemas/user.py](backend/schemas/user.py)
 
-I have the file plan. I’m creating the PHP web skeleton now with a real API client, shared layout/helpers, and the first four public pages so Stage 1 exists as runnable code rather than just docs.
+I have the file plan. Iâ€™m creating the PHP web skeleton now with a real API client, shared layout/helpers, and the first four public pages so Stage 1 exists as runnable code rather than just docs.
 
 Created [frontend/web/public/assets](frontend/web/public/assets)
 
@@ -5999,13 +5975,13 @@ Generating patch (1438 lines) in [frontend/web/config/app.php](frontend/web/conf
 ```
 
 ```
-The Stage 1 code scaffold is in place. I’m validating it now with PHP linting and editor diagnostics before I touch the docs, because the next useful step is to clean up any syntax or wiring issues while the change set is still contained.
+The Stage 1 code scaffold is in place. Iâ€™m validating it now with PHP linting and editor diagnostics before I touch the docs, because the next useful step is to clean up any syntax or wiring issues while the change set is still contained.
 
 Checked , no problems found
 
 Ran terminal command: php -v
 
-I found one behavior issue in the profile page flow: success messages were being stored as flash state without redirecting, so they wouldn’t actually surface immediately. I’m fixing that and then I’m updating the web README and Stage 1 tracker to reflect the code that now exists.
+I found one behavior issue in the profile page flow: success messages were being stored as flash state without redirecting, so they wouldnâ€™t actually surface immediately. Iâ€™m fixing that and then Iâ€™m updating the web README and Stage 1 tracker to reflect the code that now exists.
 
 Generating patch (127 lines) in [frontend/web/public/profile.php](frontend/web/public/profile.php)
 
@@ -6021,7 +5997,7 @@ Generating patch (127 lines) in [frontend/web/public/profile.php](frontend/web/p
 ```
 
 ```
-The implementation and docs are aligned now. I’m doing one last pass on workspace diagnostics and collecting the changed-file set so I can close this with a precise status and the remaining blocker, which is PHP not being installed on this machine.
+The implementation and docs are aligned now. Iâ€™m doing one last pass on workspace diagnostics and collecting the changed-file set so I can close this with a precise status and the remaining blocker, which is PHP not being installed on this machine.
 
 Checked [frontend/web/public/profile.php](frontend/web/public/profile.php)
 
@@ -6033,7 +6009,7 @@ Completed: *Design PHP MVP structure* (2/7)
 
 Stage 1 now has a concrete PHP web implementation in place under web. The MVP includes a desktop-oriented dashboard in index.php, filtered alerts and summaries pages in alerts.php and summaries.php, and a profile page with registration and preference-update scaffolding in profile.php. Shared API/error-handling logic is in api_client.php, with CSRF, validation, and shared layout helpers in services and layout.php. Styling for the web-specific UI is in app.css.
 
-I also added runtime configuration support in app.php and config.local.example.php, then updated Stage 1 docs in README.md and tracking status in TODO.md. The PHP pages are clean in editor diagnostics. I could not run the PHP server or perform CLI linting because PHP is not installed on this machine’s PATH.
+I also added runtime configuration support in app.php and config.local.example.php, then updated Stage 1 docs in README.md and tracking status in TODO.md. The PHP pages are clean in editor diagnostics. I could not run the PHP server or perform CLI linting because PHP is not installed on this machineâ€™s PATH.
 
 Natural next steps:
 1. Install PHP locally, then run the web app against the backend and do the Stage 1 manual verification pass.
@@ -6050,7 +6026,7 @@ Natural next steps:
 - Run the web app against the backend and do the Stage 1 manual verification pass
 - If this is successful, tighten the TODO tracker again by moving S1-03 and S1-04 from In Progress toward Completed.
 
-GitHub Copilot: I’m checking local tooling first so I can either use PHP immediately or install it with the least invasive path, then I’ll run the backend and web app together for the Stage 1 verification pass.
+GitHub Copilot: Iâ€™m checking local tooling first so I can either use PHP immediately or install it with the least invasive path, then Iâ€™ll run the backend and web app together for the Stage 1 verification pass.
 
 Ran terminal command: Get-Command php | Format-List *
 
@@ -6060,43 +6036,43 @@ Ran terminal command: Get-Command choco | Format-List *
 
 Ran terminal command: Get-Command scoop | Format-List *
 
-PHP is not on PATH, but both `winget` and Chocolatey are available. I’m checking the exact package IDs and then I’ll install PHP with a non-interactive command so we can run the web frontend locally.
+PHP is not on PATH, but both `winget` and Chocolatey are available. Iâ€™m checking the exact package IDs and then Iâ€™ll install PHP with a non-interactive command so we can run the web frontend locally.
 
 Ran terminal command: winget search php | Out-String
 
 Ran terminal command: choco search php | Select-Object -First 30 | Out-String
 
-I found package-manager options; now I’m reading the winget search output to choose the cleanest PHP package ID before installing.
+I found package-manager options; now Iâ€™m reading the winget search output to choose the cleanest PHP package ID before installing.
 
 Read [tool output]
 
-I found a direct PHP package in winget. I’m installing PHP 8.4 with accepted agreements so the local server and lint steps can run without extra prompts.
+I found a direct PHP package in winget. Iâ€™m installing PHP 8.4 with accepted agreements so the local server and lint steps can run without extra prompts.
 
 Ran terminal command: winget install --id PHP.PHP.8.4 --accept-package-agreements --accept-source-agreements
 
-The 8.4 winget manifest is broken upstream with a 404. I’m switching to a working package candidate instead of stopping at the installer failure.
+The 8.4 winget manifest is broken upstream with a 404. Iâ€™m switching to a working package candidate instead of stopping at the installer failure.
 
 Ran terminal command: winget install --id PHP.PHP.8.3 --accept-package-agreements --accept-source-agreements
 
 Ran terminal command: choco search ^php$ --exact | Out-String
 
-The fallback install started and reached extraction, but the command did not complete cleanly in the shared terminal. I’m verifying whether PHP actually landed before retrying anything.
+The fallback install started and reached extraction, but the command did not complete cleanly in the shared terminal. Iâ€™m verifying whether PHP actually landed before retrying anything.
 
 Ran terminal command: Get-Command php | Format-List *
 
 Ran terminal command: winget list --id PHP.PHP.8.3 | Out-String
 
-PHP is installed according to winget, but the current shell has not picked up the executable path yet. I’m locating the actual install directory and then I’ll invoke PHP directly from there.
+PHP is installed according to winget, but the current shell has not picked up the executable path yet. Iâ€™m locating the actual install directory and then Iâ€™ll invoke PHP directly from there.
 
 Ran terminal command: Get-ChildItem "$env:LOCALAPPDATA\Microsoft\WinGet\Packages" -Directory | Where-Object { $_.Name -like 'PHP.PHP.8.3*' } | Select-Object FullName | Format-List
 
 Ran terminal command: Get-ChildItem "$env:LOCALAPPDATA\Microsoft\WinGet\Links" | Select-Object Name,FullName | Format-Table -AutoSize | Out-String
 
-I found the package directory. Next I’m checking inside it for the actual executable and related files so I can use PHP without depending on PATH propagation.
+I found the package directory. Next Iâ€™m checking inside it for the actual executable and related files so I can use PHP without depending on PATH propagation.
 
 Ran terminal command: Get-ChildItem "$env:LOCALAPPDATA\Microsoft\WinGet\Packages\PHP.PHP.8.3_Microsoft.Winget.Source_8wekyb3d8bbwe" -Recurse -Filter php.exe | Select-Object FullName | Format-List
 
-PHP is usable by direct path now. I’m switching to backend setup next so I can run FastAPI and then serve the PHP app against it for the actual verification pass.
+PHP is usable by direct path now. Iâ€™m switching to backend setup next so I can run FastAPI and then serve the PHP app against it for the actual verification pass.
 
 Configuring a Python Environment
 Completed with input: {
@@ -6108,7 +6084,7 @@ Completed with input: {
   "resourcePath": "c:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\backend"
 }
 
-I’ve got the Python interpreter for this workspace. Before starting the backend, I’m checking whether the required backend packages are already available so we can avoid a failing server launch.
+Iâ€™ve got the Python interpreter for this workspace. Before starting the backend, Iâ€™m checking whether the required backend packages are already available so we can avoid a failing server launch.
 
 Fetching Python environment information
 Completed with input: {
@@ -6117,7 +6093,7 @@ Completed with input: {
 
 Read [backend/requirements.txt](backend/requirements.txt)
 
-The Python side has the required packages. I’m checking the backend database/settings startup path before launching it, because Stage 1 verification is only meaningful if the existing API can actually boot in this workspace.
+The Python side has the required packages. Iâ€™m checking the backend database/settings startup path before launching it, because Stage 1 verification is only meaningful if the existing API can actually boot in this workspace.
 
 Read [backend/config/settings.py](backend/config/settings.py)
 
@@ -6125,19 +6101,19 @@ Read [backend/db/database.py](backend/db/database.py)
 
 Read [backend/db/init_db.py](backend/db/init_db.py)
 
-The backend defaults to local SQLite, which is good for this pass. I’m checking the scheduler startup path now, because that is the most likely thing to derail a clean local API launch.
+The backend defaults to local SQLite, which is good for this pass. Iâ€™m checking the scheduler startup path now, because that is the most likely thing to derail a clean local API launch.
 
 Read [backend/scrapers/scheduler.py](backend/scrapers/scheduler.py)
 
 Read [backend/scrapers/registry.py](backend/scrapers/registry.py)
 
-The backend looks runnable on local SQLite, so I’m starting both servers now: FastAPI on port 8000 and the PHP web app on port 8080 using the direct PHP executable path I located.
+The backend looks runnable on local SQLite, so Iâ€™m starting both servers now: FastAPI on port 8000 and the PHP web app on port 8080 using the direct PHP executable path I located.
 
 Ran terminal command: Push-Location backend; C:/Users/rebec/AppData/Local/Python/pythoncore-3.14-64/python.exe -m uvicorn main:app --host 127.0.0.1 --port 8000
 
 Ran terminal command: & "$env:LOCALAPPDATA\Microsoft\WinGet\Packages\PHP.PHP.8.3_Microsoft.Winget.Source_8wekyb3d8bbwe\php.exe" -S 127.0.0.1:8080 -t frontend/web/public
 
-The FastAPI start failed because the terminal interpreter does not currently have `uvicorn`, despite the environment metadata showing it. I’m fixing the actual runtime environment now so the backend can boot reliably.
+The FastAPI start failed because the terminal interpreter does not currently have `uvicorn`, despite the environment metadata showing it. Iâ€™m fixing the actual runtime environment now so the backend can boot reliably.
 
 Installing packages anthropic, apscheduler, fastapi, firecrawl-py, httpx, openai, pydantic, pydantic-settings, pymysql, python-dotenv, pyyaml, sqlalchemy, uvicorn[standard] in Python 3.14.3
 Completed with input: {
@@ -6159,20 +6135,20 @@ Completed with input: {
   "resourcePath": "c:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\backend"
 }
 
-The backend dependencies are installed into the active workspace interpreter now. I’m restarting the API server, then I’ll probe both the API and the PHP pages directly.
+The backend dependencies are installed into the active workspace interpreter now. Iâ€™m restarting the API server, then Iâ€™ll probe both the API and the PHP pages directly.
 
 Ran terminal command: Push-Location backend; C:/Users/rebec/AppData/Local/Python/pythoncore-3.14-64/python.exe -m uvicorn main:app --host 127.0.0.1 --port 8000
 
 Checked background terminal output
 
-The package installation succeeded through the workspace environment tooling, but the explicit Python path I used is still not seeing `uvicorn`. I’m pulling the exact executable details from the configured environment instead of assuming the command prefix is enough.
+The package installation succeeded through the workspace environment tooling, but the explicit Python path I used is still not seeing `uvicorn`. Iâ€™m pulling the exact executable details from the configured environment instead of assuming the command prefix is enough.
 
 Fetching Python executable information for Python 3.14.3
 Completed with input: {
   "resourcePath": "c:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\backend"
 }
 
-I’m checking the interpreter directly now to see where `pip` installed packages and why `uvicorn` is still invisible to `python -m`.
+Iâ€™m checking the interpreter directly now to see where `pip` installed packages and why `uvicorn` is still invisible to `python -m`.
 
 Ran terminal command: C:/Users/rebec/AppData/Local/Python/pythoncore-3.14-64/python.exe -m pip --version
 
@@ -6180,23 +6156,23 @@ Ran terminal command: C:/Users/rebec/AppData/Local/Python/pythoncore-3.14-64/pyt
 
 Ran terminal command: C:/Users/rebec/AppData/Local/Python/pythoncore-3.14-64/python.exe -c "import sys; print(sys.executable); import site; print(site.getusersitepackages()); print(site.getsitepackages())"
 
-The environment tool reported success, but the configured interpreter still does not have `uvicorn`. I’m installing the actual backend requirements directly into this interpreter so we can proceed instead of trusting the stale package metadata.
+The environment tool reported success, but the configured interpreter still does not have `uvicorn`. Iâ€™m installing the actual backend requirements directly into this interpreter so we can proceed instead of trusting the stale package metadata.
 
 Ran terminal command: C:/Users/rebec/AppData/Local/Python/pythoncore-3.14-64/python.exe -m pip install -r backend/requirements.txt
 
-I’ve pushed the requirements into the real interpreter now. I’m reading the install output to confirm there were no blockers before restarting the API.
+Iâ€™ve pushed the requirements into the real interpreter now. Iâ€™m reading the install output to confirm there were no blockers before restarting the API.
 
 Read [tool output]
 
 Read [tool output]
 
-The runtime interpreter is fixed now. I’m restarting the backend and then I’ll hit the API and the web pages to confirm the Stage 1 slice actually works end to end.
+The runtime interpreter is fixed now. Iâ€™m restarting the backend and then Iâ€™ll hit the API and the web pages to confirm the Stage 1 slice actually works end to end.
 
 Ran terminal command: Push-Location backend; C:/Users/rebec/AppData/Local/Python/pythoncore-3.14-64/python.exe -m uvicorn main:app --host 127.0.0.1 --port 8000
 
 Ran terminal command: C:/Users/rebec/AppData/Local/Python/pythoncore-3.14-64/python.exe -m uvicorn --version
 
-The backend process is up enough to stop erroring, so I’m checking both long-running terminals and then probing the API and rendered pages.
+The backend process is up enough to stop erroring, so Iâ€™m checking both long-running terminals and then probing the API and rendered pages.
 
 Checked background terminal output
 
@@ -6206,11 +6182,11 @@ Ran terminal command: Invoke-WebRequest -Uri http://127.0.0.1:8000/ -UseBasicPar
 
 Ran terminal command: Invoke-WebRequest -Uri http://127.0.0.1:8080/index.php -UseBasicParsing | Select-Object StatusCode,Content | Format-List
 
-The PHP server is working, but the first uvicorn launch did not stay resident. I’m detaching the backend as a real process now so the frontend can hit live API responses instead of only the fallback path.
+The PHP server is working, but the first uvicorn launch did not stay resident. Iâ€™m detaching the backend as a real process now so the frontend can hit live API responses instead of only the fallback path.
 
 Ran terminal command: Push-Location backend; $stdout = Join-Path (Get-Location) 'uvicorn.stdout.log'; $stderr = Join-Path (Get-Location) 'uvicorn.stderr.log'; $process = Start-Process -FilePath 'C:/Users/rebec/AppData/Local/Python/pythoncore-3.14-64/python.exe' -ArgumentList '-m','uvicorn','main:app','--host','127.0.0.1','--port','8000' -WorkingDirectory (Get-Location) -RedirectStandardOutput $stdout -RedirectStandardError $stderr -PassThru; $process.Id
 
-The backend is now detached with PID 456. I’m probing the API and the PHP pages again to confirm success-state rendering, not just failure fallbacks.
+The backend is now detached with PID 456. Iâ€™m probing the API and the PHP pages again to confirm success-state rendering, not just failure fallbacks.
 
 Ran terminal command: Invoke-WebRequest -Uri http://127.0.0.1:8000/ -UseBasicParsing | Select-Object StatusCode,Content | Format-List
 
@@ -6220,19 +6196,19 @@ Ran terminal command: Invoke-WebRequest -Uri http://127.0.0.1:8080/index.php -Us
 
 Ran terminal command: Invoke-WebRequest -Uri http://127.0.0.1:8080/alerts.php -UseBasicParsing | Select-Object StatusCode,Content | Format-List
 
-The frontend is serving correctly and the fallback path is proven, but the backend is still crashing on startup. I’m reading the uvicorn logs now to isolate the actual backend failure before I decide whether S1-03 and S1-04 can be promoted.
+The frontend is serving correctly and the fallback path is proven, but the backend is still crashing on startup. Iâ€™m reading the uvicorn logs now to isolate the actual backend failure before I decide whether S1-03 and S1-04 can be promoted.
 
 Read [backend/uvicorn.stdout.log](backend/uvicorn.stdout.log)
 
 Read [backend/uvicorn.stderr.log](backend/uvicorn.stderr.log)
 
-The backend itself is fine; port 8000 is the problem on this machine. I’m moving the verification run to alternate local ports instead of forcing a conflict with whatever already owns 8000.
+The backend itself is fine; port 8000 is the problem on this machine. Iâ€™m moving the verification run to alternate local ports instead of forcing a conflict with whatever already owns 8000.
 
 Ran terminal command: Push-Location backend; $stdout = Join-Path (Get-Location) 'uvicorn-8001.stdout.log'; $stderr = Join-Path (Get-Location) 'uvicorn-8001.stderr.log'; $process = Start-Process -FilePath 'C:/Users/rebec/AppData/Local/Python/pythoncore-3.14-64/python.exe' -ArgumentList '-m','uvicorn','main:app','--host','127.0.0.1','--port','8001' -WorkingDirectory (Get-Location) -RedirectStandardOutput $stdout -RedirectStandardError $stderr -PassThru; $process.Id
 
 Ran terminal command: $env:RISKRADAR_API_BASE_URL='http://127.0.0.1:8001'; & "$env:LOCALAPPDATA\Microsoft\WinGet\Packages\PHP.PHP.8.3_Microsoft.Winget.Source_8wekyb3d8bbwe\php.exe" -S 127.0.0.1:8081 -t frontend/web/public
 
-I’ve got alternate-port processes starting. I’m verifying the 8001 API and 8081 frontend pair now, which is the only path that matters for the live success-state check.
+Iâ€™ve got alternate-port processes starting. Iâ€™m verifying the 8001 API and 8081 frontend pair now, which is the only path that matters for the live success-state check.
 
 Read [backend/uvicorn-8001.stderr.log](backend/uvicorn-8001.stderr.log)
 
@@ -6242,7 +6218,7 @@ Ran terminal command: Invoke-WebRequest -Uri http://127.0.0.1:8001/api/v1/alerts
 
 Ran terminal command: Invoke-WebRequest -Uri http://127.0.0.1:8081/index.php -UseBasicParsing | Select-Object StatusCode,Content | Format-List
 
-The alternate-port setup worked: the backend is live and returning alert data. I’m reading the rendered dashboard HTML now and then I’ll hit the other Stage 1 pages to complete the verification pass before touching the tracker.
+The alternate-port setup worked: the backend is live and returning alert data. Iâ€™m reading the rendered dashboard HTML now and then Iâ€™ll hit the other Stage 1 pages to complete the verification pass before touching the tracker.
 
 Read [tool output]
 
@@ -6252,7 +6228,7 @@ Ran terminal command: Invoke-WebRequest -Uri http://127.0.0.1:8081/summaries.php
 
 Ran terminal command: Invoke-WebRequest -Uri http://127.0.0.1:8081/profile.php -UseBasicParsing | Select-Object StatusCode,Content | Format-List
 
-The read-focused pages are responding on the live backend path. I’m doing one more pass through the profile write flow so the registration and preference-update wrappers are verified before I tighten the Stage 1 task statuses.
+The read-focused pages are responding on the live backend path. Iâ€™m doing one more pass through the profile write flow so the registration and preference-update wrappers are verified before I tighten the Stage 1 task statuses.
 
 Read [tool output]
 
@@ -6262,7 +6238,7 @@ Ran terminal command: $session = New-Object Microsoft.PowerShell.Commands.WebReq
 
 Ran terminal command: $session = New-Object Microsoft.PowerShell.Commands.WebRequestSession; $profileResponse = Invoke-WebRequest -Uri http://127.0.0.1:8081/profile.php -WebSession $session -UseBasicParsing; $token = [regex]::Match($profileResponse.Content, 'name="csrf_token" value="([^"]+)"').Groups[1].Value; $email = 'prefs-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() + '@example.com'; $registerResponse = Invoke-WebRequest -Uri http://127.0.0.1:8081/profile.php -Method Post -WebSession $session -Body @{ csrf_token = $token; action = 'register'; display_name = 'Prefs Tester'; email = $email; password = 'Stage1Pass123'; zip_code = '90001' } -UseBasicParsing; $createdId = [regex]::Match($registerResponse.Content, 'Created user ID: <strong>(\d+)</strong>').Groups[1].Value; $prefsResponse = Invoke-WebRequest -Uri http://127.0.0.1:8081/profile.php -Method Post -WebSession $session -Body @{ csrf_token = $token; action = 'preferences'; user_id = $createdId; zip_code = '90002'; notify_severity = 'moderate'; device_token = 'web-stage1-token'; 'alert_types[]' = @('weather','pollution') } -UseBasicParsing; [PSCustomObject]@{ UserId = $createdId; PreferencesSaved = ($prefsResponse.Content -match 'Preferences updated successfully'); StoredTypesVisible = ($prefsResponse.Content -match 'weather, pollution') } | Format-List
 
-The live verification surfaced two real implementation gaps: the profile allowlist excluded backend alert types like `pollution` and `earthquake`, and earthquake event timestamps were rendering as raw epoch milliseconds. I’m fixing both now before I update the tracker.
+The live verification surfaced two real implementation gaps: the profile allowlist excluded backend alert types like `pollution` and `earthquake`, and earthquake event timestamps were rendering as raw epoch milliseconds. Iâ€™m fixing both now before I update the tracker.
 
 Generating patch (30 lines) in [frontend/web/services/presentation.php](frontend/web/services/presentation.php)
 
@@ -6274,7 +6250,7 @@ Generating patch (30 lines) in [frontend/web/services/presentation.php](frontend
 ```
 
 ```
-The fixes are in. I’m re-running the affected live checks now so the tracker update is based on the corrected behavior, not the earlier bug.
+The fixes are in. Iâ€™m re-running the affected live checks now so the tracker update is based on the corrected behavior, not the earlier bug.
 
 Checked [frontend/web/services/presentation.php](frontend/web/services/presentation.php)
 
@@ -6282,17 +6258,17 @@ Ran terminal command: Invoke-WebRequest -Uri http://127.0.0.1:8081/alerts.php -U
 
 Ran terminal command: $session = New-Object Microsoft.PowerShell.Commands.WebRequestSession; $profileResponse = Invoke-WebRequest -Uri http://127.0.0.1:8081/profile.php -WebSession $session -UseBasicParsing; $token = [regex]::Match($profileResponse.Content, 'name="csrf_token" value="([^"]+)"').Groups[1].Value; $email = 'prefs2-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() + '@example.com'; $registerResponse = Invoke-WebRequest -Uri http://127.0.0.1:8081/profile.php -Method Post -WebSession $session -Body @{ csrf_token = $token; action = 'register'; display_name = 'Prefs Tester 2'; email = $email; password = 'Stage1Pass123'; zip_code = '90001' } -UseBasicParsing; $createdId = [regex]::Match($registerResponse.Content, 'Created user ID: <strong>(\d+)</strong>').Groups[1].Value; $prefsResponse = Invoke-WebRequest -Uri http://127.0.0.1:8081/profile.php -Method Post -WebSession $session -Body @{ csrf_token = $token; action = 'preferences'; user_id = $createdId; zip_code = '90002'; notify_severity = 'moderate'; device_token = 'web-stage1-token'; 'alert_types[]' = @('weather','pollution','earthquake') } -UseBasicParsing; [PSCustomObject]@{ UserId = $createdId; PreferencesSaved = ($prefsResponse.Content -match 'Preferences updated successfully'); WeatherVisible = ($prefsResponse.Content -match 'weather'); PollutionVisible = ($prefsResponse.Content -match 'pollution'); EarthquakeVisible = ($prefsResponse.Content -match 'earthquake') } | Format-List
 
-The preference flow now accepts the same alert families the backend is actually producing. I’m checking the alerts HTML one last time to confirm the timestamp rendering fix before I mark the task statuses up.
+The preference flow now accepts the same alert families the backend is actually producing. Iâ€™m checking the alerts HTML one last time to confirm the timestamp rendering fix before I mark the task statuses up.
 
 Read [tool output]
 
 Ran terminal command: Invoke-WebRequest -Uri 'http://127.0.0.1:8081/alerts.php?source=usgs_earthquakes&limit=3' -UseBasicParsing | Select-Object StatusCode,Content | Format-List
 
-I’m reading the filtered earthquake response specifically, since that was the case that previously exposed the raw epoch-millisecond bug.
+Iâ€™m reading the filtered earthquake response specifically, since that was the case that previously exposed the raw epoch-millisecond bug.
 
 Read [tool output]
 
-The code paths are verified now: live dashboard and alerts rendering on a working backend, summary empty-state handling, and registration/preferences POST flows. I’m tightening the Stage 1 tracker with that evidence and documenting the one remaining gap, which is viewport-specific manual QA evidence.
+The code paths are verified now: live dashboard and alerts rendering on a working backend, summary empty-state handling, and registration/preferences POST flows. Iâ€™m tightening the Stage 1 tracker with that evidence and documenting the one remaining gap, which is viewport-specific manual QA evidence.
 
 Generating patch (28 lines) in [frontend/web/README.md](frontend/web/README.md)
 
@@ -6304,7 +6280,7 @@ Generating patch (28 lines) in [frontend/web/README.md](frontend/web/README.md)
 ```
 
 ```
-I’ve tightened the task rows. I’m updating the Stage 1 verification checklist as well so the evidence section reflects what was actually exercised today and what still remains open.
+Iâ€™ve tightened the task rows. Iâ€™m updating the Stage 1 verification checklist as well so the evidence section reflects what was actually exercised today and what still remains open.
 
 Generating patch (12 lines) in [docs/TODO.md](docs/TODO.md)
 
@@ -6312,7 +6288,7 @@ Generating patch (12 lines) in [docs/TODO.md](docs/TODO.md)
 ```
 
 ```
-The verification pass is complete, so I’m cleaning up the temporary local servers rather than leaving background processes and ports occupied.
+The verification pass is complete, so Iâ€™m cleaning up the temporary local servers rather than leaving background processes and ports occupied.
 
 Killed terminal
 
@@ -6393,9 +6369,9 @@ Replacing 6 lines with 59 lines in [docs/REFLECTION.md](docs/REFLECTION.md)
 ```
 Added two new entries to REFLECTION.md:
 
-1. **Stage 1 Web Frontend Implementation and Verification Session** — covers the full PHP web scaffold build (17 files), PHP/Python environment setup, live end-to-end verification against the FastAPI backend, the two inline bug fixes (epoch-millisecond timestamps and profile allowlist), and the resulting tracker tightening in `TODO.md`.
+1. **Stage 1 Web Frontend Implementation and Verification Session** â€” covers the full PHP web scaffold build (17 files), PHP/Python environment setup, live end-to-end verification against the FastAPI backend, the two inline bug fixes (epoch-millisecond timestamps and profile allowlist), and the resulting tracker tightening in `TODO.md`.
 
-2. **Follow-Up Reflection: Stage 1 Implementation Reflection Entry Command** — documents this current reflection-update action itself, maintaining the continuous one-to-one traceability between transcript sessions and reflection entries.
+2. **Follow-Up Reflection: Stage 1 Implementation Reflection Entry Command** â€” documents this current reflection-update action itself, maintaining the continuous one-to-one traceability between transcript sessions and reflection entries.
 
 Made changes.
 
@@ -6409,7 +6385,7 @@ Made changes.
 - How much of Stage 1 is left to complete?
 - How should Team 3 proceed in completing Stage 1?
 
-GitHub Copilot: I’m going to quantify Stage 1 status directly from the project trackers, then map the remaining items to a concrete finish plan. I’ll pull the key sections from the Stage and TODO docs so the answer is evidence-based.
+GitHub Copilot: Iâ€™m going to quantify Stage 1 status directly from the project trackers, then map the remaining items to a concrete finish plan. Iâ€™ll pull the key sections from the Stage and TODO docs so the answer is evidence-based.
 
 Read [docs/TODO.md](docs/TODO.md)
 
@@ -6417,7 +6393,7 @@ Read [docs/STAGES.md](docs/STAGES.md)
 
 Read [docs/API_STAGE1_CONTRACT.md](docs/API_STAGE1_CONTRACT.md)
 
-I’ve gathered the status content; next I’ll pin exact line references for the key checklist and tracker entries so your three answers are precise and auditable.
+Iâ€™ve gathered the status content; next Iâ€™ll pin exact line references for the key checklist and tracker entries so your three answers are precise and auditable.
 
 Searched for regex `\| 1 \| S1-00 \|.*\| Completed` (`**/docs/TODO.md`), 1 result
 
@@ -6449,7 +6425,7 @@ Searched for regex `- \[ \] S1-05` (`**/docs/TODO.md`), 1 result
 
 Searched for regex `- \[ \] S1-06` (`**/docs/TODO.md`), 1 result
 
-I now have the task-level status lines; I’m grabbing verification checklist lines and definition-of-done criteria to estimate completion more accurately than checkbox count alone.
+I now have the task-level status lines; Iâ€™m grabbing verification checklist lines and definition-of-done criteria to estimate completion more accurately than checkbox count alone.
 
 Searched for regex `- \[x\] Web app runs locally and connects to backend endpoints.` (`**/docs/TODO.md`), 1 result
 
@@ -6487,7 +6463,7 @@ Searched for regex `` Live checks against `http://127.0.0.1:8081` \+ `http://127
 
 Searched for text `remaining closure item is responsive manual QA evidence at target widths` (`**/docs/TODO.md`), 1 result
 
-I’ve got enough evidence to answer with concrete percentages and a completion sequence. Next I’ll summarize Stage 1 as completed vs remaining, then give a tight execution plan through the March 31 target.1) How much of Stage 1 has been successfully implemented?
+Iâ€™ve got enough evidence to answer with concrete percentages and a completion sequence. Next Iâ€™ll summarize Stage 1 as completed vs remaining, then give a tight execution plan through the March 31 target.1) How much of Stage 1 has been successfully implemented?
 
 Stage 1 is clearly in progress, with a strong MVP baseline already done.
 
@@ -6532,7 +6508,7 @@ Use this finish order to minimize risk and close Stage 1 quickly:
 If Team 3 executes in that order, Stage 1 can likely be closed on schedule with mostly validation/documentation effort plus one substantive hardening task (S1-05).
 
 
-I’m going to open the reflection file, match its existing entry style, and then add a concise session summary plus the requested follow-up note about the command so it stays consistent with your course documentation trail.
+Iâ€™m going to open the reflection file, match its existing entry style, and then add a concise session summary plus the requested follow-up note about the command so it stays consistent with your course documentation trail.
 
 Read REFLECTION.md, lines 1 to 260
 
@@ -6540,11 +6516,11 @@ Read memory
 
 Planning session summary append
 
-I’ve confirmed the reflection format and will now append two new entries at the end: one for today’s Stage 1 status-analysis session, and one explicit follow-up entry for this command to preserve transcript-to-reflection continuity.
+Iâ€™ve confirmed the reflection format and will now append two new entries at the end: one for todayâ€™s Stage 1 status-analysis session, and one explicit follow-up entry for this command to preserve transcript-to-reflection continuity.
 
 Updated. I added two new reflection sections in REFLECTION.md:261:
 
-REFLECTION.md:261: summarizes this session’s Stage 1 completion analysis, remaining gaps, verification approach, and what is still manual.
+REFLECTION.md:261: summarizes this sessionâ€™s Stage 1 completion analysis, remaining gaps, verification approach, and what is still manual.
 REFLECTION.md:286: explicitly documents this follow-up command for transcript-to-reflection continuity.
 If you want, I can also add a matching short entry in TRANSCRIPT.md so both logs stay synchronized.
 
@@ -6556,7 +6532,7 @@ If you want, I can also add a matching short entry in TRANSCRIPT.md so both logs
 - How much of Stage 1 is left to complete?
 - How should Team 3 proceed in completing Stage 1?
 
-GitHub Copilot: I’m going to quantify Stage 1 status directly from the project trackers, then map the remaining items to a concrete finish plan. I’ll pull the key sections from the Stage and TODO docs so the answer is evidence-based.
+GitHub Copilot: Iâ€™m going to quantify Stage 1 status directly from the project trackers, then map the remaining items to a concrete finish plan. Iâ€™ll pull the key sections from the Stage and TODO docs so the answer is evidence-based.
 
 Read [docs/TODO.md](docs/TODO.md)
 
@@ -6564,7 +6540,7 @@ Read [docs/STAGES.md](docs/STAGES.md)
 
 Read [docs/API_STAGE1_CONTRACT.md](docs/API_STAGE1_CONTRACT.md)
 
-I’ve gathered the status content; next I’ll pin exact line references for the key checklist and tracker entries so your three answers are precise and auditable.
+Iâ€™ve gathered the status content; next Iâ€™ll pin exact line references for the key checklist and tracker entries so your three answers are precise and auditable.
 
 Searched for regex `\| 1 \| S1-00 \|.*\| Completed` (`**/docs/TODO.md`), 1 result
 
@@ -6596,7 +6572,7 @@ Searched for regex `- \[ \] S1-05` (`**/docs/TODO.md`), 1 result
 
 Searched for regex `- \[ \] S1-06` (`**/docs/TODO.md`), 1 result
 
-I now have the task-level status lines; I’m grabbing verification checklist lines and definition-of-done criteria to estimate completion more accurately than checkbox count alone.
+I now have the task-level status lines; Iâ€™m grabbing verification checklist lines and definition-of-done criteria to estimate completion more accurately than checkbox count alone.
 
 Searched for regex `- \[x\] Web app runs locally and connects to backend endpoints.` (`**/docs/TODO.md`), 1 result
 
@@ -6634,7 +6610,7 @@ Searched for regex `` Live checks against `http://127.0.0.1:8081` \+ `http://127
 
 Searched for text `remaining closure item is responsive manual QA evidence at target widths` (`**/docs/TODO.md`), 1 result
 
-I’ve got enough evidence to answer with concrete percentages and a completion sequence. Next I’ll summarize Stage 1 as completed vs remaining, then give a tight execution plan through the March 31 target.1) How much of Stage 1 has been successfully implemented?
+Iâ€™ve got enough evidence to answer with concrete percentages and a completion sequence. Next Iâ€™ll summarize Stage 1 as completed vs remaining, then give a tight execution plan through the March 31 target.1) How much of Stage 1 has been successfully implemented?
 
 Stage 1 is clearly in progress, with a strong MVP baseline already done.
 
@@ -6680,13 +6656,13 @@ If Team 3 executes in that order, Stage 1 can likely be closed on schedule with 
 
 **Rebecca:** Update Reflection with a summarization of this session and a follow up regarding this command
 
-GitHub Copilot: I’m going to open the reflection file, match its existing entry style, and then add a concise session summary plus the requested follow-up note about the command so it stays consistent with your course documentation trail.
+GitHub Copilot: Iâ€™m going to open the reflection file, match its existing entry style, and then add a concise session summary plus the requested follow-up note about the command so it stays consistent with your course documentation trail.
 
 Read [docs/REFLECTION.md](docs/REFLECTION.md)
 
 Read memory
 
-I’ve confirmed the reflection format and will now append two new entries at the end: one for today’s Stage 1 status-analysis session, and one explicit follow-up entry for this command to preserve transcript-to-reflection continuity.
+Iâ€™ve confirmed the reflection format and will now append two new entries at the end: one for todayâ€™s Stage 1 status-analysis session, and one explicit follow-up entry for this command to preserve transcript-to-reflection continuity.
 
 Generating patch (62 lines) in [docs/REFLECTION.md](docs/REFLECTION.md)
 
@@ -6702,7 +6678,7 @@ Searched for regex `Stage 1 Progress Review Session|Follow-Up Reflection: Stage 
 
 Updated. I added two new reflection sections in REFLECTION.md:
 
-1. REFLECTION.md: summarizes this session’s Stage 1 completion analysis, remaining gaps, verification approach, and what is still manual.
+1. REFLECTION.md: summarizes this sessionâ€™s Stage 1 completion analysis, remaining gaps, verification approach, and what is still manual.
 2. REFLECTION.md: explicitly documents this follow-up command for transcript-to-reflection continuity.
 
 If you want, I can also add a matching short entry in TRANSCRIPT.md so both logs stay synchronized.
@@ -6711,13 +6687,13 @@ Made changes.
 
 **Rebecca:** Finish S1-05 first (highest remaining implementation risk) as mentioned when investigating progress awaiting completion
 
-GitHub Copilot: I will implement S1-05 directly in the web PHP layer by hardening input handling, output safety patterns, CSRF coverage, and defensive rendering where API fields may be missing. I’m starting by inspecting the current frontend service and page files to identify exact gaps before patching.
+GitHub Copilot: I will implement S1-05 directly in the web PHP layer by hardening input handling, output safety patterns, CSRF coverage, and defensive rendering where API fields may be missing. Iâ€™m starting by inspecting the current frontend service and page files to identify exact gaps before patching.
 
 Read [frontend/web](frontend/web)
 
 Searched for files matching `**/frontend/web/**/*.{php,md,css}`, 18 matches
 
-I found dedicated security and validator services already present, so next I’m auditing those plus the public handlers to close any remaining S1-05 gaps and avoid duplicate or redundant changes.
+I found dedicated security and validator services already present, so next Iâ€™m auditing those plus the public handlers to close any remaining S1-05 gaps and avoid duplicate or redundant changes.
 
 Read [frontend/web/services/validators.php](frontend/web/services/validators.php)
 
@@ -6747,7 +6723,7 @@ Read [frontend/web/components/layout.php](frontend/web/components/layout.php)
 
 Read [frontend/web/services/api_client.php](frontend/web/services/api_client.php)
 
-I identified concrete S1-05 gaps to close: stricter allowlist-style input sanitization, stronger form-field bounds, safer normalization for malformed API payload types, and explicit handling of unexpected profile form actions. I’m applying these hardening edits now, then I’ll run validation.
+I identified concrete S1-05 gaps to close: stricter allowlist-style input sanitization, stronger form-field bounds, safer normalization for malformed API payload types, and explicit handling of unexpected profile form actions. Iâ€™m applying these hardening edits now, then Iâ€™ll run validation.
 
 Read [frontend/web/services/validators.php](frontend/web/services/validators.php)
 
@@ -6779,7 +6755,7 @@ Generating patch (20 lines) in [frontend/web/public/profile.php](frontend/web/pu
 ```
 
 ```
-Core hardening edits are in place. I’ll now update the Stage 1 tracker to reflect S1-05 completion evidence so the documentation matches the implementation work you requested.
+Core hardening edits are in place. Iâ€™ll now update the Stage 1 tracker to reflect S1-05 completion evidence so the documentation matches the implementation work you requested.
 
 Generating patch (9 lines) in [docs/TODO.md](docs/TODO.md)
 
@@ -6809,7 +6785,7 @@ Read changed files in the active git repository
 
 Ran terminal command: git status --short
 
-I’m double-checking because Git is currently reporting only one modified file; I’ll inspect the other target files to ensure the S1-05 hardening actually persisted and then apply any missing patches immediately.
+Iâ€™m double-checking because Git is currently reporting only one modified file; Iâ€™ll inspect the other target files to ensure the S1-05 hardening actually persisted and then apply any missing patches immediately.
 
 Searched for regex `function rr_safe_string\(|function rr_safe_nullable_string\(|function rr_safe_nullable_float\(` (`**/frontend/web/services/api_client.php`), 3 results
 
@@ -6854,7 +6830,7 @@ Made changes.
 
 **Rebecca:** Yes, begin implementing the next blocker to close evidence items
 
-GitHub Copilot: I’ll now target the evidence blocker by generating concrete Stage 1 verification notes for responsive behavior and web-distinctness, then sync TODO statuses if the evidence is sufficient. I’m first checking current docs and frontend styling breakpoints so the evidence update is grounded and auditable.
+GitHub Copilot: Iâ€™ll now target the evidence blocker by generating concrete Stage 1 verification notes for responsive behavior and web-distinctness, then sync TODO statuses if the evidence is sufficient. Iâ€™m first checking current docs and frontend styling breakpoints so the evidence update is grounded and auditable.
 
 Read [docs/TODO.md](docs/TODO.md)
 
@@ -6864,7 +6840,7 @@ Read [frontend/web/README.md](frontend/web/README.md)
 
 Ran terminal command: git status --short
 
-I confirmed the CSS has explicit responsive breakpoints at 960px and 640px, so I’m now adding formal verification evidence notes and then I’ll flip the two remaining Stage 1 evidence checkboxes plus associated task statuses where the blocker is now resolved.
+I confirmed the CSS has explicit responsive breakpoints at 960px and 640px, so Iâ€™m now adding formal verification evidence notes and then Iâ€™ll flip the two remaining Stage 1 evidence checkboxes plus associated task statuses where the blocker is now resolved.
 
 Generating patch (57 lines) in [docs/STAGE1_VERIFICATION_EVIDENCE.md](docs/STAGE1_VERIFICATION_EVIDENCE.md)
 
@@ -6888,7 +6864,7 @@ Generating patch (25 lines) in [docs/TODO.md](docs/TODO.md)
 ```
 
 ```
-The evidence artifacts and tracker updates are in. I’ll run a quick consistency check so we don’t leave mismatched statuses between the task table and Stage 1 checklist.
+The evidence artifacts and tracker updates are in. Iâ€™ll run a quick consistency check so we donâ€™t leave mismatched statuses between the task table and Stage 1 checklist.
 
 Searched for regex `\| 1 \| S1-04 \|.*\| Completed` (`**/docs/TODO.md`), 1 result
 
@@ -6943,7 +6919,7 @@ Made changes.
 
 **Rebecca:** Implement the S1-01 (architecture/contract documentation completion) blocker
 
-GitHub Copilot: I’ll complete S1-01 by finishing the architecture-and-route contract documentation itself, then update the tracker status only after the documentation is concretely expanded and cross-referenced. I’m first auditing the current contract and Stage docs for any missing S1-01 requirements.
+GitHub Copilot: Iâ€™ll complete S1-01 by finishing the architecture-and-route contract documentation itself, then update the tracker status only after the documentation is concretely expanded and cross-referenced. Iâ€™m first auditing the current contract and Stage docs for any missing S1-01 requirements.
 
 Read [docs/API_STAGE1_CONTRACT.md](docs/API_STAGE1_CONTRACT.md)
 
@@ -6955,7 +6931,7 @@ Read [frontend/web/config/config.local.example.php](frontend/web/config/config.l
 
 Read [frontend/web/config/app.php](frontend/web/config/app.php)
 
-I found the missing S1-01 pieces: the contract matrix exists, but it lacks explicit web architecture flow and local-vs-deployed URL configuration guidance in one place. I’m now expanding the contract doc with those sections, then I’ll mark S1-01 complete in the tracker.
+I found the missing S1-01 pieces: the contract matrix exists, but it lacks explicit web architecture flow and local-vs-deployed URL configuration guidance in one place. Iâ€™m now expanding the contract doc with those sections, then Iâ€™ll mark S1-01 complete in the tracker.
 
 Generating patch (69 lines) in [docs/API_STAGE1_CONTRACT.md](docs/API_STAGE1_CONTRACT.md)
 
@@ -6979,7 +6955,7 @@ Generating patch (8 lines) in [docs/TODO.md](docs/TODO.md)
 ```
 
 ```
-S1-01 documentation is now implemented and marked complete in the tracker. I’m running a quick consistency check for Stage 1 status signals across docs so we can see the exact remaining sync delta.
+S1-01 documentation is now implemented and marked complete in the tracker. Iâ€™m running a quick consistency check for Stage 1 status signals across docs so we can see the exact remaining sync delta.
 
 Searched for regex `\| 1 \| S1-01 \|.*\| Completed` (`**/docs/TODO.md`), 1 result
 
@@ -7023,7 +6999,7 @@ Made changes.
 
 Once this is done, add a section/progress-note to the README outlining all of the Web-App features, structures, and details for informative purposes
 
-GitHub Copilot: I’ll run a cross-document scan first to find every Stage 1 status phrase so we can normalize wording consistently, then I’ll update README with a clear Stage 1 web-app feature/structure summary section.
+GitHub Copilot: Iâ€™ll run a cross-document scan first to find every Stage 1 status phrase so we can normalize wording consistently, then Iâ€™ll update README with a clear Stage 1 web-app feature/structure summary section.
 
 Searched for files matching `**/*.{md,MD}`, 20 matches
 
@@ -7033,7 +7009,7 @@ Searched for regex `Stage 1|S1-0[1-6]|In Progress|Completed|Web-App Extension|Pr
 
 Searched for regex `Stage 1|S1-0[1-6]|In Progress|Completed|Web-App Extension|Progress So Far` (`**/frontend/**/*.md`), 10 results
 
-I’ve identified the main mismatch: Stage 1 is still listed as In Progress in README and STAGES while TODO is now fully complete. Next I’m reading the exact README/STAGES/PLANNING sections to apply a single consistent “Stage 1 Completed” wording pass and add the requested web-app feature/structure note to README.
+Iâ€™ve identified the main mismatch: Stage 1 is still listed as In Progress in README and STAGES while TODO is now fully complete. Next Iâ€™m reading the exact README/STAGES/PLANNING sections to apply a single consistent â€œStage 1 Completedâ€ wording pass and add the requested web-app feature/structure note to README.
 
 Read [docs/STAGES.md](docs/STAGES.md)
 
@@ -7047,7 +7023,7 @@ Searched for regex `Stage 1|In Progress|Completed|web-app extension|Web-App Exte
 
 Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 
-I’ve isolated the remaining inconsistencies in README.md, STAGES.md, PLANNING_STAGES.md, and ARCHITECTURE.md. I’m applying one synchronized wording pass now, including the new README section you requested that summarizes all Stage 1 web-app features and structure.
+Iâ€™ve isolated the remaining inconsistencies in README.md, STAGES.md, PLANNING_STAGES.md, and ARCHITECTURE.md. Iâ€™m applying one synchronized wording pass now, including the new README section you requested that summarizes all Stage 1 web-app features and structure.
 
 Generating patch (48 lines) in [README.md](README.md)
 
@@ -7079,7 +7055,7 @@ Generating patch (19 lines) in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 ```
 
 ```
-I’ve applied the sync edits; now I’m verifying there are no leftover Stage 1 “In Progress” phrases in the main status/planning docs and that README contains the new web-app detail section.
+Iâ€™ve applied the sync edits; now Iâ€™m verifying there are no leftover Stage 1 â€œIn Progressâ€ phrases in the main status/planning docs and that README contains the new web-app detail section.
 
 Searched for regex `Stage 1|In Progress|Completed|Stage 1 Web-App Progress Note` (`**/README.md`), 17 results
 
@@ -7123,7 +7099,7 @@ Made changes.
 
 **Rebecca:** Yes, update documentation so that the Stage Status is consistent across all docs
 
-GitHub Copilot: I’ll run a targeted status-audit across all documentation files (excluding transcript/reflection history logs) and then normalize any remaining Stage 1 wording to the same completed state/date vocabulary.
+GitHub Copilot: Iâ€™ll run a targeted status-audit across all documentation files (excluding transcript/reflection history logs) and then normalize any remaining Stage 1 wording to the same completed state/date vocabulary.
 
 Ran terminal command: rg -n "Stage 1|Web-App Extension|In Progress|Completed|Not Started|Progress So Far|Current Stage Status" README.md docs frontend -g "*.md" -g "!docs/TRANSCRIPT.md" -g "!docs/REFLECTION.md"
 
@@ -7137,7 +7113,7 @@ Ran terminal command: Get-ChildItem -Path README.md,docs,frontend -Recurse -Incl
 
 Read [frontend/web/README.md](frontend/web/README.md)
 
-I found two remaining wording drifts to clean up for consistency: an outdated Stage 1 limitation note in the web README and one stale “in progress” phrase in the weekly log narrative. I’m updating those now and adding a final sync-complete check-in row.
+I found two remaining wording drifts to clean up for consistency: an outdated Stage 1 limitation note in the web README and one stale â€œin progressâ€ phrase in the weekly log narrative. Iâ€™m updating those now and adding a final sync-complete check-in row.
 
 Generating patch (8 lines) in [docs/TODO.md](docs/TODO.md)
 
@@ -7157,7 +7133,7 @@ Generating patch (13 lines) in [frontend/web/README.md](frontend/web/README.md)
 
 Ran terminal command: Get-ChildItem -Path README.md,docs,frontend -Recurse -Include *.md | Where-Object { $_.FullName -notmatch 'docs\\TRANSCRIPT.md$' -and $_.FullName -notmatch 'docs\\REFLECTION.md$' } | Select-String -Pattern 'Stage 1.*In Progress|In Progress.*Stage 1|\| 1 \| Web-App Extension \| In Progress' | ForEach-Object { "{0}:{1}: {2}" -f $_.Path, $_.LineNumber, $_.Line.Trim() }
 
-The consistency audit is clean for non-historical docs. I’ll now provide the finalized synchronization summary with exactly what changed and what remains intentionally unchanged (transcript/reflection history).Stage-status synchronization is now complete across active documentation/progress/planning files.
+The consistency audit is clean for non-historical docs. Iâ€™ll now provide the finalized synchronization summary with exactly what changed and what remains intentionally unchanged (transcript/reflection history).Stage-status synchronization is now complete across active documentation/progress/planning files.
 
 What I updated:
 
@@ -7192,17 +7168,17 @@ Intentionally not rewritten:
 
 1. Historical logs in TRANSCRIPT.md and REFLECTION.md were left unchanged because they document past states/timepoints by design.
 
-If you want, I can do one final pass to also normalize phrasing style (for example, always “Stage 1: Web-App Extension (Completed)”) across headings for purely editorial consistency.
+If you want, I can do one final pass to also normalize phrasing style (for example, always â€œStage 1: Web-App Extension (Completed)â€) across headings for purely editorial consistency.
 
 Made changes.
 
-**Rebecca:** Perform a pass to normalize phrasing style (for example, always “Stage 1: Web-App Extension (Completed)”) across headings for editorial consistency
+**Rebecca:** Perform a pass to normalize phrasing style (for example, always â€œStage 1: Web-App Extension (Completed)â€) across headings for editorial consistency
 
-GitHub Copilot: I’ll run a heading-only audit first, then apply a focused editorial pass to make Stage headings use one consistent pattern with explicit status tags where appropriate.
+GitHub Copilot: Iâ€™ll run a heading-only audit first, then apply a focused editorial pass to make Stage headings use one consistent pattern with explicit status tags where appropriate.
 
 Ran terminal command: Get-ChildItem -Path README.md,docs,frontend -Recurse -Include *.md | Where-Object { $_.FullName -notmatch 'docs\\TRANSCRIPT.md$' -and $_.FullName -notmatch 'docs\\REFLECTION.md$' } | ForEach-Object { Select-String -Path $_.FullName -Pattern '^(#|##|###)\s+.*(Stage\s*[1-4]|Web-App Extension)' } | ForEach-Object { "{0}:{1}: {2}" -f $_.Path, $_.LineNumber, $_.Line.Trim() }
 
-I’ve identified the specific heading inconsistencies; next I’m normalizing Stage 1 headings in the core progress/planning docs to a single style based on your example, while leaving requirement/reference docs intact.
+Iâ€™ve identified the specific heading inconsistencies; next Iâ€™m normalizing Stage 1 headings in the core progress/planning docs to a single style based on your example, while leaving requirement/reference docs intact.
 
 Generating patch (6 lines) in [README.md](README.md)
 
@@ -7242,11 +7218,11 @@ Generating patch (6 lines) in [frontend/web/README.md](frontend/web/README.md)
 ```
 
 ```
-I’ve applied heading normalization to the main status-tracking and planning docs. I’ll run one final heading audit to confirm the updated phrasing appears consistently where Stage 1 status is represented.
+Iâ€™ve applied heading normalization to the main status-tracking and planning docs. Iâ€™ll run one final heading audit to confirm the updated phrasing appears consistently where Stage 1 status is represented.
 
 Ran terminal command: Get-ChildItem -Path README.md,docs,frontend -Recurse -Include *.md | Where-Object { $_.FullName -notmatch 'docs\\TRANSCRIPT.md$' -and $_.FullName -notmatch 'docs\\REFLECTION.md$' } | ForEach-Object { Select-String -Path $_.FullName -Pattern '^(#|##|###)\s+Stage 1' } | ForEach-Object { "{0}:{1}: {2}" -f $_.Path, $_.LineNumber, $_.Line.Trim() }
 
-I found two remaining Stage 1 headings that still use a different pattern in contract/evidence docs, so I’m normalizing those too and then I’ll give you a final consistency check report.
+I found two remaining Stage 1 headings that still use a different pattern in contract/evidence docs, so Iâ€™m normalizing those too and then Iâ€™ll give you a final consistency check report.
 
 Generating patch (6 lines) in [docs/API_STAGE1_CONTRACT.md](docs/API_STAGE1_CONTRACT.md)
 
@@ -7374,7 +7350,7 @@ for f in sorted(processed):
 "
 
 
-All 27 PNG files in wireframe_icons have been processed. White and near-white pixels (R, G, B all ≥ 240) were replaced with fully transparent pixels, and each file was saved in place with the updated RGBA data.
+All 27 PNG files in wireframe_icons have been processed. White and near-white pixels (R, G, B all â‰¥ 240) were replaced with fully transparent pixels, and each file was saved in place with the updated RGBA data.
 
 ---
 
@@ -7425,15 +7401,15 @@ Each page has both a public-facing entry point under public and a corresponding 
 **Rebecca:** Check the project to see if the following pages are present within the web-app.  If not, create these pages for the web-app:
 
 Auth screens:
-- login — Login screen for users (Username, Password, ZIP Code)
-- registration — Registration/sign-up screen for new users to create an account
+- login â€” Login screen for users (Username, Password, ZIP Code)
+- registration â€” Registration/sign-up screen for new users to create an account
 
 Main screens:
-- home — Home/dashboard screen
+- home â€” Home/dashboard screen
 
 Tab screens:
-- index — Tab entry point (likely routes to home)
-- _layout — Tab bar layout/navigation
+- index â€” Tab entry point (likely routes to home)
+- _layout â€” Tab bar layout/navigation
 
 GitHub Copilot: Read [frontend/web/public](frontend/web/public)
 
@@ -7487,11 +7463,11 @@ Read [frontend/web/public/assets/app.css](frontend/web/public/assets/app.css)
 
 Now I have everything I need. Here's the status:
 
-- ✅ **home** → `public/index.php` (dashboard entry point) already exists
-- ✅ **index** → `public/index.php` already serves as entry point
-- ✅ **_layout** → `components/layout.php` already exists
-- ❌ **login** → missing
-- ❌ **registration** → missing
+- âœ… **home** â†’ `public/index.php` (dashboard entry point) already exists
+- âœ… **index** â†’ `public/index.php` already serves as entry point
+- âœ… **_layout** â†’ `components/layout.php` already exists
+- âŒ **login** â†’ missing
+- âŒ **registration** â†’ missing
 
 I'll create both auth screens plus wire them into the nav and validators. 
 
@@ -7515,7 +7491,7 @@ Created [frontend/web/views/register.php](frontend/web/views/register.php)
 
 Starting: *Add rr_validate_login() to validators.php* (5/7)
 
-Now add `rr_validate_login()` to validators.php, update the layout nav, and add CSS — all in parallel: 
+Now add `rr_validate_login()` to validators.php, update the layout nav, and add CSS â€” all in parallel: 
 
 Using "Multi-Replace String in Files"
 
@@ -7542,8 +7518,8 @@ GitHub Copilot: Created 7 todos
 All done. Here's a summary of what existed and what was created:
 
 **Already present:**
-- **home / index** — index.php (dashboard entry point)
-- **_layout** — layout.php (nav + shell wrapper)
+- **home / index** â€” index.php (dashboard entry point)
+- **_layout** â€” layout.php (nav + shell wrapper)
 
 **Created:**
 | Page | Controller | View |
@@ -7552,9 +7528,9 @@ All done. Here's a summary of what existed and what was created:
 | **registration** | register.php | register.php |
 
 **Also updated:**
-- validators.php — added `rr_validate_login()` (validates username, password, optional ZIP)
-- layout.php — added Login and Register links to the top nav
-- app.css — added `.auth-wrap` and `.auth-panel` styles for centered auth layout
+- validators.php â€” added `rr_validate_login()` (validates username, password, optional ZIP)
+- layout.php â€” added Login and Register links to the top nav
+- app.css â€” added `.auth-wrap` and `.auth-panel` styles for centered auth layout
 
 The login page includes a graceful notice that backend login is not yet implemented in Stage 1. The registration page reuses the existing `rr_register_user()` API call and redirects to login on success. Both pages link to each other, and both use CSRF protection and all existing form validation patterns.
 
@@ -7570,11 +7546,11 @@ Read [backend/db/models.py](backend/db/models.py)
 
 Read [backend/requirements.txt](backend/requirements.txt)
 
-The picture is clear. The backend already hashes with SHA-256 (insecure for passwords — should be bcrypt), uses email as the login identifier, and the login screen currently asks for "username" instead of email. Here's what needs to change:
+The picture is clear. The backend already hashes with SHA-256 (insecure for passwords â€” should be bcrypt), uses email as the login identifier, and the login screen currently asks for "username" instead of email. Here's what needs to change:
 
-1. **Backend** — upgrade password hashing from SHA-256 to bcrypt via `passlib[bcrypt]`, add `email-validator` for Pydantic `EmailStr`
-2. **Backend schemas** — use `EmailStr` for proper email validation on `UserCreate`
-3. **Frontend login** — change "username" field to "email" 
+1. **Backend** â€” upgrade password hashing from SHA-256 to bcrypt via `passlib[bcrypt]`, add `email-validator` for Pydantic `EmailStr`
+2. **Backend schemas** â€” use `EmailStr` for proper email validation on `UserCreate`
+3. **Frontend login** â€” change "username" field to "email" 
 
 Created 6 todos
 
@@ -7618,22 +7594,22 @@ Ran terminal command: .\.venv\Scripts\python.exe -m pip install "passlib[bcrypt]
 
 Installed successfully. Here's a summary of every change made:
 
-**Backend — users.py**
+**Backend â€” users.py**
 - Removed `hashlib` (SHA-256 is not suitable for passwords)
 - Added `passlib.context.CryptContext` with the `bcrypt` scheme
-- Registration now calls `_pwd_context.hash(body.password)` — bcrypt produces a salted, slow hash that resists brute-force and rainbow-table attacks
+- Registration now calls `_pwd_context.hash(body.password)` â€” bcrypt produces a salted, slow hash that resists brute-force and rainbow-table attacks
 
-**Backend — user.py**
+**Backend â€” user.py**
 - Imported `EmailStr` from Pydantic
 - `UserCreate.email` is now typed `EmailStr`, so the backend rejects malformed email addresses at the schema validation layer before any DB query runs
 
-**Backend — requirements.txt**
+**Backend â€” requirements.txt**
 - Added `passlib[bcrypt]>=1.7.4` and `email-validator>=2.0.0`
 
-**Frontend — `public/login.php` + `views/login.php`**
+**Frontend â€” `public/login.php` + `views/login.php`**
 - Changed the login field from "Username" to "Email" (`type="email"`) to match the backend's email-based identity model
 
-**Frontend — `services/validators.php`**
+**Frontend â€” `services/validators.php`**
 - `rr_validate_login()` now validates the email field with `FILTER_VALIDATE_EMAIL` instead of accepting a free-form username string
 
 Made changes.
@@ -7656,7 +7632,7 @@ Based on the current pages, the project stage requirements, and the live backend
 
 | Page | Why it's missing |
 |---|---|
-| `alert_detail.php` | The API contract already includes `GET /api/v1/alerts/{alert_id}` — there's no drill-down page linked from the alerts list. |
+| `alert_detail.php` | The API contract already includes `GET /api/v1/alerts/{alert_id}` â€” there's no drill-down page linked from the alerts list. |
 | `summary_detail.php` | Summaries show truncated content in the list; there's no full-text view for a single summary. |
 | `error.php` / `404.php` | No graceful fallback for broken routes or bad URLs. Every broken link drops to a raw PHP/server error. |
 
@@ -7668,7 +7644,7 @@ The profile.php page also still contains a duplicate registration form now that 
 
 | Page | Purpose |
 |---|---|
-| `risk.php` | Personal risk score view — the core Stage 2 deliverable. Displays the computed risk score, contributing factors (AQI, heat, wildfire, etc.), and recommendations for the logged-in user. |
+| `risk.php` | Personal risk score view â€” the core Stage 2 deliverable. Displays the computed risk score, contributing factors (AQI, heat, wildfire, etc.), and recommendations for the logged-in user. |
 
 ---
 
@@ -7684,7 +7660,7 @@ The profile.php page also still contains a duplicate registration form now that 
 
 | Page | Purpose |
 |---|---|
-| `forecast.php` | Predictive risk timeline — 24–48 hour risk forecasts and trend visualization. |
+| `forecast.php` | Predictive risk timeline â€” 24â€“48 hour risk forecasts and trend visualization. |
 | `assistant.php` | RiskRadar AI Assistant interface for natural-language environmental queries. |
 
 ---
@@ -7711,7 +7687,7 @@ Read [frontend/web/services/api_client.php](frontend/web/services/api_client.php
 
 Read [frontend/web/views/profile.php](frontend/web/views/profile.php)
 
-Good — I have enough context. Let me plan and execute everything. 
+Good â€” I have enough context. Let me plan and execute everything. 
 
 Created 10 todos
 
@@ -7767,7 +7743,7 @@ GitHub Copilot:
 
 **Rebecca:** @agent Try Again
 
-GitHub Copilot: I’m continuing from where it paused: next I’ll add the remaining Stage 1 gap fixes (summary detail, error/404 handling, profile cleanup, list links), then scaffold Stage 2–4 pages and wire navigation.
+GitHub Copilot: Iâ€™m continuing from where it paused: next Iâ€™ll add the remaining Stage 1 gap fixes (summary detail, error/404 handling, profile cleanup, list links), then scaffold Stage 2â€“4 pages and wire navigation.
 
 Read [frontend/web/public](frontend/web/public)
 
@@ -7787,7 +7763,7 @@ Read [frontend/web/views/profile.php](frontend/web/views/profile.php)
 
 Read [backend/api/alerts.py](backend/api/alerts.py)
 
-I’m now creating the missing Stage 1 pages and Stage 2–4 scaffold pages so routing and view files exist end-to-end.
+Iâ€™m now creating the missing Stage 1 pages and Stage 2â€“4 scaffold pages so routing and view files exist end-to-end.
 
 Created [frontend/web/public/summary_detail.php](frontend/web/public/summary_detail.php)
 
@@ -7815,7 +7791,7 @@ Created [frontend/web/public/assistant.php](frontend/web/public/assistant.php)
 
 Created [frontend/web/views/assistant.php](frontend/web/views/assistant.php)
 
-Progress update: the new detail/error pages and Stage 2–4 scaffold pages now exist. Next I’ll wire list-to-detail links, clean profile to preferences-only, update nav, and add needed CSS classes.
+Progress update: the new detail/error pages and Stage 2â€“4 scaffold pages now exist. Next Iâ€™ll wire list-to-detail links, clean profile to preferences-only, update nav, and add needed CSS classes.
 
 Generating patch (11 lines) in [frontend/web/views/alerts.php](frontend/web/views/alerts.php)
 
@@ -7863,7 +7839,7 @@ Generating patch (39 lines) in [frontend/web/public/assets/app.css](frontend/web
 ```
 
 ```
-I’ve finished the core edits; now I’ll run a quick integrity check on the updated files and then report exactly what was delivered.
+Iâ€™ve finished the core edits; now Iâ€™ll run a quick integrity check on the updated files and then report exactly what was delivered.
 
 Checked [backend/api/summaries.py](backend/api/summaries.py)
 
@@ -7902,7 +7878,7 @@ Implemented end-to-end in the priority order you requested.
 - Alerts list now links to details: alerts.php
 - Summaries list now links to details: summaries.php
 
-**Stage 2–4 scaffolding added**
+**Stage 2â€“4 scaffolding added**
 1. Stage 2 scaffold.
 - risk.php
 - risk.php
@@ -7969,7 +7945,7 @@ for f in sorted(processed):
 "
 
 
-All 27 PNG files in wireframe_icons have been processed. White and near-white pixels (R, G, B all ≥ 240) were replaced with fully transparent pixels, and each file was saved in place with the updated RGBA data.
+All 27 PNG files in wireframe_icons have been processed. White and near-white pixels (R, G, B all â‰¥ 240) were replaced with fully transparent pixels, and each file was saved in place with the updated RGBA data.
 
 **Rebecca:** The white in the background appears to be successfully removed, which is good.  However, the white parts of the icons themselves also appear to have been removed (Such as the white exclaimation point of the home button being missing, for example)
 
@@ -7979,13 +7955,13 @@ GitHub Copilot:
 
 **Rebecca:** @agent Try Again
 
-GitHub Copilot: I’ll restore the original icon files first, then re-apply background removal using an edge-connected mask so only true background white is made transparent while intentional white icon details stay visible.
+GitHub Copilot: Iâ€™ll restore the original icon files first, then re-apply background removal using an edge-connected mask so only true background white is made transparent while intentional white icon details stay visible.
 
 Ran terminal command: git status --short -- wireframe_icons
 
 Ran terminal command: git ls-files wireframe_icons
 
-I found the icon files are tracked, so I can repair directly without needing external assets. Next I’m running a targeted recovery pass that restores white transparent pixels only when they are not connected to the outer background.
+I found the icon files are tracked, so I can repair directly without needing external assets. Next Iâ€™m running a targeted recovery pass that restores white transparent pixels only when they are not connected to the outer background.
 
 Ran terminal command: & "c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\.venv\Scripts\python.exe" -c "
 from PIL import Image
@@ -8070,7 +8046,7 @@ If you want, I can do one more conservative pass on only specific icons you name
 
 **Rebecca:** Remove ONLY the white backdrop of the AI Assistant Icon, not the whites of the eyes
 
-GitHub Copilot: I’ll target only the assistant icon and apply a border-connected background removal pass so the white backdrop is removed but the eye whites remain opaque.
+GitHub Copilot: Iâ€™ll target only the assistant icon and apply a border-connected background removal pass so the white backdrop is removed but the eye whites remain opaque.
 
 Ran terminal command: Get-ChildItem wireframe_icons | Select-Object -ExpandProperty Name
 
@@ -8140,7 +8116,7 @@ For the Air Quality Icon:
 - Remove the white backdrop surrounding the blue air waves
 - Restore the white cloud shape that was present between the two grey ones (fill in the gap between the to forms)
 
-GitHub Copilot: I’m applying a targeted icon-processing pass now: full white-pixel removal for the requested Pollen/Text/Weather files, and a separate restore-and-clean workflow for Air Quality so its white cloud detail is preserved while only outer backdrop is removed.
+GitHub Copilot: Iâ€™m applying a targeted icon-processing pass now: full white-pixel removal for the requested Pollen/Text/Weather files, and a separate restore-and-clean workflow for Air Quality so its white cloud detail is preserved while only outer backdrop is removed.
 
 Ran terminal command: & ".venv\Scripts\python.exe" -c "
 from PIL import Image
@@ -8232,7 +8208,7 @@ print(f'{air_name}: removed {removed_bg} backdrop-white pixels; internal white p
 "
 
 
-I’ve completed the Pollen/Text/Weather updates; next I’m tuning the Air Quality icon specifically by detecting and removing the corner-connected backdrop color (not just pure white) so the blue waves stay intact and the center white cloud remains.
+Iâ€™ve completed the Pollen/Text/Weather updates; next Iâ€™m tuning the Air Quality icon specifically by detecting and removing the corner-connected backdrop color (not just pure white) so the blue waves stay intact and the center white cloud remains.
 
 Ran terminal command: & ".venv\Scripts\python.exe" -c "
 from PIL import Image
@@ -8305,7 +8281,7 @@ for c in internal[:10]:
 
 Ran terminal command: git show main:wireframe_icons/RiskRadar_AirQuality_Icon.png > $null; if ($LASTEXITCODE -eq 0) { Write-Output "main_version_available" } else { Write-Output "main_version_missing" }
 
-I confirmed Pollen/Text/Weather are done; I’m now doing a precise Air Quality repair pass by identifying the cloud region and filling the missing white interior where transparency leaked through between the gray cloud forms.
+I confirmed Pollen/Text/Weather are done; Iâ€™m now doing a precise Air Quality repair pass by identifying the cloud region and filling the missing white interior where transparency leaked through between the gray cloud forms.
 
 Ran terminal command: & ".venv\Scripts\python.exe" -c "
 from PIL import Image
@@ -8473,7 +8449,7 @@ https://chatgpt.com/share/69b847f1-bd48-8002-851c-11c6ba8e1096
 
 **Rebecca:** Create a Plan to make the web-app pages Wireframe Accurate to the RiskRadar_Web_Wireframes, while using the icons within /wireframe_icons
 
-GitHub Copilot: I will map the current web app structure against the wireframe assets and icon set, then produce a concrete implementation plan you can hand off for execution. I’m starting with a quick discovery pass of the web frontend, available wireframes, and the icon files.
+GitHub Copilot: I will map the current web app structure against the wireframe assets and icon set, then produce a concrete implementation plan you can hand off for execution. Iâ€™m starting with a quick discovery pass of the web frontend, available wireframes, and the icon files.
 
 Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web)
 
@@ -8483,7 +8459,7 @@ Read memory stage1-web-frontend.md
 
 Read memory git-onedrive-maintenance.md
 
-Discovery found the frontend is a PHP app with page entrypoints and the wireframe icon set is present; next I’ll use the Explore subagent to map existing page/component structure and identify where each wireframe element should be implemented.
+Discovery found the frontend is a PHP app with page entrypoints and the wireframe icon set is present; next Iâ€™ll use the Explore subagent to map existing page/component structure and identify where each wireframe element should be implemented.
 
 Map web UI structure
 
@@ -8553,13 +8529,13 @@ Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-p
 
 Read [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/efc527fbc52ea141903e763507674dc7/GitHub.copilot-chat/chat-session-resources/db6c38af-b30a-4a23-8fb9-264009d73894/call_T0A7JbkTJNRQbiB0bQj7sWJe__vscode-1773682544767/content.txt)
 
-I now have the frontend mapping and key gaps; before drafting the final plan, I need to lock scope and fidelity expectations so the execution handoff is unambiguous. I’ll ask a few targeted questions to finalize what “wireframe accurate” means for your team.
+I now have the frontend mapping and key gaps; before drafting the final plan, I need to lock scope and fidelity expectations so the execution handoff is unambiguous. Iâ€™ll ask a few targeted questions to finalize what â€œwireframe accurateâ€ means for your team.
 
 Analyzing your answers...
 
 Read memory
 
-I have your scope decisions and will now draft the full execution-ready plan, including phase dependencies and verification gates for every page in scope. I’ll do one quick directory check so file targets are precise in the handoff.
+I have your scope decisions and will now draft the full execution-ready plan, including phase dependencies and verification gates for every page in scope. Iâ€™ll do one quick directory check so file targets are precise in the handoff.
 
 Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/views)
 
@@ -8573,7 +8549,7 @@ Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-p
 
 Analyzing your answers...
 
-Scope is now confirmed to include every web page including Risk; I’ll inspect the Risk route and then finalize a phase-by-phase plan with clear parallel workstreams and acceptance criteria.
+Scope is now confirmed to include every web page including Risk; Iâ€™ll inspect the Risk route and then finalize a phase-by-phase plan with clear parallel workstreams and acceptance criteria.
 
 Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/frontend/web/public/risk.php)
 
@@ -8587,27 +8563,6 @@ Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-p
 
 Created memory file [](file:///c%3A/Users/rebec/AppData/Roaming/Code/User/workspaceStorage/efc527fbc52ea141903e763507674dc7/GitHub.copilot-chat/memory-tool/memories/ZGI2YzM4YWYtYjMwYS00YTIzLThmYjktMjY0MDA5ZDczODk0/plan.md)
 
-## Stage 3 Documentation and Synchronization Session (2026-04-27)
-
-Rebecca: Complete the following Documentation Updates for Rebecca now:
-- Add a summary of all developments of this session to all relevant files
-- Add an entry in TRANSCRIPT with a verbatim, word-for-word, exact transcript of this session
-- Run a pass and eliminate all duplicate TRANSCRIPT entries so that all entries are unique/distinct
-- Update REFLECTION with a summary of this session, the developments made, why they were made, and how it betters the project
-- Update REFLECTION so it contains a summary of each TRANSCRIPT entry
-- Run a pass and update all top-level documentation so that they are all in sync and agreement
-- Update AUTHORS with each member's contributions to the project so far and the roles they have assumed within project development
-- Add sections to README regarding the implementation, functionality, execution, and importance of the major developments for this project
-
-GitHub Copilot: All four documentation files (TRANSCRIPT.md, REFLECTION.md, AUTHORS.md, README.md) have been read successfully. I will now:
-1. Append a verbatim, word-for-word transcript of this session to TRANSCRIPT.md, ensuring all entries are unique.
-2. Update REFLECTION.md with a summary of this session, including a summary for each unique transcript entry.
-3. Update AUTHORS.md with each member’s contributions and roles, reflecting all recent work.
-4. Add/expand README.md sections regarding the implementation, functionality, execution, and importance of the major developments for this project.
-5. Ensure all top-level documentation is in sync and agreement.
-
-Proceeding with these documentation updates now.
-
 ## Reflection Generation Test Session
 
 **Rebecca:** Summarize the session recorded in the TRANSCRIPT.   Include these mandatory four components: 
@@ -8615,11 +8570,11 @@ Proceeding with these documentation updates now.
 -(1) the name of the tool used
 -(2) which
 components of the work benefited from the tool
--(3) how the tool’s output was reviewed or verified
+-(3) how the toolâ€™s output was reviewed or verified
 -(4) a brief note on what worked immediately, what required multiple iterations and could be
 improved, and what required manual implementation
 
-**GitHub Copilot:** I’m going to add a concise reflection summary directly to REFLECTION.md using the transcript details, and I’ll structure it to explicitly cover all four required components.
+**GitHub Copilot:** Iâ€™m going to add a concise reflection summary directly to REFLECTION.md using the transcript details, and Iâ€™ll structure it to explicitly cover all four required components.
 
 Generating patch (27 lines) in [](docs/REFLECTION.md)
 
@@ -8634,7 +8589,7 @@ Updated REFLECTION.md with a structured summary that includes all four required 
 - how output was reviewed/verified
 - what worked immediately vs needed iteration vs required manual implementation
 
-If you want, I can also tailor the tone to sound more first-person (“I used…”, “I verified by…”) to match your instructor’s preferred reflection style.
+If you want, I can also tailor the tone to sound more first-person (â€œI usedâ€¦â€, â€œI verified byâ€¦â€) to match your instructorâ€™s preferred reflection style.
 
 Made changes.
 
@@ -8648,7 +8603,7 @@ This session involved using GitHub Copilot to construct a detailed STAGES.md fil
 
 Format STAGES.md to match the formatting of EXAMPLE_STAGES.md to ensure that the contents of STAGES are well-organized, easy to follow, and sound professional
 
-**GitHub Copilot:** I’m going to review the current STAGES.md and align it to the stage structure in INSTRUCTIONS.md, then rewrite it in the same professional layout style used by EXAMPLE_STAGES.md.
+**GitHub Copilot:** Iâ€™m going to review the current STAGES.md and align it to the stage structure in INSTRUCTIONS.md, then rewrite it in the same professional layout style used by EXAMPLE_STAGES.md.
 
 Read [](docs/STAGES.md)
 
@@ -8656,7 +8611,7 @@ Read [](EXAMPLE_STAGES.md#1-1), lines 1 to 260
 
 Read [](docs/INSTRUCTIONS.md)
 
-I’ve gathered the structure from both files and will now rewrite STAGES.md end-to-end so it mirrors the style of EXAMPLE_STAGES.md while mapping directly to all four stages in INSTRUCTIONS.md.
+Iâ€™ve gathered the structure from both files and will now rewrite STAGES.md end-to-end so it mirrors the style of EXAMPLE_STAGES.md while mapping directly to all four stages in INSTRUCTIONS.md.
 
 Generating patch (362 lines) in [](docs/STAGES.md)
 
@@ -8672,13 +8627,13 @@ Updated STAGES.md to fully align with the extension roadmap in INSTRUCTIONS.md, 
 - Expanded each stage into actionable implementation steps, including integration, validation, security/privacy, and documentation expectations.
 - Added a final completion checklist and a reusable reporting format so stage updates stay organized and consistent over time.
 
-If you want, I can also update README.md to link this new stage plan and add a short “current stage status” table for quick tracking.
+If you want, I can also update README.md to link this new stage plan and add a short â€œcurrent stage statusâ€ table for quick tracking.
 
 Made changes.
 
 **Rebecca:** Yes.  Replace '''!!!''' in README with a link to STAGES.md and add a "current stage status" table for tracking
 
-**GitHub Copilot:** I’ll edit README.md to replace the placeholder with a clickable stages link and add a concise stage-status tracking table in that same section.
+**GitHub Copilot:** Iâ€™ll edit README.md to replace the placeholder with a clickable stages link and add a concise stage-status tracking table in that same section.
 
 Generating patch (17 lines) in [](README.md)
 
@@ -8701,7 +8656,7 @@ Made changes.
 
 **Rebecca:** Yes, add this legend so that statuses are easy to track across this repository.
 
-**GitHub Copilot:** I’ll add a short standardized status legend right below the stage table in README.md so tracking terms are consistent across the repo.
+**GitHub Copilot:** Iâ€™ll add a short standardized status legend right below the stage table in README.md so tracking terms are consistent across the repo.
 
 Generating patch (12 lines) in [](README.md)
 
@@ -8720,13 +8675,13 @@ Made changes.
 
 **Rebecca:** Yes, Syncronize these documents
 
-**GitHub Copilot:** I’ll synchronize README.md and STAGES.md by adding the same status legend language to STAGES.md and ensuring both documents use matching status terms.
+**GitHub Copilot:** Iâ€™ll synchronize README.md and STAGES.md by adding the same status legend language to STAGES.md and ensuring both documents use matching status terms.
 
 Read [](README.md#80-80), lines 80 to 106
 
 Read [](docs/STAGES.md)
 
-I found the mismatch: README.md uses `Not Started/In Progress/Completed`, while STAGES.md still uses mixed uppercase placeholders; I’m updating STAGES.md to use the exact same status vocabulary and values as the README table.
+I found the mismatch: README.md uses `Not Started/In Progress/Completed`, while STAGES.md still uses mixed uppercase placeholders; Iâ€™m updating STAGES.md to use the exact same status vocabulary and values as the README table.
 
 Generating patch (37 lines) in [](docs/STAGES.md)
 
@@ -8740,9 +8695,9 @@ Synchronized successfully.
 - Normalized all stage progress markers in STAGES.md to exactly: `Not Started`, `In Progress`, `Completed`.
 - Aligned per-stage current statuses in STAGES.md with the tracking table in README.md:
   - Stage 1: `In Progress`
-  - Stages 2–4: `Not Started`
+  - Stages 2â€“4: `Not Started`
 
-If you want, I can do one more pass to add a single “source of truth” note in both files (e.g., “update status in README and mirror in STAGES”).
+If you want, I can do one more pass to add a single â€œsource of truthâ€ note in both files (e.g., â€œupdate status in README and mirror in STAGESâ€).
 
 Made changes.
 
@@ -8756,9 +8711,9 @@ This follow-up reflection entry was added to REFLECTION.md to document the proce
 
 After doing so, write a follow-up reflection regarding this request to continue consistent documenation of all AI Tool usage
 
-**GitHub Copilot:** I’m going to replace the placeholder in REFLECTION.md with a full reflection for the STAGES session, then add a second follow-up reflection for this current request so your AI-usage log stays continuous.
+**GitHub Copilot:** Iâ€™m going to replace the placeholder in REFLECTION.md with a full reflection for the STAGES session, then add a second follow-up reflection for this current request so your AI-usage log stays continuous.
 
-I’ve confirmed the placeholder location and I’m now inserting two complete entries there: one for the STAGES construction session and one follow-up reflection for this exact request.
+Iâ€™ve confirmed the placeholder location and Iâ€™m now inserting two complete entries there: one for the STAGES construction session and one follow-up reflection for this exact request.
 
 Edited
 REFLECTION.md+46-1
@@ -8772,17 +8727,17 @@ tool used
 components that benefited
 review/verification method
 what worked immediately vs needed iteration vs manual implementation
-If you want, I can also rename ## Reflection Update to a more specific title (for example, “Reflection Generation Test Session”) so every section title matches transcript session names exactly.
+If you want, I can also rename ## Reflection Update to a more specific title (for example, â€œReflection Generation Test Sessionâ€) so every section title matches transcript session names exactly.
 
 ---
 
 ## Documentation Continuity and Clarity
 
-This session focused on filling out empty docs and synchronizing content across files to ensure that all AI tool usage and project progress are clearly documented and easily traceable. The goal was to maintain a consistent record of how AI tools were used throughout the project, and document the completion progress of said project, with clear reflections on each session’s outcomes and impacts.
+This session focused on filling out empty docs and synchronizing content across files to ensure that all AI tool usage and project progress are clearly documented and easily traceable. The goal was to maintain a consistent record of how AI tools were used throughout the project, and document the completion progress of said project, with clear reflections on each sessionâ€™s outcomes and impacts.
 
 **Rebecca:** Update PROJECT_DESCRIPTION.md with an in-depth description of what this project is and the goals it seeks to achieve
 
-**GitHub Copilot:** I’m updating PROJECT_DESCRIPTION.md now with a complete, in-depth project description that aligns with your README and staged plan, including purpose, architecture, goals, and expected outcomes. After the edit, I’ll summarize exactly what was added.
+**GitHub Copilot:** Iâ€™m updating PROJECT_DESCRIPTION.md now with a complete, in-depth project description that aligns with your README and staged plan, including purpose, architecture, goals, and expected outcomes. After the edit, Iâ€™ll summarize exactly what was added.
 
 Generating patch (92 lines) in [](docs/PROJECT_DESCRIPTION.md)
 
@@ -8806,11 +8761,11 @@ Made changes.
 
 When inputnig this information, match the formatting present in their corresponding docs within /CMPS490_contents/CMPS490_docs
 
-GitHub Copilot: I’m going to compare each empty doc in docs with its counterpart in CMPS490_docs, then fill in `ARCHITECTURE.md`, `DATA_MODEL.md`, and `DATA_SETS.md` using the same formatting style but updated to the current CMPS 357 project state.
+GitHub Copilot: Iâ€™m going to compare each empty doc in docs with its counterpart in CMPS490_docs, then fill in `ARCHITECTURE.md`, `DATA_MODEL.md`, and `DATA_SETS.md` using the same formatting style but updated to the current CMPS 357 project state.
 
 Created 5 todos
 
-I’m gathering the exact section structure from the CMPS490 reference docs first so the rewritten files match their formatting precisely.
+Iâ€™m gathering the exact section structure from the CMPS490 reference docs first so the rewritten files match their formatting precisely.
 
 Read [](CMPS490_contents/CMPS490_docs/ARCHITECTURE.md)
 
@@ -8818,7 +8773,7 @@ Read [](CMPS490_contents/CMPS490_docs/DATA_MODEL.md)
 
 Read [](CMPS490_contents/CMPS490_docs/DATA_SETS.md)
 
-Next I’m extracting the actual implemented backend models, scrapers, and data source configuration so these docs describe the current system accurately rather than planned-only features.
+Next Iâ€™m extracting the actual implemented backend models, scrapers, and data source configuration so these docs describe the current system accurately rather than planned-only features.
 
 Read [](backend/db/models.py)
 
@@ -8826,7 +8781,7 @@ Read [](backend/config/sources.yaml)
 
 Read [](backend/scrapers/registry.py)
 
-I found the implemented schema and source registry; now I’ll confirm the runtime architecture (API startup, scheduler, summarization flow) so ARCHITECTURE.md reflects what is actually running today.
+I found the implemented schema and source registry; now Iâ€™ll confirm the runtime architecture (API startup, scheduler, summarization flow) so ARCHITECTURE.md reflects what is actually running today.
 
 Read [](backend/main.py)
 
@@ -8838,7 +8793,7 @@ Read [](backend/api/router.py)
 
 Read [](backend/config/settings.py)
 
-I confirmed the core runtime flow; I’ll do one more quick pass on DB initialization and migrations so the data model and architecture docs accurately note the SQLite↔MariaDB alignment state.
+I confirmed the core runtime flow; Iâ€™ll do one more quick pass on DB initialization and migrations so the data model and architecture docs accurately note the SQLiteâ†”MariaDB alignment state.
 
 Read [](backend/db/database.py)
 
@@ -8848,7 +8803,7 @@ Read [](backend/db/migrations/MIGRATION_NOTES.md)
 
 Read [](riskradar_db.sql#1-1), lines 1 to 320
 
-I have enough to write accurate content; I’ll quickly confirm the live API surface so the architecture and dataset docs can name exactly what clients consume right now.
+I have enough to write accurate content; Iâ€™ll quickly confirm the live API surface so the architecture and dataset docs can name exactly what clients consume right now.
 
 Read [](backend/api/alerts.py)
 
@@ -8862,7 +8817,7 @@ Read [](backend/schemas/summary.py)
 
 Read [](backend/schemas/user.py)
 
-I’m now drafting the three docs in the same markdown style as CMPS490, and I’ll base DATA_SETS.md on the actual scraper source endpoints (NWS, AirNow, EPA, FIRMS, USGS) found in code.
+Iâ€™m now drafting the three docs in the same markdown style as CMPS490, and Iâ€™ll base DATA_SETS.md on the actual scraper source endpoints (NWS, AirNow, EPA, FIRMS, USGS) found in code.
 
 Searched for regex `https?://|alert_type|source\s*=\s*|name\s*=\s*` (`**/backend/scrapers/*.py`), 46 results
 
@@ -8870,7 +8825,7 @@ Read [](backend/scrapers/base_scraper.py)
 
 Starting: *Draft three updated docs* (3/5)
 
-I’m now writing the three documents with the CMPS490-style structure (title, overview, sectioned headings, tables/diagrams) while updating the content to match the currently implemented backend and configured data sources.
+Iâ€™m now writing the three documents with the CMPS490-style structure (title, overview, sectioned headings, tables/diagrams) while updating the content to match the currently implemented backend and configured data sources.
 
 Generating patch (99 lines) in [](docs/ARCHITECTURE.md)
 
@@ -8894,7 +8849,7 @@ Generating patch (121 lines) in [](docs/DATA_SETS.md)
 ```
 
 ```
-The three docs are now fully populated and styled to mirror the CMPS490 format; I’m doing a final consistency pass by checking headings and section alignment, then I’ll summarize what changed file-by-file.
+The three docs are now fully populated and styled to mirror the CMPS490 format; Iâ€™m doing a final consistency pass by checking headings and section alignment, then Iâ€™ll summarize what changed file-by-file.
 
 Completed: *Draft three updated docs* (3/5)
 
@@ -8925,11 +8880,11 @@ Made changes.
 
 Afterwards, make sure that the PROJECT_DESCRIPTION.md and README.md documents are alligned in wording/language/phrasing and context
 
-**GitHub Copilot:** I’m applying the same consistency pass to EXAMPLES.md and INSTRUCTIONS.md, then I’ll align phrasing between PROJECT_DESCRIPTION.md and README.md so the core project description reads the same across both.
+**GitHub Copilot:** Iâ€™m applying the same consistency pass to EXAMPLES.md and INSTRUCTIONS.md, then Iâ€™ll align phrasing between PROJECT_DESCRIPTION.md and README.md so the core project description reads the same across both.
 
 Created 5 todos
 
-I’m checking the current content of those four documents first so edits stay minimal and consistent with the style already used in your updated docs set.
+Iâ€™m checking the current content of those four documents first so edits stay minimal and consistent with the style already used in your updated docs set.
 
 Read [](docs/EXAMPLES.md)
 
@@ -8939,7 +8894,7 @@ Read [](README.md)
 
 Read [](docs/PROJECT_DESCRIPTION.md)
 
-I found `EXAMPLES.md` is empty and INSTRUCTIONS.md is using older inconsistent formatting, so next I’ll mirror the structure from the CMPS490 versions of those same docs and then update content to your current CMPS 357 state.
+I found `EXAMPLES.md` is empty and INSTRUCTIONS.md is using older inconsistent formatting, so next Iâ€™ll mirror the structure from the CMPS490 versions of those same docs and then update content to your current CMPS 357 state.
 
 Read [](CMPS490_contents/CMPS490_docs/EXAMPLES.md)
 
@@ -8947,7 +8902,7 @@ Read [](CMPS490_contents/CMPS490_docs/INSTRUCTIONS.md)
 
 Starting: *Rewrite EXAMPLES in house style* (2/5)
 
-I’m editing EXAMPLES.md and INSTRUCTIONS.md now into the same professional, sectioned style used across your updated docs, with content tied to the actual current implementation and planned stages.
+Iâ€™m editing EXAMPLES.md and INSTRUCTIONS.md now into the same professional, sectioned style used across your updated docs, with content tied to the actual current implementation and planned stages.
 
 Generating patch (202 lines) in [](docs/EXAMPLES.md)
 
@@ -8963,7 +8918,7 @@ Generating patch (133 lines) in [](docs/INSTRUCTIONS.md)
 ```
 
 ```
-I’ve completed the EXAMPLES/INSTRUCTIONS pass; next I’m making targeted wording edits in README.md and PROJECT_DESCRIPTION.md so both describe scope, goals, and stage names with matching language.
+Iâ€™ve completed the EXAMPLES/INSTRUCTIONS pass; next Iâ€™m making targeted wording edits in README.md and PROJECT_DESCRIPTION.md so both describe scope, goals, and stage names with matching language.
 
 Starting: *Align README and PROJECT_DESCRIPTION* (4/5)
 
@@ -8981,7 +8936,7 @@ Generating patch (10 lines) in [](docs/PROJECT_DESCRIPTION.md)
 ```
 
 ```
-I’m running a quick verification read of the updated sections to confirm consistent stage naming and shared project language across all requested files.
+Iâ€™m running a quick verification read of the updated sections to confirm consistent stage naming and shared project language across all requested files.
 
 Read [](docs/EXAMPLES.md#1-1), lines 1 to 60
 
@@ -8995,7 +8950,7 @@ Read [](docs/PROJECT_DESCRIPTION.md#28-28), lines 28 to 70
 
 Read [](README.md#80-80), lines 80 to 106
 
-I’m making one final wording pass in README.md to match PROJECT_DESCRIPTION.md terminology exactly (stage names and assistant naming) for full alignment.
+Iâ€™m making one final wording pass in README.md to match PROJECT_DESCRIPTION.md terminology exactly (stage names and assistant naming) for full alignment.
 
 Generating patch (12 lines) in [](README.md)
 
@@ -9034,13 +8989,13 @@ Completed. I applied the consistency pass across all requested docs and aligned 
 - Docs now read as one consistent set in phrasing, context, and stage vocabulary.
 - README.md and PROJECT_DESCRIPTION.md now describe the same project direction with aligned terminology.
 
-Want me to do one final cleanup pass for minor grammar/spelling issues in README legacy sections (e.g., “reccomended”, “respository”, “differenciate”) without changing meaning?
+Want me to do one final cleanup pass for minor grammar/spelling issues in README legacy sections (e.g., â€œreccomendedâ€, â€œrespositoryâ€, â€œdifferenciateâ€) without changing meaning?
 
 Made changes.
 
 **Rebecca:** Yes, run grammar checks on README and all top-level documents
 
-**GitHub Copilot:** I’ll run a full grammar pass on README.md plus all top-level markdown docs in docs, then apply only wording/grammar fixes (no scope or meaning changes). I’ll start by listing those files and reviewing them in batches.
+**GitHub Copilot:** Iâ€™ll run a full grammar pass on README.md plus all top-level markdown docs in docs, then apply only wording/grammar fixes (no scope or meaning changes). Iâ€™ll start by listing those files and reviewing them in batches.
 
 Searched for files matching `**/*.md`, 20 matches
 
@@ -9048,7 +9003,7 @@ Read [](.)
 
 Read [](docs)
 
-I identified the target set (README.md + all files in docs); next I’m scanning for obvious typos and then I’ll patch only the lines that need grammatical cleanup.
+I identified the target set (README.md + all files in docs); next Iâ€™m scanning for obvious typos and then Iâ€™ll patch only the lines that need grammatical cleanup.
 
 Searched for regex `reccomended|differenciate|respository|whilst|Syncronize|consistent|web-app|24-48|Step2|aligned|applicaiton|teh|enviroment` (`**/README.md|docs/*.md`), no results
 
@@ -9060,7 +9015,7 @@ Read [](docs/CERTIFICATION.md)
 
 Read [](docs/ARCHITECTURE.md)
 
-I found several concrete grammar/spelling issues already (mostly in README.md and one line in CERTIFICATION.md), and now I’m scanning the remaining `docs/*.md` files before applying one consolidated patch.
+I found several concrete grammar/spelling issues already (mostly in README.md and one line in CERTIFICATION.md), and now Iâ€™m scanning the remaining `docs/*.md` files before applying one consolidated patch.
 
 Read [](docs/DATA_MODEL.md)
 
@@ -9082,7 +9037,7 @@ Searched for regex `reccomended|differenciate|respository|Reviwewing|consistent|
 
 Searched for regex `reccomended|differenciate|respository|Reviwewing|consistent|Syncronize|whilst|Step2|24-48h|non-emergency replacement|this assignment has been explicitly acknowledged below\.|work\nfor this project` (`**/docs/**`), 7 results
 
-I’ve completed the scan and found grammar issues in README.md, CERTIFICATION.md, REFLECTION.md, and a few wording spots in STAGES.md/EXAMPLES.md; I’ll patch those now while leaving quoted transcript text unchanged for accuracy.
+Iâ€™ve completed the scan and found grammar issues in README.md, CERTIFICATION.md, REFLECTION.md, and a few wording spots in STAGES.md/EXAMPLES.md; Iâ€™ll patch those now while leaving quoted transcript text unchanged for accuracy.
 
 Generating patch (18 lines) in [](README.md)
 
@@ -9122,7 +9077,7 @@ Generating patch (9 lines) in [](docs/EXAMPLES.md)
 ```
 
 ```
-I’ve applied the grammar fixes; I’ll run a quick verification search for the previously flagged issues and confirm all target docs are clean.
+Iâ€™ve applied the grammar fixes; Iâ€™ll run a quick verification search for the previously flagged issues and confirm all target docs are clean.
 
 Searched for regex `reccomended|differenciate|respository|Reviwewing|24-48h|RiskRadar assistant integration` (`**/README.md`), no results
 
@@ -9140,9 +9095,9 @@ Completed a grammar pass on README plus top-level docs in docs/.
 - EXAMPLES.md
 
 **Fixes applied**
-- Corrected spelling/wording issues (for example: “recommended,” “differentiate,” “repository,” “while”).
+- Corrected spelling/wording issues (for example: â€œrecommended,â€ â€œdifferentiate,â€ â€œrepository,â€ â€œwhileâ€).
 - Improved sentence flow and punctuation in long paragraphs.
-- Standardized phrasing like “24-48 hour” and “RiskRadar AI Assistant.”
+- Standardized phrasing like â€œ24-48 hourâ€ and â€œRiskRadar AI Assistant.â€
 - Fixed the certification sentence grammar and closing punctuation.
 
 **Note**
@@ -9154,13 +9109,13 @@ Made changes.
 
 **Rebecca:** Yes
 
-**GitHub Copilot:** I’ll grammar-clean both frontend README files now and apply only wording/clarity fixes, keeping all technical meaning unchanged.
+**GitHub Copilot:** Iâ€™ll grammar-clean both frontend README files now and apply only wording/clarity fixes, keeping all technical meaning unchanged.
 
 Read [](frontend/README.md)
 
 Read [](frontend/RiskRadar/README.md)
 
-I found one minimal placeholder README and one mostly clean Expo README; I’m applying a light grammar polish to both (title case, punctuation, and one sentence flow fix).
+I found one minimal placeholder README and one mostly clean Expo README; Iâ€™m applying a light grammar polish to both (title case, punctuation, and one sentence flow fix).
 
 Generating patch (8 lines) in [](frontend/README.md)
 
@@ -9176,7 +9131,7 @@ Generating patch (6 lines) in [](frontend/RiskRadar/README.md)
 ```
 
 ```
-Done — I ran the grammar cleanup on both frontend README files.
+Done â€” I ran the grammar cleanup on both frontend README files.
 
 - Updated README.md  
   - Improved heading formatting and added a complete sentence.
@@ -9195,18 +9150,18 @@ Made changes.
 
 **Rebecca:** Summarize the Project Premise, Objectives, and Goals into a PROJECT_PROPOSAL.md
 
-GitHub Copilot: I’ll draft a concise `PROJECT_PROPOSAL.md` based on your existing README.md, PROJECT_DESCRIPTION.md, and stage documents, then add it to the repo root. I’m checking first whether that file already exists.
+GitHub Copilot: Iâ€™ll draft a concise `PROJECT_PROPOSAL.md` based on your existing README.md, PROJECT_DESCRIPTION.md, and stage documents, then add it to the repo root. Iâ€™m checking first whether that file already exists.
 
 Searched for files matching `**/PROJECT_PROPOSAL.md`, no matches
 
-I found no existing `PROJECT_PROPOSAL.md`, so I’m creating a new one at the repository root with a clean summary of the project premise, objectives, and goals.
+I found no existing `PROJECT_PROPOSAL.md`, so Iâ€™m creating a new one at the repository root with a clean summary of the project premise, objectives, and goals.
 
 Created [](PROJECT_PROPOSAL.md)
 
 Created PROJECT_PROPOSAL.md with a structured summary of:
 - Project Premise
 - Project Objectives
-- Staged Project Goals (Stages 1–4)
+- Staged Project Goals (Stages 1â€“4)
 - Intended Outcomes
 
 It aligns with your existing README.md, PROJECT_DESCRIPTION.md, and STAGES.md.  
@@ -9220,7 +9175,7 @@ Made changes.
 
 Write a new reflection entry that encompasses this session, and a follow-up reflection regarding this command
 
-I’ll add two new sections to REFLECTION.md: one for the PROJECT_PROPOSAL.md creation session, and one follow-up reflection specifically for this latest command. I’m applying that update now.
+Iâ€™ll add two new sections to REFLECTION.md: one for the PROJECT_PROPOSAL.md creation session, and one follow-up reflection specifically for this latest command. Iâ€™m applying that update now.
 
 Edited
 REFLECTION.md+50-0
@@ -9271,7 +9226,7 @@ Once both students have joined the team, GitHub Classroom will create a single s
 After the repository is created, copy the repository URL and include it in the proposal document. The instructor will automatically have access to all repositories created through GitHub Classroom.
 
 2. Project Overview
-A high-level summary (1–2 well-developed paragraphs) that explains:
+A high-level summary (1â€“2 well-developed paragraphs) that explains:
 
 What the application/system does
 Who it is for
@@ -9335,7 +9290,7 @@ The timeline must demonstrate realistic scope management and clear progress towa
 List optional enhancements that you may implement if core functionality is completed early. These should add value without being essential to project viability.
 
 9. Why This Project Matters
-In 1–2 paragraphs, explain:
+In 1â€“2 paragraphs, explain:
 
 What skills this project demonstrates
 What technical concepts it applies
@@ -9350,7 +9305,7 @@ The proposal should demonstrate awareness of integration complexity.
 If AI tools are included, you must clearly describe how they will be used and evaluated critically.
 You are responsible for ensuring your scope is appropriate.
 Formatting Requirements
-2–4 pages
+2â€“4 pages
 Professional formatting
 Clear section headings
 No excessive white-space
@@ -9395,7 +9350,7 @@ The repository will be created using the GitHub Classroom assignment above. One 
 
 RiskRadar Web is a web-based extension of the RiskRadar mobile application designed to provide users with deeper insight into environmental hazards that may impact their health and daily activities. While the original mobile application aggregates environmental alerts and generates summarized reports from sources such as weather alerts and air quality monitoring systems, the RiskRadar Web platform introduces advanced analytical features that interpret this data and present personalized environmental risk insights.
 
-The primary innovation of the web application is the addition of a Personalized Environmental Risk Scoring Engine combined with a Smart Alert Prioritization System. These systems analyze environmental data—including air quality, weather alerts, wildfire smoke, and pollution reports—and translate them into a personalized risk score for each user. Alerts are then dynamically ranked based on the user’s risk score, distance from the hazard, and severity of the event. This allows users to quickly understand which environmental threats are most relevant to them.
+The primary innovation of the web application is the addition of a Personalized Environmental Risk Scoring Engine combined with a Smart Alert Prioritization System. These systems analyze environmental dataâ€”including air quality, weather alerts, wildfire smoke, and pollution reportsâ€”and translate them into a personalized risk score for each user. Alerts are then dynamically ranked based on the userâ€™s risk score, distance from the hazard, and severity of the event. This allows users to quickly understand which environmental threats are most relevant to them.
 
 This project is valuable because environmental hazard information is often difficult for individuals to interpret. Users may receive numerous alerts without clear context regarding their personal risk level. RiskRadar Web addresses this problem by transforming complex environmental data into actionable insights, helping individuals make safer decisions about outdoor activities, travel, and exposure to hazardous conditions.
 
@@ -9425,9 +9380,9 @@ Stretch goals include adding predictive environmental risk forecasting, an inter
 
 Write a new reflection entry that encompasses the Transcript's '''## Project Proposal Creation Session''', and a follow-up reflection regarding this command
 
-I’m going to append two new sections in REFLECTION.md: one explicitly tied to the transcript’s ## Project Proposal Creation Session, and one follow-up reflection for this current request. I’ll place them at the end using the same four-part format you’ve been using.
+Iâ€™m going to append two new sections in REFLECTION.md: one explicitly tied to the transcriptâ€™s ## Project Proposal Creation Session, and one follow-up reflection for this current request. Iâ€™ll place them at the end using the same four-part format youâ€™ve been using.
 
-I confirmed the current reflection file and I can see it doesn’t yet include a dedicated entry for the transcript’s larger ## Project Proposal Creation Session (the full rubric-driven proposal drafting with ChatGPT). I’m appending that now plus a follow-up section for this request.
+I confirmed the current reflection file and I can see it doesnâ€™t yet include a dedicated entry for the transcriptâ€™s larger ## Project Proposal Creation Session (the full rubric-driven proposal drafting with ChatGPT). Iâ€™m appending that now plus a follow-up section for this request.
 
 Edited
 REFLECTION.md+52-0
@@ -9435,7 +9390,7 @@ Added two new sections to REFLECTION.md:
 
 Project Proposal Creation Session (Transcript)
 Follow-Up Reflection: Transcript-Specific Reflection Request
-These entries specifically cover the transcript’s rubric-driven Project Proposal Creation Session (ChatGPT proposal drafting) and then this exact follow-up command, both in your required four-part reflection format.
+These entries specifically cover the transcriptâ€™s rubric-driven Project Proposal Creation Session (ChatGPT proposal drafting) and then this exact follow-up command, both in your required four-part reflection format.
 Want me to add a matching short marker under TRANSCRIPT.md so both files stay perfectly synchronized?
 
 ---
@@ -9444,7 +9399,7 @@ Want me to add a matching short marker under TRANSCRIPT.md so both files stay pe
 
 **Rebecca:** Create a plan to begin Stage 1 of STAGES.md
 
-GitHub Copilot: I’ll quickly inspect the current Stage 1 context and relevant project files, then draft a concrete startup plan tailored to this repo’s existing backend and docs. I’m starting with a discovery pass to identify dependencies, gaps, and the best first implementation sequence.
+GitHub Copilot: Iâ€™ll quickly inspect the current Stage 1 context and relevant project files, then draft a concrete startup plan tailored to this repoâ€™s existing backend and docs. Iâ€™m starting with a discovery pass to identify dependencies, gaps, and the best first implementation sequence.
 
 Stage1 discovery
 
@@ -9562,10 +9517,10 @@ Asked 3 questions (MVP pages, Web path, Dev mode)
 
 ## Plan: Stage 1 Kickoff (PHP Web Extension)
 
-This DRAFT begins Stage 1 with an MVP that is small, testable, and aligned to your selections: a top-level frontend/ PHP app, dashboard-first scope, and existing backend runtime (scheduler enabled). The goal is to establish a working vertical slice quickly (PHP page → service wrapper → backend API), then expand to alerts/summaries pages and basic user preference flow. It reuses current FastAPI routes and schemas, avoids Stage 2+ features, and prioritizes reliable setup/docs so the team can iterate safely.
+This DRAFT begins Stage 1 with an MVP that is small, testable, and aligned to your selections: a top-level frontend/ PHP app, dashboard-first scope, and existing backend runtime (scheduler enabled). The goal is to establish a working vertical slice quickly (PHP page â†’ service wrapper â†’ backend API), then expand to alerts/summaries pages and basic user preference flow. It reuses current FastAPI routes and schemas, avoids Stage 2+ features, and prioritizes reliable setup/docs so the team can iterate safely.
 
 **Steps**
-1. Baseline Stage 1 scope and acceptance criteria in STAGES.md and align status wording in README.md to “dashboard-first MVP”.
+1. Baseline Stage 1 scope and acceptance criteria in STAGES.md and align status wording in README.md to â€œdashboard-first MVPâ€.
 2. Create Stage 1 web structure under frontend with minimal folders: `views`, `components`, `services`, `public`, `config`, plus entry pages (`index`, alerts, summaries, profile/preferences).
 3. Add environment template and config loader in frontend (API base URL + timeouts) mapped to backend mount in main.py and router prefix in router.py.
 4. Implement PHP API client wrappers for existing endpoints from alerts.py, summaries.py, and users.py, with standardized timeout/non-2xx/malformed-response handling.
@@ -9587,11 +9542,11 @@ This DRAFT begins Stage 1 with an MVP that is small, testable, and aligned to yo
 
 **Rebecca:** Update PLANNING_STAGES.md with this Stage 1 Plan and its steps
 
-GitHub Copilot: I’ll update PLANNING_STAGES.md now by inserting the Stage 1 kickoff plan and step-by-step checklist from the plan we just finalized. I’ll first check the file contents so I preserve any existing structure before patching.
+GitHub Copilot: Iâ€™ll update PLANNING_STAGES.md now by inserting the Stage 1 kickoff plan and step-by-step checklist from the plan we just finalized. Iâ€™ll first check the file contents so I preserve any existing structure before patching.
 
 Read [](docs/PLANNING_STAGES.md)
 
-I found the file is empty, so I’m adding a clean Stage 1 planning section with objective, scope decisions, implementation steps, and verification criteria so it’s ready to use immediately.
+I found the file is empty, so Iâ€™m adding a clean Stage 1 planning section with objective, scope decisions, implementation steps, and verification criteria so itâ€™s ready to use immediately.
 
 Generating patch (91 lines) in [](docs/PLANNING_STAGES.md)
 
@@ -9608,7 +9563,7 @@ It now includes:
 - kickoff deliverables
 - verification evidence checklist
 
-If you want, I can next sync this same wording into STAGES.md as a “Stage 1 Execution Plan” subsection so both planning docs stay aligned.
+If you want, I can next sync this same wording into STAGES.md as a â€œStage 1 Execution Planâ€ subsection so both planning docs stay aligned.
 
 Made changes.
 
@@ -9618,7 +9573,7 @@ Made changes.
 
 **Rebecca:** Create a TODO.md in `/docs` to track the tasks that must be executed to meet the goals of this project
 
-GitHub Copilot: I’ll quickly research the existing project docs and conventions first, then draft a concrete plan for a `docs/TODO.md` that fits your current stage structure and tracking style.
+GitHub Copilot: Iâ€™ll quickly research the existing project docs and conventions first, then draft a concrete plan for a `docs/TODO.md` that fits your current stage structure and tracking style.
 
 Research TODO doc fit
 
@@ -9664,11 +9619,11 @@ Read [](docs/CERTIFICATION.md)
 
 Searched for regex `Assignee|Owner|Due Date|Last Updated|Status Legend|Current Stage Status|source of truth` (`**/*.md`), 19 results
 
-I found a few decisions that affect how useful the tracker will be over the semester, so I’ll confirm them now and then produce a final draft plan you can hand off for implementation.
+I found a few decisions that affect how useful the tracker will be over the semester, so Iâ€™ll confirm them now and then produce a final draft plan you can hand off for implementation.
 
 Asked 3 questions (Granularity, SourceTruth, Stage1Stack)
 
-Thanks — I have enough to draft a concrete execution plan now, including your preference for mixed stage + feature-level tasks and keeping README as the status authority.## Plan: Create docs TODO tracker
+Thanks â€” I have enough to draft a concrete execution plan now, including your preference for mixed stage + feature-level tasks and keeping README as the status authority.## Plan: Create docs TODO tracker
 
 Draft plan: Add a new tracking document in docs/TODO.md that operationalizes the staged goals from INSTRUCTIONS.md and STAGES.md, while keeping status authority in README.md. The TODO file will be execution-focused (what to do, dependencies, evidence), with mixed granularity: stage-level checkpoints plus feature-level tasks. Because Stage 1 stack is undecided, wording will preserve the course requirement while allowing a pending decision marker. This avoids scope drift and gives you a single place for actionable work items without replacing your existing planning docs.
 
@@ -9699,17 +9654,17 @@ Draft plan: Add a new tracking document in docs/TODO.md that operationalizes the
 
 **Rebecca:** Start implementation
 
-GitHub Copilot: I’m starting implementation now by creating `docs/TODO.md` with stage + feature-level execution tracking, then I’ll make a minimal README update to link it while keeping README as status authority.
+GitHub Copilot: Iâ€™m starting implementation now by creating `docs/TODO.md` with stage + feature-level execution tracking, then Iâ€™ll make a minimal README update to link it while keeping README as status authority.
 
 Created 4 todos
 
-I’ll quickly read the current README tracking block so the new link and wording fit existing formatting exactly.
+Iâ€™ll quickly read the current README tracking block so the new link and wording fit existing formatting exactly.
 
 Read [](README.md#70-70), lines 70 to 106
 
 Starting: *Create docs TODO tracker* (2/4)
 
-I’ve confirmed the existing progress format; next I’m creating `docs/TODO.md` with a master tracker and stage-by-stage execution checklists mapped to your instruction stages.
+Iâ€™ve confirmed the existing progress format; next Iâ€™m creating `docs/TODO.md` with a master tracker and stage-by-stage execution checklists mapped to your instruction stages.
 
 Generating patch (144 lines) in [](docs/TODO.md)
 
@@ -9721,7 +9676,7 @@ Generating patch (144 lines) in [](docs/TODO.md)
 
 Starting: *Link TODO in README* (3/4)
 
-TODO.md is in place with a full execution tracker and stage checklists. I’ll now add a concise link in README under the stages section and then run a quick consistency check.
+TODO.md is in place with a full execution tracker and stage checklists. Iâ€™ll now add a concise link in README under the stages section and then run a quick consistency check.
 
 Generating patch (12 lines) in [](README.md)
 
@@ -9729,7 +9684,7 @@ Generating patch (12 lines) in [](README.md)
 ```
 
 ```
-I’m doing a final consistency pass on the new section wording and status vocabulary across README and TODO so the tracker is aligned with your existing stage docs.
+Iâ€™m doing a final consistency pass on the new section wording and status vocabulary across README and TODO so the tracker is aligned with your existing stage docs.
 
 Read [](README.md#86-86), lines 86 to 109
 
@@ -9740,7 +9695,7 @@ Completed: *Link TODO in README* (3/4)
 **Implemented**
 - Created a new execution tracker at TODO.md with mixed granularity (stage-level + feature-level tasks).
 - Added a master task table with tracking fields: Stage, Task ID, Task, Status, Owner, Last Updated, Dependencies, Evidence, Notes.
-- Included Stage 1–4 checklists and verification evidence sections mapped to INSTRUCTIONS.md.
+- Included Stage 1â€“4 checklists and verification evidence sections mapped to INSTRUCTIONS.md.
 - Reused the exact status vocabulary (Not Started, In Progress, Completed) to stay consistent with existing docs.
 
 **README Update**
@@ -9753,15 +9708,15 @@ Made changes.
 
 **Rebecca:** Yes, make this document useful in tracking progress for weekly check-ins
 
-GitHub Copilot: I’ll upgrade TODO.md into a weekly operations tracker by adding target dates, weekly check-in fields, and a simple update workflow so you can use it directly in meetings.
+GitHub Copilot: Iâ€™ll upgrade TODO.md into a weekly operations tracker by adding target dates, weekly check-in fields, and a simple update workflow so you can use it directly in meetings.
 
 Created 4 todos
 
-I’m reading the full current tracker now so the additions fit your existing layout without disrupting what you already entered.
+Iâ€™m reading the full current tracker now so the additions fit your existing layout without disrupting what you already entered.
 
 Read [](docs/TODO.md)
 
-I’m adding practical meeting-oriented fields now (target week, check-in notes, blockers, next actions) and a reusable weekly update template so this becomes check-in ready.
+Iâ€™m adding practical meeting-oriented fields now (target week, check-in notes, blockers, next actions) and a reusable weekly update template so this becomes check-in ready.
 
 Read [](docs/AUTHORS.md)
 
@@ -9775,13 +9730,13 @@ Generating patch (115 lines) in [](docs/TODO.md)
 
 Starting: *Verify readability for meetings* (4/4)
 
-I’ve applied the weekly-tracking improvements and prefilled owners/target weeks; I’ll do one quick readback check to ensure formatting is clean for meeting use.
+Iâ€™ve applied the weekly-tracking improvements and prefilled owners/target weeks; Iâ€™ll do one quick readback check to ensure formatting is clean for meeting use.
 
 Read [](docs/TODO.md#1-1), lines 1 to 120
 
 Completed: *Verify readability for meetings* (4/4)
 
-Updated — TODO.md is now set up for weekly check-ins, not just static task listing.
+Updated â€” TODO.md is now set up for weekly check-ins, not just static task listing.
 
 **What Changed**
 - Added a weekly meeting process and reusable update flow in TODO.md.
@@ -9793,7 +9748,7 @@ Updated — TODO.md is now set up for weekly check-ins, not just static task lis
 **Result**
 - You can now run each weekly check-in by updating one tracker table and one log row, then syncing stage status in README.md.
 
-Want me to also add a short “Weekly Agenda” section to README.md that points teammates directly to the exact TODO sections they should update each meeting?
+Want me to also add a short â€œWeekly Agendaâ€ section to README.md that points teammates directly to the exact TODO sections they should update each meeting?
 
 Made changes.
 
@@ -9861,7 +9816,7 @@ If you want, I can now refine this into an execution order by teammate role (lay
 
 Then create a WIREFRAME_STYLE_IMPLEMENTATION.md flie containing this order/plan for future reference in implementing these steps
 
-GitHub Copilot: I will convert the plan into a dependency-aware execution order grouped by teammate role, then write it into a new reference document so your team can execute in parallel without blocking collisions. I’m quickly checking the docs folder and existing markdown style first, then I’ll create the file.
+GitHub Copilot: I will convert the plan into a dependency-aware execution order grouped by teammate role, then write it into a new reference document so your team can execute in parallel without blocking collisions. Iâ€™m quickly checking the docs folder and existing markdown style first, then Iâ€™ll create the file.
 
 Read [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs)
 
@@ -9871,7 +9826,7 @@ I confirmed the docs style and will now create a dedicated implementation docume
 
 Created [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/WIREFRAME_STYLE_IMPLEMENTATION.md)
 
-I created the document and caught a small formatting typo while reviewing; I’m applying a quick cleanup so the checklist reads correctly.
+I created the document and caught a small formatting typo while reviewing; Iâ€™m applying a quick cleanup so the checklist reads correctly.
 
 Generating patch (10 lines) in [](file:///c%3A/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/docs/WIREFRAME_STYLE_IMPLEMENTATION.md)
 

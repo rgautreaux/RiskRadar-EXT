@@ -1,4 +1,11 @@
 
+## Stage 5 RiskRadar Top-Text Removal and Documentation Synchronization Session (2026-04-12)
+
+- Removed distracting top-of-page raw text leakage by correcting shared PHP file-header/opening-tag placement in `frontend/web/services/api_client.php` and `frontend/web/components/layout.php`.
+- Re-validated shared frontend PHP files with syntax checks and confirmed no lint errors after the fix.
+- Synchronized top-level project docs (README, STAGES, TODO, TRANSCRIPT, REFLECTION, AUTHORS) to record this implementation session chronologically.
+- Completed a transcript dedupe pass to remove duplicate replay-style entries while preserving historical order.
+
 ## Stage 5 Documentation Sync Note (2026-04-11)
 
 - Top-level documentation synchronization has been extended through the Stage 5 closeout/handoff sessions.
