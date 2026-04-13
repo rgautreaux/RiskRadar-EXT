@@ -20,5 +20,6 @@ export function detectCurrentPage(): string {
   if (path.includes('profile')) return 'profile';
   if (path.includes('settings')) return 'settings';
   if (path.includes('forecast')) return 'forecast';
+  if (path.includes('assistant')) return 'assistant';
   return 'unknown';
 }

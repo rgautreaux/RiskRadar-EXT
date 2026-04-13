@@ -260,6 +260,7 @@ Summary:
 - Expanded `frontend/web/tests/demo/demo_journey.js` assistant coverage to include endpoint contract checks and role-context validation for anonymous, authenticated non-admin, and admin scenarios.
 - Added API base override support (`--api-base-url`) for demo automation in split local frontend/backend port setups.
 - Updated `package.json` `demo:run` script to build assistant assets before journey execution.
+- Added `.github/workflows/assistant-assets-build.yml` so CI builds and validates Golby widget assets.
 - Updated `docs/DEMO_RUNBOOK.md` setup checklist to require `npm run build:web` before presentation or automation runs.
 - Re-ran verification: assistant interaction journey passed **6/6** with evidence screenshots (`06a`-`06e`), report regenerated, backend verification passed **211/211** plus smoke test.
 

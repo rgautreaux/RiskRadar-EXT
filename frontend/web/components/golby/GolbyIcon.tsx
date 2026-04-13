@@ -131,6 +131,20 @@ function FacialExpressionOverlay({ expression, size }: { expression: GolbyExpres
           <path d="M 38 60 Q 50 57 62 60" stroke="#1a1a1a" strokeWidth="2.5" fill="none" strokeLinecap="round" />
         </>
       )}
+      {expression === 'waving' && (
+        <>
+          <circle cx="35" cy="42" r="4" fill="#1a1a1a" />
+          <circle cx="65" cy="42" r="4" fill="#1a1a1a" />
+          <path d="M 35 58 Q 50 70 65 58" stroke="#1a1a1a" strokeWidth="3" fill="none" strokeLinecap="round" />
+        </>
+      )}
+      {expression === 'winking' && (
+        <>
+          <path d="M 29 42 L 41 42" stroke="#1a1a1a" strokeWidth="3" strokeLinecap="round" />
+          <circle cx="65" cy="42" r="4" fill="#1a1a1a" />
+          <path d="M 35 58 Q 50 66 65 58" stroke="#1a1a1a" strokeWidth="3" fill="none" strokeLinecap="round" />
+        </>
+      )}
       {/* Add other expressions as needed */}
     </svg>
   );

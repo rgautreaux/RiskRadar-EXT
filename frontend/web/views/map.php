@@ -165,8 +165,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 <?php
-// Load config and build API URLs for JS
-$config = require __DIR__ . '/../config/app.php';
+// Reuse bootstrap config when available so all pages share one API base/prefix source.
+if (!isset($config) || !is_array($config)) {
+    $config = require __DIR__ . '/../config/app.php';
+}
 require_once __DIR__ . '/../services/api_client.php';
 $alerts_url = rr_api_url($config, 'alerts/map');
 $risk_url = rr_api_url($config, 'risk/map');

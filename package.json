@@ -3,6 +3,7 @@
     "build:web": "vite build --config frontend/web/vite.config.mjs",
     "build:web:watch": "vite build --watch --config frontend/web/vite.config.mjs",
     "verify:backend": "node backend/scripts/run_full_verification.mjs",
+    "verify:connectivity": "node backend/scripts/run_connectivity_preflight.mjs",
     "verify:evidence:s3": "node backend/scripts/verify_stage3_evidence.mjs",
     "demo:setup": "node backend/scripts/run_demo.mjs --mode fresh",
     "demo:seed": "node backend/scripts/run_demo.mjs --mode seed",
@@ -11,7 +12,7 @@
     "demo:verify": "node backend/scripts/run_demo.mjs --verify",
     "demo:info": "node backend/scripts/run_demo.mjs --info",
     "demo:generate-alerts": "node backend/scripts/run_demo.mjs --generate-alerts",
-    "demo:run": "npm run build:web && node frontend/web/tests/demo/demo_journey.js",
+    "demo:run": "npm run build:web && npm run verify:connectivity && node frontend/web/tests/demo/demo_journey.js",
     "demo:report": "node frontend/web/tests/demo/report_generator.js"
   },
   "dependencies": {

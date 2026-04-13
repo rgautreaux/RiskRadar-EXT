@@ -157,7 +157,7 @@ Use a virtual environment to avoid conflicts with other projects:
 From the `backend/` directory:
 
 ```bash
-uvicorn main:app --reload --host 127.0.0.1 --port 8000
+uvicorn main:app --reload --host 127.0.0.1 --port 8001
 ```
 
 You should see output similar to:
@@ -165,7 +165,7 @@ You should see output similar to:
 ```
 INFO     Database initialized. Engine URL: sqlite:///...backend/riskradar.db
 INFO     Scheduler started with X scrapers
-INFO     Uvicorn running on http://127.0.0.1:8000
+INFO     Uvicorn running on http://127.0.0.1:8001
 ```
 
 ### 4.3 Verify the server is running
@@ -173,7 +173,7 @@ INFO     Uvicorn running on http://127.0.0.1:8000
 Open a browser or use `curl`:
 
 ```bash
-curl http://127.0.0.1:8000/
+curl http://127.0.0.1:8001/
 ```
 
 Expected response:
@@ -188,8 +188,8 @@ FastAPI auto-generates interactive docs:
 
 | URL | Interface |
 |---|---|
-| <http://127.0.0.1:8000/docs> | Swagger UI — interactive endpoint testing |
-| <http://127.0.0.1:8000/redoc> | ReDoc — read-only reference documentation |
+| <http://127.0.0.1:8001/docs> | Swagger UI — interactive endpoint testing |
+| <http://127.0.0.1:8001/redoc> | ReDoc — read-only reference documentation |
 
 ### 4.5 What happens on startup
 
@@ -218,10 +218,10 @@ FastAPI auto-generates interactive docs:
 
 ### 4.7 Changing the port
 
-If port 8000 is already in use, specify a different port:
+If port 8001 is already in use, specify a different port:
 
 ```bash
-uvicorn main:app --reload --host 127.0.0.1 --port 8001
+uvicorn main:app --reload --host 127.0.0.1 --port 8002
 ```
 
 If you change the backend port, update the web frontend configuration to match (see [Section 5.2](#52-configure-the-api-connection)).
@@ -239,7 +239,7 @@ The web frontend is a desktop-oriented PHP application that consumes the backend
 
 ### 5.2 Configure the API connection
 
-The web frontend reads its settings from `frontend/web/config/app.php`. By default it connects to `http://127.0.0.1:8000`.
+The web frontend reads its settings from `frontend/web/config/app.php`. By default it connects to `http://127.0.0.1:8001`.
 
 **If you changed the backend port or host**, create a local config override:
 
@@ -450,7 +450,7 @@ python test_scrape_and_summarize.py --mock-summary
 With the backend running and an `LLM_API_KEY` configured:
 
 ```bash
-curl -X POST http://127.0.0.1:8000/api/v1/summaries/generate
+curl -X POST http://127.0.0.1:8001/api/v1/summaries/generate
 ```
 
 This calls the configured LLM provider to generate a daily digest of the last 24 hours of alerts.
@@ -459,19 +459,19 @@ This calls the configured LLM provider to generate a daily digest of the last 24
 
 ```bash
 # All alerts (default limit)
-curl http://127.0.0.1:8000/api/v1/alerts
+curl http://127.0.0.1:8001/api/v1/alerts
 
 # Filter by type
-curl "http://127.0.0.1:8000/api/v1/alerts?alert_type=earthquake"
+curl "http://127.0.0.1:8001/api/v1/alerts?alert_type=earthquake"
 
 # Filter by severity
-curl "http://127.0.0.1:8000/api/v1/alerts?severity=high&limit=10"
+curl "http://127.0.0.1:8001/api/v1/alerts?severity=high&limit=10"
 ```
 
 ### 9.3 Registering a user
 
 ```bash
-curl -X POST http://127.0.0.1:8000/api/v1/users/register \
+curl -X POST http://127.0.0.1:8001/api/v1/users/register \
   -H "Content-Type: application/json" \
   -d '{"display_name": "Jane", "email": "jane@example.com", "password": "securepass123", "zip_code": "90001"}'
 ```
@@ -494,7 +494,7 @@ python -m db.init_db
 ### Port already in use
 
 ```
-ERROR: [Errno 10048] error while attempting to bind on address ('127.0.0.1', 8000)
+ERROR: [Errno 10048] error while attempting to bind on address ('127.0.0.1', 8001)
 ```
 
 **Fix:** Use a different port with `--port 8001` and update the web frontend config to match.
@@ -514,7 +514,7 @@ ERROR: [Errno 10048] error while attempting to bind on address ('127.0.0.1', 800
 - **Wait for the scrape interval** — Scrapers run on a configurable interval (default: 30 minutes). The first run is staggered after startup.
 - **Check manually:**
   ```bash
-  curl http://127.0.0.1:8000/api/v1/alerts
+   curl http://127.0.0.1:8001/api/v1/alerts
   ```
 
 ### Summary generation fails
@@ -555,7 +555,8 @@ For the fastest path to a working system:
 1. [ ] Clone the repository
 2. [ ] Create `.env` in the project root (can be empty for basic operation)
 3. [ ] Install Python dependencies: `cd backend && pip install -r requirements.txt`
-4. [ ] Start the backend: `uvicorn main:app --reload --host 127.0.0.1 --port 8000`
-5. [ ] Verify: open <http://127.0.0.1:8000/docs>
+4. [ ] Start the backend: `uvicorn main:app --reload --host 127.0.0.1 --port 8001`
+5. [ ] Verify: open <http://127.0.0.1:8001/docs>
+6. [ ] Run pre-demo wiring check: `npm run verify:connectivity`
 6. [ ] Start the web frontend: `php -S 127.0.0.1:8080 -t frontend/web/public`
 7. [ ] Open the dashboard: <http://127.0.0.1:8080/index.php>

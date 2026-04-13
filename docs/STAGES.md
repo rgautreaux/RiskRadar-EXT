@@ -17,6 +17,7 @@ Completed assistant operability hardening by adding visible runtime diagnostics,
    - admin diagnostics-panel availability
 - Added explicit API base URL override support in demo automation for split local frontend/backend ports.
 - Updated `demo:run` script orchestration to build Golby assets before Playwright execution.
+- Added `.github/workflows/assistant-assets-build.yml` to build and artifact-check Golby assets in CI.
 
 ### Verification Evidence
 - ✅ `npm run build:web` generated non-empty `golby-widget.js` and `golby-widget.css`.

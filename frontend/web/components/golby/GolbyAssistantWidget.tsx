@@ -11,7 +11,13 @@ export function GolbyAssistantWidget() {
   const [isAdmin, setIsAdmin] = React.useState(false);
 
   React.useEffect(() => {
-    setPageContext(detectCurrentPage());
+    const detectedPage = detectCurrentPage();
+    setPageContext(detectedPage);
+
+    if (detectedPage === 'assistant') {
+      setOpen(true);
+    }
+
     const mount = document.getElementById('riskradar-ai-assistant-widget');
 
     const parsedCurrentUserId = Number(mount?.dataset.currentUserId ?? mount?.dataset.adminUserId);

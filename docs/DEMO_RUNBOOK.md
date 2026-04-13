@@ -10,10 +10,11 @@
 
 ✅ Ensure all prerequisites are met before starting:
 
-- [ ] Backend FastAPI server running (`python backend/main.py` or via npm)
-- [ ] Web frontend accessible via PHP (`php -S localhost:8000` from `frontend/web/` or configured web server)
+- [ ] Backend FastAPI server running on `http://127.0.0.1:8001`
+- [ ] Web frontend accessible via PHP on `http://127.0.0.1:8080`
 - [ ] Demo database populated (`npm run demo:setup`)
 - [ ] Assistant assets built (`npm run build:web`)
+- [ ] Connectivity preflight passes (`npm run verify:connectivity`)
 - [ ] `.env` file configured with API settings (see [PROGRAM_EXECUTION.md](./PROGRAM_EXECUTION.md))
 - [ ] Modern web browser (Chrome, Firefox, Safari, Edge)
 - [ ] ~15 minutes of uninterrupted time
@@ -27,16 +28,18 @@ npm run demo:setup
 # Terminal 2: Build frontend assistant assets
 npm run build:web
 
-# Terminal 3: Start backend API
+# Terminal 3: Start backend API (canonical demo port)
 cd backend
-python main.py
+python -m uvicorn main:app --host 127.0.0.1 --port 8001
 
-# Terminal 4: Start PHP web server (from frontend/web/)
-cd frontend/web
-php -S localhost:8000
+# Terminal 4: Start PHP web server (from repository root)
+php -S 127.0.0.1:8080 -t frontend/web/public
+
+# Terminal 5: Run wiring preflight (fails fast if backend/frontend linkage is broken)
+npm run verify:connectivity
 ```
 
-Once all three are running, navigate to **http://localhost:8000** in your browser.
+Once all required services are running and preflight passes, navigate to **http://127.0.0.1:8080** in your browser.
 
 ---
 
@@ -63,7 +66,7 @@ Once all three are running, navigate to **http://localhost:8000** in your browse
 #### Actions
 
 1. **Open Registration Page**
-   - Navigate to **http://localhost:8000/register.php**
+   - Navigate to **http://127.0.0.1:8080/register.php**
    - Title should say "Create Your Account"
 
 2. **Fill Registration Form**
@@ -78,7 +81,7 @@ Once all three are running, navigate to **http://localhost:8000** in your browse
    - Point out: *"The system validates password strength before storing. Passwords are hashed with pbkdf2_sha256, and emails are encrypted at rest."*
 
 4. **Open Profile/Preferences**
-   - Navigate to **http://localhost:8000/profile.php**
+   - Navigate to **http://127.0.0.1:8080/profile.php**
    - Scroll to "Health Conditions" section
    - Set the following sensitivities:
      - **Asthma**: 4 (high)
@@ -102,7 +105,7 @@ Once all three are running, navigate to **http://localhost:8000** in your browse
 #### Actions
 
 1. **Navigate to Dashboard**
-   - Go to **http://localhost:8000/index.php**
+   - Go to **http://127.0.0.1:8080/index.php**
 
 2. **Review Dashboard Contents**
    - **Alert Count**: Should show "15 Active Alerts" (or similar)
@@ -126,7 +129,7 @@ Once all three are running, navigate to **http://localhost:8000** in your browse
 #### Actions
 
 1. **Navigate to Risk Scoring Page**
-   - Go to **http://localhost:8000/risk.php**
+   - Go to **http://127.0.0.1:8080/risk.php**
 
 2. **Enter Demo User ID**
    - User ID Input: Enter `2` (corresponds to Demo User - Medium Risk from fixtures)
@@ -158,7 +161,7 @@ Once all three are running, navigate to **http://localhost:8000** in your browse
 #### Actions
 
 1. **Navigate to Smart Alerts Page**
-   - Go to **http://localhost:8000/smart_alerts.php**
+   - Go to **http://127.0.0.1:8080/smart_alerts.php**
 
 2. **Enter Parameters**
    - User ID: `2` (same demo user)
@@ -189,7 +192,7 @@ Once all three are running, navigate to **http://localhost:8000** in your browse
 #### Actions
 
 1. **Navigate to Map**
-   - Go to **http://localhost:8000/map.php**
+   - Go to **http://127.0.0.1:8080/map.php**
    - Wait for map to load (should show Los Angeles area by default)
 
 2. **Demonstrate Basic Navigation**
@@ -240,7 +243,7 @@ Once all three are running, navigate to **http://localhost:8000** in your browse
 #### Actions
 
 1. **Navigate to Forecast Page**
-   - Go to **http://localhost:8000/forecast.php**
+   - Go to **http://127.0.0.1:8080/forecast.php**
 
 2. **Review Forecast Display**
    - Should show a timeline or chart spanning the next 24–48 hours
@@ -263,7 +266,7 @@ Once all three are running, navigate to **http://localhost:8000** in your browse
      - *"Heat index reaching 105°F. Elderly residents should stay in air-conditioned spaces."*
 
 5. **Navigate to AI Assistant**
-   - Go to **http://localhost:8000/assistant.php**
+   - Go to **http://127.0.0.1:8080/assistant.php**
 
 6. **View AI Assistant Widget**
    - Should see a chat-style interface (React component)
