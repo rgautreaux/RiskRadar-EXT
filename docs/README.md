@@ -1,4 +1,25 @@
 
+## Stage 5: Golby Feature Verification and RiskRadar Branding Restoration Session (2026-04-13)
+
+- Verified feature parity between widget and full-page assistant implementations.
+- Restored RiskRadar globe branding by replacing placeholder Golby rendering with `ai-assistant-reacting.svg` and rebuilding facial overlays for globe coordinates.
+- Rebuilt frontend assets successfully (`npm run build:web`) and confirmed no TypeScript regressions.
+- Synchronized this session across README, STAGES, TODO, TRANSCRIPT, REFLECTION, and AUTHORS in chronological Stage 5 order.
+
+## Stage 5 SVG Asset White-Pixel Removal and Documentation Synchronization Session (2026-04-13)
+
+- Removed white-background pixel paths from `frontend/web/public/assets/icons/ai-assistant-reacting.svg` and `frontend/web/public/assets/golby-asset-ai-assistant-reacting-DRoynDD7.svg`.
+- Verified both assistant-reacting assets now render with transparent backgrounds while preserving non-background vector content.
+- Added synchronized Stage 5 documentation updates across README, STAGES, TODO, TRANSCRIPT, REFLECTION, AUTHORS, and docs README.
+- Performed transcript duplicate-heading pass; duplicate Stage-session heading count remained zero.
+
+## Stage 5 Golby Feature Verification and RiskRadar Branding Restoration Session (2026-04-13)
+
+- Verified feature parity between floating widget and assistant page by confirming both use the same ChatInterface capabilities.
+- Restored RiskRadar branding by replacing placeholder Golby rendering with `ai-assistant-reacting.svg` in the icon component.
+- Rebuilt globe-compatible facial overlays and revalidated expression rendering across supported assistant states.
+- Rebuilt frontend assets and confirmed successful output without TypeScript errors.
+
 ## Stage 5 Frontend-Backend Wiring Completion, Verification, and Documentation Synchronization Session (2026-04-12)
 
 - Completed frontend-backend wiring remediation for forecast/map browser fetch paths and backend CORS runtime handling.

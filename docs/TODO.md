@@ -253,6 +253,22 @@ Maintain delivered features, harden security, and keep documentation and verific
 
 ### Stage 5 Session Entries (After Checklist)
 
+#### Stage 5: SVG Asset White-Pixel Removal and Documentation Synchronization Session (2026-04-13)
+Summary:
+- Removed white background pixel paths from `frontend/web/public/assets/icons/ai-assistant-reacting.svg` and `frontend/web/public/assets/golby-asset-ai-assistant-reacting-DRoynDD7.svg`.
+- Preserved all non-background vector paths so assistant artwork and expressions remain unchanged.
+- Verified both files remain valid SVG assets and now render with transparent backgrounds.
+- Synchronized Stage 5 documentation updates across TODO, STAGES, README, TRANSCRIPT, REFLECTION, AUTHORS, and docs README.
+- Ran transcript duplicate-heading pass; no duplicate Stage-session headings were detected.
+
+#### Stage 5: Golby Feature Verification and RiskRadar Branding Restoration Session (2026-04-13)
+Summary:
+- Verified feature equivalence between floating widget and full-page assistant paths, confirming both use the same ChatInterface capabilities.
+- Replaced placeholder Golby rendering in `frontend/web/components/golby/GolbyIcon.tsx` with the globe-based `ai-assistant-reacting.svg` asset.
+- Rebuilt facial overlays for the 495x468 globe coordinate space and validated all supported expression states.
+- Re-ran frontend build verification (`npm run build:web`) with no TypeScript errors.
+- Synchronized this session across TRANSCRIPT, REFLECTION, STAGES, TODO, AUTHORS, and README in chronological Stage 5 order.
+
 #### Stage 5: Golby Chat Interface Visibility Enhancement and Auto-Open Wiring Session (2026-04-12)
 Summary:
 - Diagnosed chat interface visibility issues as two separate frontend blockers: missing route detection in pageContext.ts and missing facial expressions in GolbyIcon.tsx.

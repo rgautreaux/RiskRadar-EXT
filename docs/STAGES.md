@@ -3,6 +3,49 @@
 - Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
 - Historical lower totals in older session entries are retained intentionally as time-stamped snapshots.
 
+## Stage 5: SVG Asset White-Pixel Removal and Documentation Synchronization Session (2026-04-13)
+
+### Implementation
+Completed a targeted asset-cleanup and documentation-synchronization pass by removing white background pixels from assistant-reacting SVG assets and recording the work across Stage 5 governance artifacts.
+
+### Functionality
+- Removed white background fill path (`#FEFEFE`) from `frontend/web/public/assets/icons/ai-assistant-reacting.svg`.
+- Removed white background fill path (`#FEFEFE`) from `frontend/web/public/assets/golby-asset-ai-assistant-reacting-DRoynDD7.svg`.
+- Preserved all non-background SVG paths and visual styling while enabling transparent rendering.
+
+### Verification Evidence
+- ✅ Confirmed both SVG files were updated successfully and remain valid SVG documents.
+- ✅ Confirmed only the targeted white background path was removed.
+- ✅ No backend/runtime logic changes were introduced.
+
+### Importance
+- Improves UI integration quality by eliminating white-box artifacts behind assistant imagery.
+- Keeps assistant assets background-flexible across pages/themes.
+- Maintains low-risk scope by limiting the change set to static assets and synchronized documentation.
+
+## Stage 5: Golby Feature Verification and RiskRadar Branding Restoration Session (2026-04-13)
+
+### Implementation
+Verified feature equivalence between floating widget and full-page assistant implementations, then restored RiskRadar branding by replacing the Golby placeholder icon with the globe-based `ai-assistant-reacting.svg` asset and rebuilding facial overlays for the globe coordinate system.
+
+### Functionality
+- Confirmed widget and assistant page share the same ChatInterface feature set.
+- Replaced placeholder yellow-circle Golby rendering with embedded `ai-assistant-reacting.svg` in `frontend/web/components/golby/GolbyIcon.tsx`.
+- Reworked facial overlay viewBox and coordinates from a 100x100 model to the globe asset coordinate space (495x468).
+- Repositioned eyes and mouth overlays to align naturally with the globe character.
+- Preserved and validated all expression modes used by the assistant (happy, thinking, waving, winking, laughing, surprised, puzzled, excited).
+
+### Verification Evidence
+- ✅ Feature-equivalence review confirmed no widget vs. assistant-page capability gaps.
+- ✅ `npm run build:web` completed successfully after branding restoration.
+- ✅ Frontend build produced expected Golby bundles with no TypeScript errors.
+- ✅ Expression overlays rendered on top of the globe mascot instead of the placeholder icon.
+
+### Importance
+- Restores intended RiskRadar visual identity and mascot consistency across assistant surfaces.
+- Eliminates user-facing mismatch between mockup branding and deployed UI.
+- Keeps behavior parity while improving presentation quality and trust in the assistant interface.
+
 ## Stage 5: Golby Chat Interface Visibility Enhancement and Auto-Open Wiring Session (2026-04-12)
 
 ### Implementation

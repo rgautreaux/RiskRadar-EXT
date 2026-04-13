@@ -3,10 +3,33 @@
 ## Verification Snapshot (Latest)
 
 - Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
-- SVG asset cleanup completed for assistant icon transparency optimization (2026-04-13).
+- Widget/assistant feature-equivalence review completed and branding restoration validated with successful frontend build (`npm run build:web`) (2026-04-13).
+- SVG asset white-pixel removal completed for assistant icon transparency optimization (2026-04-13).
 - Historical 191/196 totals in session sections are preserved as point-in-time records from earlier runs.
 
-## Stage 5: SVG Asset Cleanup and Transparency Optimization Session (2026-04-13)
+## Stage 5: Golby Feature Verification and RiskRadar Branding Restoration Session (2026-04-13)
+
+### Implementation
+Completed a focused parity-and-branding session: confirmed widget and assistant page are feature-equivalent, then restored the intended RiskRadar globe mascot presentation in Golby UI rendering.
+
+### Functionality
+- Verified both assistant entry points share the same ChatInterface behavior and capability coverage.
+- Replaced placeholder Golby rendering with embedded `ai-assistant-reacting.svg` in `frontend/web/components/golby/GolbyIcon.tsx`.
+- Rebuilt facial overlay geometry to align with the globe asset coordinate system (495x468) rather than the previous 100x100 placeholder model.
+- Preserved and validated expression support across assistant visual states (happy, thinking, waving, winking, laughing, surprised, puzzled, excited).
+
+### Execution
+- Performed source-level comparison for widget and assistant page feature parity.
+- Refactored mascot rendering path in Golby icon component and adjusted overlay positioning.
+- Ran `npm run build:web` successfully and confirmed no TypeScript errors after branding restoration.
+- Synchronized top-level docs (TRANSCRIPT, REFLECTION, STAGES, TODO, AUTHORS, README) in Stage 5 chronological order.
+
+### Importance
+- Restores authentic RiskRadar visual identity across assistant UI surfaces.
+- Removes mismatch between mockup branding and live widget/page presentation.
+- Preserves functional stability while improving user trust and interface polish.
+
+## Stage 5: SVG Asset White-Pixel Removal and Documentation Synchronization Session (2026-04-13)
 
 ### Implementation
 Completed a targeted SVG asset cleanup pass by removing white background pixels from Golby assistant icon files, enabling transparent overlays and flexible background integration in user interface contexts.
@@ -15,6 +38,12 @@ Completed a targeted SVG asset cleanup pass by removing white background pixels 
 - Removed white background fill (`#FEFEFE`) from `frontend/web/public/assets/icons/ai-assistant-reacting.svg`.
 - Removed white background fill (`#FEFEFE`) from `frontend/web/public/assets/golby-asset-ai-assistant-reacting-DRoynDD7.svg`.
 - Both files now support transparent backgrounds for improved visual integration.
+
+### Execution
+- Identified target SVG files and isolated the exact white-background path in each document.
+- Removed only the white fill path while preserving all non-background vector paths.
+- Confirmed both files remained valid SVG assets after modification.
+- Synchronized session updates across all top-level progress-tracking documentation.
 
 ### Importance
 - Improves UI flexibility by allowing SVG assets to display over custom backgrounds without white-box conflicts.
