@@ -5,6 +5,30 @@
 - Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
 - Historical 191/196 totals in session sections are preserved as point-in-time records from earlier runs.
 
+## Stage 5: Golby Chat Interface Visibility Enhancement and Auto-Open Wiring Session (2026-04-12)
+
+### Implementation
+Completed a targeted visibility fix for the Golby chat interface by identifying and resolving two separate frontend blockers that prevented the chat interface from appearing operational despite full backend functionality.
+
+### Functionality
+- Diagnosed chat interface visibility issues stemming from missing route context detection and missing button facial expressions.
+- Added 'assistant' route fallback detection in `frontend/web/components/golby/pageContext.ts` so `detectCurrentPage()` recognizes `/assistant.php` URL path.
+- Added waving and winking facial expression overlays to `frontend/web/components/golby/GolbyIcon.tsx` so launcher button renders visible character instead of blank circle.
+- Added conditional auto-open logic in `frontend/web/components/golby/GolbyAssistantWidget.tsx` to check `detectedPage === 'assistant'` and call `setOpen(true)` on component mount.
+- Rebuilt frontend bundle with `npm run build:web` generating `354.72 kB golby-widget.js`.
+
+### Execution
+- Before fixes: Playwright browser check returned `{"inputCount":0,"openBtnCount":1}` confirming chat interface was hidden.
+- Applied targeted component fixes for route detection, facial expressions, and auto-open logic.
+- Rebuilt frontend bundle without errors.
+- After fixes: Playwright browser check returned `{"inputCount":1,"closeCount":1,"url":"http://127.0.0.1:8080/assistant.php"}` confirming chat interface visible and ready to close on page load.
+- No TypeScript compilation errors or CSS errors in rebuilt bundle.
+
+### Importance
+- Restores visible, functional chat interface on the assistant page for end users testing the application.
+- Improves developer visibility by separating UI/visibility issues from backend functionality issues.
+- Strengthens regression detection by automating Playwright visibility checks in verification suite.
+
 ## Stage 5: Frontend-Backend Wiring Completion, Verification, and Documentation Synchronization Session (2026-04-12)
 
 ### Implementation

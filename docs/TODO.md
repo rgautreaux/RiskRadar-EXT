@@ -253,6 +253,13 @@ Maintain delivered features, harden security, and keep documentation and verific
 
 ### Stage 5 Session Entries (After Checklist)
 
+#### Stage 5: Golby Chat Interface Visibility Enhancement and Auto-Open Wiring Session (2026-04-12)
+Summary:
+- Diagnosed chat interface visibility issues as two separate frontend blockers: missing route detection in pageContext.ts and missing facial expressions in GolbyIcon.tsx.
+- Implemented three targeted fixes: (1) added 'assistant' route fallback detection, (2) added waving/winking facial expression overlays, (3) added conditional auto-open logic in GolbyAssistantWidget.tsx.
+- Rebuilt frontend bundle (354.72 kB golby-widget.js) and verified with Playwright browser checks: before fixes showed inputCount=0 (chat hidden), after fixes showed inputCount=1 (chat visible and ready to close).
+- Synchronized this session's transcript entry and updates to REFLECTION, TODO, STAGES, AUTHORS, and README in chronological Stage 5 order.
+
 #### Stage 5 Frontend-Backend Wiring Completion, Verification, and Documentation Synchronization Session (2026-04-12)
 Summary:
 - Completed frontend-backend wiring fixes so forecast/map browser requests use configured backend API origin/prefix instead of fragile same-origin fallback paths.
