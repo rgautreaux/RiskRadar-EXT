@@ -65,26 +65,26 @@
   },
   "session_tokens": {
     "1": {
-      "token": "eyJleHAiOjE3NzYwNTcxMTUsImlhdCI6MTc3NjA1MzUxNSwic3ViIjoxfQ.B6czHxcd8mP6OQHX0k1Jz3tX9ZimzuOnS-Eu6d61ySY",
-      "expires_at": "2026-04-13T05:11:55.028967+00:00",
+      "token": "eyJleHAiOjE3NzYwNTgwMTQsImlhdCI6MTc3NjA1NDQxNCwic3ViIjoxfQ.NQFLbbO58be_OYi8LnKeS9enFMWsbKayLpVuC5CPo0M",
+      "expires_at": "2026-04-13T05:26:54.931860+00:00",
       "user_id": 1,
       "email_plaintext": "demo_low@riskradar.local"
     },
     "2": {
-      "token": "eyJleHAiOjE3NzYwNTcxMTUsImlhdCI6MTc3NjA1MzUxNSwic3ViIjoyfQ.u5El5Nu9U_zufMErffJqSKDvirF4gQ9aMqsKmdUhYJA",
-      "expires_at": "2026-04-13T05:11:55.043143+00:00",
+      "token": "eyJleHAiOjE3NzYwNTgwMTQsImlhdCI6MTc3NjA1NDQxNCwic3ViIjoyfQ.iRrZCe3qQW-xscRyuCCdLdMN2rnq10rCTLcEOTaiegQ",
+      "expires_at": "2026-04-13T05:26:54.945437+00:00",
       "user_id": 2,
       "email_plaintext": "demo_medium@riskradar.local"
     },
     "3": {
-      "token": "eyJleHAiOjE3NzYwNTcxMTUsImlhdCI6MTc3NjA1MzUxNSwic3ViIjozfQ.Lqi4lbDhO3jm1scqF8k2SCKqriWiA2YFcKqR5N4DmOU",
-      "expires_at": "2026-04-13T05:11:55.056998+00:00",
+      "token": "eyJleHAiOjE3NzYwNTgwMTQsImlhdCI6MTc3NjA1NDQxNCwic3ViIjozfQ.DfFMRvWnYszbCbrvsmTqoF-0PDCFdMzoR8UGwELtDYc",
+      "expires_at": "2026-04-13T05:26:54.959652+00:00",
       "user_id": 3,
       "email_plaintext": "demo_high@riskradar.local"
     },
     "4": {
-      "token": "eyJleHAiOjE3NzYwNTcxMTUsImlhdCI6MTc3NjA1MzUxNSwic3ViIjo0fQ.Ff0HbN-ttQouZ9Xbnn30a-6hEK9zHA1go4ffJotDyUk",
-      "expires_at": "2026-04-13T05:11:55.071409+00:00",
+      "token": "eyJleHAiOjE3NzYwNTgwMTQsImlhdCI6MTc3NjA1NDQxNCwic3ViIjo0fQ.A_1YSZTPckGtlMVaX1Ruq-jLuEf9TGhjaW-1ZJ9MqLg",
+      "expires_at": "2026-04-13T05:26:54.973912+00:00",
       "user_id": 4,
       "email_plaintext": "demo_admin@riskradar.local"
     }
@@ -113,6 +113,6 @@
     2
   ],
   "db_path": "C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\demo.db",
-  "seed_timestamp": "2026-04-13T04:11:55.090540+00:00",
+  "seed_timestamp": "2026-04-13T04:26:54.994801+00:00",
   "fixtures_version": "1.0"
 }

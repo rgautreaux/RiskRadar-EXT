@@ -13,6 +13,7 @@ const SESSION_COOKIE_NAME = 'riskradar_session';
 function parseArgs(argv) {
   const args = {
     baseUrl: 'http://localhost:8000',
+    apiBaseUrl: null,
     headless: true,
     pauseOnStep: false,
     screenshots: true,
@@ -23,6 +24,9 @@ function parseArgs(argv) {
     const token = argv[i];
     if (token === '--base-url' && argv[i + 1]) {
       args.baseUrl = argv[i + 1];
+      i += 1;
+    } else if (token === '--api-base-url' && argv[i + 1]) {
+      args.apiBaseUrl = argv[i + 1];
       i += 1;
     } else if (token === '--headless' && argv[i + 1]) {
       args.headless = argv[i + 1] !== 'false';
@@ -125,7 +129,8 @@ async function assertApiResponse(response, label, expectedStatus) {
 }
 
 async function assertAssistantContracts(page, baseUrl, role, userId) {
-  const apiBase = `${baseUrl.replace(/\/$/, '')}/api/v1`;
+  const apiRoot = (baseUrl || '').replace(/\/$/, '');
+  const apiBase = `${apiRoot}/api/v1`;
   const syntheticSession = `demo-${role}-${Date.now()}`;
   const syntheticMessage = `msg-${Date.now()}`;
 
@@ -258,6 +263,7 @@ async function runJourney(options = {}) {
   };
 
   const base = options.baseUrl.replace(/\/$/, '');
+  const apiBase = (options.apiBaseUrl || options.baseUrl).replace(/\/$/, '');
 
   await recordStep(
     { id: 1, slug: 'dashboard', name: 'Dashboard Overview' },
@@ -308,7 +314,7 @@ async function runJourney(options = {}) {
       await stepNavigate(page, { id: 6 }, `${base}/assistant.php`, 'assistant');
 
       await clearSessionCookie(context);
-      await assertAssistantContracts(page, base, 'anonymous', 2);
+      await assertAssistantContracts(page, apiBase, 'anonymous', 2);
 
       const openWidgetButton = page.getByRole('button', { name: 'Open Golby AI Assistant' });
       await openWidgetButton.waitFor({ timeout: 10000 });
@@ -325,7 +331,7 @@ async function runJourney(options = {}) {
       await clearSessionCookie(context);
       await setSessionCookie(context, base, 2);
       await stepNavigate(page, { id: 6 }, `${base}/assistant.php`, 'assistant');
-      await assertAssistantContracts(page, base, 'user', 2);
+      await assertAssistantContracts(page, apiBase, 'user', 2);
 
       await openWidgetButton.waitFor({ timeout: 10000 });
       await openWidgetButton.click();
@@ -376,7 +382,7 @@ async function runJourney(options = {}) {
       await clearSessionCookie(context);
       await setSessionCookie(context, base, 4);
       await stepNavigate(page, { id: 6 }, `${base}/assistant.php`, 'assistant');
-      await assertAssistantContracts(page, base, 'admin', 4);
+      await assertAssistantContracts(page, apiBase, 'admin', 4);
 
       await openWidgetButton.waitFor({ timeout: 10000 });
       await openWidgetButton.click();
