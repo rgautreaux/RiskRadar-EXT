@@ -1,46 +1,24 @@
 <?php rr_render_layout_start('AI Assistant', 'assistant'); ?>
 
-<section class="page-heading">
-    <div>
-        <p class="eyebrow">AI assistant</p>
-        <h1>RiskRadar AI Assistant</h1>
-    </div>
-    <p>Ask natural-language risk questions and get contextual recommendations powered by live forecast and alert data.</p>
-</section>
+<style>
+  main.page-shell {
+    padding: 0 !important;
+  }
+</style>
 
+<!-- Assistant Page Welcome & Chat Wrapper -->
+<div id="riskradar-assistant-page-welcome"></div>
 
-<section class="panel" style="max-width: 700px; margin: 0 auto; background: var(--card); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 2rem 1.5rem;">
-    <div class="flex items-center gap-4 mb-4">
-        <img src="/assets/icons/ai-assistant.svg" alt="Golby AI Assistant SVG Icon" title="RiskRadar Golby Assistant" style="width: 56px; height: 56px; border-radius: 12px; background: var(--accent); box-shadow: var(--shadow-sm);" />
-        <img src="/UI_UX_STYLE_FILES/wireframe_icons/RiskRadar_Assistant_Icon.png" alt="Golby AI Assistant PNG Icon" title="RiskRadar Golby Assistant" style="width: 56px; height: 56px; border-radius: 12px; background: var(--accent); box-shadow: var(--shadow-sm); margin-left: 8px;" />
-        <div>
-            <h2 style="margin: 0; color: var(--primary); font-family: 'Space Grotesk', Inter, Arial, sans-serif;">Meet Golby, your AI Assistant</h2>
-            <p class="muted" style="margin: 0; font-size: 15px;">Ask about environmental risks, forecasts, and get personalized recommendations.</p>
-        </div>
-    </div>
+<script>
+window.__RISKRADAR_API_BASE__ = <?php echo json_encode(rtrim(rr_api_url($config, ''), '/')); ?>;
+</script>
+<link rel="stylesheet" href="/assets/golby-widget.css">
+<script type="module" src="/assets/assistant-welcome.js" defer></script>
 
-    <div class="mt-3" style="font-size: 14px; color: var(--muted-foreground);">
-        <em>The Golby assistant widget is available on this and other pages (except login).</em>
-    </div>
-    <div class="mt-3" style="font-size: 13px; color: var(--muted-foreground);">
-        <em>Tip: Ask about forecast, alerts, map risk, or how to use RiskRadar features.</em>
-    </div>
-    <noscript>
-        <div class="mt-3" style="font-size: 13px; color: #9f1239;">
-            <em>Golby requires JavaScript to run. Enable JavaScript and reload this page.</em>
-        </div>
-    </noscript>
-</section>
-
-<!--
-S4-07: Assistant UI Quality, Safety, and Accessibility Checklist
-- [x] Golby icon/visuals integrated (SVG and PNG, alt text, contrast)
-- [x] Widget mount point present and accessible
-- [x] Keyboard navigation and focus management
-- [x] Color contrast and font size meet accessibility standards
-- [x] Error/fallback UI for assistant widget failures
-- [ ] Evaluate assistant response quality and safety (manual review)
-- [ ] Collect user feedback for future improvements
--->
+<noscript>
+  <div style="padding: 2rem; text-align: center; color: #9f1239;">
+    <p><em>Golby requires JavaScript to run. Enable JavaScript and reload this page.</em></p>
+  </div>
+</noscript>
 
 <?php rr_render_layout_end(); ?>

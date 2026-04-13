@@ -253,6 +253,14 @@ Maintain delivered features, harden security, and keep documentation and verific
 
 ### Stage 5 Session Entries (After Checklist)
 
+#### Stage 5 Frontend-Backend Wiring Completion, Verification, and Documentation Synchronization Session (2026-04-12)
+Summary:
+- Completed frontend-backend wiring fixes so forecast/map browser requests use configured backend API origin/prefix instead of fragile same-origin fallback paths.
+- Hardened backend CORS origin parsing and startup logging for clearer split-origin diagnostics.
+- Verified runtime behavior with syntax checks, endpoint injection checks, CORS preflight checks, and fallback-state regression checks on dashboard/alerts/summaries.
+- Ran transcript dedupe passes (heading-level and section-body-level); duplicates reported as zero.
+- Synchronized README, STAGES, TODO, TRANSCRIPT, REFLECTION, AUTHORS, and docs README entries for this session.
+
 #### Stage 5 Unrelated-Change Isolation via Separate Worktree/Branch Session (2026-04-12)
 Summary:
 - Reviewed active local changes and isolated unrelated files from the main branch workflow.

@@ -1,4 +1,12 @@
 
+## Stage 5 Frontend-Backend Wiring Completion, Verification, and Documentation Synchronization Session (2026-04-12)
+
+- Completed frontend-backend wiring remediation for forecast/map browser fetch paths and backend CORS runtime handling.
+- Verified the wiring pass with syntax checks, endpoint injection checks, CORS preflight checks, and page fallback-state checks.
+- Added troubleshooting guidance for wiring/config mismatch scenarios in frontend web docs.
+- Ran transcript duplicate-entry checks (headings and section bodies); duplicate count remained zero.
+- Synchronized README, STAGES, TODO, TRANSCRIPT, REFLECTION, AUTHORS, and docs README in chronological Stage 5 order.
+
 ## Stage 5 RiskRadar Top-Text Removal and Documentation Synchronization Session (2026-04-12)
 
 - Removed distracting top-of-page raw text leakage by correcting shared PHP file-header/opening-tag placement in `frontend/web/services/api_client.php` and `frontend/web/components/layout.php`.

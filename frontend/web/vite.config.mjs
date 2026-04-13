@@ -13,9 +13,12 @@ export default defineConfig({
     emptyOutDir: false,
     manifest: true,
     rollupOptions: {
-      input: path.resolve(__dirname, 'src/golby-widget.tsx'),
+      input: {
+        'golby-widget': path.resolve(__dirname, 'src/golby-widget.tsx'),
+        'assistant-welcome': path.resolve(__dirname, 'src/assistant-welcome.tsx'),
+      },
       output: {
-        entryFileNames: 'golby-widget.js',
+        entryFileNames: '[name].js',
         chunkFileNames: 'golby-chunk-[name]-[hash].js',
         assetFileNames: (assetInfo) => {
           if (assetInfo.name && assetInfo.name.endsWith('.css')) {
