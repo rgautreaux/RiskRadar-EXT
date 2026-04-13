@@ -112,49 +112,106 @@ export function GolbyIcon({
 }
 
 function FacialExpressionOverlay({ expression, size }: { expression: GolbyExpression; size: GolbySize }) {
-  const sizeScale = {
-    sm: 0.5,
-    md: 0.75,
-    lg: 1,
-    xl: 1.5
-  };
-  const scale = sizeScale[size];
   return (
     <svg 
       className="absolute inset-0 w-full h-full pointer-events-none" 
-      viewBox="0 0 100 100"
-      style={{ transform: `scale(${scale})` }}
+      viewBox="0 0 495 468"
+      style={{ 
+        filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.1))',
+        mixBlendMode: 'multiply'
+      }}
     >
-      {/* Eyes and mouth positioned on Golby's face */}
+      {/* Eyes and mouth positioned on Golby the globe's face center */}
       {expression === 'happy' && (
         <>
-          <circle cx="35" cy="42" r="4" fill="#1a1a1a" />
-          <circle cx="65" cy="42" r="4" fill="#1a1a1a" />
-          <path d="M 35 58 Q 50 68 65 58" stroke="#1a1a1a" strokeWidth="3" fill="none" strokeLinecap="round" />
+          {/* Left eye */}
+          <circle cx="200" cy="180" r="12" fill="#000" opacity="0.8" />
+          {/* Right eye */}
+          <circle cx="320" cy="180" r="12" fill="#000" opacity="0.8" />
+          {/* Happy smile mouth */}
+          <path d="M 200 260 Q 260 290 320 260" stroke="#000" strokeWidth="8" fill="none" strokeLinecap="round" opacity="0.8" />
         </>
       )}
       {expression === 'thinking' && (
         <>
-          <circle cx="35" cy="40" r="3.5" fill="#1a1a1a" />
-          <circle cx="65" cy="40" r="3.5" fill="#1a1a1a" />
-          <path d="M 38 60 Q 50 57 62 60" stroke="#1a1a1a" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+          {/* Left eye looking up-left */}
+          <circle cx="200" cy="170" r="10" fill="#000" opacity="0.7" />
+          {/* Right eye looking up-left */}
+          <circle cx="320" cy="170" r="10" fill="#000" opacity="0.7" />
+          {/* Thoughtful pursed mouth */}
+          <path d="M 200 270 Q 260 265 320 270" stroke="#000" strokeWidth="6" fill="none" strokeLinecap="round" opacity="0.7" />
+          {/* Thought bubble dot */}
+          <circle cx="150" cy="120" r="4" fill="#000" opacity="0.6" />
         </>
       )}
       {expression === 'waving' && (
         <>
-          <circle cx="35" cy="42" r="4" fill="#1a1a1a" />
-          <circle cx="65" cy="42" r="4" fill="#1a1a1a" />
-          <path d="M 35 58 Q 50 70 65 58" stroke="#1a1a1a" strokeWidth="3" fill="none" strokeLinecap="round" />
+          {/* Left eye winking (closed line) */}
+          <path d="M 190 180 Q 200 185 210 180" stroke="#000" strokeWidth="6" fill="none" strokeLinecap="round" opacity="0.8" />
+          {/* Right eye open */}
+          <circle cx="320" cy="180" r="12" fill="#000" opacity="0.8" />
+          {/* Friendly smile */}
+          <path d="M 200 270 Q 260 295 320 270" stroke="#000" strokeWidth="8" fill="none" strokeLinecap="round" opacity="0.8" />
         </>
       )}
       {expression === 'winking' && (
         <>
-          <path d="M 29 42 L 41 42" stroke="#1a1a1a" strokeWidth="3" strokeLinecap="round" />
-          <circle cx="65" cy="42" r="4" fill="#1a1a1a" />
-          <path d="M 35 58 Q 50 66 65 58" stroke="#1a1a1a" strokeWidth="3" fill="none" strokeLinecap="round" />
+          {/* Left eye open with shine */}
+          <circle cx="200" cy="180" r="12" fill="#000" opacity="0.8" />
+          <circle cx="205" cy="175" r="4" fill="#fff" opacity="0.6" />
+          {/* Right eye winking (closed line) */}
+          <path d="M 310 180 Q 320 185 330 180" stroke="#000" strokeWidth="6" fill="none" strokeLinecap="round" opacity="0.8" />
+          {/* Playful smile */}
+          <path d="M 200 265 Q 260 288 320 265" stroke="#000" strokeWidth="8" fill="none" strokeLinecap="round" opacity="0.8" />
         </>
       )}
-      {/* Add other expressions as needed */}
+      {expression === 'laughing' && (
+        <>
+          {/* Left eye closed (happy) */}
+          <path d="M 190 180 Q 200 190 210 180" stroke="#000" strokeWidth="6" fill="none" strokeLinecap="round" opacity="0.8" />
+          {/* Right eye closed (happy) */}
+          <path d="M 310 180 Q 320 190 330 180" stroke="#000" strokeWidth="6" fill="none" strokeLinecap="round" opacity="0.8" />
+          {/* Big laughing mouth */}
+          <path d="M 190 270 Q 260 310 330 270" stroke="#000" strokeWidth="10" fill="none" strokeLinecap="round" opacity="0.8" />
+        </>
+      )}
+      {expression === 'surprised' && (
+        <>
+          {/* Left eye wide open (surprised) */}
+          <ellipse cx="200" cy="180" rx="14" ry="16" fill="#000" opacity="0.8" />
+          {/* Right eye wide open (surprised) */}
+          <ellipse cx="320" cy="180" rx="14" ry="16" fill="#000" opacity="0.8" />
+          {/* Surprised open mouth (O) */}
+          <ellipse cx="260" cy="280" rx="18" ry="22" fill="none" stroke="#000" strokeWidth="6" opacity="0.8" />
+        </>
+      )}
+      {expression === 'puzzled' && (
+        <>
+          {/* Left eye slightly raised (questioning) */}
+          <circle cx="200" cy="170" r="11" fill="#000" opacity="0.7" />
+          {/* Right eye normal */}
+          <circle cx="320" cy="180" r="11" fill="#000" opacity="0.7" />
+          {/* Questioning mouth (straight/slight frown) */}
+          <path d="M 200 275 Q 260 270 320 275" stroke="#000" strokeWidth="6" fill="none" strokeLinecap="round" opacity="0.7" />
+          {/* Question mark dot */}
+          <circle cx="170" cy="130" r="5" fill="#000" opacity="0.5" />
+        </>
+      )}
+      {expression === 'excited' && (
+        <>
+          {/* Left eye sparkle (big and bright) */}
+          <circle cx="200" cy="175" r="13" fill="#000" opacity="0.85" />
+          <circle cx="205" cy="170" r="5" fill="#fff" opacity="0.7" />
+          {/* Right eye sparkle */}
+          <circle cx="320" cy="175" r="13" fill="#000" opacity="0.85" />
+          <circle cx="325" cy="170" r="5" fill="#fff" opacity="0.7" />
+          {/* Big excited smile */}
+          <path d="M 190 270 Q 260 305 330 270" stroke="#000" strokeWidth="9" fill="none" strokeLinecap="round" opacity="0.85" />
+          {/* Excitement lines/stars around */}
+          <circle cx="140" cy="140" r="3" fill="#000" opacity="0.5" />
+          <circle cx="380" cy="140" r="3" fill="#000" opacity="0.5" />
+        </>
+      )}
     </svg>
   );
 }

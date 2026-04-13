@@ -1,26 +1,14 @@
 {
-  "_golby-chunk-ChatInterface-DC6Tlv26.js": {
-    "file": "golby-chunk-ChatInterface-DC6Tlv26.js",
+  "_golby-chunk-ChatInterface-D-oAa90-.js": {
+    "file": "golby-chunk-ChatInterface-D-oAa90-.js",
     "name": "ChatInterface",
     "css": [
       "golby-widget.css"
-    ],
-    "assets": [
-      "golby-asset-ai-assistant-Q3Qta1q6.svg",
-      "golby-asset-ai-assistant-reacting-DRoynDD7.svg"
     ]
   },
   "_golby-widget.css": {
     "file": "golby-widget.css",
     "src": "_golby-widget.css"
-  },
-  "frontend/web/public/assets/icons/ai-assistant-reacting.svg": {
-    "file": "golby-asset-ai-assistant-reacting-DRoynDD7.svg",
-    "src": "frontend/web/public/assets/icons/ai-assistant-reacting.svg"
-  },
-  "frontend/web/public/assets/icons/ai-assistant.svg": {
-    "file": "golby-asset-ai-assistant-Q3Qta1q6.svg",
-    "src": "frontend/web/public/assets/icons/ai-assistant.svg"
   },
   "frontend/web/src/assistant-welcome.tsx": {
     "file": "assistant-welcome.js",
@@ -28,7 +16,7 @@
     "src": "frontend/web/src/assistant-welcome.tsx",
     "isEntry": true,
     "imports": [
-      "_golby-chunk-ChatInterface-DC6Tlv26.js"
+      "_golby-chunk-ChatInterface-D-oAa90-.js"
     ]
   },
   "frontend/web/src/golby-widget.tsx": {
@@ -37,7 +25,7 @@
     "src": "frontend/web/src/golby-widget.tsx",
     "isEntry": true,
     "imports": [
-      "_golby-chunk-ChatInterface-DC6Tlv26.js"
+      "_golby-chunk-ChatInterface-D-oAa90-.js"
     ]
   }
 }
