@@ -213,6 +213,33 @@ npm run build:web:watch
 
 If backend port `8000` is unavailable, set `RISKRADAR_API_BASE_URL` (for example to `http://127.0.0.1:8001`) or use `config/config.local.php`.
 
+## Troubleshooting Wiring Issues
+
+If the web app shows fallback messages like alerts/summaries unavailable, forecast failed, or map network error, walk through these checks in order:
+
+1. Confirm backend is running and reachable:
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:8000/
+Invoke-RestMethod http://127.0.0.1:8000/api/v1/alerts?limit=1
+```
+
+2. Confirm frontend API config points to the same backend origin:
+	- Set `RISKRADAR_API_BASE_URL` or create `config/config.local.php`.
+	- Keep `RISKRADAR_API_PREFIX` as `/api/v1` unless backend prefix is customized.
+
+3. Run frontend and backend on separate ports and inspect browser network requests:
+	- Frontend page origin can be `http://127.0.0.1:8080`.
+	- Forecast and map requests must still target backend origin (for example `http://127.0.0.1:8000/api/v1/...`).
+
+4. Distinguish wiring failures from true no-data cases:
+	- Wiring failure: request errors in browser network tab (status, CORS, DNS, refused connection).
+	- No-data case: request returns 200 but payload arrays are empty.
+
+5. CORS check for split-origin local setup:
+	- Ensure backend `CORS_ALLOWED_ORIGINS` includes frontend host/port values.
+	- Restart backend after changing environment values.
+
 ## Security and Validation Notes
 
 - CSRF tokens are required and verified for all POST form submissions.

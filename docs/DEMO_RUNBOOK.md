@@ -13,6 +13,7 @@
 - [ ] Backend FastAPI server running (`python backend/main.py` or via npm)
 - [ ] Web frontend accessible via PHP (`php -S localhost:8000` from `frontend/web/` or configured web server)
 - [ ] Demo database populated (`npm run demo:setup`)
+- [ ] Assistant assets built (`npm run build:web`)
 - [ ] `.env` file configured with API settings (see [PROGRAM_EXECUTION.md](./PROGRAM_EXECUTION.md))
 - [ ] Modern web browser (Chrome, Firefox, Safari, Edge)
 - [ ] ~15 minutes of uninterrupted time
@@ -23,11 +24,14 @@
 # Terminal 1: Setup demo database
 npm run demo:setup
 
-# Terminal 2: Start backend API
+# Terminal 2: Build frontend assistant assets
+npm run build:web
+
+# Terminal 3: Start backend API
 cd backend
 python main.py
 
-# Terminal 3: Start PHP web server (from frontend/web/)
+# Terminal 4: Start PHP web server (from frontend/web/)
 cd frontend/web
 php -S localhost:8000
 ```
