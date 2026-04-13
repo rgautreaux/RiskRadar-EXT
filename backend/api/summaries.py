@@ -35,7 +35,11 @@ def latest_local_summary(
 ):
     return (
         db.query(Summary)
-        .filter(Summary.summary_type == "local", Summary.region.endswith(zip_code))
+        .filter(
+            Summary.summary_type == "local",
+            Summary.region.isnot(None),
+            Summary.region.endswith(zip_code),
+        )
         .order_by(Summary.generated_at.desc())
         .first()
     )
@@ -46,9 +50,11 @@ def generate_summary(db: Session = Depends(get_db)):
     from llm.summarizer import Summarizer
 
     summarizer = Summarizer()
-    summary = summarizer.generate_daily_digest(db)
+    try:
+        summary = summarizer.generate_daily_digest(db)
+    except Exception:
+        raise HTTPException(status_code=502, detail="Summary generation failed — LLM service may be unavailable")
     if not summary:
-        from fastapi import HTTPException
         raise HTTPException(status_code=404, detail="No alerts to summarize")
     return summary
 
@@ -64,6 +70,7 @@ def generate_local_summary(
         db.query(Summary)
         .filter(
             Summary.summary_type == "local",
+            Summary.region.isnot(None),
             Summary.region.endswith(zip_code),
             Summary.generated_at >= cutoff,
         )
@@ -81,8 +88,16 @@ def generate_local_summary(
 
     lat, lon, city, state = location
 
-    # Fetch fresh alerts for this location
-    raw_alerts = _fetch_nws_alerts(lat, lon, state) + _fetch_airnow(zip_code)
+    # Fetch fresh alerts for this location (graceful on partial failure)
+    raw_alerts: list[dict] = []
+    try:
+        raw_alerts.extend(_fetch_nws_alerts(lat, lon, state))
+    except Exception:
+        pass  # NWS down — continue with AirNow data
+    try:
+        raw_alerts.extend(_fetch_airnow(zip_code))
+    except Exception:
+        pass  # AirNow down — continue with NWS data
 
     # Store in DB (dedup by source + source_id) and collect alert objects
     local_alerts: list[Alert] = []
@@ -108,5 +123,8 @@ def generate_local_summary(
     # Generate a location-specific summary via the LLM
     from llm.summarizer import Summarizer
     summarizer = Summarizer()
-    summary = summarizer.generate_local_digest(db, local_alerts, city, state, zip_code)
+    try:
+        summary = summarizer.generate_local_digest(db, local_alerts, city, state, zip_code)
+    except Exception:
+        raise HTTPException(status_code=502, detail="Summary generation failed — LLM service may be unavailable")
     return summary

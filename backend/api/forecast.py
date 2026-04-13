@@ -60,17 +60,25 @@ def _fetch_owm_forecast(lat: float, lon: float) -> list[dict]:
     from collections import defaultdict
     days: dict[str, list[dict]] = defaultdict(list)
     for slot in data.get("list", []):
-        date_str = slot["dt_txt"][:10]  # "2024-05-15"
+        dt_txt = slot.get("dt_txt", "")
+        if len(dt_txt) < 10:
+            continue
+        date_str = dt_txt[:10]  # "2024-05-15"
         days[date_str].append(slot)
 
     results = []
     for date_str in sorted(days.keys())[:7]:
         slots = days[date_str]
+        if not slots:
+            continue
         dt = datetime.strptime(date_str, "%Y-%m-%d")
 
-        temps = [s["main"]["temp"] for s in slots]
-        humidities = [s["main"]["humidity"] for s in slots]
-        winds = [s["wind"]["speed"] for s in slots]
+        temps = [s.get("main", {}).get("temp") for s in slots]
+        temps = [t for t in temps if t is not None]
+        if not temps:
+            continue
+        humidities = [s.get("main", {}).get("humidity", 0) for s in slots]
+        winds = [s.get("wind", {}).get("speed", 0) for s in slots]
         pops = [s.get("pop", 0) for s in slots]
 
         # Pick the daytime slot for weather description (pod == 'd'), fallback to first
@@ -112,6 +120,8 @@ def get_forecast(
     lon: float = Query(..., description="Longitude"),
 ):
     """Return the 7-day daily forecast for a location."""
+    if not (-90 <= lat <= 90) or not (-180 <= lon <= 180):
+        raise HTTPException(status_code=400, detail="Invalid coordinates")
     if not settings.OPENWEATHER_API_KEY:
         raise HTTPException(
             status_code=503,

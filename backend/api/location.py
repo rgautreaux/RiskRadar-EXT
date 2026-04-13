@@ -67,6 +67,25 @@ _STATE_ABBREVS = {
 }
 
 
+def _reverse_geocode_zip(lat: float, lon: float) -> str | None:
+    """Reverse-geocode coordinates to find the nearest US zip code via Nominatim."""
+    try:
+        resp = httpx.get(
+            "https://nominatim.openstreetmap.org/reverse",
+            params={"lat": lat, "lon": lon, "format": "json", "addressdetails": 1},
+            headers={"User-Agent": "RiskRadar/1.0 (school-project)"},
+            timeout=10,
+        )
+        if resp.status_code != 200:
+            return None
+        postcode = resp.json().get("address", {}).get("postcode")
+        if postcode and len(postcode) >= 5 and postcode[:5].isdigit():
+            return postcode[:5]
+        return None
+    except Exception:
+        return None
+
+
 def _city_to_coords(query: str) -> tuple[float, float, str, str, str | None] | None:
     """Geocode a city name to (lat, lon, city, state, zip_code) using Nominatim."""
     try:
@@ -105,6 +124,11 @@ def _city_to_coords(query: str) -> tuple[float, float, str, str, str | None] | N
         else:
             zip_code = None
 
+        # Fallback: if forward search didn't include a postcode, reverse-geocode
+        # the coordinates to find one (Nominatim reverse usually returns it).
+        if not zip_code:
+            zip_code = _reverse_geocode_zip(lat, lon)
+
         return lat, lon, city, state, zip_code
     except Exception:
         logger.exception("City geocoding failed for query: %s", query)
@@ -127,6 +151,20 @@ SEVERITY_MAP = {
 }
 
 
+def _nws_get(url: str, params: dict, headers: dict, retries: int = 2) -> httpx.Response:
+    """GET with automatic retry for transient NWS connection drops."""
+    for attempt in range(retries + 1):
+        try:
+            resp = httpx.get(url, params=params, headers=headers, timeout=30)
+            resp.raise_for_status()
+            return resp
+        except (httpx.RemoteProtocolError, httpx.ConnectError) as exc:
+            if attempt < retries:
+                logger.warning("NWS request failed (attempt %d/%d): %s", attempt + 1, retries + 1, exc)
+                continue
+            raise
+
+
 def _fetch_nws_alerts(lat: float, lon: float, state: str) -> list[dict]:
     """Fetch active NWS weather alerts for a location."""
     url = "https://api.weather.gov/alerts/active"
@@ -136,14 +174,12 @@ def _fetch_nws_alerts(lat: float, lon: float, state: str) -> list[dict]:
     }
 
     # Try point-based first (NWS needs max 4 decimal places)
-    resp = httpx.get(url, params={"point": f"{round(lat, 4)},{round(lon, 4)}"}, headers=headers, timeout=30)
-    resp.raise_for_status()
+    resp = _nws_get(url, params={"point": f"{round(lat, 4)},{round(lon, 4)}"}, headers=headers)
     features = resp.json().get("features", [])
 
     # If none, try state-wide but cap to 25 to avoid flooding for large states
     if not features:
-        resp2 = httpx.get(url, params={"area": state}, headers=headers, timeout=30)
-        resp2.raise_for_status()
+        resp2 = _nws_get(url, params={"area": state}, headers=headers)
         features = resp2.json().get("features", [])[:25]
 
     results = []
@@ -255,7 +291,8 @@ def get_alerts_for_location(
             raise HTTPException(status_code=404, detail=f"Could not find location for zip code {zip_code}")
         lat, lon, _city, state = location
     elif lat is not None and lon is not None and state:
-        pass  # Use provided coordinates directly
+        if not (-90 <= lat <= 90) or not (-180 <= lon <= 180):
+            raise HTTPException(status_code=400, detail="Invalid coordinates: lat must be -90..90, lon must be -180..180")
     else:
         raise HTTPException(status_code=400, detail="Provide either zip_code or lat+lon+state")
 
@@ -278,11 +315,17 @@ def get_alerts_for_location(
     if cached:
         return cached
 
-    # No fresh cache — fetch from external APIs
+    # No fresh cache — fetch from external APIs (graceful on failure)
     all_alerts: list[dict] = []
-    all_alerts.extend(_fetch_nws_alerts(lat, lon, state))
+    try:
+        all_alerts.extend(_fetch_nws_alerts(lat, lon, state))
+    except Exception:
+        logger.exception("NWS alert fetch failed for lat=%s lon=%s", lat, lon)
     if zip_code:
-        all_alerts.extend(_fetch_airnow(zip_code))
+        try:
+            all_alerts.extend(_fetch_airnow(zip_code))
+        except Exception:
+            logger.exception("AirNow fetch failed for zip=%s", zip_code)
 
     # Store in DB (dedup by source + source_id)
     stored = []

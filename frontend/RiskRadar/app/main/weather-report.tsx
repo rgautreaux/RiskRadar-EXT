@@ -180,9 +180,11 @@ export default function WeatherReport() {
         }),
       });
       setIsSaved(true);
-    } catch {
-      // 409 = already saved
-      setIsSaved(true);
+    } catch (err: any) {
+      // 409 = already saved, treat as success
+      if (err?.message?.includes('409')) {
+        setIsSaved(true);
+      }
     } finally {
       setIsSaving(false);
     }
