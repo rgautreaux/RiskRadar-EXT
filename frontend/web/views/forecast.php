@@ -1,8 +1,13 @@
-
+<?php $forecastApiBase = rtrim((string) ($config['api']['base_url'] ?? ''), '/'); ?>
+<?php $forecastApiPrefix = '/' . trim((string) ($config['api']['prefix'] ?? '/api/v1'), '/'); ?>
 
 <link rel="stylesheet" href="/assets/app.css">
 <link rel="stylesheet" href="/assets/theme.css">
 
+<script>
+window.__RISKRADAR_FORECAST_API_BASE__ = <?php echo json_encode($forecastApiBase); ?>;
+window.__RISKRADAR_FORECAST_API_PREFIX__ = <?php echo json_encode($forecastApiPrefix); ?>;
+</script>
 <script src="/assets/forecast-location.js"></script>
 <?php rr_render_layout_start('Forecast', 'forecast'); ?>
 

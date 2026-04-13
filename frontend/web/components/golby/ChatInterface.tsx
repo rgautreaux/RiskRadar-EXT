@@ -382,6 +382,7 @@ export function ChatInterface({
 	const [feedbackCount, setFeedbackCount] = useState<number>(() => readStoredNumber(FEEDBACK_COUNT_STORAGE_KEY, 0));
 	const [styleBias, setStyleBias] = useState<number>(() => readStoredNumber(STYLE_BIAS_STORAGE_KEY, 0));
 	const [showDiagnostics, setShowDiagnostics] = useState(false);
+	const [runtimeDiagnostics, setRuntimeDiagnostics] = useState<string | null>(null);
 	const [weeklyAnalytics, setWeeklyAnalytics] = useState<WeeklyAnalyticsSummary | null>(null);
 	const [analyticsLoading, setAnalyticsLoading] = useState(false);
 	const [analyticsError, setAnalyticsError] = useState<string | null>(null);
@@ -465,6 +466,7 @@ export function ChatInterface({
 				user_id: currentUserId,
 				location: locationHint,
 			});
+			setRuntimeDiagnostics(null);
 			if (backendReply?.reply) {
 				const mappedCategory: ResponseCategory = backendReply.category === 'live' ? 'live' : 'static';
 				return {
@@ -473,6 +475,7 @@ export function ChatInterface({
 				};
 			}
 		} catch {
+			setRuntimeDiagnostics('Live assistant service is unavailable. Golby is using local fallback responses.');
 			// Fall back to local response logic when backend assistant is unavailable.
 		}
 
@@ -607,14 +610,18 @@ export function ChatInterface({
 				response_category: category,
 				response_text: message.text,
 			});
+			setRuntimeDiagnostics(null);
 		} catch {
+			setRuntimeDiagnostics('Feedback could not be synced right now. Local learning remains active.');
 			// Keep the local learning loop working even if the backend call fails.
 		}
 
 		if (currentUserId) {
 			try {
 				await syncGolbyStyleProfile(currentUserId, nextProfile, nextFeedbackCount, nextStyleBias);
+				setRuntimeDiagnostics(null);
 			} catch {
+				setRuntimeDiagnostics('Profile sync is delayed. Changes will apply locally for this session.');
 				// Keep local learning responsive even if profile sync fails.
 			}
 		}
@@ -673,6 +680,11 @@ export function ChatInterface({
 			</div>
 			{isAdmin && showDiagnostics && (
 				<div className="bg-blue-50 border-b border-blue-100 px-6 py-3 space-y-3">
+					{runtimeDiagnostics && (
+						<div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900" data-golby-runtime-diagnostic="true">
+							{runtimeDiagnostics}
+						</div>
+					)}
 					<div className="rounded-lg border border-blue-200 bg-white p-3">
 						<p className="text-xs font-semibold text-blue-900 mb-2">Local Learning Panel</p>
 						<div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-700">
@@ -740,6 +752,11 @@ export function ChatInterface({
 							</div>
 						)}
 					</div>
+				</div>
+			)}
+			{runtimeDiagnostics && !showDiagnostics && (
+				<div className="bg-amber-50 border-b border-amber-200 px-6 py-2 text-xs text-amber-900" data-golby-runtime-diagnostic="true">
+					{runtimeDiagnostics}
 				</div>
 			)}
 			{/* Messages */}

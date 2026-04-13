@@ -3,8 +3,17 @@
 // Requires Plotly.js (CDN or npm)
 
 document.addEventListener('DOMContentLoaded', function() {
-    const alertsUrl = window.RISKRADAR_MAP_ALERTS_URL || '/api/v1/alerts/map';
-    const riskUrl = window.RISKRADAR_MAP_RISK_URL || '/api/v1/risk/map';
+    const alertsUrl = window.RISKRADAR_MAP_ALERTS_URL;
+    const riskUrl = window.RISKRADAR_MAP_RISK_URL;
+    const hasConfiguredUrls = typeof alertsUrl === 'string'
+        && alertsUrl.length > 0
+        && typeof riskUrl === 'string'
+        && riskUrl.length > 0;
+
+    if (!hasConfiguredUrls) {
+        // Avoid making requests to an unintended same-origin /api path.
+        return;
+    }
 
     const mapContainer = document.createElement('div');
     mapContainer.id = 'risk-map-container';

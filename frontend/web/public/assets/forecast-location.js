@@ -4,6 +4,23 @@ const forecastState = {
     currentRequestId: 0,
 };
 
+function normalizeApiConfig() {
+    const explicitBase = (window.__RISKRADAR_FORECAST_API_BASE__ || '').trim();
+    const explicitPrefix = (window.__RISKRADAR_FORECAST_API_PREFIX__ || '/api/v1').trim();
+    const prefix = explicitPrefix.startsWith('/') ? explicitPrefix : `/${explicitPrefix}`;
+
+    if (explicitBase) {
+        const cleanedBase = explicitBase.endsWith('/') ? explicitBase.slice(0, -1) : explicitBase;
+        return { base: cleanedBase, prefix };
+    }
+
+    // Safe fallback for same-origin development when no explicit API config is injected.
+    return {
+        base: window.location.origin,
+        prefix,
+    };
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const locationForm = document.getElementById('forecast-location-form');
     const locationInput = document.getElementById('forecast-location-input');
@@ -55,8 +72,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function buildForecastUrl(params) {
-    const base = CURRENT_USER_ID ? `/api/v1/forecast/personalized/${CURRENT_USER_ID}` : '/api/v1/forecast';
-    const url = new URL(base, window.location.origin);
+    const api = normalizeApiConfig();
+    const endpoint = CURRENT_USER_ID
+        ? `${api.prefix}/forecast/personalized/${CURRENT_USER_ID}`
+        : `${api.prefix}/forecast`;
+    const url = new URL(`${api.base}${endpoint}`);
     Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined && value !== null && value !== '') {
             url.searchParams.set(key, String(value));

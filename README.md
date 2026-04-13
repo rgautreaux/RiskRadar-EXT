@@ -5,6 +5,30 @@
 - Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
 - Historical 191/196 totals in session sections are preserved as point-in-time records from earlier runs.
 
+## Stage 5: Golby Operational Frontend Wiring, Verification, and Documentation Synchronization Session (2026-04-12)
+
+### Implementation
+Completed the assistant operationalization pass by fixing frontend asset execution/wiring, validating runtime behavior end-to-end, and synchronizing top-level project documentation for historical accuracy.
+
+### Functionality
+- Ensured assistant page loads compiled Golby assets in web runtime (`/assets/golby-widget.js`, `/assets/golby-widget.css`) instead of scaffold-only/raw-source behavior.
+- Verified interactive assistant behavior in demo automation (open widget, send message, feedback click, guardrail response).
+- Confirmed backend and seeded demo workflows remained stable after wiring validation.
+- Updated Stage/session tracker docs and historical records in chronological order.
+
+### Execution
+- Ran and passed `npm run build:web`.
+- Resolved missing Python dependency (`cryptography`) in the project virtual environment and re-ran verification.
+- Ran and passed `npm run verify:backend` (**211 passed**, smoke test pass).
+- Ran and passed `npm run demo:setup`.
+- Ran and passed interactive journey: `node frontend/web/tests/demo/demo_journey.js --base-url http://127.0.0.1:8080` (**6/6 passed**, assistant screenshots captured).
+- Ran and passed `npm run demo:report` (artifact regenerated at `static/evidence/DEMO_REPORT.md`).
+
+### Importance
+- Converts Golby from scaffold-facing behavior to verified operational behavior in manual and automated runtime checks.
+- Reduces future integration risk through a reproducible assistant build/runtime verification path.
+- Keeps documentation governance accurate by synchronizing all top-level tracking/history files with this implementation session.
+
 ## Stage 5: Frontend Contrast Accessibility Final Pass and Documentation Synchronization Session (2026-04-12)
 
 ### Implementation

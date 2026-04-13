@@ -7,6 +7,8 @@ const { ScreenshotCollector } = require('./screenshot_collector');
 const REPO_ROOT = path.resolve(__dirname, '..', '..', '..', '..');
 const EVIDENCE_ROOT = path.resolve(REPO_ROOT, 'static', 'evidence');
 const LOG_PATH = path.resolve(EVIDENCE_ROOT, 'demo_journey_log.json');
+const SEED_METADATA_PATH = path.resolve(REPO_ROOT, 'seed_metadata.json');
+const SESSION_COOKIE_NAME = 'riskradar_session';
 
 function parseArgs(argv) {
   const args = {
@@ -65,6 +67,136 @@ async function stepNavigate(page, step, url, titleContains) {
   if (titleContains && !title.toLowerCase().includes(titleContains.toLowerCase())) {
     console.warn(`⚠ Step ${step.id}: page title "${title}" did not include "${titleContains}"`);
   }
+}
+
+function readSeedMetadata() {
+  if (!fs.existsSync(SEED_METADATA_PATH)) {
+    return null;
+  }
+
+  try {
+    const raw = fs.readFileSync(SEED_METADATA_PATH, 'utf-8');
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+function getSessionTokenForUser(userId) {
+  const metadata = readSeedMetadata();
+  return metadata?.session_tokens?.[String(userId)]?.token ?? null;
+}
+
+async function clearSessionCookie(context) {
+  await context.clearCookies();
+}
+
+async function setSessionCookie(context, baseUrl, userId) {
+  const token = getSessionTokenForUser(userId);
+  if (!token) {
+    throw new Error(`Missing seeded session token for user ${userId}. Run npm run demo:setup first.`);
+  }
+
+  const target = new URL(baseUrl);
+  await context.addCookies([
+    {
+      name: SESSION_COOKIE_NAME,
+      value: token,
+      domain: target.hostname,
+      path: '/',
+      httpOnly: true,
+      secure: target.protocol === 'https:',
+      sameSite: 'Lax',
+    },
+  ]);
+}
+
+async function assertApiResponse(response, label, expectedStatus) {
+  if (typeof expectedStatus === 'number') {
+    if (response.status() !== expectedStatus) {
+      throw new Error(`${label} expected HTTP ${expectedStatus} but received ${response.status()}`);
+    }
+    return;
+  }
+
+  if (!response.ok()) {
+    throw new Error(`${label} failed with HTTP ${response.status()}`);
+  }
+}
+
+async function assertAssistantContracts(page, baseUrl, role, userId) {
+  const apiBase = `${baseUrl.replace(/\/$/, '')}/api/v1`;
+  const syntheticSession = `demo-${role}-${Date.now()}`;
+  const syntheticMessage = `msg-${Date.now()}`;
+
+  const alertsRes = await page.request.get(`${apiBase}/alerts?limit=2`);
+  await assertApiResponse(alertsRes, `${role} alerts contract`);
+
+  const riskMapRes = await page.request.get(`${apiBase}/risk/map`);
+  await assertApiResponse(riskMapRes, `${role} risk map contract`);
+
+  const forecastRes = await page.request.get(`${apiBase}/forecast?location=Baton%20Rouge`);
+  await assertApiResponse(forecastRes, `${role} forecast contract`);
+
+  const assistantRes = await page.request.post(`${apiBase}/assistant/respond`, {
+    data: {
+      message: 'Show me latest alerts',
+      page_context: 'assistant',
+      user_id: userId,
+      location: 'Baton Rouge',
+    },
+  });
+  await assertApiResponse(assistantRes, `${role} assistant contract`);
+  const assistantJson = await assistantRes.json();
+  if (!assistantJson || typeof assistantJson.reply !== 'string' || assistantJson.reply.length < 1) {
+    throw new Error(`${role} assistant contract returned an invalid reply payload.`);
+  }
+
+  const authMeRes = await page.request.get(`${apiBase}/auth/me`);
+  if (role === 'anonymous') {
+    await assertApiResponse(authMeRes, `${role} auth/me contract`, 401);
+  } else {
+    await assertApiResponse(authMeRes, `${role} auth/me contract`);
+  }
+
+  const feedbackRes = await page.request.post(`${apiBase}/feedback`, {
+    data: {
+      session_id: syntheticSession,
+      message_id: syntheticMessage,
+      reaction: 'thumbs_up',
+      rating: 5,
+      page_context: 'assistant',
+      response_category: 'live',
+      response_text: 'Contract verification message',
+      comment: `contract-${role}`,
+    },
+  });
+  await assertApiResponse(feedbackRes, `${role} feedback contract`);
+
+  const preferencesRes = await page.request.put(`${apiBase}/users/${userId}/preferences`, {
+    data: {
+      assistant_style_profile: {
+        tone: {
+          warmth: 0.6,
+          calmness: 0.8,
+          humor: 0.3,
+        },
+        delivery: {
+          conciseness: 0.7,
+          detail: 0.4,
+          expandability: 0.5,
+        },
+        voice: {
+          formality: 0.4,
+        },
+        learning: {
+          feedback_count: 1,
+          last_feedback_at: new Date().toISOString(),
+        },
+      },
+    },
+  });
+  await assertApiResponse(preferencesRes, `${role} user preference sync contract`);
 }
 
 async function runJourney(options = {}) {
@@ -175,7 +307,26 @@ async function runJourney(options = {}) {
     async () => {
       await stepNavigate(page, { id: 6 }, `${base}/assistant.php`, 'assistant');
 
+      await clearSessionCookie(context);
+      await assertAssistantContracts(page, base, 'anonymous', 2);
+
       const openWidgetButton = page.getByRole('button', { name: 'Open Golby AI Assistant' });
+      await openWidgetButton.waitFor({ timeout: 10000 });
+      await openWidgetButton.click();
+
+      if (await page.getByRole('button', { name: 'Show Panels' }).count()) {
+        throw new Error('Anonymous users should not see the diagnostics panel toggle.');
+      }
+
+      if (options.screenshots) {
+        await screenshotCollector.capture(page, '06a_assistant_anonymous_open', 'Anonymous assistant open state');
+      }
+
+      await clearSessionCookie(context);
+      await setSessionCookie(context, base, 2);
+      await stepNavigate(page, { id: 6 }, `${base}/assistant.php`, 'assistant');
+      await assertAssistantContracts(page, base, 'user', 2);
+
       await openWidgetButton.waitFor({ timeout: 10000 });
       await openWidgetButton.click();
 
@@ -202,12 +353,12 @@ async function runJourney(options = {}) {
       }
 
       if (options.screenshots) {
-        await screenshotCollector.capture(page, '06a_assistant_response', 'Assistant reply rendered after sending a prompt');
+        await screenshotCollector.capture(page, '06b_assistant_response', 'Assistant reply rendered after sending a prompt');
       }
 
       await helpfulFeedbackButtons.first().click();
       if (options.screenshots) {
-        await screenshotCollector.capture(page, '06b_assistant_feedback', 'Assistant feedback interaction complete');
+        await screenshotCollector.capture(page, '06c_assistant_feedback', 'Assistant feedback interaction complete');
       }
 
       await messageInput.fill('Can you give me medical advice?');
@@ -215,7 +366,27 @@ async function runJourney(options = {}) {
       await page.waitForSelector('text=I cannot provide medical advice', { timeout: 15000 });
 
       if (options.screenshots) {
-        await screenshotCollector.capture(page, '06c_assistant_guardrail', 'Assistant guardrail response rendered');
+        await screenshotCollector.capture(page, '06d_assistant_guardrail', 'Assistant guardrail response rendered');
+      }
+
+      if (await page.getByRole('button', { name: 'Show Panels' }).count()) {
+        throw new Error('Authenticated non-admin users should not see diagnostics panel controls.');
+      }
+
+      await clearSessionCookie(context);
+      await setSessionCookie(context, base, 4);
+      await stepNavigate(page, { id: 6 }, `${base}/assistant.php`, 'assistant');
+      await assertAssistantContracts(page, base, 'admin', 4);
+
+      await openWidgetButton.waitFor({ timeout: 10000 });
+      await openWidgetButton.click();
+
+      const diagnosticsToggle = page.getByRole('button', { name: 'Show Panels' });
+      await diagnosticsToggle.waitFor({ timeout: 10000 });
+      await diagnosticsToggle.click();
+
+      if (options.screenshots) {
+        await screenshotCollector.capture(page, '06e_assistant_admin_diagnostics', 'Admin diagnostics panel visibility check');
       }
     },
   );

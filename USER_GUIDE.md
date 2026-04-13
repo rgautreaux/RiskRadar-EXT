@@ -5,7 +5,7 @@ All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.
 
 # RiskRadar Web-Extension User Guide
 
-This guide walks you through how to run and use the RiskRadar Web-Extension, including all features and updates through Stage 5 closeout.
+This guide walks you through how to run and use the RiskRadar Web-Extension, including all features and updates through Stage 5 closeout (2026-04-12).
 
 ## Documentation Navigation Hub
 
@@ -54,8 +54,9 @@ The RiskRadar Web-Extension provides a comprehensive set of features accessible 
 ### Login
 - **URL:** `/login.php`
 - **Features:**
-   - Enter email and ZIP code to attempt login.
-   - **Note:** Backend login endpoint is not yet implemented; the page will display a message explaining this limitation.
+   - Enter email and password to sign in.
+   - Session-based authentication is enabled (HttpOnly cookie-backed login flow).
+   - Use this login before opening admin-only analytics paths.
 
 ### Profile (Preferences)
 - **URL:** `/profile.php`
@@ -96,11 +97,13 @@ The RiskRadar Web-Extension provides a comprehensive set of features accessible 
    - Personalized advice and grouping by risk type, using your profile sensitivities/preferences.
    - Fully integrated with backend for roundtrip updates (when backend is ready).
 
-### Assistant (Stage 4 Scaffold)
+### Assistant (Stage 4)
 - **URL:** `/assistant.php`
 - **Features:**
-   - AI assistant widget scaffold for future natural-language risk Q&A and recommendations.
-   - Chat functionality and backend integration coming in a future release.
+   - Operational Golby assistant widget for natural-language risk Q&A.
+   - Supports live backend responses with local fallback behavior.
+   - Includes safety guardrails for medical/legal/emergency/harmful request classes.
+   - Supports feedback controls that feed communication-style learning pathways.
 
 ---
 
@@ -163,6 +166,18 @@ Open a second terminal in the project root and run:
 
 ```powershell
 php -S 127.0.0.1:8080 -t frontend/web/public
+```
+
+Build assistant frontend assets before using `/assistant.php`:
+
+```powershell
+npm run build:web
+```
+
+Optional watch mode while iterating on assistant UI:
+
+```powershell
+npm run build:web:watch
 ```
 
 Open the app in your browser:

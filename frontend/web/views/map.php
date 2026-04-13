@@ -642,6 +642,11 @@ function riskToOverlayTraces(riskZones) {
 }
 async function fetchMapData(personalized = false) {
     try {
+        if (!MAP_ALERTS_URL || !MAP_RISK_URL) {
+            showMapFallback('Map API configuration is missing. Check frontend API base settings.');
+            return null;
+        }
+
         let riskUrl = MAP_RISK_URL;
         if (personalized) {
             const userId = getCurrentUserId();

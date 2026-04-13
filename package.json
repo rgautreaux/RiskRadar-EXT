@@ -11,7 +11,7 @@
     "demo:verify": "node backend/scripts/run_demo.mjs --verify",
     "demo:info": "node backend/scripts/run_demo.mjs --info",
     "demo:generate-alerts": "node backend/scripts/run_demo.mjs --generate-alerts",
-    "demo:run": "node frontend/web/tests/demo/demo_journey.js",
+    "demo:run": "npm run build:web && node frontend/web/tests/demo/demo_journey.js",
     "demo:report": "node frontend/web/tests/demo/report_generator.js"
   },
   "dependencies": {
