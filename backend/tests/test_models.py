@@ -1,11 +1,16 @@
 """Tests for database models."""
 
-import hashlib
 import json
 import pytest
+from sqlalchemy import inspect
 from sqlalchemy.exc import IntegrityError
 
-from db.models import Alert, Summary, User, ScrapeLog
+from auth.security import decrypt_email, hash_email, password_hash, verify_password
+from db.models import Alert, Summary, SummaryAlertLink, User, UserAlertPreference, ScrapeLog
+from scripts.backfill_summary_alert_links import backfill_summary_alert_links
+from scripts.backfill_user_health_conditions import backfill_user_health_conditions
+from scripts.backfill_user_alert_preferences import backfill_user_alert_preferences
+from scripts.reconcile_summary_alert_links import reconcile_summary_alert_links
 from tests.conftest import NOW
 
 
@@ -74,33 +79,190 @@ class TestSummaryModel:
         db_session.commit()
         assert json.loads(summary.alert_ids) == ids
 
+    def test_generate_summary_creates_junction_rows(self, db_session, sample_alerts):
+        from unittest.mock import patch
+        from llm.summarizer import Summarizer
+
+        with patch.object(Summarizer, "_call_llm", return_value=("## Digest\nBody", 42)):
+            summary = Summarizer().generate_daily_digest(db_session)
+
+        assert summary is not None
+        links = (
+            db_session.query(SummaryAlertLink)
+            .filter(SummaryAlertLink.summary_id == summary.id)
+            .all()
+        )
+        assert len(links) == len(sample_alerts)
+        assert {link.alert_id for link in links} == {alert.id for alert in sample_alerts}
+
+    def test_backfill_creates_missing_junction_rows(self, db_session, sample_alerts):
+        summary = Summary(
+            title="Backfill Me",
+            content="Body",
+            summary_type="daily",
+            alert_ids=json.dumps([sample_alerts[0].id, sample_alerts[1].id]),
+            generated_at=NOW,
+            created_at=NOW,
+        )
+        db_session.add(summary)
+        db_session.commit()
+
+        stats = backfill_summary_alert_links(session=db_session)
+        assert stats["inserted"] == 2
+
+        links = (
+            db_session.query(SummaryAlertLink)
+            .filter(SummaryAlertLink.summary_id == summary.id)
+            .all()
+        )
+        assert {link.alert_id for link in links} == {sample_alerts[0].id, sample_alerts[1].id}
+
+    def test_backfill_skips_missing_alert_ids(self, db_session, sample_alerts):
+        summary = Summary(
+            title="Backfill Missing",
+            content="Body",
+            summary_type="daily",
+            alert_ids=json.dumps([sample_alerts[0].id, 999999]),
+            generated_at=NOW,
+            created_at=NOW,
+        )
+        db_session.add(summary)
+        db_session.commit()
+
+        stats = backfill_summary_alert_links(session=db_session)
+        assert stats["inserted"] == 1
+        assert stats["skipped_missing_alert"] == 1
+
+    def test_reconcile_reports_no_mismatch_when_synced(self, db_session, sample_alerts):
+        summary = Summary(
+            title="Synced",
+            content="Body",
+            summary_type="daily",
+            alert_ids=json.dumps([sample_alerts[0].id]),
+            generated_at=NOW,
+            created_at=NOW,
+        )
+        db_session.add(summary)
+        db_session.commit()
+        db_session.add(SummaryAlertLink(summary_id=summary.id, alert_id=sample_alerts[0].id))
+        db_session.commit()
+
+        report = reconcile_summary_alert_links(session=db_session)
+        assert report["mismatch_count"] == 0
+
+    def test_reconcile_reports_json_only_mismatch(self, db_session, sample_alerts):
+        summary = Summary(
+            title="Drifted",
+            content="Body",
+            summary_type="daily",
+            alert_ids=json.dumps([sample_alerts[1].id]),
+            generated_at=NOW,
+            created_at=NOW,
+        )
+        db_session.add(summary)
+        db_session.commit()
+
+        report = reconcile_summary_alert_links(session=db_session)
+        assert report["mismatch_count"] >= 1
+        first = report["mismatches"][0]
+        assert first["summary_id"] == summary.id
+        assert first["json_only"] == [sample_alerts[1].id]
+
+
+class TestFeedbackModel:
+    def test_feedback_user_fk_exists(self, db_session):
+        foreign_keys = inspect(db_session.bind).get_foreign_keys("feedback")
+        assert any(
+            fk["referred_table"] == "users" and fk["referred_columns"] == ["id"]
+            for fk in foreign_keys
+        )
+
 
 class TestUserModel:
     def test_create_user(self, db_session):
         user = User(
             display_name="Alice", email="alice@test.com",
-            password_hash=hashlib.sha256(b"pass").hexdigest(),
+            password_hash=password_hash("AlicePass123!"),
             created_at=NOW, updated_at=NOW,
         )
         db_session.add(user)
         db_session.commit()
         assert user.id is not None
-        assert user.password_hash != "pass"
+        assert user.password_hash != "AlicePass123!"
+        assert verify_password("AlicePass123!", user.password_hash)
+        assert decrypt_email(user.email) == "alice@test.com"
 
     def test_unique_email_constraint(self, db_session):
         u1 = User(
             display_name="A", email="same@test.com",
-            password_hash="hash1", created_at=NOW, updated_at=NOW,
+            password_hash=password_hash("SamePass123!"), created_at=NOW, updated_at=NOW,
         )
         u2 = User(
             display_name="B", email="same@test.com",
-            password_hash="hash2", created_at=NOW, updated_at=NOW,
+            password_hash=password_hash("SamePass456!"), created_at=NOW, updated_at=NOW,
         )
         db_session.add(u1)
         db_session.commit()
         db_session.add(u2)
         with pytest.raises(IntegrityError):
             db_session.commit()
+
+    def test_email_lookup_hash_populated(self, db_session):
+        user = User(
+            display_name="Hash Test", email="hash@test.com",
+            password_hash=password_hash("HashPass123!"), created_at=NOW, updated_at=NOW,
+        )
+        db_session.add(user)
+        db_session.commit()
+        assert user.email_lookup_hash == hash_email("hash@test.com")
+
+    def test_backfill_user_alert_preferences_from_json(self, db_session):
+        user = User(
+            display_name="Prefs",
+            email="prefs@test.com",
+            password_hash=password_hash("PrefsPass123!"),
+            alert_types=json.dumps(["weather", "wildfire", "weather"]),
+            created_at=NOW,
+            updated_at=NOW,
+        )
+        db_session.add(user)
+        db_session.commit()
+
+        stats = backfill_user_alert_preferences(session=db_session)
+        assert stats["inserted"] == 2
+
+        rows = (
+            db_session.query(UserAlertPreference)
+            .filter(UserAlertPreference.user_id == user.id)
+            .order_by(UserAlertPreference.alert_type.asc())
+            .all()
+        )
+        assert [row.alert_type for row in rows] == ["weather", "wildfire"]
+
+    def test_backfill_user_health_conditions_from_json(self, db_session):
+        from db.models import UserHealthCondition
+
+        user = User(
+            display_name="Health",
+            email="health@test.com",
+            password_hash=password_hash("HealthPass123!"),
+            health_conditions=json.dumps(["respiratory", "cardiovascular", "respiratory"]),
+            created_at=NOW,
+            updated_at=NOW,
+        )
+        db_session.add(user)
+        db_session.commit()
+
+        stats = backfill_user_health_conditions(session=db_session)
+        assert stats["inserted"] == 2
+
+        rows = (
+            db_session.query(UserHealthCondition)
+            .filter(UserHealthCondition.user_id == user.id)
+            .order_by(UserHealthCondition.condition_key.asc())
+            .all()
+        )
+        assert [row.condition_key for row in rows] == ["cardiovascular", "respiratory"]
 
 
 class TestScrapeLogModel:

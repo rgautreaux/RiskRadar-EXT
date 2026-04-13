@@ -1,0 +1,113 @@
+{
+  "startedAt": "2026-04-11T16:53:40.217Z",
+  "baseUrl": "http://127.0.0.1:8080",
+  "headless": false,
+  "screenshots": [
+    {
+      "filename": "demo_01_dashboard.png",
+      "path": "C:\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_01_dashboard.png",
+      "description": "Dashboard Overview",
+      "capturedAt": "2026-04-11T16:53:41.837Z",
+      "url": "http://127.0.0.1:8080/index.php"
+    },
+    {
+      "filename": "demo_02_risk_scoring.png",
+      "path": "C:\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_02_risk_scoring.png",
+      "description": "Personalized Risk Scoring",
+      "capturedAt": "2026-04-11T16:53:42.410Z",
+      "url": "http://127.0.0.1:8080/risk.php?user_id=2&radius_km=50"
+    },
+    {
+      "filename": "demo_03_smart_alerts.png",
+      "path": "C:\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_03_smart_alerts.png",
+      "description": "Smart Alerts Prioritization",
+      "capturedAt": "2026-04-11T16:53:42.955Z",
+      "url": "http://127.0.0.1:8080/smart_alerts.php?user_id=2&radius_km=100&limit=10"
+    },
+    {
+      "filename": "demo_04_map.png",
+      "path": "C:\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_04_map.png",
+      "description": "Interactive Risk Map",
+      "capturedAt": "2026-04-11T16:53:45.645Z",
+      "url": "http://127.0.0.1:8080/map.php"
+    },
+    {
+      "filename": "demo_05_forecast.png",
+      "path": "C:\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_05_forecast.png",
+      "description": "Forecast View",
+      "capturedAt": "2026-04-11T16:53:46.225Z",
+      "url": "http://127.0.0.1:8080/forecast.php"
+    },
+    {
+      "filename": "demo_06_assistant.png",
+      "path": "C:\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_06_assistant.png",
+      "description": "AI Assistant View",
+      "capturedAt": "2026-04-11T16:53:47.785Z",
+      "url": "http://127.0.0.1:8080/assistant.php"
+    }
+  ],
+  "steps": [
+    {
+      "id": 1,
+      "slug": "dashboard",
+      "name": "Dashboard Overview",
+      "status": "passed",
+      "durationMs": 1619,
+      "error": null,
+      "url": "http://127.0.0.1:8080/index.php",
+      "timestamp": "2026-04-11T16:53:41.837Z"
+    },
+    {
+      "id": 2,
+      "slug": "risk_scoring",
+      "name": "Personalized Risk Scoring",
+      "status": "passed",
+      "durationMs": 573,
+      "error": null,
+      "url": "http://127.0.0.1:8080/risk.php?user_id=2&radius_km=50",
+      "timestamp": "2026-04-11T16:53:42.410Z"
+    },
+    {
+      "id": 3,
+      "slug": "smart_alerts",
+      "name": "Smart Alerts Prioritization",
+      "status": "passed",
+      "durationMs": 545,
+      "error": null,
+      "url": "http://127.0.0.1:8080/smart_alerts.php?user_id=2&radius_km=100&limit=10",
+      "timestamp": "2026-04-11T16:53:42.955Z"
+    },
+    {
+      "id": 4,
+      "slug": "map",
+      "name": "Interactive Risk Map",
+      "status": "passed",
+      "durationMs": 2690,
+      "error": null,
+      "url": "http://127.0.0.1:8080/map.php",
+      "timestamp": "2026-04-11T16:53:45.645Z"
+    },
+    {
+      "id": 5,
+      "slug": "forecast",
+      "name": "Forecast View",
+      "status": "passed",
+      "durationMs": 580,
+      "error": null,
+      "url": "http://127.0.0.1:8080/forecast.php",
+      "timestamp": "2026-04-11T16:53:46.225Z"
+    },
+    {
+      "id": 6,
+      "slug": "assistant",
+      "name": "AI Assistant View",
+      "status": "passed",
+      "durationMs": 1560,
+      "error": null,
+      "url": "http://127.0.0.1:8080/assistant.php",
+      "timestamp": "2026-04-11T16:53:47.785Z"
+    }
+  ],
+  "finishedAt": "2026-04-11T16:53:47.786Z",
+  "overallStatus": "passed"
+}

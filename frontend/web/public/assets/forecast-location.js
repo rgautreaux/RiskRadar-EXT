@@ -1,254 +1,273 @@
-// Optionally set this if user is logged in
-let CURRENT_USER_ID = null; // e.g., set by server-side template or login logic
-// forecast-location.js
-// Handles geolocation and manual location input for forecast UI
+let CURRENT_USER_ID = null;
 
-document.addEventListener('DOMContentLoaded', function() {
+const forecastState = {
+    currentRequestId: 0,
+};
+
+document.addEventListener('DOMContentLoaded', () => {
     const locationForm = document.getElementById('forecast-location-form');
     const locationInput = document.getElementById('forecast-location-input');
     const useMyLocationBtn = document.getElementById('use-my-location-btn');
-    const forecastStatus = document.getElementById('forecast-location-status');
+    const status = document.getElementById('forecast-location-status');
 
-    // Try to get user's location on load
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            fetchForecastByCoords(position.coords.latitude, position.coords.longitude);
-        }, function() {
-            forecastStatus.textContent = 'Location permission denied. Enter a location.';
-        });
-    } else {
-        forecastStatus.textContent = 'Geolocation not supported. Enter a location.';
-    }
-
-    // Manual location form submit
-    if (locationForm) {
-        locationForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+    if (locationForm && locationInput) {
+        locationForm.addEventListener('submit', event => {
+            event.preventDefault();
             const value = locationInput.value.trim();
-            if (value.length === 0) return;
-            fetchForecastByLocation(value);
-        });
-    }
-
-    // Use my location button
-    if (useMyLocationBtn) {
-        useMyLocationBtn.addEventListener('click', function() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    fetchForecastByCoords(position.coords.latitude, position.coords.longitude);
-                }, function() {
-                    forecastStatus.textContent = 'Location permission denied.';
-                });
+            if (value) {
+                loadForecastForLocation(value);
             }
         });
+    }
+
+    if (useMyLocationBtn) {
+        useMyLocationBtn.addEventListener('click', () => {
+            if (!navigator.geolocation) {
+                if (status) {
+                    status.textContent = 'Geolocation is not supported in this browser.';
+                }
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                position => loadForecastForCoordinates(position.coords.latitude, position.coords.longitude),
+                () => {
+                    if (status) {
+                        status.textContent = 'Location permission denied. Enter a location manually.';
+                    }
+                },
+            );
+        });
+    }
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            position => loadForecastForCoordinates(position.coords.latitude, position.coords.longitude),
+            () => {
+                if (status) {
+                    status.textContent = 'Enter a ZIP code or city/state to load a forecast.';
+                }
+            },
+        );
+    } else if (status) {
+        status.textContent = 'Enter a ZIP code or city/state to load a forecast.';
     }
 });
 
-function fetchForecastByCoords(lat, lon) {
-    const statusDiv = document.getElementById('forecast-location-status');
-    statusDiv.textContent = `Loading forecast for your location (${lat.toFixed(2)}, ${lon.toFixed(2)})...`;
-    let url = `/api/v1/forecast?lat=${lat}&lon=${lon}`;
-    if (CURRENT_USER_ID) {
-        url = `/api/v1/forecast/personalized/${CURRENT_USER_ID}?lat=${lat}&lon=${lon}`;
-    }
-    fetch(url)
-        .then(res => res.json())
-        .then(data => renderForecast(data, `Your Location (${lat.toFixed(2)}, ${lon.toFixed(2)})`, !!CURRENT_USER_ID))
-        .catch(() => {
-            statusDiv.textContent = 'Failed to load forecast.';
-        });
-}
-function fetchForecastByLocation(location) {
-    const statusDiv = document.getElementById('forecast-location-status');
-    statusDiv.textContent = `Loading forecast for ${location}...`;
-    let url = `/api/v1/forecast?location=${encodeURIComponent(location)}`;
-    if (CURRENT_USER_ID) {
-        url = `/api/v1/forecast/personalized/${CURRENT_USER_ID}?location=${encodeURIComponent(location)}`;
-    }
-    fetch(url)
-        .then(res => res.json())
-        .then(data => renderForecast(data, location, !!CURRENT_USER_ID))
-        .catch(() => {
-            statusDiv.textContent = 'Failed to load forecast.';
-        });
+function buildForecastUrl(params) {
+    const base = CURRENT_USER_ID ? `/api/v1/forecast/personalized/${CURRENT_USER_ID}` : '/api/v1/forecast';
+    const url = new URL(base, window.location.origin);
+    Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+            url.searchParams.set(key, String(value));
+        }
+    });
+    return url.toString();
 }
 
-
-function renderForecast(data, locationLabel, isPersonalized) {
-    const statusDiv = document.getElementById('forecast-location-status');
-    const timelineDivId = 'forecast-timeline';
-    let timelineDiv = document.getElementById(timelineDivId);
-    if (!timelineDiv) {
-        timelineDiv = document.createElement('div');
-        timelineDiv.id = timelineDivId;
-        statusDiv.parentNode.insertBefore(timelineDiv, statusDiv.nextSibling);
+async function loadForecastForCoordinates(lat, lon) {
+    const status = document.getElementById('forecast-location-status');
+    if (status) {
+        status.textContent = `Loading forecast for your location (${lat.toFixed(2)}, ${lon.toFixed(2)})...`;
     }
-    if (!data || !data.risk_zones || data.risk_zones.length === 0) {
-        statusDiv.textContent = `No forecast data available for ${locationLabel}.`;
-        timelineDiv.innerHTML = '';
+
+    const requestId = ++forecastState.currentRequestId;
+    try {
+        const response = await fetch(buildForecastUrl({ lat, lon }));
+        if (!response.ok) {
+            throw new Error('Failed to fetch forecast');
+        }
+
+        const data = await response.json();
+        if (requestId === forecastState.currentRequestId) {
+            renderForecast(data, `Your location (${lat.toFixed(2)}, ${lon.toFixed(2)})`);
+        }
+    } catch (_error) {
+        if (status) {
+            status.textContent = 'Failed to load forecast for your location.';
+        }
+    }
+}
+
+async function loadForecastForLocation(location) {
+    const status = document.getElementById('forecast-location-status');
+    if (status) {
+        status.textContent = `Loading forecast for ${location}...`;
+    }
+
+    const requestId = ++forecastState.currentRequestId;
+    try {
+        const response = await fetch(buildForecastUrl({ location }));
+        if (!response.ok) {
+            throw new Error('Failed to fetch forecast');
+        }
+
+        const data = await response.json();
+        if (requestId === forecastState.currentRequestId) {
+            renderForecast(data, location);
+        }
+    } catch (_error) {
+        if (status) {
+            status.textContent = 'Failed to load forecast.';
+        }
+    }
+}
+
+function renderForecast(data, locationLabel) {
+    const status = document.getElementById('forecast-location-status');
+    const results = document.getElementById('forecast-results');
+
+    if (!results || !status) {
         return;
     }
-    // Summarize risk levels and group by type
-    const riskCounts = { high: 0, moderate: 0, low: 0 };
-    const riskTypes = {};
-    data.risk_zones.forEach(z => {
-        if (z.risk_level in riskCounts) riskCounts[z.risk_level]++;
-        // Group by alert_type if available (backend should provide for best results)
-        const type = z.alert_type || z.type || 'Other';
-        if (!riskTypes[type]) riskTypes[type] = { high: 0, moderate: 0, low: 0 };
-        if (z.risk_level in riskTypes[type]) riskTypes[type][z.risk_level]++;
-    });
-    statusDiv.innerHTML = `${isPersonalized ? '<span style="color:var(--primary);font-weight:600">Personalized for you</span><br>' : ''}Forecast for <b>${locationLabel}</b>:<br>
-        High risk: <b>${riskCounts.high}</b> | Moderate: <b>${riskCounts.moderate}</b> | Low: <b>${riskCounts.low}</b><br>
-        <span style='font-size:0.95em;color:var(--muted-foreground)'>Updated: ${data.generated_at}</span>`;
 
-    // Timeline SVG: grouped by risk type
-    let svg = `<svg width="100%" height="${Object.keys(riskTypes).length * 60 + 40}" viewBox="0 0 560 ${Object.keys(riskTypes).length * 60 + 40}" style="background: var(--accent); border-radius: 8px; margin-top: 1rem;">
-        <text x="20" y="30" font-size="14" fill="var(--primary)">Risk by Type</text>`;
-    const barWidth = 50, gap = 20, baseY = 50, maxBar = 50;
-    const levels = ['high', 'moderate', 'low'];
-    let row = 0;
-    Object.entries(riskTypes).forEach(([type, counts]) => {
-        const y = baseY + row * 60;
-        svg += `<text x="20" y="${y + 25}" font-size="13" fill="var(--primary)">${type.charAt(0).toUpperCase() + type.slice(1)}</text>`;
-        levels.forEach((level, i) => {
-            const count = counts[level];
-            const barHeight = Math.min(maxBar, count * 10);
-            const color = level === 'high' ? '#e63946' : (level === 'moderate' ? '#f4a261' : '#43aa8b');
-            svg += `<rect x="${150 + i * (barWidth + gap)}" y="${y + 40 - barHeight}" width="${barWidth}" height="${barHeight}" fill="${color}" rx="6" />`;
-            svg += `<text x="${150 + i * (barWidth + gap) + barWidth/2}" y="${y + 60}" font-size="12" fill="var(--muted-foreground)" text-anchor="middle">${level.charAt(0).toUpperCase() + level.slice(1)}</text>`;
-            svg += `<text x="${150 + i * (barWidth + gap) + barWidth/2}" y="${y + 35 - barHeight}" font-size="12" fill="${color}" text-anchor="middle">${count}</text>`;
-        });
-        row++;
-    });
-    svg += '</svg>';
-    timelineDiv.innerHTML = svg;
-
-
-    // Travel advice (risk-type and severity specific)
-    const adviceTemplates = {
-        weather: {
-            high: {
-                icon: '🌩️',
-                text: 'Severe weather expected. Pack rain gear, waterproof shoes, and check for local warnings. Delay travel if possible.'
-            },
-            moderate: {
-                icon: '🌦️',
-                text: 'Weather may be unsettled. Bring a light jacket or umbrella.'
-            },
-            low: {
-                icon: '☀️',
-                text: 'Weather is favorable. Standard travel preparations are sufficient.'
-            }
-        },
-        fire: {
-            high: {
-                icon: '🔥',
-                text: 'Wildfire risk is high. Pack N95 masks, check evacuation routes, and monitor local alerts.'
-            },
-            moderate: {
-                icon: '🔥',
-                text: 'Fire risk present. Avoid outdoor burning and stay alert.'
-            },
-            low: {
-                icon: '🔥',
-                text: 'Fire risk is low. No special precautions needed.'
-            }
-        },
-        flood: {
-            high: {
-                icon: '🌊',
-                text: 'Flooding possible. Avoid low-lying areas, pack waterproof bags, and check evacuation plans.'
-            },
-            moderate: {
-                icon: '🌊',
-                text: 'Flood risk moderate. Monitor weather and avoid risky routes.'
-            },
-            low: {
-                icon: '🌊',
-                text: 'Flood risk is low.'
-            }
-        },
-        'air quality': {
-            high: {
-                icon: '😷',
-                text: 'Air quality is poor. Limit outdoor activity, wear a mask, and keep windows closed.'
-            },
-            moderate: {
-                icon: '😷',
-                text: 'Air quality is moderate. Sensitive groups should take precautions.'
-            },
-            low: {
-                icon: '😷',
-                text: 'Air quality is good.'
-            }
-        },
-        pollen: {
-            high: {
-                icon: '🌾',
-                text: 'High pollen count. Take allergy medication and limit outdoor exposure.'
-            },
-            moderate: {
-                icon: '🌾',
-                text: 'Moderate pollen. Sensitive individuals should prepare.'
-            },
-            low: {
-                icon: '🌾',
-                text: 'Low pollen count.'
-            }
-        },
-        earthquake: {
-            high: {
-                icon: '🌎',
-                text: 'Earthquake risk is elevated. Review emergency plans and secure loose items.'
-            },
-            moderate: {
-                icon: '🌎',
-                text: 'Some seismic activity possible. Stay alert.'
-            },
-            low: {
-                icon: '🌎',
-                text: 'Earthquake risk is low.'
-            }
-        },
-        Other: {
-            high: { icon: '⚠️', text: 'High risk detected. Take extra precautions.' },
-            moderate: { icon: '🛈', text: 'Moderate risk. Prepare for possible disruptions.' },
-            low: { icon: '✅', text: 'Low risk. Standard preparations are sufficient.' }
-        }
-    };
-
-    let adviceHtml = '<div style="margin-top:1rem;font-size:1.05em;color:var(--primary)"><b>Travel Advice:</b><ul style="margin:0;padding-left:1.2em;">';
-    Object.entries(riskTypes).forEach(([type, counts]) => {
-        let sev = 'low';
-        if (counts.high > 0) sev = 'high';
-        else if (counts.moderate > 0) sev = 'moderate';
-        const tpl = (adviceTemplates[type.toLowerCase()] || adviceTemplates.Other)[sev];
-        adviceHtml += `<li>${tpl.icon} <b>${type.charAt(0).toUpperCase() + type.slice(1)}</b>: ${tpl.text}`;
-        // Example checklist for high risk
-        if (sev === 'high') {
-            adviceHtml += '<ul style="margin:0.3em 0 0.5em 1.2em;font-size:0.97em;">';
-            if (type.toLowerCase() === 'fire') adviceHtml += '<li>Pack N95 mask</li><li>Check evacuation routes</li><li>Monitor local alerts</li>';
-            if (type.toLowerCase() === 'weather') adviceHtml += '<li>Pack rain gear</li><li>Delay travel if possible</li>';
-            if (type.toLowerCase() === 'flood') adviceHtml += '<li>Avoid low-lying areas</li><li>Pack waterproof bags</li>';
-            if (type.toLowerCase() === 'air quality') adviceHtml += '<li>Wear a mask</li><li>Limit outdoor activity</li>';
-            if (type.toLowerCase() === 'pollen') adviceHtml += '<li>Take allergy medication</li>';
-            if (type.toLowerCase() === 'earthquake') adviceHtml += '<li>Review emergency plans</li><li>Secure loose items</li>';
-            adviceHtml += '</ul>';
-        }
-        adviceHtml += '</li>';
-    });
-    adviceHtml += '</ul></div>';
-    timelineDiv.innerHTML += adviceHtml;
-}
-    // Travel advice (simple rules based on risk)
-    let advice = '';
-    if (riskCounts.high > 0) {
-        advice += '⚠️ <b>High risk detected.</b> Consider postponing travel or taking extra precautions. Pack emergency supplies, weather-appropriate clothing, and stay updated on alerts.';
-    } else if (riskCounts.moderate > 0) {
-        advice += '🛈 <b>Moderate risk.</b> Prepare for possible disruptions. Bring rain gear, masks (for air quality), and check local advisories.';
-    } else {
-        advice += '✅ <b>Low risk.</b> Conditions are generally safe. Pack as usual, but check for updates before travel.';
+    if (!data) {
+        status.textContent = `No forecast data available for ${locationLabel}.`;
+        results.innerHTML = '';
+        return;
     }
-    timelineDiv.innerHTML += `<div style="margin-top:1rem;font-size:1.05em;color:var(--primary)">${advice}</div>`;
+
+    const points = Array.isArray(data.forecast_points) ? data.forecast_points : [];
+    const zones = Array.isArray(data.risk_zones) ? data.risk_zones : [];
+
+    if (points.length === 0 && zones.length === 0) {
+        status.textContent = `No forecast data available for ${locationLabel}.`;
+        results.innerHTML = '';
+        return;
+    }
+
+    status.innerHTML = [
+        `<strong>${escapeHtml(data.personalized ? 'Personalized forecast' : 'Forecast')}</strong> for ${escapeHtml(locationLabel)}`,
+        data.summary ? `<div style="margin-top:0.35rem;">${escapeHtml(data.summary)}</div>` : '',
+        `<div style="margin-top:0.35rem; font-size:0.95rem; color: var(--muted-foreground);">Updated: ${escapeHtml(data.generated_at || '')}</div>`,
+    ].join('');
+
+    const confidence = typeof data.confidence === 'number' ? `${Math.round(data.confidence * 100)}%` : 'N/A';
+    const trend = data.trend ? data.trend.charAt(0).toUpperCase() + data.trend.slice(1) : 'Steady';
+    const forecastHours = data.forecast_hours || 48;
+
+    const cards = [
+        { label: 'Confidence', value: confidence },
+        { label: 'Trend', value: trend },
+        { label: 'Window', value: `${forecastHours}h` },
+        { label: 'Baseline risk', value: typeof data.baseline_risk_score === 'number' ? `${data.baseline_risk_score.toFixed(1)}` : 'N/A' },
+    ];
+
+    const cardMarkup = cards.map(card => `
+        <article class="panel" style="padding: 1rem; border: 1px solid var(--border); border-radius: 14px; background: var(--card);">
+            <div style="font-size: 0.85rem; color: var(--muted-foreground);">${escapeHtml(card.label)}</div>
+            <div style="font-size: 1.35rem; font-weight: 700; color: var(--primary); margin-top: 0.25rem;">${escapeHtml(card.value)}</div>
+        </article>
+    `).join('');
+
+    const chartMarkup = points.length > 0 ? renderTimeline(points) : renderZoneFallback(zones);
+    const pointListMarkup = points.length > 0 ? renderPointList(points) : '';
+
+    results.innerHTML = `
+        <div class="forecast-summary-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem; margin-top: 1rem;">
+            ${cardMarkup}
+        </div>
+        <div style="margin-top: 1rem;">${chartMarkup}</div>
+        ${pointListMarkup}
+    `;
+}
+
+function renderTimeline(points) {
+    const maxScore = Math.max(100, ...points.map(point => point.risk_score || 0));
+    const minScore = Math.min(0, ...points.map(point => point.risk_score || 0));
+    const width = 620;
+    const height = 240;
+    const leftPad = 48;
+    const bottomPad = 38;
+    const topPad = 24;
+    const usableWidth = width - leftPad - 22;
+    const usableHeight = height - topPad - bottomPad;
+
+    const xStep = points.length > 1 ? usableWidth / (points.length - 1) : usableWidth;
+    const coords = points.map((point, index) => {
+        const x = leftPad + index * xStep;
+        const normalized = (point.risk_score - minScore) / Math.max(maxScore - minScore, 1);
+        const y = topPad + usableHeight - normalized * usableHeight;
+        return { x, y, point };
+    });
+
+    const line = coords.map(coord => `${coord.x},${coord.y}`).join(' ');
+    const area = [`${coords[0].x},${topPad + usableHeight}`, ...coords.map(coord => `${coord.x},${coord.y}`), `${coords[coords.length - 1].x},${topPad + usableHeight}`].join(' ');
+
+    const labels = points.map((point, index) => {
+        const x = leftPad + index * xStep;
+        const label = point.hour_offset === 0 ? 'Now' : `+${point.hour_offset}h`;
+        return `<text x="${x}" y="${height - 10}" text-anchor="middle" font-size="11" fill="var(--muted-foreground)">${escapeHtml(label)}</text>`;
+    }).join('');
+
+    const markers = coords.map(coord => {
+        const color = coord.point.risk_level === 'high' ? '#d64545' : coord.point.risk_level === 'moderate' ? '#f4a261' : '#4caf7a';
+        return `<circle cx="${coord.x}" cy="${coord.y}" r="5.5" fill="${color}" />`;
+    }).join('');
+
+    return `
+        <section class="panel" style="padding: 1rem; background: var(--accent); border: 1px solid var(--border); border-radius: 16px;">
+            <div style="font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">Forecast Timeline</div>
+            <svg width="100%" viewBox="0 0 ${width} ${height}" role="img" aria-label="Forecast timeline chart">
+                <line x1="${leftPad}" y1="${topPad + usableHeight}" x2="${width - 16}" y2="${topPad + usableHeight}" stroke="var(--muted)" stroke-width="1.5" />
+                <line x1="${leftPad}" y1="${topPad}" x2="${leftPad}" y2="${topPad + usableHeight}" stroke="var(--muted)" stroke-width="1.5" />
+                <polygon points="${area}" fill="var(--chart-1)" fill-opacity="0.18"></polygon>
+                <polyline points="${line}" fill="none" stroke="var(--primary)" stroke-width="3"></polyline>
+                ${markers}
+                <text x="10" y="${topPad + 10}" font-size="11" fill="var(--muted-foreground)">${escapeHtml(String(maxScore.toFixed(0)))}</text>
+                <text x="10" y="${topPad + usableHeight}" font-size="11" fill="var(--muted-foreground)">${escapeHtml(String(minScore.toFixed(0)))}</text>
+                ${labels}
+            </svg>
+        </section>
+    `;
+}
+
+function renderZoneFallback(zones) {
+    const counts = zones.reduce(
+        (acc, zone) => {
+            const level = zone.risk_level || 'low';
+            if (acc[level] !== undefined) {
+                acc[level] += 1;
+            }
+            return acc;
+        },
+        { high: 0, moderate: 0, low: 0 },
+    );
+
+    return `
+        <section class="panel" style="padding: 1rem; border: 1px solid var(--border); border-radius: 16px; background: var(--accent);">
+            <div style="font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">Regional Risk Breakdown</div>
+            <p style="margin: 0; color: var(--muted-foreground);">No forecast timeline points were returned, so the current active alerts are summarized instead.</p>
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.75rem;">
+                <span class="badge">High: ${counts.high}</span>
+                <span class="badge">Moderate: ${counts.moderate}</span>
+                <span class="badge">Low: ${counts.low}</span>
+            </div>
+        </section>
+    `;
+}
+
+function renderPointList(points) {
+    const items = points.map(point => `
+        <li style="display: flex; justify-content: space-between; gap: 1rem; padding: 0.65rem 0; border-bottom: 1px solid var(--border);">
+            <span><strong>+${point.hour_offset}h</strong>${point.dominant_type ? ` - ${escapeHtml(point.dominant_type.replace(/_/g, ' '))}` : ''}</span>
+            <span>${escapeHtml(point.risk_level)} risk, ${escapeHtml(point.risk_score.toFixed(1))}/100, ${escapeHtml(Math.round(point.confidence * 100).toString())}% confidence</span>
+        </li>
+    `).join('');
+
+    return `
+        <section class="panel" style="margin-top: 1rem; padding: 1rem; border: 1px solid var(--border); border-radius: 16px; background: var(--card);">
+            <div style="font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">Forecast Points</div>
+            <ul style="list-style: none; padding: 0; margin: 0;">${items}</ul>
+        </section>
+    `;
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 }

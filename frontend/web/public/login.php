@@ -19,8 +19,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     [$loginForm, $loginErrors] = rr_validate_login($_POST);
 
     if (!$loginErrors) {
-        // Backend login endpoint is not yet implemented in Stage 1.
-        $loginErrors['_form'] = 'Login is not yet supported by the backend in Stage 1. Register a new account or use the Profile page to manage preferences.';
+        $loginResult = rr_login_user($config, [
+            'email' => $loginForm['email'],
+            'password' => (string) ($_POST['password'] ?? ''),
+        ]);
+
+        if ($loginResult['ok']) {
+            $sessionToken = $loginResult['data']['session_token'] ?? '';
+            $expiresAt = strtotime((string) ($loginResult['data']['expires_at'] ?? '')) ?: time() + 3600;
+            if ($sessionToken !== '') {
+                rr_set_session_cookie($sessionToken, $expiresAt);
+                rr_set_flash('success', 'Signed in successfully.');
+                header('Location: assistant.php');
+                exit;
+            }
+
+            $loginErrors['_form'] = 'Login succeeded but no session token was returned.';
+        } else {
+            $loginErrors['_form'] = $loginResult['message'] ?? 'Login failed. Please try again.';
+        }
     }
 
 }

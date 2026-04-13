@@ -15,6 +15,11 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60  # token lifetime in minutes
 
+    # User data protection
+    EMAIL_ENCRYPTION_KEY: str = ""
+    EMAIL_HASH_SECRET: str = ""
+    PASSWORD_MIN_LENGTH: int = 12
+
     # API Keys
     AIRNOW_API_KEY: str = ""
     OpenAQ_API_KEY: str = ""
@@ -36,6 +41,9 @@ class Settings(BaseSettings):
     SCRAPE_INTERVAL_MINUTES: int = 30
     NWS_USER_AGENT: str = "RiskRadar/1.0 (school-project)"
     SOURCES_CONFIG_PATH: str = str(BASE_DIR / "config" / "sources.yaml")
+
+    # CORS
+    CORS_ALLOWED_ORIGINS: str = "http://127.0.0.1:8080,http://localhost:8080,http://127.0.0.1:8000,http://localhost:8000"
 
     model_config = SettingsConfigDict(
         env_file=str(BASE_DIR.parent / ".env"),

@@ -1,4 +1,11 @@
 
+## Stage 5 Documentation Sync Note (2026-04-11)
+
+- Top-level documentation synchronization has been extended through the Stage 5 closeout/handoff sessions.
+- Remaining open deliverable is manual-only S3-06 evidence capture/final filing, assigned to Max.
+- Automated closeout gate remains: `npm run verify:evidence:s3`.
+- Remaining frontend visual-refresh closeout tasks (manual browser QA, accessibility spot-check, and signoff note) are assigned to Max.
+
 # Stage 4: AI Assistant Widget Integration & Documentation Sync Session (2026-03-31)
 
 ## Implementation

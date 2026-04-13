@@ -37,3 +37,25 @@ function rr_get_flash(): ?array
 
     return $flash;
 }
+
+function rr_set_session_cookie(string $token, int $expiresAt): void
+{
+    setcookie('riskradar_session', $token, [
+        'expires' => $expiresAt,
+        'path' => '/',
+        'httponly' => true,
+        'samesite' => 'Lax',
+        'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+    ]);
+}
+
+function rr_clear_session_cookie(): void
+{
+    setcookie('riskradar_session', '', [
+        'expires' => time() - 3600,
+        'path' => '/',
+        'httponly' => true,
+        'samesite' => 'Lax',
+        'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+    ]);
+}

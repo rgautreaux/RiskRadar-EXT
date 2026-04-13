@@ -98,10 +98,10 @@ It started as the CMPS 357 Stage 1 web extension and now includes:
 
 - `public/map.php` (Stage 3 scaffold)
 	- Placeholder for interactive map/layer workflow.
-- `public/forecast.php` (Stage 4 scaffold)
-	- Placeholder for 24-48 hour forecast timeline and confidence visuals.
-- `public/assistant.php` (Stage 4 scaffold)
-	- Placeholder for natural-language risk assistant flow.
+- `public/forecast.php` (Stage 4 live integration)
+	- Live 24-48 hour forecast output with confidence/trend summary cards and timeline rendering.
+- `public/assistant.php` (Stage 4 assistant integration)
+	- Golby assistant interface with context-aware answers and safety guardrail fallbacks.
 
 ### Error and Fallback Pages
 
@@ -212,7 +212,7 @@ If backend port `8000` is unavailable, set `RISKRADAR_API_BASE_URL` (for example
 - Stage 1 web-app extension requirements: implemented and integrated.
 - Stage 2 kickoff web integration: implemented for risk and prioritization read paths.
 - Stage 3 interactive map: backend endpoints, API client, and frontend scaffold complete; dynamic Plotly rendering, overlays, and accessibility features in progress (see below).
-- Stage 4 forecast + assistant: scaffolded pages and UX placeholders.
+- Stage 4 forecast + assistant: forecast backend/live timeline and assistant backend prompt/data integration are implemented and verified.
 
 ## Related Docs
 
@@ -238,12 +238,12 @@ If backend port `8000` is unavailable, set `RISKRADAR_API_BASE_URL` (for example
 - [ ] Update documentation and add screenshots/evidence
 
 ### Manual Verification Checklist
-- [ ] Map loads with overlays and toggles work
-- [ ] Personalized risk overlay is accessible and visually distinct
-- [ ] All controls are keyboard accessible and ARIA-labeled
-- [ ] Error/fallback states are user-friendly
-- [ ] Documentation and user guide are updated
-- [ ] Screenshots and recordings are collected for grading
+- [ ] Map loads with overlays and toggles work. Assigned: Max
+- [ ] Personalized risk overlay is accessible and visually distinct. Assigned: Max
+- [ ] All controls are keyboard accessible and ARIA-labeled. Assigned: Max
+- [ ] Error/fallback states are user-friendly. Assigned: Max
+- [ ] Documentation and user guide are updated with validation/signoff outcome. Assigned: Max
+- [ ] Screenshots and recordings are collected for grading. Assigned: Max
 
 ### How to Use the Map Feature
 1. Start backend and PHP server as usual (see above)

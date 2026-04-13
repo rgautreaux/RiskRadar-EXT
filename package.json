@@ -1,4 +1,17 @@
 {
+  "scripts": {
+    "verify:backend": "node backend/scripts/run_full_verification.mjs",
+    "verify:evidence:s3": "node backend/scripts/verify_stage3_evidence.mjs",
+    "demo:setup": "node backend/scripts/run_demo.mjs --mode fresh",
+    "demo:seed": "node backend/scripts/run_demo.mjs --mode seed",
+    "demo:reset": "node backend/scripts/run_demo.mjs --mode reset",
+    "demo:clean": "node backend/scripts/run_demo.mjs --clean",
+    "demo:verify": "node backend/scripts/run_demo.mjs --verify",
+    "demo:info": "node backend/scripts/run_demo.mjs --info",
+    "demo:generate-alerts": "node backend/scripts/run_demo.mjs --generate-alerts",
+    "demo:run": "node frontend/web/tests/demo/demo_journey.js",
+    "demo:report": "node frontend/web/tests/demo/report_generator.js"
+  },
   "dependencies": {
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
@@ -6,5 +19,8 @@
     "lucide-react": "^1.7.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "playwright": "^1.54.2"
   }
 }

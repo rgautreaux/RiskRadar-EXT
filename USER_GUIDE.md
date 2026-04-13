@@ -1,11 +1,11 @@
 # Documentation Synchronization Note
 
-All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) has been reviewed and updated for consistency and agreement as of the Stage 3 documentation and synchronization session. This ensures grading clarity, onboarding readiness, and a single source of truth for project status and history.
+All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) has been reviewed and updated for consistency and agreement through the Stage 5 closeout/handoff sessions (2026-04-11). This ensures grading clarity, onboarding readiness, and a single source of truth for project status and history.
 
 
 # RiskRadar Web-Extension User Guide
 
-This guide walks you through how to run and use the RiskRadar Web-Extension, including all features and updates through Stage 4.
+This guide walks you through how to run and use the RiskRadar Web-Extension, including all features and updates through Stage 5 closeout.
 
 ## Documentation Navigation Hub
 
@@ -340,6 +340,103 @@ For a full first run:
 6. Explore Alerts and Summaries (`/alerts.php`, `/summaries.php`)
 7. View your Risk Score and Smart Alerts (`/risk.php`, `/smart_alerts.php`) using your user ID
 8. Explore the Interactive Map (`/map.php`) with live overlays and personalized risk layers
+
+You are now ready to use and demonstrate the current RiskRadar Web-Extension features.
+
+---
+
+## For Graders & Evaluators
+
+### Running the Formal Demo
+
+RiskRadar includes a comprehensive, reproducible demo designed for academic evaluation. The demo showcases all features across Stages 1–4 with pre-populated data and detailed documentation.
+
+**Quick Start:**
+```bash
+# Setup: 1 minute
+npm run demo:setup
+npm run demo:verify
+
+# Demo Flow: ~12–15 minutes (see DEMO_RUNBOOK.md)
+# Navigate through 6 steps covering all stages
+```
+
+**Documentation for Graders:**
+- [**DEMO_RUNBOOK.md**](./docs/DEMO_RUNBOOK.md) — Complete 12–15 minute walkthrough script with presenter notes, timings, and Q&A reference
+- [**DEMO_FEATURES_BY_STAGE.md**](./docs/DEMO_FEATURES_BY_STAGE.md) — Feature-to-code mapping; directly links demonstrated features to implementation files and stage requirements
+- [**DEMO_ONBOARDING.md**](./docs/DEMO_ONBOARDING.md) — How to customize or extend the demo for additional test scenarios
+
+### Demo Features Checklist
+
+**Stage 1: Web-App Extension**
+- ✅ Unique PHP web frontend (distinct from mobile)
+- ✅ Backend API connectivity (all core endpoints)
+- ✅ Alerts feed with filtering
+- ✅ Summaries archive
+- ✅ User registration & profile
+
+**Stage 2: Risk Assessment & Prioritization**
+- ✅ Personalized risk scoring (0–100)
+- ✅ Risk factor breakdown (air quality, weather, wildfire, pollution, health sensitivity)
+- ✅ Smart alert prioritization (composite scoring)
+- ✅ Health sensitivities user profile (0–5 scale)
+- ✅ Email encryption at rest
+
+**Stage 3: Data Visualization & UX**
+- ✅ Interactive geospatial risk map (pan, zoom, click)
+- ✅ Multiple overlay types (alerts, risk zones, AQI, wildfire, earthquakes, pollution)
+- ✅ Personalized map overlays (user-specific risk highlighting)
+- ✅ Responsive design (360px, 768px, 1280px viewports)
+- ✅ Accessibility (keyboard navigation, screen reader support)
+
+**Stage 4: Predictive Analytics & AI**
+- ✅ 24–48 hour risk forecast with confidence bands
+- ✅ Personalized forecast advice (sensitivity-aware recommendations)
+- ✅ Forecast grouping by risk type
+- ✅ AI Assistant widget (Golby) with context awareness
+- ✅ Guardrails & safety layer (reject/reframe dangerous queries)
+
+### Quick Verification
+
+To verify all features are functional:
+
+```bash
+# Backend verification (full test suite)
+npm run verify:backend
+
+# Demo database verification
+npm run demo:verify
+
+# Frontend navigation (manual)
+# Navigate to: http://localhost:8000/index.php → /risk.php → /map.php → /forecast.php
+```
+
+### Common Grading Questions
+
+**Q: How do I verify Stage 2 personalization?**
+A: Navigate to `/risk.php` with User 2 vs. User 1 (same location). User 2 has asthma/allergies, so air quality alerts contribute more to their score. Compare the output.
+
+**Q: How do I test the map accessibility?**
+A: Go to `/map.php`. Press Tab to navigate overlays. Press Enter to toggle. Open browser console (F12) with a screen reader (NVDA, JAWS) to verify labels and button purposes.
+
+**Q: Are the fetched data real or mock?**
+A: Mock. Demo uses fixtures for reproducibility and determinism during grading. With `--live` flag, the system fetches real environmental data from EPA, NWS, NASA APIs (production mode).
+
+**Q: What's the current authentication status?**
+A: Session-based auth is implemented. Users log in via `/login.php`; backend issues cryptographically-signed session tokens stored in HttpOnly cookies. Admin endpoints require admin role.
+
+### For Technical Review
+
+Implementation highlights:
+- **Risk Scoring**: [backend/services/risk_scoring.py](../backend/services/risk_scoring.py) — Weighted formula combining 5 factors
+- **Alert Prioritization**: [backend/services/alert_prioritization.py](../backend/services/alert_prioritization.py) — Composite priority scoring with distance decay
+- **Map Integration**: [frontend/web/risk_map.js](../frontend/web/risk_map.js) — Plotly.js geospatial layers
+- **Security**: [backend/auth/security.py](../backend/auth/security.py) — Email encryption, password hashing, session tokens
+- **Database Models**: [backend/db/models.py](../backend/db/models.py) — SQLAlchemy ORM with all required fields
+
+See [DEMO_FEATURES_BY_STAGE.md](./docs/DEMO_FEATURES_BY_STAGE.md) for full code-to-feature mapping.
+
+---
 
 You are now ready to use and demonstrate the current RiskRadar Web-Extension features.
 

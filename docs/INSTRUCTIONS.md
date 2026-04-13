@@ -12,6 +12,7 @@ This document defines the required staged extension work for the CMPS 357 RiskRa
 - Execution tracker and evidence: [TODO.md](./TODO.md)
 - Top-level project status summary: [../README.md](../README.md)
 - User walkthrough for web extension: [../USER_GUIDE.md](../USER_GUIDE.md)
+- Security guidance: [SECURITY.md](./SECURITY.md)
 
 The extension should:
 
@@ -61,6 +62,14 @@ In this stage, the team adds intelligence layers that improve interpretation of 
 3. Integrate risk scoring into backend services and API access.
 4. Add web/mobile UI views that present score and context clearly.
 
+### Step 1b: User Data Protection
+
+1. Encrypt user email addresses at rest before storing them in the database.
+2. Keep passwords hashed with the existing PBKDF2-based flow.
+3. Enforce password strength requirements during registration.
+4. Store the email encryption key outside the repository and rotate it through a secret manager when available.
+5. Run the email migration script before enabling the new schema constraints in production.
+
 ### Step 2: Smart Alert Prioritization System
 
 Extend alerts into a prioritized ranking pipeline using factors such as:
@@ -90,6 +99,54 @@ Extend alerts into a prioritized ranking pipeline using factors such as:
 1. Predict environmental risk **24-48 hours** ahead using scraper-derived patterns.
 2. Create visualizations of predicted risk and trend behavior over time.
 3. Present forecast output in a way that supports user planning decisions.
+
+---
+
+## Security Setup
+
+### Environment Variables
+
+Add the following values to your `.env` file before running the backend in production or staging:
+
+```env
+EMAIL_ENCRYPTION_KEY=your-fernet-key-or-secret
+EMAIL_HASH_SECRET=optional-separate-secret
+PASSWORD_MIN_LENGTH=12
+```
+
+If `EMAIL_HASH_SECRET` is not set, the backend falls back to the email encryption key. Keep both values secret.
+
+### Generate an Encryption Key
+
+Use a Fernet-compatible key if you want strict symmetric encryption support. Example:
+
+```bash
+python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+```
+
+### Email Migration Runbook
+
+1. Back up the database.
+2. Deploy the backend code that includes the encrypted email model.
+3. Apply the schema migration that adds `email_lookup_hash`.
+
+```sql
+SOURCE backend/db/migrations/2026-04-02_encrypt_user_emails.sql;
+```
+
+4. Run the email migration script:
+
+```bash
+python backend/scripts/migrate_emails_to_encrypted.py --batch-size 100
+```
+
+5. Verify a sample user record to confirm `email` is encrypted and `email_lookup_hash` is populated.
+
+### Operational Notes
+
+- Passwords remain hashed with PBKDF2_SHA256.
+- The API now compares emails through `email_lookup_hash` instead of plaintext comparison.
+- The migration script is safe to run in dry-run mode with `--dry-run`.
 
 ### Step 2: RiskRadar AI Assistant
 

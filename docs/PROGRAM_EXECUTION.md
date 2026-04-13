@@ -302,40 +302,20 @@ Navigate to <http://127.0.0.1:8080/index.php> in your browser.
 
 ---
 
-## 6. Mobile Frontend (Expo / React Native)
+## 6. Mobile Frontend (Reference Only / Not Required for CMPS 357)
 
-The mobile app is built with Expo and React Native.
+For this repository's required workflow, mobile setup is not required.
 
-### 6.1 Install dependencies
+- Required workflow: backend + web only
+- If `frontend/mobile/RiskRadar` is absent, that is expected for this project scope
+- Mobile app repository (separate): <https://github.com/QuiHu/Team6Project.git>
+
+Commands below are mobile-repository commands and are intentionally not part of required execution in this repo:
 
 ```bash
 cd frontend/mobile/RiskRadar
 npm install
-```
-
-### 6.2 Start the Expo development server
-
-```bash
 npx expo start
-```
-
-This opens the Expo developer tools. From here you can:
-
-- Press **`a`** to open in an Android emulator
-- Press **`i`** to open in an iOS simulator (macOS only)
-- Press **`w`** to open in a web browser
-- Scan the QR code with the **Expo Go** app on a physical device
-
-### 6.3 Other mobile commands
-
-```bash
-# Start directly for a specific platform
-npx expo start --android
-npx expo start --ios
-npx expo start --web
-
-# Lint the codebase
-npm run lint
 ```
 
 ---
@@ -383,9 +363,35 @@ For a production-style database:
 
 6. **Start the backend** — SQLAlchemy will create any missing tables on startup.
 
+### 4.5 Demo Data & Grading
+
+To quickly set up a demo database with pre-populated users, alerts, and summaries:
+
+```bash
+# Terminal 1: Create fresh demo database
+npm run demo:setup
+
+# Verify demo data loaded
+npm run demo:verify
+
+# View demo user IDs and session tokens
+npm run demo:info
+
+# Generate additional alerts for scale/stress testing
+npm run demo:generate-alerts -- --count 50 --type air_quality
+```
+
+**Demo users available in fixtures:**
+- User 1: Low risk profile (baseline)
+- User 2: Medium risk profile (respiratory sensitivities)
+- User 3: High risk profile (multiple conditions)
+- User 4: Admin user (system-level access)
+
+For complete demo instructions, see [../DEMO_RUNBOOK.md](../docs/DEMO_RUNBOOK.md).
+
 ---
 
-## 8. Running Tests
+## 4.6 Verification & Testing
 
 ### 8.1 Backend tests
 
@@ -404,11 +410,35 @@ pytest tests/test_scrapers.py
 pytest tests/test_api_alerts.py
 ```
 
-### 8.2 Mobile app linting
+### 8.2 Mobile app linting (reference only)
+
+Mobile linting is not part of required validation for this repository.
+
+If you are working in the separate mobile repository, run:
 
 ```bash
-cd frontend/mobile/RiskRadar
 npm run lint
+```
+
+### 8.3 Full backend verification (recommended)
+
+Run this from the repository root to execute both the pytest suite and the standalone
+scraper/database smoke test with a mocked LLM summary:
+
+```bash
+npm run verify:backend
+```
+
+Why this is useful:
+- Verifies core backend correctness (`pytest`)
+- Verifies runtime scraper + persistence flow (`test_scrape_and_summarize.py`)
+- Avoids paid LLM dependency during routine validation (`--mock-summary`)
+
+To run the standalone smoke test directly:
+
+```bash
+cd backend
+python test_scrape_and_summarize.py --mock-summary
 ```
 
 ---

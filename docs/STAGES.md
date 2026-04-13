@@ -1,3 +1,320 @@
+## Verification Snapshot (Latest)
+
+- Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
+- Historical lower totals in older session entries are retained intentionally as time-stamped snapshots.
+
+## Stage 5: Review-Ready Commit Split and Push Session (2026-04-12)
+
+### Implementation
+Split the remaining uncommitted and unpushed changes into review-friendly commits by concern, then pushed the categorized commit stack to the branch.
+
+### Functionality
+- Grouped backend normalization and guardrail changes into one focused commit.
+- Grouped evidence-index/checklist additions into a separate docs commit.
+- Grouped top-level status-document updates into a distinct docs sync commit.
+- Isolated the local SQLite runtime artifact into its own commit for reviewer convenience.
+
+### Verification Evidence
+- ✅ Categorized commits were created successfully and pushed to the remote branch.
+- ✅ The push completed without error and the branch is up to date on the remote.
+- ✅ The commit history is now split by project area for easier PR review.
+
+### Importance
+- Improves reviewability by separating backend, evidence docs, top-level docs, and runtime artifact changes.
+- Preserves the repository history style used in prior closeout sessions.
+- Keeps the review surface cleaner without changing any project behavior.
+
+## Stage 5: Rebecca-Safe Database Normalization Guardrails and Closeout Session (2026-04-12)
+
+### Implementation
+Completed remaining Rebecca-safe normalization hardening tasks by adding compatibility fallback observability, low-risk guardrail automation, and staging evidence checklists without removing legacy JSON fields.
+
+### Functionality
+- Added fallback observability events for:
+   - summary alert-link JSON fallback
+   - user alert-type relational fallback
+   - user health-condition relational fallback
+- Added normalization guardrail command path:
+   - `backend/scripts/verify_normalization_guardrails.py`
+   - optional strict failure mode for reconciliation drift
+- Extended full verification runner with optional guardrail execution flags.
+- Added normalization evidence checklist under `docs/evidence/` and linked it in the evidence index.
+
+### Verification Evidence
+- ✅ Focused suites passed after guardrail/observability additions.
+- ✅ Full backend suite passed: **211/211**.
+- ✅ Full verification with guardrails (`--include-normalization-guardrails`) completed successfully.
+
+### Importance
+- Adds deployment-safe detection for normalization drift before runtime impact.
+- Keeps implementation within Rebecca-safe boundaries (non-destructive, compatibility-first).
+- Improves grading/onboarding evidence readiness via explicit normalization checklist artifacts.
+
+## Stage 5: Frontend Visual Refresh Low-Risk Implementation and Max Validation Handoff Session (2026-04-12)
+
+### Implementation
+Executed a Rebecca-safe frontend visual refresh pass centered on shared styles/tokens and low-risk page-level polish, then synchronized top-level docs to assign remaining manual validation/signoff tasks to Max.
+
+### Functionality
+- Updated shared visual system treatment (background depth, panel styling, navigation/button/input states, and heading hierarchy) without changing route/data behavior.
+- Applied page-level polish hooks for dashboard, alerts, summaries, and map content actions/filter surfaces.
+- Extracted map view inline style attributes into reusable CSS classes for modal/help/legend/loading/popup elements.
+- Recorded explicit Max ownership for remaining manual frontend validation and signoff actions.
+
+### Verification Evidence
+- ✅ No new diagnostics errors in edited frontend files after updates.
+- ✅ Inline-style extraction validation completed (`frontend/web/views/map.php` no longer contains `style="..."` attributes).
+- ✅ Top-level documentation synchronization completed in chronological Stage 5 order.
+
+### Importance
+- Improves visual quality and consistency while preserving low-risk implementation boundaries.
+- Strengthens maintainability by reducing inline map styling and consolidating style control in shared CSS.
+- Clarifies final manual closeout ownership for grading/onboarding readiness.
+
+## Stage 5: Verified Map Closeout and Documentation Sync Session (2026-04-11)
+
+### Implementation
+Completed the final documentation synchronization pass after confirming the Stage 3 map closeout is verified and the evidence bundle is complete.
+
+### Functionality
+- Confirmed the interactive risk map is verifier-clean with the required S3-06 artifacts in place.
+- Kept the map fix scoped to coordinate normalization so the demo renders correctly without broader UI churn.
+- Brought the top-level stage summary into alignment with the verified map closeout state.
+
+### Verification Evidence
+- ✅ `npm run verify:evidence:s3` passes with all required files and links present.
+- ✅ The map demo now resolves alert and risk geometry using backend payload shapes.
+- ✅ Required Stage 3 artifacts are present under `static/evidence/`.
+
+### Importance
+- Establishes a clear verified endpoint for the Stage 3 map deliverable.
+- Reduces ambiguity for graders by documenting the final working state.
+- Keeps the stage summary consistent with the current repository evidence.
+
+## Stage 5: Web-Only Scope Hardening and S3 Evidence Closeout Session (2026-04-11)
+
+### Implementation
+Executed a synchronized hardening pass for top-level docs to keep required CMPS 357 workflows backend+web only, then completed the S3-06 evidence artifact set required by the repository verifier.
+
+### Functionality
+- Clarified web-only required setup paths in top-level and execution documentation.
+- Corrected top-level web startup command to PHP runtime serving flow.
+- Retained mobile paths only as explicit reference-only guidance.
+- Completed Stage 3 evidence artifact bundle at exact verifier-gated file paths.
+
+### Verification Evidence
+- ✅ Backend/web command-path sanity checks passed.
+- ✅ `npm run verify:evidence:s3` passed with all artifacts and links complete.
+- ✅ Final evidence verifier output reports no missing files and no missing links.
+
+### Importance
+- Reduces onboarding and grading friction caused by stale setup assumptions.
+- Increases execution safety by aligning docs with actual repository architecture.
+- Converts Stage 3 evidence closeout from pending to objectively verified completion.
+
+## Stage 5: Rebecca Implementation Closeout and Max Handoff Session (2026-04-11)
+
+### Implementation
+Finalized Rebecca-owned remediation and documentation work, then formally handed off the remaining S3-06 manual evidence capture/final filing tasks to Max.
+
+### Functionality
+- No additional Rebecca-safe implementation items remain from the sprint remediation backlog.
+- S3-06 manual capture/final filing ownership is now explicit in TODO, Stage 3 evidence docs, and closeout manifest.
+- Automated evidence gate remains active via `npm run verify:evidence:s3`.
+
+### Verification Evidence
+- ✅ Top-level documentation synchronization completed.
+- ✅ Manual closeout assignment for S3-06 documented as Max-owned.
+- ✅ Evidence validator reports only missing manual artifacts (no missing-link defects).
+
+### Importance
+- Completes Rebecca's implementation scope cleanly without frontend overlap.
+- Improves execution clarity for grading/onboarding handoff.
+
+## Stage 5: Demo Verification Pass and FIRMS Warning Risk-Free Fix Session (2026-04-11)
+
+### Implementation
+Ran repeated demo verification passes (headless and presenter-visible) and implemented a minimal-risk registry fix so required-key checks use settings-loaded values from `.env` before process-environment fallback.
+
+### Functionality
+- **Demo Pass Validation:** `npm run demo:setup`, `npm run demo:verify`, and `npm run demo:info` consistently produced expected seeded outputs.
+- **Automation Validation:** `npm run demo:run` and `npm run demo:report` completed successfully and regenerated walkthrough evidence files.
+- **Warning Classification:** Confirmed FIRMS key warning is non-severe for seeded demo mode but relevant for live wildfire ingestion.
+- **Configuration Hardening:** Updated scraper key resolution in `backend/scrapers/registry.py` to check settings values first, then environment variables.
+
+### Execution
+- Performed pre-pass setup/verification, executed walkthrough, regenerated report artifacts, and re-verified post-run consistency.
+- Applied a localized backend fix to registry key checks without changing scraper behavior when keys are truly missing.
+- Preserved demo-first safety by avoiding broader scheduler/scraper refactors.
+
+### Verification Evidence
+- ✅ Demo seed and verification counts remained stable (4 users, 15 alerts, 2 summaries).
+- ✅ Automated walkthrough passed **6/6** steps in both headless and visible modes.
+- ✅ Evidence files refreshed: `static/evidence/demo_journey_log.json`, `static/evidence/demo_screenshots/manifest.json`, `static/evidence/DEMO_REPORT.md`.
+- ✅ Runtime registry import/load check passed after key-resolution update.
+
+### Importance
+- Increases confidence that demo workflows remain grading-ready across repeated runs.
+- Removes avoidable false warning scenarios when keys are configured in `.env` but not shell-exported.
+- Maintains low-risk operational posture by constraining the fix to key-lookup resolution logic.
+
+## Stage 5: Sprint Remediation Implementation and Verification Closeout Session (2026-04-11)
+
+### Implementation
+Executed and closed the sprint remediation plan covering backend security hardening, datetime filtering correctness, frontend API portability, storage resilience improvements, map runtime path cleanup, and closeout documentation scaffolding.
+
+### Functionality
+- CORS origin policy now uses explicit configured origins.
+- Feedback identity binding now derives from session context (no client-driven user spoofing path).
+- Assistant and forecast time-window filtering now use parsed datetime comparisons across mixed timestamp formats.
+- Golby and map API calls use runtime-configured API base values rather than fixed local assumptions.
+- Golby localStorage access now falls back safely when storage is unavailable.
+- Stage 3 evidence closeout scaffolding is prepared and linked for manual capture workflows.
+
+### Verification Evidence
+- ✅ Full backend verification command passed: **198 passed** (pytest) plus standalone scrape/summarize smoke test pass.
+- ✅ Targeted assistant, forecast, and feedback suites remained green after remediation updates.
+- ✅ Updated documentation links for S3-06 evidence bundle manifest and index are in place.
+
+### Remaining Manual Task
+- Stage 3 S3-06 screenshot/video artifact capture remains a manual evidence collection step owned by QA/onboarding workflow.
+
+## Stage 5: Demo Workflow Sanity Pass and Documentation Synchronization Session (2026-04-11)
+
+### Implementation
+Executed a final repository-level sanity pass for demo setup, verification, and metadata reporting workflows, then synchronized top-level project documentation to reflect outcomes and decisions.
+
+### Functionality
+- **Demo Setup Validation:** `npm run demo:setup` creates and seeds demo data successfully from fixture inputs.
+- **Demo Verification Validation:** `npm run demo:verify` confirms expected counts for users, alerts, and summaries.
+- **Demo Metadata Validation:** `npm run demo:info` prints current seed metadata and token/user summaries.
+- **Repository Hygiene:** `npm run demo:clean` removes generated `demo.db` and `seed_metadata.json` artifacts after validation.
+
+### Execution
+- Ran documented demo commands end-to-end and confirmed green outputs.
+- Confirmed demo tooling under `backend/demo/` is actively referenced by package scripts and demo documentation.
+- Preserved demo assets in version control to avoid breaking demo command workflows.
+- Updated top-level tracking documents to keep chronology and status language aligned.
+
+### Verification Evidence
+- ✅ `npm run demo:setup` completed successfully.
+- ✅ `npm run demo:verify` passed demo completeness checks.
+- ✅ `npm run demo:info` returned expected metadata.
+- ✅ `npm run demo:clean` removed generated artifacts.
+
+### Importance
+- Keeps demo documentation trustworthy by proving the published run commands execute as written.
+- Reduces risk of accidental regressions from removing required demo tooling.
+- Improves grading/onboarding readiness through synchronized, current top-level records.
+
+## Stage 5: Golby Personality Learning, Communication Controls, and Cross-Device Sync Session (2026-04-10)
+
+### Implementation
+Built a complete soft-learning communication loop for Golby by extending existing assistant and feedback infrastructure. Added persistent user communication profiles, deterministic profile updates from feedback, explicit style-control commands, and frontend-to-backend profile synchronization while preserving guardrail-first safety behavior.
+
+### Functionality
+- **Persistent Profile:** Added `assistant_style_profile` on user records for warmth, calmness, humor, conciseness, detail, expandability, and learning metadata.
+- **Feedback Learning:** Existing feedback endpoint now updates communication preferences using bounded, deterministic updates from reaction/rating/comment signals.
+- **Profile-Aware Replies:** Assistant endpoint now shapes non-guardrail replies using learned profile values.
+- **Style Directives:** Supports commands like “be shorter,” “more detail,” “be warmer,” “be goofy,” and “be calm,” with persistence for identified users.
+- **Cross-Device Sync:** Frontend local Golby profile now syncs to backend user preferences after feedback updates.
+
+### Execution
+- Added backend service helpers in `backend/services/assistant_personality.py`.
+- Extended `backend/db/models.py` and added migration `backend/db/migrations/2026-04-10_add_assistant_style_profile.sql`.
+- Updated `backend/api/assistant.py`, `backend/api/feedback.py`, `backend/api/users.py`, and `backend/schemas/user.py`.
+- Updated frontend Golby client integration in `frontend/web/components/golby/apiClient.ts` and `frontend/web/components/golby/ChatInterface.tsx`.
+- Added/updated tests in `backend/tests/test_api_assistant.py`, `backend/tests/test_api_feedback.py`, and `backend/tests/test_api_users.py`.
+
+### Verification Evidence
+- ✅ Targeted suites: **27 passed** (assistant/feedback/users).
+- ✅ Full backend suite: **196 passed, 0 failed**.
+
+### Importance
+- Improves assistant communication quality while keeping reliability and safety controls stable.
+- Gives users explicit control over assistant style and allows preference carry-over across sessions/devices.
+- Preserves deterministic behavior and maintainability by avoiding model retraining.
+
+## Stage 5: Session-Based Authentication and Admin Gating Session (2026-04-10)
+
+### Implementation
+Replaced the hardcoded admin gate on feedback analytics (which accepted arbitrary `admin_user_id` query parameters from the browser) with a production-grade, cryptographically-signed session-based authentication system. Implemented HMAC-SHA256 signed session tokens stored in HttpOnly cookies with SameSite=Lax and scheme-aware secure flags. Wired the PHP login form and Golby widget to use the new session flow end-to-end.
+
+### Functionality
+- **Session Tokens:** HMAC-SHA256 signed tokens in format `payload.signature` using base64url encoding; tokens include user_id, issued-at, and expiration timestamps.
+- **Auth Endpoints:** POST /auth/login (email+password → session token), GET /auth/me (session → authenticated user), POST /auth/logout (delete cookie).
+- **Dependencies:** `require_admin_user()` (enforces admin role, 403 if not), `get_current_user()` (enforces auth, 401 if missing), `get_optional_current_user()` (returns user or None).
+- **Admin Gating:** Feedback analytics (`/api/v1/feedback/analytics`, `/api/v1/feedback/weekly-report`) now require `require_admin_user()` dependency; arbitrary `admin_user_id` query params are rejected.
+- **Frontend Login:** PHP form submission calls backend `/auth/login` endpoint; on success, session cookie is set and user is redirected to assistant.php.
+- **Widget Authentication:** Golby widget calls `fetchCurrentUser()` on mount (GET /auth/me with `credentials: 'include'`); derives authenticated user state and displays in diagnostics panel.
+- **API Client:** All widget fetch calls include `credentials: 'include'`; session cookie is automatically forwarded by browser.
+
+### Execution
+- **Backend Auth Layer:** Added `backend/auth/dependencies.py`, `backend/schemas/auth.py`, `backend/api/auth.py` with session extraction, login/logout, and current-user helpers.
+- **Session Cryptography:** Enhanced `backend/auth/security.py` with `create_session_token()`, `verify_session_token()`, `_base64url_encode()`, `_base64url_decode()` functions.
+- **API Routing:** Updated `backend/api/router.py` to expose auth_router before other endpoints; updated `backend/api/feedback.py` to use `require_admin_user()` dependency instead of query params.
+- **CORS Middleware:** Updated `backend/main.py` to add `allow_credentials=True` to CORSMiddleware configuration.
+- **Frontend Login:** Updated `frontend/web/public/login.php` to call backend auth endpoint, set session cookie, redirect on success.
+- **Frontend Services:** Added `rr_set_session_cookie()` and `rr_clear_session_cookie()` helpers to `frontend/web/services/security.php`; updated `api_client.php` to forward session cookie.
+- **Widget Integration:** Updated `ai-assistant-widget.jsx` to fetch `/auth/me` on mount; updated `ChatInterface.tsx` to accept `currentUserId` and display access level; updated `apiClient.ts` to include `credentials: 'include'` in all fetches.
+- **Testing:** Added 3 auth tests (`test_api_auth.py`); updated 9 feedback tests to authenticate via session; corrected 401/403 expectations.
+
+### Verification Evidence
+- ✅ **191 backend tests passed** (full suite, no regressions).
+- ✅ Auth endpoints: login returns token + user, logout clears session, me validates and returns user.
+- ✅ Feedback analytics: 401 for unauthenticated, 403 for non-admin, accessible for admin with valid session.
+- ✅ Widget: fetches `/auth/me` on mount, displays current user ID and access level, carries session cookie in all API calls.
+- ✅ No hardcoded admin IDs from browser; all admin status derived from signed session token.
+
+### Importance
+- **Security Hardening:** Admin gate is now enforced server-side via cryptographically-signed session tokens, not through page attributes or query parameters.
+- **Attack Surface Reduction:** Eliminates the risk of arbitrary `admin_user_id` values from the browser; admin status cannot be spoofed.
+- **Compliance:** Replaces implicit, browser-passed admin flag with explicit, cryptographically-validated session-based authentication.
+- **Production Readiness:** Session tokens include expiration, validation, and scheme-aware secure flag handling; suitable for deployment.
+
+## Stage 5: User Data Security, Migration, and Full-Suite Verification Session (2026-04-02)
+
+### Implementation
+Added email encryption at rest for user records, deterministic email lookup hashing for duplicate checks, and stronger password policy enforcement during registration. A schema-aware migration script was added so existing plaintext emails can be converted safely.
+
+### Functionality
+- User emails are encrypted before storage and decrypted only for API responses.
+- Duplicate email checks now use a deterministic lookup hash rather than plaintext comparison.
+- Password policy enforcement rejects weak registration passwords before hashing.
+- The migration script can handle older databases by adding the lookup column when needed.
+- The backend suite was revalidated end to end and now passes 174/174 tests.
+
+### Execution
+- Added backend/auth/security.py for email encryption, hashing, and password helpers.
+- Updated backend/api/users.py to validate password strength, encrypt emails, and serialize users safely.
+- Added backend/scripts/migrate_emails_to_encrypted.py plus backend/db/migrations/2026-04-02_encrypt_user_emails.sql.
+- Updated documentation in docs/INSTRUCTIONS.md and docs/SECURITY.md to capture setup and rollout order.
+- Fixed the prioritized-alerts API endpoint so the full backend suite could complete successfully.
+
+### Importance
+- Protects user data at rest without breaking existing lookup behavior.
+- Creates a repeatable migration path for existing deployments.
+- Preserves the project's grading readiness by keeping the codebase verified and documented.
+
+## Stage 5: Full Backend Verification Workflow and Documentation Sync Session (2026-04-02)
+
+### Implementation
+Added a repeatable backend verification workflow that combines the full pytest suite with a deterministic standalone smoke test. The smoke test was extended with mock-summary mode, and a Node wrapper was added so the repo-root npm script always uses the project virtual environment.
+
+### Functionality
+- `npm run verify:backend` runs the backend suite and smoke test together.
+- `backend/test_scrape_and_summarize.py --mock-summary` validates the scraper/database path without requiring LLM credits.
+- The smoke test now returns non-zero on validation failure so it can be used in CI or grading checks.
+
+### Execution
+- Added `backend/scripts/run_full_verification.py` as the orchestration entry point.
+- Added `backend/scripts/run_full_verification.mjs` to resolve the repo `.venv` interpreter from npm.
+- Updated the smoke test CLI and execution docs to support repeatable testing.
+
+### Importance
+- Provides a single canonical verification command for future maintenance and review.
+- Improves reliability by avoiding system-Python drift and external billing dependencies.
+- Keeps status, docs, and runtime validation aligned.
 # Stage 4 Documentation Synchronization & Forecast UI Session (2026-04-02)
 
 Summary:
@@ -81,11 +398,13 @@ Recommended sync order when updating progress:
 
 
 **Optional Stretch Goals:**
-- **Stage 3**: Data Visualization and User Experience Extensions — ✅ Completed (2026-03-31)
-   - Interactive risk map, personalized overlays, accessibility, and responsive UX implemented and verified.
-   - Planning docs in `docs/PLANNING_DOCS/STAGE3_DOCS/`.
-- **Stage 4**: Predictive Analytics and AI-Driven Insights Extensions — ✅ Completed (2026-04-02)
-   - Forecast UI, AI Assistant widget, and documentation sync/audit are complete.
+- **Stage 3**: Data Visualization and User Experience Extensions — ✅ Implementation Verified (2026-04-10)
+   - Interactive risk map, personalized overlays, accessibility, and responsive UX fully implemented and verified.
+   - Manual evidence bundle closeout remains as assignment for grading/onboarding team (S3-06 in `docs/TODO.md`).
+   - Planning docs and verification checklist in `docs/PLANNING_DOCS/STAGE3_DOCS/`.
+- **Stage 4**: Predictive Analytics and AI-Driven Insights Extensions — ✅ Completed (2026-04-10)
+   - Forecast baseline backend and live forecast timeline integration are implemented and verified.
+   - Assistant guardrails plus backend prompt/data integration are implemented and verified.
    - See `docs/PLANNING_DOCS/STAGE4_DOCS/`, `frontend/web/public/forecast.php`, `frontend/web/public/assistant.php`.
 - **Stage 5**: Ongoing Maintenance, Advanced Features, and Review — ✅ Completed (2026-04-02)
    - Transitioned to ongoing maintenance and advanced feature development for the Risk Map Architecture.
@@ -346,7 +665,7 @@ Reference: `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`
 - Documentation of visualization design choices
 
 ### Progress So Far
-✅ **Completed** - Interactive risk map implemented and all Stage 3 web-app requirements verified:
+🟡 **Implementation Complete; Evidence Closeout Ready** - Interactive risk map is fully implemented and verified via automated tests and runtime integration validation:
 
 - Backend map endpoints implemented and CORS-enabled: `GET /api/v1/alerts/map`, `GET /api/v1/risk/map`, `GET /api/v1/risk/map/personalized/{user_id}`.
 - Web frontend `map.php` fetches and renders live alert and risk overlay data from backend endpoints.
@@ -354,7 +673,7 @@ Reference: `docs/PLANNING_DOCS/STAGE2_DOCS/STAGE2_IMPLEMENTATION_SPEC.md`
 - Keyboard/touch navigation, dark mode, and responsive layout implemented and verified.
 - Accessibility improvements (ARIA, keyboard navigation, color contrast) applied.
 - Fallback UI and error states handled gracefully; map remains interactive if overlays fail to load.
-- All evidence organized and referenced in planning docs. Onboarding template and handoff summary completed.
+- Most evidence is organized and referenced in planning docs. Manual screenshot/recording bundle is ready for capture and assignment to grading/onboarding team roles (S3-06 task with concrete checklist in `docs/TODO.md`).
 See `docs/PLANNING_DOCS/STAGE3_DOCS/` for contract, verification evidence, and implementation spec.
 
 ---
@@ -450,3 +769,6 @@ For each stage, update:
 ## Web-App Security Documentation
 
 The RiskRadar web-app implements and documents security controls in docs/SecurityDocs/. All planning and verification steps reference these docs for compliance and evidence.
+
+
+
