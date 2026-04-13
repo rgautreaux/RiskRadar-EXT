@@ -18,10 +18,12 @@ function rr_render_layout_start(string $title, string $activePage): void
 {
     $GLOBALS['rr_layout_active_page'] = $activePage;
 
-    $apiBase = '/api/v1';
+    $apiBase = 'http://127.0.0.1:8001';
+    $apiPrefix = '/api/v1';
     $globalConfig = $GLOBALS['config'] ?? null;
     if (is_array($globalConfig) && function_exists('rr_api_url')) {
-        $apiBase = rtrim(rr_api_url($globalConfig, ''), '/');
+        $apiBase = rtrim((string) ($globalConfig['api']['base_url'] ?? $apiBase), '/');
+        $apiPrefix = '/' . trim((string) ($globalConfig['api']['prefix'] ?? $apiPrefix), '/');
     }
 
     $shouldRenderGolbyWidget = $activePage !== 'login';
@@ -38,6 +40,7 @@ function rr_render_layout_start(string $title, string $activePage): void
         <link rel="stylesheet" href="assets/app.css">
         <script>
         window.__RISKRADAR_API_BASE__ = <?php echo json_encode($apiBase); ?>;
+        window.__RISKRADAR_API_PREFIX__ = <?php echo json_encode($apiPrefix); ?>;
         </script>
         <?php if ($shouldRenderGolbyWidget) : ?>
         <link rel="stylesheet" href="assets/golby-widget.css">

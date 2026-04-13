@@ -31,33 +31,52 @@ export interface AssistantRequestPayload {
 declare global {
   interface Window {
     __RISKRADAR_API_BASE__?: string;
+    __RISKRADAR_API_PREFIX__?: string;
   }
 }
 
-const DEFAULT_API_BASE = '/api/v1';
+const DEFAULT_API_PREFIX = '/api/v1';
 
-function getApiBase(): string {
+function normalizePrefix(prefix: string): string {
+  if (!prefix) {
+    return DEFAULT_API_PREFIX;
+  }
+
+  const trimmed = prefix.trim();
+  return trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
+}
+
+function getApiConfig(): { base: string; prefix: string } {
   if (typeof window === 'undefined') {
-    return DEFAULT_API_BASE;
+    return { base: '', prefix: DEFAULT_API_PREFIX };
   }
 
-  const configured = (window.__RISKRADAR_API_BASE__ || '').trim();
-  if (!configured) {
-    return DEFAULT_API_BASE;
+  const configuredBase = (window.__RISKRADAR_API_BASE__ || '').trim();
+  const configuredPrefix = normalizePrefix(window.__RISKRADAR_API_PREFIX__ || DEFAULT_API_PREFIX);
+
+  if (!configuredBase) {
+    return { base: '', prefix: configuredPrefix };
   }
 
-  return configured.endsWith('/') ? configured.slice(0, -1) : configured;
+  return {
+    base: configuredBase.endsWith('/') ? configuredBase.slice(0, -1) : configuredBase,
+    prefix: configuredPrefix,
+  };
 }
 
 function buildApiUrl(path: string): string {
-  const base = getApiBase();
+  const { base, prefix } = getApiConfig();
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  const resolvedPrefix = normalizePrefix(prefix);
 
-  if (/^https?:\/\//i.test(base)) {
-    return `${base}${normalizedPath}`;
+  if (!base) {
+    return `${resolvedPrefix}${normalizedPath}`;
   }
 
-  return `${base}${normalizedPath}`;
+  const baseAlreadyIncludesPrefix = base.endsWith(resolvedPrefix);
+  const routeBase = baseAlreadyIncludesPrefix ? base : `${base}${resolvedPrefix}`;
+
+  return `${routeBase}${normalizedPath}`;
 }
 
 export interface AssistantResponsePayload {

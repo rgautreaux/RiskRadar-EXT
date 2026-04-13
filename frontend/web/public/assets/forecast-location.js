@@ -5,8 +5,8 @@ const forecastState = {
 };
 
 function normalizeApiConfig() {
-    const explicitBase = (window.__RISKRADAR_FORECAST_API_BASE__ || '').trim();
-    const explicitPrefix = (window.__RISKRADAR_FORECAST_API_PREFIX__ || '/api/v1').trim();
+    const explicitBase = (window.__RISKRADAR_FORECAST_API_BASE__ || window.__RISKRADAR_API_BASE__ || '').trim();
+    const explicitPrefix = (window.__RISKRADAR_FORECAST_API_PREFIX__ || window.__RISKRADAR_API_PREFIX__ || '/api/v1').trim();
     const prefix = explicitPrefix.startsWith('/') ? explicitPrefix : `/${explicitPrefix}`;
 
     if (explicitBase) {

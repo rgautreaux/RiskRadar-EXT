@@ -1,6 +1,6 @@
 {
-  "_golby-chunk-ChatInterface-B6sl1g1a.js": {
-    "file": "golby-chunk-ChatInterface-B6sl1g1a.js",
+  "_golby-chunk-ChatInterface-D95Kx7xP.js": {
+    "file": "golby-chunk-ChatInterface-D95Kx7xP.js",
     "name": "ChatInterface",
     "css": [
       "golby-widget.css"
@@ -16,7 +16,7 @@
     "src": "frontend/web/src/assistant-welcome.tsx",
     "isEntry": true,
     "imports": [
-      "_golby-chunk-ChatInterface-B6sl1g1a.js"
+      "_golby-chunk-ChatInterface-D95Kx7xP.js"
     ]
   },
   "frontend/web/src/golby-widget.tsx": {
@@ -25,7 +25,7 @@
     "src": "frontend/web/src/golby-widget.tsx",
     "isEntry": true,
     "imports": [
-      "_golby-chunk-ChatInterface-B6sl1g1a.js"
+      "_golby-chunk-ChatInterface-D95Kx7xP.js"
     ]
   }
 }

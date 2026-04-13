@@ -184,7 +184,7 @@ Override options:
 
 Defaults:
 
-- Base URL: `http://127.0.0.1:8000`
+- Base URL: `http://127.0.0.1:8001`
 - API prefix: `/api/v1`
 - Timeout: `5.0` seconds
 
@@ -211,7 +211,7 @@ npm run build:web:watch
 
 4. Open `http://127.0.0.1:8080/index.php`.
 
-If backend port `8000` is unavailable, set `RISKRADAR_API_BASE_URL` (for example to `http://127.0.0.1:8001`) or use `config/config.local.php`.
+If backend port `8001` is unavailable, set `RISKRADAR_API_BASE_URL` (for example to `http://127.0.0.1:8001`) or use `config/config.local.php`.
 
 ## Troubleshooting Wiring Issues
 
@@ -220,8 +220,8 @@ If the web app shows fallback messages like alerts/summaries unavailable, foreca
 1. Confirm backend is running and reachable:
 
 ```powershell
-Invoke-RestMethod http://127.0.0.1:8000/
-Invoke-RestMethod http://127.0.0.1:8000/api/v1/alerts?limit=1
+Invoke-RestMethod http://127.0.0.1:8001/
+Invoke-RestMethod http://127.0.0.1:8001/api/v1/alerts?limit=1
 ```
 
 2. Confirm frontend API config points to the same backend origin:
@@ -230,7 +230,7 @@ Invoke-RestMethod http://127.0.0.1:8000/api/v1/alerts?limit=1
 
 3. Run frontend and backend on separate ports and inspect browser network requests:
 	- Frontend page origin can be `http://127.0.0.1:8080`.
-	- Forecast and map requests must still target backend origin (for example `http://127.0.0.1:8000/api/v1/...`).
+	- Forecast and map requests must still target backend origin (for example `http://127.0.0.1:8001/api/v1/...`).
 
 4. Distinguish wiring failures from true no-data cases:
 	- Wiring failure: request errors in browser network tab (status, CORS, DNS, refused connection).

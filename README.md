@@ -553,16 +553,16 @@ AIRNOW_API_KEY=your-airnow-key
 ```bash
 cd backend
 py -m pip install -r requirements.txt
-py -m uvicorn main:app --host 0.0.0.0 --port 8000
+py -m uvicorn main:app --host 0.0.0.0 --port 8001
 ```
 
 You should see:
 
 ```
-INFO:     Uvicorn running on http://0.0.0.0:8000
+INFO:     Uvicorn running on http://0.0.0.0:8001
 ```
 
-Verify it works by opening http://localhost:8000/docs in your browser (Swagger API docs).
+Verify it works by opening http://localhost:8001/docs in your browser (Swagger API docs).
 
 ### 4. Start the Web Frontend
 
@@ -586,7 +586,7 @@ The mobile app is not required for this CMPS 357 repository workflow.
 # Backend
 cd backend
 py -m pip install -r requirements.txt
-py -m uvicorn main:app --host 0.0.0.0 --port 8000
+py -m uvicorn main:app --host 0.0.0.0 --port 8001
 
 # Web frontend
 php -S 127.0.0.1:8080 -t frontend/web/public
