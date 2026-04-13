@@ -174,7 +174,49 @@ async function runJourney(options = {}) {
     { id: 6, slug: 'assistant', name: 'AI Assistant View' },
     async () => {
       await stepNavigate(page, { id: 6 }, `${base}/assistant.php`, 'assistant');
-      await page.waitForTimeout(1000);
+
+      const openWidgetButton = page.getByRole('button', { name: 'Open Golby AI Assistant' });
+      await openWidgetButton.waitFor({ timeout: 10000 });
+      await openWidgetButton.click();
+
+      const messageInput = page.getByRole('textbox', { name: 'Message input' });
+      await messageInput.waitFor({ timeout: 10000 });
+
+      const helpfulFeedbackButtons = page.getByRole('button', { name: 'This was helpful' });
+      const helpfulCountBefore = await helpfulFeedbackButtons.count();
+
+      await messageInput.fill('Show me latest alerts');
+      await page.getByRole('button', { name: 'Send message' }).click();
+      await page.waitForFunction(
+        () => {
+          const buttons = Array.from(document.querySelectorAll('button[aria-label="This was helpful"]'));
+          return buttons.length >= 2;
+        },
+        null,
+        { timeout: 15000 },
+      );
+
+      const helpfulCountAfter = await helpfulFeedbackButtons.count();
+      if (helpfulCountAfter <= helpfulCountBefore) {
+        throw new Error('Expected a new assistant response with feedback controls.');
+      }
+
+      if (options.screenshots) {
+        await screenshotCollector.capture(page, '06a_assistant_response', 'Assistant reply rendered after sending a prompt');
+      }
+
+      await helpfulFeedbackButtons.first().click();
+      if (options.screenshots) {
+        await screenshotCollector.capture(page, '06b_assistant_feedback', 'Assistant feedback interaction complete');
+      }
+
+      await messageInput.fill('Can you give me medical advice?');
+      await page.getByRole('button', { name: 'Send message' }).click();
+      await page.waitForSelector('text=I cannot provide medical advice', { timeout: 15000 });
+
+      if (options.screenshots) {
+        await screenshotCollector.capture(page, '06c_assistant_guardrail', 'Assistant guardrail response rendered');
+      }
     },
   );
 

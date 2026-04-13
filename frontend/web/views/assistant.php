@@ -9,17 +9,15 @@ window.__RISKRADAR_API_BASE__ = <?php echo json_encode($apiBase); ?>;
 </script>
 
 <!-- RiskRadar AI Assistant Widget Assets -->
-<link rel="stylesheet" href="/public/assets/index.css">
-<link rel="modulepreload" href="/public/assets/index-CbcLeLl0.js">
-<script type="module" src="/public/assets/index-CbcLeLl0.js" defer></script>
-<script type="module" src="/public/assets/ai-assistant-widget.js" defer></script>
+<link rel="stylesheet" href="/public/assets/golby-widget.css">
+<script type="module" src="/public/assets/golby-widget.js" defer></script>
 
 <section class="page-heading">
     <div>
-        <p class="eyebrow">Stage 4 scaffold</p>
+        <p class="eyebrow">AI assistant</p>
         <h1>RiskRadar AI Assistant</h1>
     </div>
-    <p>This Stage 4 scaffold will support natural-language risk questions and contextual recommendations from backend forecast and alert data.</p>
+    <p>Ask natural-language risk questions and get contextual recommendations powered by live forecast and alert data.</p>
 </section>
 
 
@@ -40,8 +38,13 @@ window.__RISKRADAR_API_BASE__ = <?php echo json_encode($apiBase); ?>;
         data-is-admin="<?php echo e(!empty($currentUser['is_admin']) ? 'true' : 'false'); ?>"
     ></div>
     <div class="mt-3" style="font-size: 13px; color: var(--muted-foreground);">
-        <em>Note: Chat functionality will be enabled once the backend is ready.</em>
+        <em>Tip: Ask about forecast, alerts, map risk, or how to use RiskRadar features.</em>
     </div>
+    <noscript>
+        <div class="mt-3" style="font-size: 13px; color: #9f1239;">
+            <em>Golby requires JavaScript to run. Enable JavaScript and reload this page.</em>
+        </div>
+    </noscript>
 </section>
 
 <!--

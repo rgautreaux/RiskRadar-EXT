@@ -1,4 +1,6 @@
 
+<?php
+
 /*
 ====================================================
  RiskRadar Web Layout Shell — Layout Lane
@@ -11,8 +13,6 @@
  via rr_render_layout_start and rr_render_layout_end.
 ====================================================
 */
-
-<?php
 
 function rr_render_layout_start(string $title, string $activePage): void
 {

@@ -1,3 +1,5 @@
+<?php
+
 // Stage 3: Map Data API Client
 function rr_api_get_map_alerts(array $config, array $query = []): array
 {
@@ -10,7 +12,12 @@ function rr_api_get_map_risk_overlay(array $config, array $query = []): array
     // GET /api/v1/risk/map
     return rr_http_request($config, 'GET', 'risk/map', $query);
 }
-<?php
+
+function rr_api_get_forecast(array $config, array $query = []): array
+{
+    // GET /api/v1/forecast
+    return rr_http_request($config, 'GET', 'forecast', $query);
+}
 
 function rr_api_url(array $config, string $path, array $query = []): string
 {
@@ -38,11 +45,6 @@ function rr_fallback_result(mixed $fallbackData, string $message, ?int $status =
         'data' => $fallbackData,
         'message' => $message,
     ];
-    function rr_api_get_forecast(array $config, array $query = []): array
-    {
-        // GET /api/v1/forecast
-        return rr_http_request($config, 'GET', 'forecast', $query);
-    }
 }
 
 function rr_success_result(mixed $data, ?int $status = null): array
