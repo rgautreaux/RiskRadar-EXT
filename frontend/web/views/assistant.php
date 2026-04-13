@@ -9,8 +9,8 @@ window.__RISKRADAR_API_BASE__ = <?php echo json_encode($apiBase); ?>;
 </script>
 
 <!-- RiskRadar AI Assistant Widget Assets -->
-<link rel="stylesheet" href="/public/assets/golby-widget.css">
-<script type="module" src="/public/assets/golby-widget.js" defer></script>
+<link rel="stylesheet" href="/assets/golby-widget.css">
+<script type="module" src="/assets/golby-widget.js" defer></script>
 
 <section class="page-heading">
     <div>
