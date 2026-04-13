@@ -20,11 +20,8 @@ HOW IT CONNECTS TO THE DATABASE:
 
 import json
 import logging
-<<<<<<< HEAD
-=======
 import time
 from collections import defaultdict
->>>>>>> QuiV2
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 
@@ -32,17 +29,12 @@ logger = logging.getLogger(__name__)
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 
-<<<<<<< HEAD
 from db.database import get_db, db_write
-from db.models import User
+from db.models import User, SavedDestination
 from db.normalization import get_effective_user_coords, get_user_alert_types, set_user_alert_types, upsert_zip_geo
 from config.settings import settings
 from auth.security import hash_password, verify_password, create_access_token, get_current_user, encrypt_email, decrypt_email, email_hmac
 from logging_utils import log_event
-=======
-from db.database import get_db
-from db.models import User, SavedDestination
-from auth.security import hash_password, verify_password, create_access_token, get_current_user, encrypt_email, decrypt_email, email_hmac
 
 
 # ---------------------------------------------------------------------------
@@ -66,7 +58,6 @@ def _check_rate_limit(request: Request) -> None:
             detail="Too many requests. Please try again later.",
         )
     _rate_limit_store[client_ip].append(now)
->>>>>>> QuiV2
 from schemas.user import (
     UserCreate,
     UserLogin,
@@ -126,10 +117,7 @@ def register_user(body: UserCreate, request: Request, db: Session = Depends(get_
 
     user = User(
         display_name=body.display_name,
-<<<<<<< HEAD
         # New records should avoid plaintext email persistence.
-=======
->>>>>>> QuiV2
         email=None,
         email_encrypted=encrypt_email(body.email),
         email_hmac=hmac_val,

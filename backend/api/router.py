@@ -16,11 +16,8 @@ from api.summaries import router as summaries_router
 from api.users import router as users_router
 from api.system import router as system_router
 from api.location import router as location_router
-<<<<<<< HEAD
 from api.notifications import router as notifications_router
-=======
 from api.forecast import router as forecast_router
->>>>>>> QuiV2
 
 api_router = APIRouter(prefix="/api/v1")
 api_router.include_router(alerts_router)
@@ -28,8 +25,5 @@ api_router.include_router(summaries_router)
 api_router.include_router(users_router)
 api_router.include_router(system_router)
 api_router.include_router(location_router)
-<<<<<<< HEAD
 api_router.include_router(notifications_router)
-=======
 api_router.include_router(forecast_router)
->>>>>>> QuiV2

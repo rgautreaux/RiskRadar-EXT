@@ -1,12 +1,7 @@
 """Tests for user API endpoints."""
 
-<<<<<<< HEAD
 from auth.security import create_access_token, verify_password, email_hmac, hash_password
-from db.models import User
-=======
-from auth.security import create_access_token, verify_password
-from db.models import SavedDestination
->>>>>>> QuiV2
+from db.models import User, SavedDestination
 
 
 def _auth_headers(user_id: int) -> dict[str, str]:
@@ -235,7 +230,6 @@ class TestUpdatePreferences:
         }, headers=_auth_headers(sample_user.id))
         assert resp.status_code == 403
 
-<<<<<<< HEAD
     def test_update_invalid_notify_severity_rejected(self, test_client, sample_user):
         resp = test_client.put(
             f"/api/v1/users/{sample_user.id}/preferences",
@@ -251,6 +245,31 @@ class TestUpdatePreferences:
             headers=_auth_headers(sample_user.id),
         )
         assert resp.status_code == 422
+
+    def test_update_device_token_via_preferences(self, test_client, sample_user, db_session):
+        """PUT /{id}/preferences with device_token stores the token on the User row."""
+        resp = test_client.put(f"/api/v1/users/{sample_user.id}/preferences", json={
+            "device_token": "tok_abc123",
+        }, headers=_auth_headers(sample_user.id))
+
+        assert resp.status_code == 200
+        # Confirm it is persisted in the DB
+        db_session.refresh(sample_user)
+        assert sample_user.device_token == "tok_abc123"
+
+    def test_update_device_token_overwrite(self, test_client, sample_user, db_session):
+        """A second PUT replaces the previous device_token."""
+        test_client.put(f"/api/v1/users/{sample_user.id}/preferences", json={
+            "device_token": "old_token",
+        }, headers=_auth_headers(sample_user.id))
+
+        resp = test_client.put(f"/api/v1/users/{sample_user.id}/preferences", json={
+            "device_token": "new_token",
+        }, headers=_auth_headers(sample_user.id))
+
+        assert resp.status_code == 200
+        db_session.refresh(sample_user)
+        assert sample_user.device_token == "new_token"
 
 
 class TestDeviceTokenManagement:
@@ -295,31 +314,6 @@ class TestDeviceTokenManagement:
             headers=_auth_headers(sample_user.id),
         )
         assert resp.status_code == 403
-=======
-    def test_update_device_token_via_preferences(self, test_client, sample_user, db_session):
-        """PUT /{id}/preferences with device_token stores the token on the User row."""
-        resp = test_client.put(f"/api/v1/users/{sample_user.id}/preferences", json={
-            "device_token": "tok_abc123",
-        }, headers=_auth_headers(sample_user.id))
-
-        assert resp.status_code == 200
-        # Confirm it is persisted in the DB
-        db_session.refresh(sample_user)
-        assert sample_user.device_token == "tok_abc123"
-
-    def test_update_device_token_overwrite(self, test_client, sample_user, db_session):
-        """A second PUT replaces the previous device_token."""
-        test_client.put(f"/api/v1/users/{sample_user.id}/preferences", json={
-            "device_token": "old_token",
-        }, headers=_auth_headers(sample_user.id))
-
-        resp = test_client.put(f"/api/v1/users/{sample_user.id}/preferences", json={
-            "device_token": "new_token",
-        }, headers=_auth_headers(sample_user.id))
-
-        assert resp.status_code == 200
-        db_session.refresh(sample_user)
-        assert sample_user.device_token == "new_token"
 
 
 # ---------------------------------------------------------------------------
@@ -737,4 +731,3 @@ class TestDeleteDestination:
 
         assert db_session.get(SavedDestination, id_to_delete) is None
         assert db_session.get(SavedDestination, id_to_keep) is not None
->>>>>>> QuiV2

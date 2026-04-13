@@ -61,42 +61,18 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="RiskRadar API", version="1.0.0", lifespan=lifespan)
 
 # --- CORS middleware -------------------------------------------------------
-<<<<<<< HEAD
 origins_raw = settings.CORS_ALLOWED_ORIGINS.strip()
 if origins_raw == "*":
-  cors_origins = ["*"]
+    cors_origins = ["*"]
 else:
-  cors_origins = [origin.strip() for origin in origins_raw.split(",") if origin.strip()]
+    cors_origins = [origin.strip() for origin in origins_raw.split(",") if origin.strip()]
 
 app.add_middleware(
     CORSMiddleware,
-  allow_origins=cors_origins,
+    allow_origins=cors_origins,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-=======
-# Allows the React Native app and web frontend to call the API.
-# Includes the machine's LAN IP so physical Expo devices on the same
-# network are not blocked.  Add your production domain when deploying.
-_cors_origins = [
-    "http://localhost:8081",       # Expo web dev
-    "http://localhost:19006",      # Expo web alt port
-    "http://localhost:8000",       # Backend HTML frontend
-    "http://127.0.0.1:8000",
-]
-
-_lan_ip = _get_local_ip()
-if _lan_ip:
-    _cors_origins.append(f"http://{_lan_ip}:8081")
-    _cors_origins.append(f"http://{_lan_ip}:8000")
-    _cors_origins.append(f"http://{_lan_ip}:19006")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=_cors_origins,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type"],
-    allow_credentials=True,
->>>>>>> QuiV2
 )
 
 # --- Static files (CSS, JS) -----------------------------------------------

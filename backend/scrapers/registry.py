@@ -129,7 +129,6 @@ def load_all_scrapers() -> list[dict]:
             continue
         if llm_provider not in {"openrouter", "openai", "deepseek", "anthropic"}:
             logger.info(
-<<<<<<< HEAD
                 "Skipping web source '%s': unsupported LLM_PROVIDER '%s'",
                 web_cfg['name'],
                 llm_provider,
@@ -139,9 +138,6 @@ def load_all_scrapers() -> list[dict]:
             logger.info(
                 "Skipping web source '%s': LLM_API_KEY or OPENROUTER_API_KEY not set",
                 web_cfg['name']
-=======
-                f"Skipping web source '{web_cfg['name']}': LLM_API_KEY not set"
->>>>>>> QuiV2
             )
             continue
 

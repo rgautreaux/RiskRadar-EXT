@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-from pydantic import BaseModel, ConfigDict, Field, field_validator
-from typing import Literal, Optional
-=======
-from pydantic import BaseModel, ConfigDict, field_validator, EmailStr
+from pydantic import BaseModel, ConfigDict, Field, field_validator, EmailStr
 
 """
 Pydantic schemas for the User resource.
@@ -11,8 +7,7 @@ These schemas validate request bodies and shape response payloads
 for the /api/v1/users/* endpoints.
 """
 
-from typing import Optional
->>>>>>> QuiV2
+from typing import Literal, Optional
 from datetime import datetime
 import re
 
@@ -24,26 +19,10 @@ ALERT_TYPE_VALUES = ("all", "weather", "air_quality", "wildfire", "pollution", "
 
 class UserCreate(BaseModel):
     """POST /users/register — required fields to create an account."""
-<<<<<<< HEAD
     display_name: str = Field(min_length=1, max_length=120)
-    email: str
+    email: EmailStr
     password: str = Field(min_length=6)
     zip_code: Optional[str] = Field(default=None, pattern=ZIP_PATTERN)
-
-    @field_validator("email")
-    @classmethod
-    def validate_email(cls, value: str) -> str:
-        # Keep validation lightweight and dependency-free for test environments.
-        normalized = value.strip().lower()
-        if not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", normalized):
-            raise ValueError("Invalid email format")
-        return normalized
-=======
-    display_name: str
-    email: EmailStr
-    password: str
-    zip_code: Optional[str] = None
->>>>>>> QuiV2
 
     @field_validator("password")
     @classmethod

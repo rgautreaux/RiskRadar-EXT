@@ -1,22 +1,18 @@
 """Create all database tables. Safe to run multiple times — only creates missing tables."""
 
-<<<<<<< HEAD
 import sys
+import sqlite3
 from pathlib import Path
 
 BACKEND_DIR = Path(__file__).resolve().parents[1]
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
-=======
-import sqlite3
->>>>>>> QuiV2
 
 from db.database import engine, Base
 from db.models import (
     Alert,
     AlertArchive,
     CleanupRun,
-    MigrationLog,
     NotificationDispatchLog,
     ScrapeLog,
     ScrapeLogArchive,
@@ -29,7 +25,6 @@ REGISTERED_MODELS = (
     Alert,
     AlertArchive,
     CleanupRun,
-    MigrationLog,
     NotificationDispatchLog,
     ScrapeLog,
     ScrapeLogArchive,
