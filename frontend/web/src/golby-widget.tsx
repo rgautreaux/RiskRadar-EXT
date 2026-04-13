@@ -1,8 +1,5 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import '../public/assets/theme_tokens.css';
-import '../public/assets/theme.css';
-import '../public/assets/app.css';
 import './golby-widget.css';
 import { GolbyAssistantWidget } from '../components/golby/GolbyAssistantWidget';
 

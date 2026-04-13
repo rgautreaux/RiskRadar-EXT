@@ -1,0 +1,11 @@
+{
+  "frontend/web/src/golby-widget.tsx": {
+    "file": "golby-widget.js",
+    "name": "golby-widget",
+    "src": "frontend/web/src/golby-widget.tsx",
+    "isEntry": true,
+    "css": [
+      "golby-widget.css"
+    ]
+  }
+}
