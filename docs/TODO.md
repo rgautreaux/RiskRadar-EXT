@@ -341,6 +341,16 @@ Summary:
 - Completed post-verification cleanup with `npm run demo:clean` to remove generated artifacts.
 - Updated top-level documentation for chronological and status alignment.
 
+#### Stage 5 Golby Operational Frontend Wiring and End-to-End Verification Session (2026-04-12)
+Summary:
+- Added a dedicated assistant frontend build pipeline using Vite (`npm run build:web`) and watch mode (`npm run build:web:watch`).
+- Added assistant bundle config (`frontend/web/vite.config.mjs`) and new bundle entry (`frontend/web/src/golby-widget.tsx`).
+- Added reusable widget component (`frontend/web/components/golby/GolbyAssistantWidget.tsx`) and bundle stylesheet (`frontend/web/src/golby-widget.css`).
+- Updated assistant page wiring to compiled assets (`/assets/golby-widget.js`, `/assets/golby-widget.css`) and removed scaffold-only messaging.
+- Added visible bootstrap failure fallback on assistant mount errors.
+- Expanded Playwright demo assistant step to verify actual interaction: open widget, send prompt, capture response, click feedback, validate guardrail reply.
+- Verification: `npm run build:web` ✅, `npm run verify:backend` ✅ (**211 passed** + smoke test), `npm run demo:setup` ✅, `node frontend/web/tests/demo/demo_journey.js --base-url http://127.0.0.1:8080` ✅ (**6/6 steps passed**), `npm run demo:report` ✅.
+
 #### Stage 5 Golby Personality Learning, Communication Controls, and Cross-Device Sync Session (2026-04-10)
 Summary:
 - Added persistent user-level `assistant_style_profile` to store Golby communication preferences over time.

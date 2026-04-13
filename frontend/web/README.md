@@ -94,7 +94,7 @@ It started as the CMPS 357 Stage 1 web extension and now includes:
 	- Calls `GET alerts/prioritized` with `user_id` and `limit`.
 	- Renders score, derived risk level, and prioritized alert preview.
 
-### Stage 3/4 Scaffolds
+### Stage 3/4 Extensions
 
 - `public/map.php` (Stage 3 scaffold)
 	- Placeholder for interactive map/layer workflow.
@@ -102,6 +102,7 @@ It started as the CMPS 357 Stage 1 web extension and now includes:
 	- Live 24-48 hour forecast output with confidence/trend summary cards and timeline rendering.
 - `public/assistant.php` (Stage 4 assistant integration)
 	- Golby assistant interface with context-aware answers and safety guardrail fallbacks.
+	- Uses compiled frontend bundle artifacts built by `npm run build:web`.
 
 ### Error and Fallback Pages
 
@@ -196,7 +197,19 @@ Defaults:
 php -S 127.0.0.1:8080 -t frontend/web/public
 ```
 
-3. Open `http://127.0.0.1:8080/index.php`.
+3. Build the Golby assistant frontend bundle from repository root:
+
+```powershell
+npm run build:web
+```
+
+For local rebuild-on-change during UI work:
+
+```powershell
+npm run build:web:watch
+```
+
+4. Open `http://127.0.0.1:8080/index.php`.
 
 If backend port `8000` is unavailable, set `RISKRADAR_API_BASE_URL` (for example to `http://127.0.0.1:8001`) or use `config/config.local.php`.
 
@@ -213,6 +226,7 @@ If backend port `8000` is unavailable, set `RISKRADAR_API_BASE_URL` (for example
 - Stage 2 kickoff web integration: implemented for risk and prioritization read paths.
 - Stage 3 interactive map: backend endpoints, API client, and frontend scaffold complete; dynamic Plotly rendering, overlays, and accessibility features in progress (see below).
 - Stage 4 forecast + assistant: forecast backend/live timeline and assistant backend prompt/data integration are implemented and verified.
+- Assistant frontend runtime now uses compiled Golby bundle assets rather than raw source imports.
 
 ## Related Docs
 

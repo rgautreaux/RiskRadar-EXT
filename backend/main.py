@@ -26,11 +26,27 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="RiskRadar API", version="1.0.0", lifespan=lifespan)
 
-allowed_origins = [
-    origin.strip()
-    for origin in settings.CORS_ALLOWED_ORIGINS.split(",")
-    if origin.strip()
+_DEFAULT_LOCAL_ORIGINS = [
+    "http://127.0.0.1:8080",
+    "http://localhost:8080",
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
 ]
+
+
+def _parse_allowed_origins(raw_origins: str) -> list[str]:
+    origins = [origin.strip() for origin in raw_origins.split(",") if origin.strip()]
+    if origins:
+        return origins
+
+    logging.getLogger(__name__).warning(
+        "CORS_ALLOWED_ORIGINS was empty; falling back to default local development origins"
+    )
+    return _DEFAULT_LOCAL_ORIGINS
+
+
+allowed_origins = _parse_allowed_origins(settings.CORS_ALLOWED_ORIGINS)
+logging.getLogger(__name__).info("Configured CORS allowed origins: %s", ", ".join(allowed_origins))
 
 app.add_middleware(
     CORSMiddleware,

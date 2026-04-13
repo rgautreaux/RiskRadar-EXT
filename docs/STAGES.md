@@ -3,6 +3,34 @@
 - Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
 - Historical lower totals in older session entries are retained intentionally as time-stamped snapshots.
 
+## Stage 5: Golby Operational Frontend Wiring and End-to-End Verification Session (2026-04-12)
+
+### Implementation
+Completed the assistant frontend operationalization by replacing scaffold-time raw module loading with a production build pipeline and wiring the PHP assistant page to compiled Golby assets.
+
+### Functionality
+- Added frontend build scripts in root package.json: `build:web` and `build:web:watch`.
+- Added `frontend/web/vite.config.mjs` to compile the assistant entry into `frontend/web/public/assets` with stable filenames.
+- Added runtime entry and styles at `frontend/web/src/golby-widget.tsx` and `frontend/web/src/golby-widget.css`.
+- Added reusable assistant widget component at `frontend/web/components/golby/GolbyAssistantWidget.tsx`.
+- Updated `frontend/web/views/assistant.php` to load `/assets/golby-widget.js` and `/assets/golby-widget.css`.
+- Replaced scaffold-only assistant messaging with operational guidance and a JavaScript-disabled fallback message.
+- Expanded demo assistant verification in `frontend/web/tests/demo/demo_journey.js` to assert interaction (open widget, send message, feedback click, guardrail response).
+
+### Verification Evidence
+- ✅ `npm run build:web` succeeded and generated non-empty `golby-widget.js` and `golby-widget.css`.
+- ✅ `npm run verify:backend` passed: **211 passed**, smoke test passed.
+- ✅ `npm run demo:setup` succeeded and seeded fresh deterministic demo data.
+- ✅ Interactive demo journey passed against live PHP + backend runtime:
+   - `node frontend/web/tests/demo/demo_journey.js --base-url http://127.0.0.1:8080`
+   - Result: **6/6 steps passed** with assistant interaction screenshots (`06a`, `06b`, `06c`).
+- ✅ `npm run demo:report` generated `static/evidence/DEMO_REPORT.md`.
+
+### Importance
+- Removes the silent assistant failure mode caused by loading raw JSX/TSX source in the browser.
+- Establishes a repeatable build/deploy workflow for Golby assets.
+- Adds evidence-grade E2E checks that validate assistant behavior, not just page-load scaffolding.
+
 ## Stage 5: Frontend Contrast Accessibility Final Pass and Documentation Synchronization Session (2026-04-12)
 
 ### Implementation
