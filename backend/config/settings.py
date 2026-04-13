@@ -33,6 +33,7 @@ class Settings(BaseSettings):
     FIRECRAWL_API_KEY: str = ""
     OpenAQ_API_KEY: str = ""
     OPENWEATHER_API_KEY: str = ""
+    GOOGLE_POLLEN_API_KEY: str = ""
 
     # --- App Defaults ---
     DEFAULT_ZIP_CODE: str = "90001"

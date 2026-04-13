@@ -1,273 +1,459 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  StyleSheet,
-  TouchableOpacity,
-  SafeAreaView,
   View,
-} from "react-native";
-import { useRouter } from "expo-router";
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  Platform,
+  StatusBar,
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
-import { PrimaryButton } from '@/components/ui/PrimaryButton';
-
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Colors, Spacing, Radius, Shadows } from '@/constants/theme';
+import { useRouter, Redirect } from 'expo-router';
+import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/auth-context';
+import { apiFetch } from '@/utils/api';
+import { StateView } from '@/components/ui/state-view';
+
+interface AlertStats {
+  total: number;
+  by_type: Record<string, number>;
+  by_severity: Record<string, number>;
+}
+
+interface Summary {
+  id: number;
+  title: string;
+  content: string;
+  summary_type: string;
+  region: string | null;
+  generated_at: string;
+}
+
+const DEMO_SETTINGS_KEY = 'riskradar_demo_settings';
 
 export default function HomeScreen() {
   const router = useRouter();
   const scheme = useColorScheme() ?? 'light';
   const palette = Colors[scheme];
-  const { isLoggedIn, logout } = useAuth();
+  const styles = getStyles(palette);
+  const { user, isLoggedIn, isGuest } = useAuth();
+  const [zipCode, setZipCode] = useState(user?.zip_code ?? '');
+  const [stats, setStats] = useState<AlertStats | null>(null);
+  const [summary, setSummary] = useState<Summary | null>(null);
+  const [loadingStats, setLoadingStats] = useState(true);
+  const [loadingSummary, setLoadingSummary] = useState(true);
+  const [errorStats, setErrorStats] = useState<string | null>(null);
+  const [errorSummary, setErrorSummary] = useState<string | null>(null);
+  const shouldRedirect = !isLoggedIn && !isGuest;
 
-  const handleLogin = () => {
-    router.push("/auth/login");
-  };
+  useEffect(() => {
+    if (user?.zip_code) setZipCode(user.zip_code);
+  }, [user?.zip_code]);
 
-  const handleCreateAccount = () => {
-    router.push("/auth/registration");
-  };
+  useEffect(() => {
+    if (shouldRedirect || user?.zip_code) {
+      return;
+    }
 
-  const handleGuest = () => {
-    router.push("/main/home");
-  };
+    (async () => {
+      try {
+        const stored = await AsyncStorage.getItem(DEMO_SETTINGS_KEY);
+        if (!stored) {
+          return;
+        }
 
-  const handleLogout = async () => {
-    await logout();
-  };
+        const parsed = JSON.parse(stored) as { zipCode?: string };
+        if (parsed.zipCode) {
+          setZipCode(parsed.zipCode);
+        }
+      } catch {
+        // Keep the dashboard usable even if saved demo settings cannot be restored.
+      }
+    })();
+  }, [user?.zip_code, shouldRedirect]);
 
-  // If logged in, go straight to main home
-  if (isLoggedIn) {
-    return (
-      <ThemedView surface="card" style={styles.safeArea}>
-        <SafeAreaView style={styles.safeAreaContainer}>
-          <View style={styles.container}>
-            <View style={styles.heroContainer}>
-              <View style={styles.iconWrapper}>
-                <View style={[styles.iconBackground, { backgroundColor: palette.secondary }]}>
-                  <Ionicons name="radio-outline" size={64} color={palette.primary} />
-                </View>
-                <View style={[styles.pulseRing, { borderColor: palette.secondary }]} />
-              </View>
-              <ThemedText type="hero" style={styles.title}>
-                Risk<ThemedText type="hero" lightColor={palette.primary} darkColor={palette.primary}>Radar</ThemedText>
-              </ThemedText>
-              <ThemedText
-                type="body"
-                lightColor={palette.textSecondary}
-                darkColor={palette.textSecondary}
-                style={styles.subtitle}
-              >
-                Stay aware. Stay prepared.
-              </ThemedText>
-            </View>
-            <View style={styles.actionContainer}>
-              <TouchableOpacity
-                style={[styles.primaryButton, { backgroundColor: palette.primary, shadowColor: palette.primary }]}
-                onPress={() => router.push("/main/home")}
-                activeOpacity={0.8}
-              >
-                <Ionicons name="home-outline" size={20} color={palette.white} style={styles.buttonIcon} />
-                <ThemedText type="cardTitle" lightColor={palette.white} darkColor={palette.white}>
-                  Go to Dashboard
-                </ThemedText>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.secondaryButton, { backgroundColor: palette.secondary }]}
-                onPress={handleLogout}
-                activeOpacity={0.6}
-              >
-                <Ionicons name="log-out-outline" size={20} color={palette.primary} style={styles.buttonIcon} />
-                <ThemedText type="cardTitle" lightColor={palette.primary} darkColor={palette.primary}>
-                  Log Out
-                </ThemedText>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </SafeAreaView>
-      </ThemedView>
-    );
+  useEffect(() => {
+    if (shouldRedirect) return;
+
+    (async () => {
+      try {
+        setErrorStats(null);
+        const data = await apiFetch<AlertStats>('/alerts/stats');
+        setStats(data);
+      } catch {
+        setErrorStats('Failed to load risk assessment data');
+      }
+      finally { setLoadingStats(false); }
+    })();
+
+    (async () => {
+      try {
+        setErrorSummary(null);
+        const data = await apiFetch<Summary | null>('/summaries/latest');
+        setSummary(data);
+      } catch {
+        setErrorSummary('Failed to load latest summary');
+      }
+      finally { setLoadingSummary(false); }
+    })();
+  }, [shouldRedirect]);
+
+  // Redirect to welcome if not logged in and not a guest
+  if (shouldRedirect) {
+    return <Redirect href="/welcome" />;
   }
 
+  const handleSearch = () => {
+    if (zipCode.length === 5) {
+      router.push({ pathname: '/main/weather-report', params: { zipCode } });
+    }
+  };
+
+  const displayName = isLoggedIn ? (user?.display_name ?? 'User') : 'Guest';
+
   return (
-    <ThemedView surface="card" style={styles.safeArea}>
-      <SafeAreaView style={styles.safeAreaContainer}>
-        <View style={styles.container}>
-          
-          {/* Main Hero Branding Section */}
-          <View style={styles.heroContainer}>
-            <View style={styles.iconWrapper}>
-              <View style={[styles.iconBackground, { backgroundColor: palette.secondary }]}>
-                <Ionicons name="radio-outline" size={64} color={palette.primary} />
-              </View>
-              <View style={[styles.pulseRing, { borderColor: palette.secondary }]} />
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'} backgroundColor={palette.background} />
+
+      {/* Header */}
+      <View style={styles.header}>
+        <View>
+          <Text style={styles.greeting}>Welcome, {displayName}</Text>
+          <Text style={styles.headerSubtitle}>Stay ahead of the weather</Text>
+        </View>
+        <View style={styles.headerActions}>
+          <TouchableOpacity
+            style={styles.settingsButton}
+            onPress={() => router.push('/main/settings')}
+          >
+            <Ionicons name="settings-outline" size={24} color={palette.textSecondary} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.profileButton}
+            onPress={() => !isLoggedIn ? router.push('/auth/login') : router.push('/main/settings')}
+          >
+            <Ionicons name={!isLoggedIn ? 'log-in-outline' : 'person-circle-outline'} size={28} color={palette.primary} />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        {/* Search Section */}
+        <View style={styles.searchSection}>
+          <Text style={styles.sectionTitle}>Check Location Risk</Text>
+          <Text style={styles.sectionSubtitle}>
+            {!isLoggedIn
+              ? 'Enter a zip code to see current weather and risk reports.'
+              : 'Showing your home location. Enter a different zip code to check another area.'}
+          </Text>
+
+          <View style={styles.searchContainer}>
+            <View style={styles.inputWrapper}>
+              <Ionicons name="location-outline" size={20} color={palette.textSecondary} style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                placeholder="Enter 5-digit Zip Code"
+                placeholderTextColor={palette.textSecondary}
+                keyboardType="number-pad"
+                maxLength={5}
+                value={zipCode}
+                onChangeText={setZipCode}
+              />
             </View>
-            <ThemedText type="hero" style={styles.title}>
-              Risk<ThemedText type="hero" lightColor={palette.primary} darkColor={palette.primary}>Radar</ThemedText>
-            </ThemedText>
-            <ThemedText 
-              type="body" 
-              lightColor={palette.textSecondary}
-              darkColor={palette.textSecondary}
-              style={styles.subtitle}
+            <TouchableOpacity
+              style={[styles.searchButton, zipCode.length !== 5 && styles.searchButtonDisabled]}
+              onPress={handleSearch}
+              disabled={zipCode.length !== 5}
             >
-              Stay aware. Stay prepared.
-            </ThemedText>
-          </View>
-
-          {/* Action Buttons */}
-          <View style={styles.actionContainer}>
-            <PrimaryButton
-              label="Log In"
-              onPress={handleLogin}
-              leftIcon={<Ionicons name="log-in-outline" size={20} color={palette.white} style={styles.buttonIcon} />}
-            />
-
-            <PrimaryButton
-              label="Create Account"
-              onPress={handleCreateAccount}
-              leftIcon={<Ionicons name="person-add-outline" size={20} color={palette.primary} style={styles.buttonIcon} />}
-              style={{ backgroundColor: palette.secondary }}
-              textStyle={{ color: palette.primary }}
-            />
-          </View>
-
-          {/* Footer / Guest Mode */}
-          <View style={styles.footerContainer}>
-            <View style={styles.dividerContainer}>
-              <View style={[styles.divider, { backgroundColor: palette.border }]} />
-              <ThemedText 
-                type="eyebrow" 
-                lightColor={palette.textSecondary}
-                darkColor={palette.textSecondary}
-                style={styles.dividerText}
-              >
-                OR
-              </ThemedText>
-              <View style={[styles.divider, { backgroundColor: palette.border }]} />
-            </View>
-
-            <TouchableOpacity 
-              style={styles.guestButton} 
-              onPress={handleGuest}
-              activeOpacity={0.6}
-            >
-              <ThemedText 
-                type="body"
-                lightColor={palette.textSecondary}
-                darkColor={palette.textSecondary}
-              >
-                Continue as Guest
-              </ThemedText>
-              <Ionicons name="arrow-forward" size={16} color={palette.textSecondary} style={styles.guestIcon} />
+              <Ionicons name="search" size={20} color={palette.white} />
             </TouchableOpacity>
           </View>
-
         </View>
-      </SafeAreaView>
-    </ThemedView>
+
+        {/* Latest Summary Card */}
+        <TouchableOpacity
+          style={styles.card}
+          onPress={() => router.push({ pathname: '/main/weather-report', params: { zipCode: zipCode || 'Unknown Location' } })}
+        >
+          <View style={styles.cardHeader}>
+            <View style={styles.cardIconBox}>
+              <Ionicons name="partly-sunny" size={24} color="#F59E0B" />
+            </View>
+            <Text style={styles.cardTitle}>Latest Summary</Text>
+          </View>
+
+          <StateView
+            state={loadingSummary ? 'loading' : errorSummary ? 'error' : summary ? 'success' : 'empty'}
+            loadingText="Loading summary..."
+            emptyText={zipCode.length === 5 ? `No summary available for ${zipCode}` : 'Enter a zip code to see summaries'}
+            emptyIcon="document-outline"
+            errorText={errorSummary || 'Failed to load summary'}
+            onRetry={() => {
+              setLoadingSummary(true);
+              setErrorSummary(null);
+              (async () => {
+                try {
+                  const data = await apiFetch<Summary | null>('/summaries/latest');
+                  setSummary(data);
+                } catch {
+                  setErrorSummary('Failed to load latest summary');
+                } finally {
+                  setLoadingSummary(false);
+                }
+              })();
+            }}
+          >
+            <View style={styles.summaryBox}>
+              <Text style={styles.summaryTitle}>{summary?.title}</Text>
+              <Text style={styles.summaryText} numberOfLines={3}>{summary?.content}</Text>
+              <Text style={styles.summaryMeta}>
+                Generated {summary ? new Date(summary.generated_at).toLocaleDateString() : ''}
+              </Text>
+            </View>
+          </StateView>
+        </TouchableOpacity>
+
+        {/* Risk Assessment Card */}
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <View style={[styles.cardIconBox, { backgroundColor: '#FEE2E2' }]}>
+              <Ionicons name="warning-outline" size={24} color={palette.danger} />
+            </View>
+            <Text style={styles.cardTitle}>Risk Assessment</Text>
+          </View>
+
+          <StateView
+            state={loadingStats ? 'loading' : errorStats ? 'error' : stats ? 'success' : 'empty'}
+            loadingText="Loading risk data..."
+            emptyText="No risk data available"
+            emptyIcon="stats-chart-outline"
+            errorText={errorStats || 'Failed to load risk data'}
+            onRetry={() => {
+              setLoadingStats(true);
+              setErrorStats(null);
+              (async () => {
+                try {
+                  const data = await apiFetch<AlertStats>('/alerts/stats');
+                  setStats(data);
+                } catch {
+                  setErrorStats('Failed to load risk assessment data');
+                } finally {
+                  setLoadingStats(false);
+                }
+              })();
+            }}
+          >
+            <View style={styles.statsContainer}>
+              <View style={styles.statRow}>
+                <Text style={styles.statLabel}>Total Active Alerts</Text>
+                <Text style={styles.statValue}>{stats?.total}</Text>
+              </View>
+              {stats && Object.entries(stats.by_severity).map(([severity, count]) => (
+                <View key={severity} style={styles.statRow}>
+                  <Text style={styles.statLabel}>{severity}</Text>
+                  <Text style={styles.statValue}>{count}</Text>
+                </View>
+              ))}
+            </View>
+          </StateView>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
-  safeAreaContainer: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: Spacing.md,
-    paddingTop: 60,
-    paddingBottom: 40,
-  },
-  heroContainer: {
-    alignItems: "center",
-    marginTop: 40,
-  },
-  iconWrapper: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: Spacing.xl,
-    position: 'relative',
-  },
-  iconBackground: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 2,
-  },
-  pulseRing: {
-    position: 'absolute',
-    width: 140,
-    height: 140,
-    borderRadius: 70,
-    borderWidth: 2,
-    zIndex: 1,
-  },
-  title: {
-    marginBottom: Spacing.sm,
-    letterSpacing: -1,
-  },
-  subtitle: {
-    textAlign: "center",
-  },
-  actionContainer: {
-    width: '100%',
-    paddingHorizontal: Spacing.sm,
-  },
-  primaryButton: {
-    flexDirection: 'row',
-    width: "100%",
-    height: 56,
-    borderRadius: Radius.button,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: Spacing.md,
-    ...Shadows.card,
-  },
-  buttonIcon: {
-    marginRight: Spacing.sm,
-  },
-  secondaryButton: {
-    flexDirection: 'row',
-    width: "100%",
-    height: 56,
-    borderRadius: Radius.button,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  footerContainer: {
-    width: '100%',
-    alignItems: 'center',
-  },
-  dividerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '80%',
-    marginBottom: Spacing.lg,
-  },
-  divider: {
-    flex: 1,
-    height: 1,
-  },
-  dividerText: {
-    paddingHorizontal: Spacing.md,
-  },
-  guestButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.md,
-  },
-  guestIcon: {
-    marginLeft: Spacing.xs,
-    marginTop: 2,
-  },
-});
+function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
+  return StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: palette.background,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: 24,
+      paddingTop: Platform.OS === 'android' ? 16 : 0,
+      paddingBottom: 16,
+      backgroundColor: palette.card,
+      borderBottomWidth: 1,
+      borderBottomColor: palette.border,
+    },
+    greeting: {
+      fontSize: 24,
+      fontWeight: '700',
+      color: palette.text,
+    },
+    headerSubtitle: {
+      fontSize: 14,
+      color: palette.textSecondary,
+      marginTop: 2,
+    },
+    headerActions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    settingsButton: {
+      width: 44,
+      height: 44,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginRight: 8,
+    },
+    profileButton: {
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+      backgroundColor: palette.secondary,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    scrollContent: {
+      padding: 24,
+      paddingBottom: 40,
+    },
+    searchSection: {
+      marginBottom: 32,
+    },
+    sectionTitle: {
+      fontSize: 20,
+      fontWeight: '700',
+      color: palette.text,
+      marginBottom: 8,
+    },
+    sectionSubtitle: {
+      fontSize: 14,
+      color: palette.textSecondary,
+      marginBottom: 16,
+      lineHeight: 20,
+    },
+    searchContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    inputWrapper: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: palette.card,
+      borderWidth: 1,
+      borderColor: palette.border,
+      borderRadius: 16,
+      height: 56,
+      paddingHorizontal: 16,
+      marginRight: 12,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.05,
+      shadowRadius: 2,
+      elevation: 2,
+    },
+    inputIcon: {
+      marginRight: 12,
+    },
+    input: {
+      flex: 1,
+      fontSize: 16,
+      color: palette.text,
+      height: '100%',
+    },
+    searchButton: {
+      width: 56,
+      height: 56,
+      backgroundColor: palette.primary,
+      borderRadius: 16,
+      justifyContent: 'center',
+      alignItems: 'center',
+      shadowColor: palette.primary,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+      shadowRadius: 4.65,
+      elevation: 8,
+    },
+    searchButtonDisabled: {
+      backgroundColor: palette.textSecondary,
+      shadowOpacity: 0,
+      elevation: 0,
+    },
+    card: {
+      backgroundColor: palette.card,
+      borderRadius: 24,
+      padding: 20,
+      marginBottom: 20,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.05,
+      shadowRadius: 12,
+      elevation: 4,
+      borderWidth: 1,
+      borderColor: palette.border,
+    },
+    cardHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 16,
+    },
+    cardIconBox: {
+      width: 48,
+      height: 48,
+      borderRadius: 16,
+      backgroundColor: '#FEF3C7',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginRight: 12,
+    },
+    cardTitle: {
+      fontSize: 18,
+      fontWeight: '700',
+      color: palette.text,
+    },
+    summaryBox: {
+      backgroundColor: palette.surfaceMuted,
+      borderRadius: 16,
+      padding: 16,
+    },
+    summaryTitle: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: palette.text,
+      marginBottom: 8,
+    },
+    summaryText: {
+      fontSize: 14,
+      lineHeight: 20,
+      color: palette.textSecondary,
+    },
+    summaryMeta: {
+      fontSize: 12,
+      color: palette.textSecondary,
+      marginTop: 8,
+    },
+    statsContainer: {
+      backgroundColor: palette.surfaceMuted,
+      borderRadius: 16,
+      padding: 16,
+    },
+    statRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingVertical: 8,
+      borderBottomWidth: 1,
+      borderBottomColor: palette.border,
+    },
+    statLabel: {
+      fontSize: 14,
+      color: palette.textSecondary,
+      textTransform: 'capitalize',
+    },
+    statValue: {
+      fontSize: 14,
+      fontWeight: '700',
+      color: palette.text,
+    },
+  });
+}

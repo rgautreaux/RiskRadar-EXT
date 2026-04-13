@@ -15,6 +15,7 @@ import { ThemedText } from '@/components/themed-text';
 import { Colors, Spacing, Radius, Shadows } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { apiFetch } from '@/utils/api';
+import { useAuth } from '@/contexts/auth-context';
 import { RiskCard } from '@/components/risk-card';
 import { SectionHeader } from '@/components/section-header';
 import { HazardChip } from '@/components/hazard-chip';
@@ -112,6 +113,7 @@ interface AlertItem {
 export default function AlertsScreen() {
   const scheme = useColorScheme() ?? 'light';
   const palette = Colors[scheme];
+  const { user } = useAuth();
   const [alerts, setAlerts] = useState<AlertItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -122,9 +124,24 @@ export default function AlertsScreen() {
     setActiveFilter(prev => prev === type ? null : type);
   };
 
+  // Prefetch location-based data (pollen, air quality) once on mount
+  const hasPrefetched = useRef(false);
+
   const fetchAlerts = useCallback(async () => {
     try {
       setError(null);
+
+      // On first load, hit the location endpoint to populate pollen + air quality in the DB
+      if (!hasPrefetched.current) {
+        const zip = user?.zip_code || '70506';
+        try {
+          await apiFetch<AlertItem[]>(`/location/alerts?zip_code=${zip}`);
+          hasPrefetched.current = true;
+        } catch {
+          // Ignore — we'll still try the regular alerts endpoint
+        }
+      }
+
       const data = await apiFetch<AlertItem[]>('/alerts/?limit=50');
       setAlerts(data);
     } catch {
@@ -133,7 +150,7 @@ export default function AlertsScreen() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [user?.zip_code]);
 
   useEffect(() => {
     fetchAlerts();

@@ -270,6 +270,74 @@ def _fetch_airnow(zip_code: str) -> list[dict]:
     return results
 
 
+# ── Google Pollen API on-demand fetch ───────────────────────────────
+
+_POLLEN_SEVERITY = {
+    "None": "low",
+    "Very Low": "low",
+    "Low": "low",
+    "Moderate": "moderate",
+    "High": "high",
+    "Very High": "critical",
+}
+
+
+def _fetch_pollen(lat: float, lon: float) -> list[dict]:
+    """Fetch pollen forecast from Google Pollen API for a location."""
+    api_key = settings.GOOGLE_POLLEN_API_KEY
+    if not api_key:
+        return []
+
+    url = "https://pollen.googleapis.com/v1/forecast:lookup"
+    params = {
+        "key": api_key,
+        "location.latitude": round(lat, 4),
+        "location.longitude": round(lon, 4),
+        "days": 1,
+    }
+
+    try:
+        resp = httpx.get(url, params=params, timeout=15)
+        resp.raise_for_status()
+        data = resp.json()
+    except Exception:
+        logger.exception("Google Pollen API fetch failed for lat=%s lon=%s", lat, lon)
+        return []
+
+    results = []
+    for day_info in data.get("dailyInfo", []):
+        date_obj = day_info.get("date", {})
+        date_str = f"{date_obj.get('year', 1970)}-{date_obj.get('month', 1):02d}-{date_obj.get('day', 1):02d}" if date_obj else ""
+
+        for pollen_type in day_info.get("pollenTypeInfo", []):
+            if not pollen_type.get("inSeason"):
+                continue
+
+            index_info = pollen_type.get("indexInfo", {})
+            display_name = pollen_type.get("displayName", "Pollen")
+            category = index_info.get("category", "Unknown")
+            value = index_info.get("value", 0)
+            description_text = index_info.get("indexDescription", "")
+
+            full_desc = f"{display_name} pollen: {category} (index {value}). {description_text}"
+
+            results.append({
+                "source": "google_pollen",
+                "source_id": f"pollen_{display_name.lower()}_{date_str}_{round(lat, 2)}_{round(lon, 2)}",
+                "alert_type": "pollen",
+                "severity": _POLLEN_SEVERITY.get(category, "moderate"),
+                "title": f"{display_name} Pollen: {category} ({value}/5)",
+                "description": full_desc,
+                "latitude": lat,
+                "longitude": lon,
+                "location_name": None,
+                "event_start": date_str or None,
+                "event_end": None,
+            })
+
+    return results
+
+
 # ── Endpoint ─────────────────────────────────────────────────────────
 
 @router.get("/alerts", response_model=list[AlertOut])
@@ -296,10 +364,10 @@ def get_alerts_for_location(
     else:
         raise HTTPException(status_code=400, detail="Provide either zip_code or lat+lon+state")
 
-    # Check for cached alerts near these coordinates (within ~50km box)
+    # Check for cached NWS/AirNow alerts near these coordinates (within ~50km box)
     ttl = settings.LOCATION_CACHE_TTL_MINUTES
     cutoff = datetime.now(timezone.utc) - timedelta(minutes=ttl)
-    cached = (
+    cached_weather = (
         db.query(Alert)
         .filter(
             Alert.fetched_at >= cutoff,
@@ -312,8 +380,45 @@ def get_alerts_for_location(
         .limit(limit)
         .all()
     )
-    if cached:
-        return cached
+
+    # Always fetch pollen (daily data, fast API, no rate-limit concern)
+    pollen_alerts: list[dict] = []
+    try:
+        pollen_alerts = _fetch_pollen(lat, lon)
+    except Exception:
+        logger.exception("Google Pollen fetch failed for lat=%s lon=%s", lat, lon)
+
+    # If we have fresh weather/AQ cache, combine with pollen and return
+    if cached_weather:
+        # Store any new pollen alerts in DB
+        pollen_stored = []
+        for alert_data in pollen_alerts:
+            existing = (
+                db.query(Alert)
+                .filter_by(source=alert_data["source"], source_id=alert_data["source_id"])
+                .first()
+            )
+            if existing:
+                pollen_stored.append(existing)
+            else:
+                alert = Alert(**alert_data)
+                db.add(alert)
+                pollen_stored.append(alert)
+        if pollen_alerts:
+            try:
+                db.commit()
+                for a in pollen_stored:
+                    db.refresh(a)
+            except IntegrityError:
+                db.rollback()
+                pollen_stored = []
+                for alert_data in pollen_alerts:
+                    existing = db.query(Alert).filter_by(
+                        source=alert_data["source"], source_id=alert_data["source_id"]
+                    ).first()
+                    if existing:
+                        pollen_stored.append(existing)
+        return list(cached_weather) + pollen_stored
 
     # No fresh cache — fetch from external APIs (graceful on failure)
     all_alerts: list[dict] = []
@@ -326,6 +431,7 @@ def get_alerts_for_location(
             all_alerts.extend(_fetch_airnow(zip_code))
         except Exception:
             logger.exception("AirNow fetch failed for zip=%s", zip_code)
+    all_alerts.extend(pollen_alerts)
 
     # Store in DB (dedup by source + source_id)
     stored = []

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -6,18 +6,32 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
+  Platform,
   StatusBar,
-  Image,
+  Animated,
+  ViewStyle,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { Colors, Spacing, Radius, Shadows, Typography, SafeArea } from '@/constants/theme';
+import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useAuth } from '@/contexts/auth-context';
 import { apiFetch } from '@/utils/api';
 import { StateView } from '@/components/ui/state-view';
 
-const brandLogo = require('@/assets/icons/branding/RiskRadar_STND_Logo.png');
+function FadeInView({ delay = 0, children, style }: { delay?: number; children: React.ReactNode; style?: ViewStyle }) {
+  const opacity = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(18)).current;
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      Animated.parallel([
+        Animated.timing(opacity, { toValue: 1, duration: 450, useNativeDriver: true }),
+        Animated.timing(translateY, { toValue: 0, duration: 450, useNativeDriver: true }),
+      ]).start();
+    }, delay);
+    return () => clearTimeout(timer);
+  }, []);
+  return <Animated.View style={[style, { opacity, transform: [{ translateY }] }]}>{children}</Animated.View>;
+}
 
 interface Summary {
   id: number;
@@ -39,43 +53,11 @@ interface AlertItem {
 }
 
 interface LocationInfo {
-  zip_code: string | null;
+  zip_code: string;
   city: string;
   state: string;
   latitude: number;
   longitude: number;
-}
-
-interface ForecastPeriod {
-  date: string;
-  day_name: string;
-  high_temp: number;
-  low_temp: number;
-  description: string;
-  weather_main: string;
-  icon_code: string;
-  wind_mph: number;
-  precip_chance: number;
-  humidity: number;
-  uvi: number;
-}
-
-function forecastIcon(weatherMain: string): keyof typeof Ionicons.glyphMap {
-  const w = weatherMain.toLowerCase();
-  if (w === 'thunderstorm') return 'thunderstorm-outline';
-  if (w === 'snow') return 'snow-outline';
-  if (w === 'rain' || w === 'drizzle') return 'rainy-outline';
-  if (w === 'atmosphere') return 'water-outline';
-  if (w === 'clouds') return 'cloudy-outline';
-  return 'sunny-outline';
-}
-
-function forecastIconColor(weatherMain: string, palette: typeof Colors.light): string {
-  const w = weatherMain.toLowerCase();
-  if (w === 'thunderstorm' || w === 'clouds') return palette.textSecondary;
-  if (w === 'snow' || w === 'rain' || w === 'drizzle') return palette.primary;
-  if (w === 'atmosphere') return palette.textSecondary;
-  return palette.warning;
 }
 
 export default function WeatherReport() {
@@ -83,147 +65,65 @@ export default function WeatherReport() {
   const scheme = useColorScheme() ?? 'light';
   const palette = Colors[scheme];
   const styles = getStyles(palette);
-  const { isLoggedIn } = useAuth();
   const params = useLocalSearchParams();
-  // Accept either "query" (new) or "zipCode" (legacy) param
-  const rawQuery = params.query ?? params.zipCode;
-  const query = (Array.isArray(rawQuery) ? rawQuery[0] : rawQuery ?? '').trim();
+  const rawZipCode = params.zipCode;
+  const zipCode = Array.isArray(rawZipCode) ? rawZipCode[0] : rawZipCode ?? 'Unknown Location';
 
   const [summary, setSummary] = useState<Summary | null>(null);
   const [alerts, setAlerts] = useState<AlertItem[]>([]);
   const [locationInfo, setLocationInfo] = useState<LocationInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isSaved, setIsSaved] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [forecast, setForecast] = useState<ForecastPeriod[]>([]);
 
-  const fetchData = async () => {
-    setError(null);
-    setLoading(true);
-    try {
-      if (!query || query.length < 2) {
-        setError('Please provide a valid city name or zip code.');
-        return;
-      }
+  const loadWeatherReport = async () => {
+    const isValidZip = zipCode.length === 5 && /^\d{5}$/.test(zipCode);
 
-      // Step 1: Resolve the query (city name or zip) to coordinates via /location/search
-      const loc = await apiFetch<LocationInfo>(
-        `/location/search?q=${encodeURIComponent(query)}`
-      );
-      setLocationInfo(loc);
-
-      // Step 2: Fetch alerts — use zip if available, otherwise use lat/lon/state
-      const alertsParam = loc.zip_code
-        ? `zip_code=${loc.zip_code}`
-        : `lat=${loc.latitude}&lon=${loc.longitude}&state=${loc.state}`;
-      const alertsPromise = apiFetch<AlertItem[]>(`/location/alerts?${alertsParam}`).catch(() => []);
-
-      // Step 3: Summaries — only zip-based endpoints are available, so use zip if we have one
-      const summaryPromises: [Promise<Summary | null>, Promise<Summary | null>] = loc.zip_code
-        ? [
-            apiFetch<Summary | null>(`/summaries/generate/local?zip_code=${loc.zip_code}`, { method: 'POST' }).catch(() => null),
-            apiFetch<Summary | null>(`/summaries/latest/local?zip_code=${loc.zip_code}`).catch(() => null),
-          ]
-        : [Promise.resolve(null), Promise.resolve(null)];
-
-      const [alertsData, generatedSummary, latestSummary] = await Promise.all([
-        alertsPromise,
-        ...summaryPromises,
-      ]);
-
-      const summaryToUse = generatedSummary ?? latestSummary ?? null;
-
-      setSummary(summaryToUse);
-      setAlerts(alertsData ?? []);
-
-      // Step 4: Fetch 7-day OpenWeatherMap forecast (fire-and-forget)
-      apiFetch<ForecastPeriod[]>(`/forecast?lat=${loc.latitude}&lon=${loc.longitude}`)
-        .then(periods => setForecast(periods))
-        .catch(() => {});
-
-      // Check if this location is already saved
-      if (isLoggedIn && loc) {
-        apiFetch<{ id: number; city: string; state: string }[]>('/users/destinations')
-          .then(destinations => {
-            const already = destinations.some(
-              d => d.city.toLowerCase() === loc.city.toLowerCase() && d.state === loc.state
-            );
-            setIsSaved(already);
-          })
-          .catch(() => {});
-      }
-    } catch {
-      setError('Failed to load weather report. Please check your connection.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleBookmark = async () => {
-    if (!isLoggedIn) {
-      router.push('/auth/login');
+    if (!isValidZip) {
+      setSummary(null);
+      setLocationInfo(null);
+      setAlerts([]);
+      setError('Please enter a valid 5-digit zip code.');
       return;
     }
-    if (!locationInfo || isSaved || isSaving) return;
-    setIsSaving(true);
-    try {
-      await apiFetch('/users/destinations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          city: locationInfo.city,
-          state: locationInfo.state,
-          zip_code: locationInfo.zip_code,
-          latitude: locationInfo.latitude,
-          longitude: locationInfo.longitude,
-        }),
-      });
-      setIsSaved(true);
-    } catch (err: any) {
-      // 409 = already saved, treat as success
-      if (err?.message?.includes('409')) {
-        setIsSaved(true);
-      }
-    } finally {
-      setIsSaving(false);
-    }
+
+    const [locInfo, alertsData, summaryData] = await Promise.all([
+      apiFetch<LocationInfo>(`/location/info?zip_code=${zipCode}`).catch(() => null),
+      apiFetch<AlertItem[]>(`/location/alerts?zip_code=${zipCode}`).catch(() => []),
+      apiFetch<Summary | null>(`/summaries/generate/local?zip_code=${zipCode}`, { method: 'POST' }).catch(() => null),
+    ]);
+
+    setSummary(summaryData);
+    setLocationInfo(locInfo);
+    setAlerts(alertsData ?? []);
   };
 
   useEffect(() => {
-    fetchData();
-  }, [query]);
+    (async () => {
+      try {
+        setError(null);
+        await loadWeatherReport();
+      } catch {
+        setError('Failed to load weather report. Please check your connection.');
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [zipCode]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" backgroundColor={palette.background} />
+      <StatusBar barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'} backgroundColor={palette.background} />
 
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel="Go back"
         >
           <Ionicons name="arrow-back" size={24} color={palette.text} />
         </TouchableOpacity>
-        <Image source={brandLogo} style={styles.headerLogo} resizeMode="contain" />
         <Text style={styles.headerTitle}>Weather Report</Text>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={handleBookmark}
-          disabled={isSaving}
-          accessibilityRole="button"
-          accessibilityLabel={isSaved ? 'Location saved' : 'Save location'}
-          accessibilityState={{ disabled: isSaving }}
-        >
-          <Ionicons
-            name={isSaved ? 'bookmark' : 'bookmark-outline'}
-            size={24}
-            color={isSaved ? palette.primary : palette.text}
-          />
-        </TouchableOpacity>
+        <View style={{ width: 44 }} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
@@ -231,22 +131,35 @@ export default function WeatherReport() {
           state={loading ? 'loading' : error ? 'error' : 'success'}
           loadingText="Loading weather report..."
           errorText={error || 'Failed to load report'}
-          onRetry={fetchData}
+          onRetry={() => {
+            setLoading(true);
+            setError(null);
+            // Retry the fetch
+            (async () => {
+              try {
+                await loadWeatherReport();
+              } catch {
+                setError('Failed to load weather report. Please check your connection.');
+              } finally {
+                setLoading(false);
+              }
+            })();
+          }}
         >
           {/* Location Header */}
-          <View style={styles.mainWeatherCard}>
+          <FadeInView delay={0} style={styles.mainWeatherCard}>
             <Text style={styles.locationText}>
               {locationInfo
-                ? `${locationInfo.city}, ${locationInfo.state}${locationInfo.zip_code ? ` ${locationInfo.zip_code}` : ''}`
-                : query}
+                ? `${locationInfo.city}, ${locationInfo.state} ${zipCode}`
+                : `Location: ${zipCode}`}
             </Text>
             <View style={styles.tempContainer}>
-              <Ionicons name="partly-sunny" size={80} color={palette.warning} />
+              <Ionicons name="partly-sunny" size={80} color="#F59E0B" />
             </View>
-          </View>
+          </FadeInView>
 
           {/* AI Summary */}
-          <View style={styles.section}>
+          <FadeInView delay={150} style={styles.section}>
             <Text style={styles.sectionTitle}>AI Summary</Text>
             <View style={styles.summaryCard}>
               {summary ? (
@@ -264,75 +177,42 @@ export default function WeatherReport() {
                 </Text>
               )}
             </View>
-          </View>
-
-          {/* 7-Day Forecast */}
-          {forecast.length > 0 && (
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>7-Day Forecast</Text>
-              <View style={styles.summaryCard}>
-                {forecast.map((period, i) => {
-                  const dayLabel = period.day_name.slice(0, 3);
-                  const icon = forecastIcon(period.weather_main);
-                  const iconColor = forecastIconColor(period.weather_main, palette);
-                  return (
-                    <React.Fragment key={i}>
-                      {i > 0 && <View style={styles.forecastDivider} />}
-                      <View style={styles.forecastRow}>
-                        <Text style={styles.forecastDay}>{dayLabel}</Text>
-                        <Ionicons name={icon} size={22} color={iconColor} />
-                        <Text style={styles.forecastDesc} numberOfLines={1}>{period.description}</Text>
-                        <View style={styles.forecastRight}>
-                          {period.precip_chance > 0 && (
-                            <Text style={styles.forecastPrecip}>
-                              <Ionicons name="water-outline" size={11} color={palette.primary} />{' '}
-                              {period.precip_chance}%
-                            </Text>
-                          )}
-                          <Text style={styles.forecastTemp}>
-                            {Math.round(period.high_temp)}° / {Math.round(period.low_temp)}°
-                          </Text>
-                        </View>
-                      </View>
-                    </React.Fragment>
-                  );
-                })}
-              </View>
-            </View>
-          )}
+          </FadeInView>
 
           {/* Active Alerts Summary */}
-          <View style={styles.section}>
+          <FadeInView delay={300} style={styles.section}>
             <Text style={styles.sectionTitle}>Recent Alerts</Text>
             {alerts.length > 0 ? (
-              alerts.map((alert) => (
-                <View key={alert.id} style={styles.alertRow}>
-                  <View style={[styles.severityDot, {
-                    backgroundColor: alert.severity.toLowerCase().includes('critical') || alert.severity.toLowerCase().includes('extreme')
-                      ? palette.danger
-                      : alert.severity.toLowerCase().includes('warning') || alert.severity.toLowerCase().includes('severe')
-                        ? palette.warning
-                        : palette.primary,
-                  }]} />
-                  <View style={styles.alertRowText}>
-                    <Text style={styles.alertTitle}>{alert.title}</Text>
-                    <Text style={styles.alertMeta}>{alert.alert_type} - {alert.severity}</Text>
+              alerts.map((alert, i) => (
+                <FadeInView key={alert.id} delay={400 + i * 80}>
+                  <View style={styles.alertRow}>
+                    <View style={[styles.severityDot, {
+                      backgroundColor: alert.severity.toLowerCase().includes('critical') || alert.severity.toLowerCase().includes('extreme')
+                        ? palette.danger
+                        : alert.severity.toLowerCase().includes('warning') || alert.severity.toLowerCase().includes('severe')
+                          ? palette.warning
+                          : palette.primary,
+                    }]} />
+                    <View style={styles.alertRowText}>
+                      <Text style={styles.alertTitle}>{alert.title}</Text>
+                      <Text style={styles.alertMeta}>{alert.alert_type} - {alert.severity}</Text>
+                    </View>
                   </View>
-                </View>
+                </FadeInView>
               ))
             ) : (
               <View style={styles.summaryCard}>
                 <Text style={styles.summaryText}>No active alerts for this area.</Text>
               </View>
             )}
-          </View>
+          </FadeInView>
         </StateView>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-function getStyles(palette: typeof Colors.light) {
+function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
   return StyleSheet.create({
     safeArea: {
       flex: 1,
@@ -342,9 +222,9 @@ function getStyles(palette: typeof Colors.light) {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingHorizontal: Spacing.md,
-      paddingTop: SafeArea.paddingTop,
-      paddingBottom: Spacing.md,
+      paddingHorizontal: 16,
+      paddingTop: Platform.OS === 'android' ? 16 : 0,
+      paddingBottom: 16,
       backgroundColor: palette.card,
       borderBottomWidth: 1,
       borderBottomColor: palette.border,
@@ -355,27 +235,24 @@ function getStyles(palette: typeof Colors.light) {
       justifyContent: 'center',
       alignItems: 'center',
     },
-    headerLogo: {
-      width: 32,
-      height: 32,
-    },
     headerTitle: {
-      ...Typography.subtitle,
-      flex: 1,
+      fontSize: 18,
+      fontWeight: '700',
       color: palette.text,
     },
     scrollContent: {
-      padding: Spacing.lg,
-      paddingBottom: Spacing.xxl,
+      padding: 24,
+      paddingBottom: 40,
     },
     mainWeatherCard: {
       alignItems: 'center',
-      marginBottom: Spacing.xl,
+      marginBottom: 32,
     },
     locationText: {
-      ...Typography.sectionLabel,
+      fontSize: 20,
+      fontWeight: '600',
       color: palette.text,
-      marginBottom: Spacing.md,
+      marginBottom: 16,
     },
     tempContainer: {
       flexDirection: 'row',
@@ -383,45 +260,49 @@ function getStyles(palette: typeof Colors.light) {
       justifyContent: 'center',
     },
     section: {
-      marginBottom: Spacing.lg,
+      marginBottom: 24,
     },
     sectionTitle: {
-      ...Typography.sectionLabel,
+      fontSize: 20,
+      fontWeight: '700',
       color: palette.text,
-      marginBottom: Spacing.sm,
+      marginBottom: 12,
     },
     summaryCard: {
       backgroundColor: palette.card,
-      borderRadius: Radius.lg,
-      padding: Spacing.md + 4,
-      ...Shadows.card,
+      borderRadius: 20,
+      padding: 20,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.05,
+      shadowRadius: 12,
+      elevation: 4,
       borderWidth: 1,
       borderColor: palette.border,
     },
     summaryHeading: {
-      ...Typography.cardHeading,
+      fontSize: 16,
       fontWeight: '700',
       color: palette.text,
-      marginBottom: Spacing.sm,
+      marginBottom: 8,
     },
     summaryText: {
-      ...Typography.body,
       fontSize: 16,
       lineHeight: 24,
       color: palette.textSecondary,
     },
     summaryMeta: {
-      ...Typography.meta,
+      fontSize: 12,
       color: palette.textSecondary,
-      marginTop: Spacing.sm,
+      marginTop: 12,
     },
     alertRow: {
       flexDirection: 'row',
       alignItems: 'center',
       backgroundColor: palette.card,
-      borderRadius: Radius.md,
-      padding: Spacing.md,
-      marginBottom: Spacing.sm,
+      borderRadius: 16,
+      padding: 16,
+      marginBottom: 10,
       borderWidth: 1,
       borderColor: palette.border,
     },
@@ -429,59 +310,21 @@ function getStyles(palette: typeof Colors.light) {
       width: 12,
       height: 12,
       borderRadius: 6,
-      marginRight: Spacing.sm,
+      marginRight: 12,
     },
     alertRowText: {
       flex: 1,
     },
     alertTitle: {
-      ...Typography.body,
+      fontSize: 15,
       fontWeight: '600',
       color: palette.text,
     },
     alertMeta: {
-      ...Typography.meta,
       fontSize: 13,
       color: palette.textSecondary,
       marginTop: 2,
       textTransform: 'capitalize',
-    },
-    forecastRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingVertical: Spacing.sm + 4,
-      gap: Spacing.sm,
-    },
-    forecastDivider: {
-      height: 1,
-      backgroundColor: palette.border,
-    },
-    forecastDay: {
-      ...Typography.meta,
-      fontSize: 14,
-      fontWeight: '600',
-      color: palette.text,
-      width: 72,
-    },
-    forecastDesc: {
-      flex: 1,
-      ...Typography.meta,
-      fontSize: 13,
-      color: palette.textSecondary,
-    },
-    forecastRight: {
-      alignItems: 'flex-end',
-    },
-    forecastTemp: {
-      ...Typography.body,
-      fontWeight: '700',
-      color: palette.text,
-    },
-    forecastPrecip: {
-      ...Typography.meta,
-      fontSize: 11,
-      color: palette.primary,
-      marginBottom: 2,
     },
   });
 }

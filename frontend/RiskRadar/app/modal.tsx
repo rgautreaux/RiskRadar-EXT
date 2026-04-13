@@ -12,13 +12,11 @@ import {
 import { useRouter } from 'expo-router';
 import React, { useState, useRef, useEffect } from 'react';
 
-
 import { ThemedText } from '@/components/themed-text';
 import { PrimaryButton } from '@/components/ui/PrimaryButton';
 import { ThemedView } from '@/components/themed-view';
 import { Colors, Spacing, Radius, Shadows } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-// Import notification panel art
 const alertNotifArt = require('@/assets/icons/navigation/RiskRadar_ALERT_NotifWindow.png');
 
 /**
@@ -83,8 +81,6 @@ export default function ModalScreen() {
                 { backgroundColor: palette.surfaceMuted },
               ]}
               activeOpacity={0.7}
-              accessibilityRole="button"
-              accessibilityLabel="Close alert details"
             >
               <ThemedText type="meta" lightColor={palette.text} darkColor={palette.text}>
                 ✕
@@ -318,7 +314,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.lg,
     paddingBottom: Spacing.lg,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.light.border,
+    borderBottomColor: 'rgba(0, 0, 0, 0.06)',
   },
   sectionTitle: {
     marginBottom: Spacing.md,

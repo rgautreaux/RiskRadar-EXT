@@ -37,7 +37,7 @@ export default function TabLayout() {
 
   const tabBarStyle = [
     styles.tabBar,
-    { backgroundColor: palette.primaryDark, borderTopColor: palette.primaryDark },
+    { backgroundColor: palette.card, borderTopColor: palette.border },
   ];
 
   return (
@@ -47,9 +47,9 @@ export default function TabLayout() {
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarShowLabel: true,
-        tabBarActiveTintColor: palette.white,
-        tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.6)',
-        tabBarActiveBackgroundColor: palette.primary,
+        tabBarActiveTintColor: palette.primary,
+        tabBarInactiveTintColor: palette.textSecondary,
+        tabBarActiveBackgroundColor: palette.secondary,
         tabBarStyle,
         tabBarItemStyle: styles.tabBarItem,
         tabBarLabelStyle: styles.tabBarLabel,
@@ -66,6 +66,13 @@ export default function TabLayout() {
         options={{
           title: 'Alerts',
           tabBarIcon: ({ color }) => <IconSymbol size={24} name="bell.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="saved"
+        options={{
+          title: 'Saved',
+          tabBarIcon: ({ color }) => <IconSymbol size={24} name="bookmark.fill" color={color} />,
         }}
       />
     </Tabs>

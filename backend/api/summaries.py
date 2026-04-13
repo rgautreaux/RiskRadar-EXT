@@ -1,9 +1,6 @@
-from datetime import datetime, timedelta, timezone
-
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
-from config.settings import settings
 from db.database import get_db
 from db.models import Alert, Summary
 from schemas.summary import SummaryOut
@@ -14,7 +11,7 @@ router = APIRouter(prefix="/summaries", tags=["Summaries"])
 @router.get("", response_model=list[SummaryOut])
 def list_summaries(
     summary_type: str | None = None,
-    limit: int = Query(default=20, le=200, ge=1),
+    limit: int = 20,
     db: Session = Depends(get_db),
 ):
     q = db.query(Summary)
@@ -35,11 +32,7 @@ def latest_local_summary(
 ):
     return (
         db.query(Summary)
-        .filter(
-            Summary.summary_type == "local",
-            Summary.region.isnot(None),
-            Summary.region.endswith(zip_code),
-        )
+        .filter(Summary.summary_type == "local", Summary.region.contains(zip_code))
         .order_by(Summary.generated_at.desc())
         .first()
     )
@@ -50,10 +43,7 @@ def generate_summary(db: Session = Depends(get_db)):
     from llm.summarizer import Summarizer
 
     summarizer = Summarizer()
-    try:
-        summary = summarizer.generate_daily_digest(db)
-    except Exception:
-        raise HTTPException(status_code=502, detail="Summary generation failed — LLM service may be unavailable")
+    summary = summarizer.generate_daily_digest(db)
     if not summary:
         raise HTTPException(status_code=404, detail="No alerts to summarize")
     return summary
@@ -63,24 +53,7 @@ def generate_local_summary(
     zip_code: str = Query(..., min_length=5, max_length=5, pattern=r"^\d{5}$"),
     db: Session = Depends(get_db),
 ):
-    # Return cached summary if one exists within the TTL
-    ttl = settings.LOCATION_CACHE_TTL_MINUTES
-    cutoff = datetime.now(timezone.utc) - timedelta(minutes=ttl)
-    cached = (
-        db.query(Summary)
-        .filter(
-            Summary.summary_type == "local",
-            Summary.region.isnot(None),
-            Summary.region.endswith(zip_code),
-            Summary.generated_at >= cutoff,
-        )
-        .order_by(Summary.generated_at.desc())
-        .first()
-    )
-    if cached:
-        return cached
-
-    from api.location import _zip_to_coords, _fetch_nws_alerts, _fetch_airnow
+    from api.location import _zip_to_coords, _fetch_nws_alerts, _fetch_airnow, _fetch_pollen
 
     location = _zip_to_coords(zip_code)
     if not location:
@@ -88,16 +61,8 @@ def generate_local_summary(
 
     lat, lon, city, state = location
 
-    # Fetch fresh alerts for this location (graceful on partial failure)
-    raw_alerts: list[dict] = []
-    try:
-        raw_alerts.extend(_fetch_nws_alerts(lat, lon, state))
-    except Exception:
-        pass  # NWS down — continue with AirNow data
-    try:
-        raw_alerts.extend(_fetch_airnow(zip_code))
-    except Exception:
-        pass  # AirNow down — continue with NWS data
+    # Fetch fresh alerts for this location
+    raw_alerts = _fetch_nws_alerts(lat, lon, state) + _fetch_airnow(zip_code) + _fetch_pollen(lat, lon)
 
     # Store in DB (dedup by source + source_id) and collect alert objects
     local_alerts: list[Alert] = []
@@ -123,8 +88,5 @@ def generate_local_summary(
     # Generate a location-specific summary via the LLM
     from llm.summarizer import Summarizer
     summarizer = Summarizer()
-    try:
-        summary = summarizer.generate_local_digest(db, local_alerts, city, state, zip_code)
-    except Exception:
-        raise HTTPException(status_code=502, detail="Summary generation failed — LLM service may be unavailable")
+    summary = summarizer.generate_local_digest(db, local_alerts, city, state, zip_code)
     return summary
