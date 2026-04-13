@@ -49,26 +49,25 @@ async def run_demo():
         # (Assumes dashboard loads after login)
         # Add more assertions/screenshots as needed
 
-        # 4. Zip-code search
-        await page.fill('input[name="zipcode"]', '12345')
-        await page.click('button:has-text("Search")')
-        await page.wait_for_selector('text=Weather Report')
-        await page.screenshot(path=screenshot_name("weather_report"))
+        # 4. Dashboard alerts overview
+        alerts_list = page.locator('#alerts-list')
+        await alerts_list.wait_for(state="visible")
+        await page.screenshot(path=screenshot_name("dashboard_alerts"))
 
         # 5. Alerts exploration
         await page.click('text=Alerts')
-        await page.wait_for_selector('text=Active Alerts')
+        await alerts_list.wait_for(state="visible")
         await page.screenshot(path=screenshot_name("alerts"))
 
-        # 6. Alert modal
-        await page.click('.alert-row')  # Adjust selector for an alert row
-        await page.wait_for_selector('.alert-modal')  # Adjust selector for modal
-        await page.screenshot(path=screenshot_name("alert_modal"))
-        await page.click('.alert-modal button:has-text("Close")')
+        # 6. Alert cards/details
+        alert_items = alerts_list.locator('> *')
+        if await alert_items.count() > 0:
+            await alert_items.first.scroll_into_view_if_needed()
+        await page.screenshot(path=screenshot_name("alert_details"))
 
         # 7. Settings & backend demo tools
         await page.click('text=Settings')
-        await page.wait_for_selector('text=Notification Preferences')
+        await page.wait_for_selector('text=Profile & Preferences')
         await page.screenshot(path=screenshot_name("settings"))
         # Optionally trigger health check/scrape and capture results
 
