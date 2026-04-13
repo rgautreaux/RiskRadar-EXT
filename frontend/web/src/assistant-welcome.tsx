@@ -2,8 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import './golby-widget.css';
 import { PageWelcome } from '../components/golby/PageWelcome';
-import { FloatingWidget } from '../components/golby/FloatingWidget';
-import { ChatInterface } from '../components/golby/ChatInterface';
+import { PageChat } from '../components/golby/PageChat';
 import { fetchCurrentUser } from '../components/golby/apiClient';
 
 const ASSISTANT_WELCOME_SEEN_KEY = 'golby-assistant-welcome-seen';
@@ -11,7 +10,6 @@ const ASSISTANT_WELCOME_SEEN_KEY = 'golby-assistant-welcome-seen';
 function AssistantPageWrapper() {
   const [showWelcome, setShowWelcome] = React.useState(true);
   const [welcomeSeen, setWelcomeSeen] = React.useState(false);
-  const [chatOpen, setChatOpen] = React.useState(false);
   const [pageContext] = React.useState('assistant');
   const [currentUserId, setCurrentUserId] = React.useState<number | undefined>(undefined);
   const [isAdmin, setIsAdmin] = React.useState(false);
@@ -48,43 +46,26 @@ function AssistantPageWrapper() {
     }
   }, []);
 
-  const handleChatOpen = React.useCallback(() => {
-    setChatOpen(true);
-  }, []);
-
-  const handleChatClose = React.useCallback(() => {
-    setChatOpen(false);
+  const handleBackToWelcome = React.useCallback(() => {
+    setShowWelcome(true);
+    try {
+      window.sessionStorage.removeItem(ASSISTANT_WELCOME_SEEN_KEY);
+    } catch {
+      // Ignore storage failures
+    }
   }, []);
 
   return (
     <>
-      {showWelcome && (
+      {showWelcome ? (
         <PageWelcome onGetStarted={handleGetStarted} />
-      )}
-      
-      {!showWelcome && (
-        <>
-          <FloatingWidget onOpen={handleChatOpen} />
-          {chatOpen && (
-            <div style={{ position: 'fixed', bottom: 100, right: 32, zIndex: 1000 }}>
-              <div style={{
-                background: 'rgba(255,255,255,0.98)',
-                borderRadius: 24,
-                boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
-                padding: 0,
-                minWidth: 360,
-                maxWidth: 400,
-              }}>
-                <ChatInterface
-                  onClose={handleChatClose}
-                  pageContext={pageContext}
-                  isAdmin={isAdmin}
-                  currentUserId={currentUserId}
-                />
-              </div>
-            </div>
-          )}
-        </>
+      ) : (
+        <PageChat
+          pageContext={pageContext}
+          isAdmin={isAdmin}
+          currentUserId={currentUserId}
+          onBack={handleBackToWelcome}
+        />
       )}
     </>
   );
