@@ -1,48 +1,69 @@
 {
-  "startedAt": "2026-04-11T16:53:40.217Z",
+  "startedAt": "2026-04-13T04:17:51.478Z",
   "baseUrl": "http://127.0.0.1:8080",
-  "headless": false,
+  "headless": true,
   "screenshots": [
     {
       "filename": "demo_01_dashboard.png",
-      "path": "C:\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_01_dashboard.png",
+      "path": "C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_01_dashboard.png",
       "description": "Dashboard Overview",
-      "capturedAt": "2026-04-11T16:53:41.837Z",
+      "capturedAt": "2026-04-13T04:17:52.611Z",
       "url": "http://127.0.0.1:8080/index.php"
     },
     {
       "filename": "demo_02_risk_scoring.png",
-      "path": "C:\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_02_risk_scoring.png",
+      "path": "C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_02_risk_scoring.png",
       "description": "Personalized Risk Scoring",
-      "capturedAt": "2026-04-11T16:53:42.410Z",
+      "capturedAt": "2026-04-13T04:17:53.345Z",
       "url": "http://127.0.0.1:8080/risk.php?user_id=2&radius_km=50"
     },
     {
       "filename": "demo_03_smart_alerts.png",
-      "path": "C:\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_03_smart_alerts.png",
+      "path": "C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_03_smart_alerts.png",
       "description": "Smart Alerts Prioritization",
-      "capturedAt": "2026-04-11T16:53:42.955Z",
+      "capturedAt": "2026-04-13T04:17:54.063Z",
       "url": "http://127.0.0.1:8080/smart_alerts.php?user_id=2&radius_km=100&limit=10"
     },
     {
       "filename": "demo_04_map.png",
-      "path": "C:\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_04_map.png",
+      "path": "C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_04_map.png",
       "description": "Interactive Risk Map",
-      "capturedAt": "2026-04-11T16:53:45.645Z",
+      "capturedAt": "2026-04-13T04:17:57.709Z",
       "url": "http://127.0.0.1:8080/map.php"
     },
     {
       "filename": "demo_05_forecast.png",
-      "path": "C:\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_05_forecast.png",
+      "path": "C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_05_forecast.png",
       "description": "Forecast View",
-      "capturedAt": "2026-04-11T16:53:46.225Z",
+      "capturedAt": "2026-04-13T04:17:58.416Z",
       "url": "http://127.0.0.1:8080/forecast.php"
     },
     {
+      "filename": "demo_06a_assistant_response.png",
+      "path": "C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_06a_assistant_response.png",
+      "description": "Assistant reply rendered after sending a prompt",
+      "capturedAt": "2026-04-13T04:17:59.297Z",
+      "url": "http://127.0.0.1:8080/assistant.php"
+    },
+    {
+      "filename": "demo_06b_assistant_feedback.png",
+      "path": "C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_06b_assistant_feedback.png",
+      "description": "Assistant feedback interaction complete",
+      "capturedAt": "2026-04-13T04:17:59.576Z",
+      "url": "http://127.0.0.1:8080/assistant.php"
+    },
+    {
+      "filename": "demo_06c_assistant_guardrail.png",
+      "path": "C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_06c_assistant_guardrail.png",
+      "description": "Assistant guardrail response rendered",
+      "capturedAt": "2026-04-13T04:17:59.847Z",
+      "url": "http://127.0.0.1:8080/assistant.php"
+    },
+    {
       "filename": "demo_06_assistant.png",
-      "path": "C:\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_06_assistant.png",
+      "path": "C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_06_assistant.png",
       "description": "AI Assistant View",
-      "capturedAt": "2026-04-11T16:53:47.785Z",
+      "capturedAt": "2026-04-13T04:18:00.075Z",
       "url": "http://127.0.0.1:8080/assistant.php"
     }
   ],
@@ -52,62 +73,62 @@
       "slug": "dashboard",
       "name": "Dashboard Overview",
       "status": "passed",
-      "durationMs": 1619,
+      "durationMs": 1133,
       "error": null,
       "url": "http://127.0.0.1:8080/index.php",
-      "timestamp": "2026-04-11T16:53:41.837Z"
+      "timestamp": "2026-04-13T04:17:52.612Z"
     },
     {
       "id": 2,
       "slug": "risk_scoring",
       "name": "Personalized Risk Scoring",
       "status": "passed",
-      "durationMs": 573,
+      "durationMs": 733,
       "error": null,
       "url": "http://127.0.0.1:8080/risk.php?user_id=2&radius_km=50",
-      "timestamp": "2026-04-11T16:53:42.410Z"
+      "timestamp": "2026-04-13T04:17:53.345Z"
     },
     {
       "id": 3,
       "slug": "smart_alerts",
       "name": "Smart Alerts Prioritization",
       "status": "passed",
-      "durationMs": 545,
+      "durationMs": 718,
       "error": null,
       "url": "http://127.0.0.1:8080/smart_alerts.php?user_id=2&radius_km=100&limit=10",
-      "timestamp": "2026-04-11T16:53:42.955Z"
+      "timestamp": "2026-04-13T04:17:54.063Z"
     },
     {
       "id": 4,
       "slug": "map",
       "name": "Interactive Risk Map",
       "status": "passed",
-      "durationMs": 2690,
+      "durationMs": 3646,
       "error": null,
       "url": "http://127.0.0.1:8080/map.php",
-      "timestamp": "2026-04-11T16:53:45.645Z"
+      "timestamp": "2026-04-13T04:17:57.709Z"
     },
     {
       "id": 5,
       "slug": "forecast",
       "name": "Forecast View",
       "status": "passed",
-      "durationMs": 580,
+      "durationMs": 707,
       "error": null,
       "url": "http://127.0.0.1:8080/forecast.php",
-      "timestamp": "2026-04-11T16:53:46.225Z"
+      "timestamp": "2026-04-13T04:17:58.416Z"
     },
     {
       "id": 6,
       "slug": "assistant",
       "name": "AI Assistant View",
       "status": "passed",
-      "durationMs": 1560,
+      "durationMs": 1659,
       "error": null,
       "url": "http://127.0.0.1:8080/assistant.php",
-      "timestamp": "2026-04-11T16:53:47.785Z"
+      "timestamp": "2026-04-13T04:18:00.075Z"
     }
   ],
-  "finishedAt": "2026-04-11T16:53:47.786Z",
+  "finishedAt": "2026-04-13T04:18:00.076Z",
   "overallStatus": "passed"
 }
