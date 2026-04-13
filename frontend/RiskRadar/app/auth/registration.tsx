@@ -10,9 +10,11 @@ import {
   SafeAreaView,
   ScrollView,
   Pressable,
+  Image,
 } from 'react-native';
 import { PrimaryButton } from '@/components/ui/PrimaryButton';
-import { BrandHeader } from '@/components/brand-header';
+
+const brandLogo = require('@/assets/icons/branding/RiskRadar_STND_Logo.png');
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/theme';
@@ -90,17 +92,28 @@ export default function RegistrationScreen() {
     setIsSubmitting(true);
     try {
       await register(fullName, email, password, zipCode || undefined);
+<<<<<<< HEAD
       router.replace('/main/home');
     } catch (err: any) {
       console.error('Registration error:', err);
+=======
+      router.replace('/(tabs)');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : '';
+>>>>>>> QuiV2
       let message = 'Registration failed. Please try again.';
-      if (err.message?.includes('already registered')) {
+      if (errorMessage.includes('already registered')) {
         message = 'An account with this email already exists.';
-      } else if (err.message?.includes('Failed to fetch') || err.message?.includes('Network request failed')) {
+      } else if (errorMessage.includes('Failed to fetch') || errorMessage.includes('Network request failed')) {
         message = 'Cannot connect to server. Make sure the backend is running.';
-      } else if (err.message) {
-        message = err.message;
+      } else if (errorMessage.includes('Too many requests')) {
+        message = 'Too many attempts. Please wait a moment and try again.';
+      } else if (errorMessage.includes('value is not a valid email')) {
+        message = 'Please enter a valid email address.';
+      } else if (errorMessage.includes('Password must be at least')) {
+        message = 'Password must be at least 6 characters.';
       }
+      // Don't pass raw backend errors to the UI — use the safe default above
       setErrors({ form: message });
     } finally {
       setIsSubmitting(false);
@@ -109,7 +122,6 @@ export default function RegistrationScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <BrandHeader style={{ paddingTop: 12, paddingBottom: 8 }} />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardAvoidingView}
@@ -121,11 +133,14 @@ export default function RegistrationScreen() {
           <TouchableOpacity
             style={styles.backButton}
             onPress={() => router.replace('/')}
+            accessibilityRole="button"
+            accessibilityLabel="Go back"
           >
             <Ionicons name="arrow-back" size={24} color={palette.text} />
           </TouchableOpacity>
 
           <View style={styles.headerContainer}>
+            <Image source={brandLogo} style={{ width: 80, height: 80, marginBottom: 20 }} resizeMode="contain" />
             <Text style={styles.title}>Create Account</Text>
             <Text style={styles.subtitle}>Join RiskRadar to stay aware and prepared</Text>
           </View>
@@ -207,7 +222,12 @@ export default function RegistrationScreen() {
                     if (errors.password) setErrors((prev) => ({ ...prev, password: undefined }));
                   }}
                 />
-                <Pressable onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+                <Pressable
+                  onPress={() => setShowPassword(!showPassword)}
+                  style={styles.eyeIcon}
+                  accessibilityRole="button"
+                  accessibilityLabel={showPassword ? 'Hide password' : 'Show password'}
+                >
                   <Ionicons
                     name={showPassword ? 'eye-off-outline' : 'eye-outline'}
                     size={20}
@@ -233,7 +253,12 @@ export default function RegistrationScreen() {
                     if (errors.confirmPassword) setErrors((prev) => ({ ...prev, confirmPassword: undefined }));
                   }}
                 />
-                <Pressable onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.eyeIcon}>
+                <Pressable
+                  onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                  style={styles.eyeIcon}
+                  accessibilityRole="button"
+                  accessibilityLabel={showConfirmPassword ? 'Hide password' : 'Show password'}
+                >
                   <Ionicons
                     name={showConfirmPassword ? 'eye-off-outline' : 'eye-outline'}
                     size={20}
@@ -373,27 +398,6 @@ function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
     termsLink: {
       color: palette.primary,
       fontWeight: '500',
-    },
-    registerButton: {
-      backgroundColor: palette.primary,
-      borderRadius: 16,
-      height: 56,
-      justifyContent: 'center',
-      alignItems: 'center',
-      shadowColor: palette.primary,
-      shadowOffset: {
-        width: 0,
-        height: 4,
-      },
-      shadowOpacity: 0.3,
-      shadowRadius: 4.65,
-      elevation: 8,
-    },
-    registerButtonText: {
-      color: palette.white,
-      fontSize: 16,
-      fontWeight: '600',
-      letterSpacing: 0.5,
     },
     footerContainer: {
       flexDirection: 'row',

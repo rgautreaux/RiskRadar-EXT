@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -7,18 +7,20 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
-  Platform,
   StatusBar,
+  Keyboard,
+  Image,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { Colors } from '@/constants/theme';
+import { Colors, Spacing, Radius, Shadows, Typography, SafeArea } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/auth-context';
 import { apiFetch } from '@/utils/api';
-import { API_BASE_URL } from '@/constants/api';
 import { StateView } from '@/components/ui/state-view';
+
+const brandLogo = require('@/assets/icons/branding/RiskRadar_STND_Logo.png');
 
 interface AlertStats {
   total: number;
@@ -35,7 +37,15 @@ interface Summary {
   generated_at: string;
 }
 
+<<<<<<< HEAD
 const DEMO_SETTINGS_KEY = 'riskradar_demo_settings';
+=======
+interface AutocompleteResult {
+  label: string;
+  city: string;
+  state: string;
+}
+>>>>>>> QuiV2
 
 export default function Home() {
   const router = useRouter();
@@ -43,16 +53,19 @@ export default function Home() {
   const palette = Colors[scheme];
   const styles = getStyles(palette);
   const { user, isLoggedIn } = useAuth();
-  const [zipCode, setZipCode] = useState(user?.zip_code ?? '');
+  const [searchQuery, setSearchQuery] = useState(user?.zip_code ?? '');
+  const [suggestions, setSuggestions] = useState<AutocompleteResult[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [stats, setStats] = useState<AlertStats | null>(null);
   const [summary, setSummary] = useState<Summary | null>(null);
   const [loadingStats, setLoadingStats] = useState(true);
   const [loadingSummary, setLoadingSummary] = useState(true);
   const [errorStats, setErrorStats] = useState<string | null>(null);
   const [errorSummary, setErrorSummary] = useState<string | null>(null);
+  const autocompleteTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    if (user?.zip_code) setZipCode(user.zip_code);
+    if (user?.zip_code) setSearchQuery(user.zip_code);
   }, [user?.zip_code]);
 
   useEffect(() => {
@@ -81,9 +94,7 @@ export default function Home() {
     (async () => {
       try {
         setErrorStats(null);
-        console.log('Fetching stats from:', API_BASE_URL + '/alerts/stats');
         const data = await apiFetch<AlertStats>('/alerts/stats');
-        console.log('Stats loaded:', data);
         setStats(data);
       } catch {
         setErrorStats('Failed to load risk assessment data');
@@ -95,7 +106,6 @@ export default function Home() {
       try {
         setErrorSummary(null);
         const data = await apiFetch<Summary | null>('/summaries/latest');
-        console.log('Summary loaded:', data);
         setSummary(data);
       } catch {
         setErrorSummary('Failed to load latest summary');
@@ -104,36 +114,81 @@ export default function Home() {
     })();
   }, []);
 
+  const isZip = (q: string) => /^\d{5}$/.test(q.trim());
+
+  const fetchAutocomplete = useCallback(async (text: string) => {
+    if (text.length < 2 || isZip(text)) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+    try {
+      const data = await apiFetch<AutocompleteResult[]>(
+        `/location/autocomplete?q=${encodeURIComponent(text)}`
+      );
+      setSuggestions(data);
+      setShowSuggestions(data.length > 0);
+    } catch {
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  }, []);
+
+  const handleQueryChange = (text: string) => {
+    setSearchQuery(text);
+    if (autocompleteTimer.current) clearTimeout(autocompleteTimer.current);
+    autocompleteTimer.current = setTimeout(() => fetchAutocomplete(text), 300);
+  };
+
+  const handleSelectSuggestion = (suggestion: AutocompleteResult) => {
+    setSearchQuery(suggestion.label);
+    setSuggestions([]);
+    setShowSuggestions(false);
+    Keyboard.dismiss();
+    router.push({ pathname: '/main/weather-report', params: { query: suggestion.label } });
+  };
+
   const handleSearch = () => {
-    if (zipCode.length === 5) {
-      router.push({ pathname: '/main/weather-report', params: { zipCode } });
+    const q = searchQuery.trim();
+    if (q.length >= 2) {
+      setShowSuggestions(false);
+      Keyboard.dismiss();
+      router.push({ pathname: '/main/weather-report', params: { query: q } });
     }
   };
 
+  const canSearch = searchQuery.trim().length >= 2;
   const displayName = isLoggedIn ? (user?.display_name ?? 'User') : 'Guest';
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'} backgroundColor={palette.background} />
+      <StatusBar barStyle="light-content" backgroundColor={palette.primaryDark} />
 
       {/* Header */}
       <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>Welcome, {displayName}</Text>
-          <Text style={styles.headerSubtitle}>Stay ahead of the weather</Text>
+        <View style={styles.headerLeft}>
+          <Image source={brandLogo} style={styles.headerLogo} resizeMode="contain" />
+          <View>
+            <Text style={styles.greeting}>Welcome, {displayName}</Text>
+            <Text style={styles.headerSubtitle}>Stay ahead of environmental risks</Text>
+          </View>
         </View>
         <View style={styles.headerActions}>
           <TouchableOpacity
             style={styles.settingsButton}
             onPress={() => router.push('/main/settings')}
+            accessibilityRole="button"
+            accessibilityLabel="Settings"
           >
-            <Ionicons name="settings-outline" size={24} color={palette.textSecondary} />
+            <Ionicons name="settings-outline" size={24} color="rgba(255, 255, 255, 0.7)" />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.profileButton}
-            onPress={() => !isLoggedIn ? router.replace('/auth/login') : console.log('Profile')}
+            onPress={() => !isLoggedIn ? router.replace('/auth/login') : router.push('/main/settings')}
+            accessibilityRole="button"
+            accessibilityLabel={isLoggedIn ? 'Profile' : 'Log in'}
           >
-            <Ionicons name={!isLoggedIn ? 'log-in-outline' : 'person-circle-outline'} size={28} color={palette.primary} />
+            <Ionicons name={!isLoggedIn ? 'log-in-outline' : 'person-circle-outline'} size={28} color={palette.white} />
           </TouchableOpacity>
         </View>
       </View>
@@ -144,8 +199,8 @@ export default function Home() {
           <Text style={styles.sectionTitle}>Check Location Risk</Text>
           <Text style={styles.sectionSubtitle}>
             {!isLoggedIn
-              ? 'Enter a zip code to see current weather and risk reports.'
-              : 'Showing your home location. Enter a different zip code to check another area.'}
+              ? 'Enter a city name or zip code to see current weather and risk reports.'
+              : 'Showing your home location. Search a different city or zip code to check another area.'}
           </Text>
 
           <View style={styles.searchContainer}>
@@ -153,32 +208,64 @@ export default function Home() {
               <Ionicons name="location-outline" size={20} color={palette.textSecondary} style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="Enter 5-digit Zip Code"
+                placeholder="City, State or Zip Code"
                 placeholderTextColor={palette.textSecondary}
-                keyboardType="number-pad"
-                maxLength={5}
-                value={zipCode}
-                onChangeText={setZipCode}
+                autoCapitalize="words"
+                autoCorrect={false}
+                returnKeyType="search"
+                onSubmitEditing={handleSearch}
+                value={searchQuery}
+                onChangeText={handleQueryChange}
+                onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
               />
+              {searchQuery.length > 0 && (
+                <TouchableOpacity
+                  onPress={() => { setSearchQuery(''); setSuggestions([]); setShowSuggestions(false); }}
+                  accessibilityRole="button"
+                  accessibilityLabel="Clear search"
+                  hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+                >
+                  <Ionicons name="close-circle" size={18} color={palette.textSecondary} />
+                </TouchableOpacity>
+              )}
             </View>
             <TouchableOpacity
-              style={[styles.searchButton, zipCode.length !== 5 && styles.searchButtonDisabled]}
+              style={[styles.searchButton, !canSearch && styles.searchButtonDisabled]}
               onPress={handleSearch}
-              disabled={zipCode.length !== 5}
+              disabled={!canSearch}
+              accessibilityRole="button"
+              accessibilityLabel="Search location"
+              accessibilityState={{ disabled: !canSearch }}
             >
               <Ionicons name="search" size={20} color={palette.white} />
             </TouchableOpacity>
           </View>
+
+          {/* Autocomplete suggestions */}
+          {showSuggestions && suggestions.length > 0 && (
+            <View style={styles.suggestionsContainer}>
+              {suggestions.map((s, i) => (
+                <TouchableOpacity
+                  key={`${s.label}-${i}`}
+                  style={[styles.suggestionRow, i < suggestions.length - 1 && styles.suggestionBorder]}
+                  onPress={() => handleSelectSuggestion(s)}
+                >
+                  <Ionicons name="location-outline" size={16} color={palette.primary} style={{ marginRight: Spacing.sm }} />
+                  <Text style={styles.suggestionText}>{s.label}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
         </View>
 
         {/* Latest Summary Card */}
         <TouchableOpacity
           style={styles.card}
-          onPress={() => router.push({ pathname: '/main/weather-report', params: { zipCode: zipCode || 'Unknown Location' } })}
+          onPress={() => router.push({ pathname: '/main/weather-report', params: { query: searchQuery || 'Unknown Location' } })}
         >
           <View style={styles.cardHeader}>
             <View style={styles.cardIconBox}>
-              <Ionicons name="partly-sunny" size={24} color="#F59E0B" />
+              <Ionicons name="partly-sunny" size={24} color={palette.warning} />
             </View>
             <Text style={styles.cardTitle}>Latest Summary</Text>
           </View>
@@ -186,7 +273,7 @@ export default function Home() {
           <StateView
             state={loadingSummary ? 'loading' : errorSummary ? 'error' : summary ? 'success' : 'empty'}
             loadingText="Loading summary..."
-            emptyText={zipCode.length === 5 ? `No summary available for ${zipCode}` : 'Enter a zip code to see summaries'}
+            emptyText={searchQuery.trim().length >= 2 ? `No summary available for ${searchQuery}` : 'Search a city or zip code to see summaries'}
             emptyIcon="document-outline"
             errorText={errorSummary || 'Failed to load summary'}
             onRetry={() => {
@@ -217,7 +304,7 @@ export default function Home() {
         {/* Risk Assessment Card */}
         <View style={styles.card}>
           <View style={styles.cardHeader}>
-            <View style={[styles.cardIconBox, { backgroundColor: '#FEE2E2' }]}>
+            <View style={[styles.cardIconBox, { backgroundColor: palette.surfaceMuted }]}>
               <Ionicons name="warning-outline" size={24} color={palette.danger} />
             </View>
             <Text style={styles.cardTitle}>Risk Assessment</Text>
@@ -263,7 +350,7 @@ export default function Home() {
   );
 }
 
-function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
+function getStyles(palette: typeof Colors.light) {
   return StyleSheet.create({
     safeArea: {
       flex: 1,
@@ -273,21 +360,30 @@ function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingHorizontal: 24,
-      paddingTop: Platform.OS === 'android' ? 16 : 0,
-      paddingBottom: 16,
-      backgroundColor: palette.card,
-      borderBottomWidth: 1,
-      borderBottomColor: palette.border,
+      paddingHorizontal: Spacing.lg,
+      paddingTop: SafeArea.paddingTop,
+      paddingBottom: Spacing.md,
+      backgroundColor: palette.primaryDark,
+    },
+    headerLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flex: 1,
+    },
+    headerLogo: {
+      width: 40,
+      height: 40,
+      marginRight: Spacing.sm,
     },
     greeting: {
+      ...Typography.title,
       fontSize: 24,
-      fontWeight: '700',
-      color: palette.text,
+      color: palette.white,
     },
     headerSubtitle: {
+      ...Typography.meta,
       fontSize: 14,
-      color: palette.textSecondary,
+      color: 'rgba(255, 255, 255, 0.7)',
       marginTop: 2,
     },
     headerActions: {
@@ -299,33 +395,33 @@ function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
       height: 44,
       justifyContent: 'center',
       alignItems: 'center',
-      marginRight: 8,
+      marginRight: Spacing.sm,
     },
     profileButton: {
       width: 44,
       height: 44,
       borderRadius: 22,
-      backgroundColor: palette.secondary,
+      backgroundColor: 'rgba(255, 255, 255, 0.15)',
       justifyContent: 'center',
       alignItems: 'center',
     },
     scrollContent: {
-      padding: 24,
-      paddingBottom: 40,
+      padding: Spacing.lg,
+      paddingBottom: Spacing.xxl,
     },
     searchSection: {
-      marginBottom: 32,
+      marginBottom: Spacing.xl,
     },
     sectionTitle: {
-      fontSize: 20,
-      fontWeight: '700',
+      ...Typography.sectionLabel,
       color: palette.text,
-      marginBottom: 8,
+      marginBottom: Spacing.sm,
     },
     sectionSubtitle: {
+      ...Typography.meta,
       fontSize: 14,
       color: palette.textSecondary,
-      marginBottom: 16,
+      marginBottom: Spacing.md,
       lineHeight: 20,
     },
     searchContainer: {
@@ -339,22 +435,19 @@ function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
       backgroundColor: palette.card,
       borderWidth: 1,
       borderColor: palette.border,
-      borderRadius: 16,
+      borderRadius: Radius.md,
       height: 56,
-      paddingHorizontal: 16,
-      marginRight: 12,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.05,
-      shadowRadius: 2,
-      elevation: 2,
+      paddingHorizontal: Spacing.md,
+      marginRight: Spacing.sm,
+      ...Shadows.card,
     },
     inputIcon: {
-      marginRight: 12,
+      marginRight: Spacing.sm,
     },
     input: {
       flex: 1,
-      fontSize: 16,
+      ...Typography.cardHeading,
+      fontWeight: '400',
       color: palette.text,
       height: '100%',
     },
@@ -362,117 +455,134 @@ function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
       width: 56,
       height: 56,
       backgroundColor: palette.primary,
-      borderRadius: 16,
+      borderRadius: Radius.md,
       justifyContent: 'center',
       alignItems: 'center',
-      shadowColor: palette.primary,
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.3,
-      shadowRadius: 4.65,
-      elevation: 8,
+      ...Shadows.card,
     },
     searchButtonDisabled: {
       backgroundColor: palette.textSecondary,
       shadowOpacity: 0,
       elevation: 0,
     },
+    suggestionsContainer: {
+      marginTop: Spacing.sm,
+      backgroundColor: palette.card,
+      borderRadius: Radius.sm,
+      borderWidth: 1,
+      borderColor: palette.border,
+      overflow: 'hidden',
+      ...Shadows.card,
+    },
+    suggestionRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: Spacing.sm + 4,
+      paddingHorizontal: Spacing.md,
+    },
+    suggestionBorder: {
+      borderBottomWidth: 1,
+      borderBottomColor: palette.border,
+    },
+    suggestionText: {
+      ...Typography.body,
+      color: palette.text,
+      flex: 1,
+    },
     card: {
       backgroundColor: palette.card,
-      borderRadius: 24,
-      padding: 20,
-      marginBottom: 20,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.05,
-      shadowRadius: 12,
-      elevation: 4,
+      borderRadius: Radius.lg,
+      padding: Spacing.md + 4,
+      marginBottom: Spacing.md + 4,
+      ...Shadows.card,
       borderWidth: 1,
       borderColor: palette.border,
     },
     cardHeader: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginBottom: 16,
+      marginBottom: Spacing.md,
     },
     cardIconBox: {
       width: 48,
       height: 48,
-      borderRadius: 16,
-      backgroundColor: '#FEF3C7',
+      borderRadius: Radius.md,
+      backgroundColor: palette.secondary,
       justifyContent: 'center',
       alignItems: 'center',
-      marginRight: 12,
+      marginRight: Spacing.sm,
     },
     cardTitle: {
-      fontSize: 18,
-      fontWeight: '700',
+      ...Typography.subtitle,
       color: palette.text,
     },
     summaryBox: {
       backgroundColor: palette.surfaceMuted,
-      borderRadius: 16,
-      padding: 16,
+      borderRadius: Radius.md,
+      padding: Spacing.md,
     },
     summaryTitle: {
-      fontSize: 16,
-      fontWeight: '600',
+      ...Typography.cardHeading,
       color: palette.text,
-      marginBottom: 8,
+      marginBottom: Spacing.sm,
     },
     summaryText: {
+      ...Typography.meta,
       fontSize: 14,
       lineHeight: 20,
       color: palette.textSecondary,
     },
     summaryMeta: {
-      fontSize: 12,
+      ...Typography.meta,
       color: palette.textSecondary,
-      marginTop: 8,
+      marginTop: Spacing.sm,
     },
     placeholderBox: {
       backgroundColor: palette.surfaceMuted,
-      borderRadius: 16,
-      padding: 24,
+      borderRadius: Radius.md,
+      padding: Spacing.lg,
       alignItems: 'center',
       borderWidth: 1,
       borderColor: palette.border,
       borderStyle: 'dashed',
     },
     placeholderText: {
-      fontSize: 16,
-      fontWeight: '600',
+      ...Typography.cardHeading,
       color: palette.textSecondary,
-      marginBottom: 4,
+      marginBottom: Spacing.xs,
     },
     placeholderSubtext: {
+      ...Typography.meta,
       fontSize: 14,
       color: palette.textSecondary,
       textAlign: 'center',
     },
     placeholderContent: {
       backgroundColor: palette.surfaceMuted,
-      borderRadius: 16,
-      padding: 20,
+      borderRadius: Radius.md,
+      padding: Spacing.md + 4,
       alignItems: 'center',
     },
     statsContainer: {
       backgroundColor: palette.surfaceMuted,
-      borderRadius: 16,
-      padding: 16,
+      borderRadius: Radius.md,
+      padding: Spacing.md,
     },
     statRow: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      paddingVertical: 8,
+      paddingVertical: Spacing.sm,
       borderBottomWidth: 1,
       borderBottomColor: palette.border,
     },
     statLabel: {
+      ...Typography.meta,
       fontSize: 14,
       color: palette.textSecondary,
       textTransform: 'capitalize',
     },
     statValue: {
+      ...Typography.meta,
       fontSize: 14,
       fontWeight: '700',
       color: palette.text,

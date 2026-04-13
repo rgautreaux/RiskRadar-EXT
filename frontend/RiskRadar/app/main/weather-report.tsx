@@ -6,15 +6,18 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
-  Platform,
   StatusBar,
+  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { Colors } from '@/constants/theme';
+import { Colors, Spacing, Radius, Shadows, Typography, SafeArea } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAuth } from '@/contexts/auth-context';
 import { apiFetch } from '@/utils/api';
 import { StateView } from '@/components/ui/state-view';
+
+const brandLogo = require('@/assets/icons/branding/RiskRadar_STND_Logo.png');
 
 interface Summary {
   id: number;
@@ -36,11 +39,43 @@ interface AlertItem {
 }
 
 interface LocationInfo {
-  zip_code: string;
+  zip_code: string | null;
   city: string;
   state: string;
   latitude: number;
   longitude: number;
+}
+
+interface ForecastPeriod {
+  date: string;
+  day_name: string;
+  high_temp: number;
+  low_temp: number;
+  description: string;
+  weather_main: string;
+  icon_code: string;
+  wind_mph: number;
+  precip_chance: number;
+  humidity: number;
+  uvi: number;
+}
+
+function forecastIcon(weatherMain: string): keyof typeof Ionicons.glyphMap {
+  const w = weatherMain.toLowerCase();
+  if (w === 'thunderstorm') return 'thunderstorm-outline';
+  if (w === 'snow') return 'snow-outline';
+  if (w === 'rain' || w === 'drizzle') return 'rainy-outline';
+  if (w === 'atmosphere') return 'water-outline';
+  if (w === 'clouds') return 'cloudy-outline';
+  return 'sunny-outline';
+}
+
+function forecastIconColor(weatherMain: string, palette: typeof Colors.light): string {
+  const w = weatherMain.toLowerCase();
+  if (w === 'thunderstorm' || w === 'clouds') return palette.textSecondary;
+  if (w === 'snow' || w === 'rain' || w === 'drizzle') return palette.primary;
+  if (w === 'atmosphere') return palette.textSecondary;
+  return palette.warning;
 }
 
 export default function WeatherReport() {
@@ -48,65 +83,145 @@ export default function WeatherReport() {
   const scheme = useColorScheme() ?? 'light';
   const palette = Colors[scheme];
   const styles = getStyles(palette);
+  const { isLoggedIn } = useAuth();
   const params = useLocalSearchParams();
-  const rawZipCode = params.zipCode;
-  const zipCode = Array.isArray(rawZipCode) ? rawZipCode[0] : rawZipCode ?? 'Unknown Location';
+  // Accept either "query" (new) or "zipCode" (legacy) param
+  const rawQuery = params.query ?? params.zipCode;
+  const query = (Array.isArray(rawQuery) ? rawQuery[0] : rawQuery ?? '').trim();
 
   const [summary, setSummary] = useState<Summary | null>(null);
   const [alerts, setAlerts] = useState<AlertItem[]>([]);
   const [locationInfo, setLocationInfo] = useState<LocationInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isSaved, setIsSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [forecast, setForecast] = useState<ForecastPeriod[]>([]);
 
-  const loadWeatherReport = async () => {
-    const isValidZip = zipCode.length === 5 && /^\d{5}$/.test(zipCode);
+  const fetchData = async () => {
+    setError(null);
+    setLoading(true);
+    try {
+      if (!query || query.length < 2) {
+        setError('Please provide a valid city name or zip code.');
+        return;
+      }
 
-    if (!isValidZip) {
-      setSummary(null);
-      setLocationInfo(null);
-      setAlerts([]);
-      setError('Please enter a valid 5-digit zip code.');
+      // Step 1: Resolve the query (city name or zip) to coordinates via /location/search
+      const loc = await apiFetch<LocationInfo>(
+        `/location/search?q=${encodeURIComponent(query)}`
+      );
+      setLocationInfo(loc);
+
+      // Step 2: Fetch alerts — use zip if available, otherwise use lat/lon/state
+      const alertsParam = loc.zip_code
+        ? `zip_code=${loc.zip_code}`
+        : `lat=${loc.latitude}&lon=${loc.longitude}&state=${loc.state}`;
+      const alertsPromise = apiFetch<AlertItem[]>(`/location/alerts?${alertsParam}`).catch(() => []);
+
+      // Step 3: Summaries — only zip-based endpoints are available, so use zip if we have one
+      const summaryPromises: [Promise<Summary | null>, Promise<Summary | null>] = loc.zip_code
+        ? [
+            apiFetch<Summary | null>(`/summaries/generate/local?zip_code=${loc.zip_code}`, { method: 'POST' }).catch(() => null),
+            apiFetch<Summary | null>(`/summaries/latest/local?zip_code=${loc.zip_code}`).catch(() => null),
+          ]
+        : [Promise.resolve(null), Promise.resolve(null)];
+
+      const [alertsData, generatedSummary, latestSummary] = await Promise.all([
+        alertsPromise,
+        ...summaryPromises,
+      ]);
+
+      const summaryToUse = generatedSummary ?? latestSummary ?? null;
+
+      setSummary(summaryToUse);
+      setAlerts(alertsData ?? []);
+
+      // Step 4: Fetch 7-day OpenWeatherMap forecast (fire-and-forget)
+      apiFetch<ForecastPeriod[]>(`/forecast?lat=${loc.latitude}&lon=${loc.longitude}`)
+        .then(periods => setForecast(periods))
+        .catch(() => {});
+
+      // Check if this location is already saved
+      if (isLoggedIn && loc) {
+        apiFetch<{ id: number; city: string; state: string }[]>('/users/destinations')
+          .then(destinations => {
+            const already = destinations.some(
+              d => d.city.toLowerCase() === loc.city.toLowerCase() && d.state === loc.state
+            );
+            setIsSaved(already);
+          })
+          .catch(() => {});
+      }
+    } catch {
+      setError('Failed to load weather report. Please check your connection.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBookmark = async () => {
+    if (!isLoggedIn) {
+      router.push('/auth/login');
       return;
     }
-
-    const [locInfo, alertsData, summaryData] = await Promise.all([
-      apiFetch<LocationInfo>(`/location/info?zip_code=${zipCode}`).catch(() => null),
-      apiFetch<AlertItem[]>(`/location/alerts?zip_code=${zipCode}`).catch(() => []),
-      apiFetch<Summary | null>(`/summaries/generate/local?zip_code=${zipCode}`, { method: 'POST' }).catch(() => null),
-    ]);
-
-    setSummary(summaryData);
-    setLocationInfo(locInfo);
-    setAlerts(alertsData ?? []);
+    if (!locationInfo || isSaved || isSaving) return;
+    setIsSaving(true);
+    try {
+      await apiFetch('/users/destinations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          city: locationInfo.city,
+          state: locationInfo.state,
+          zip_code: locationInfo.zip_code,
+          latitude: locationInfo.latitude,
+          longitude: locationInfo.longitude,
+        }),
+      });
+      setIsSaved(true);
+    } catch {
+      // 409 = already saved
+      setIsSaved(true);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   useEffect(() => {
-    (async () => {
-      try {
-        setError(null);
-        await loadWeatherReport();
-      } catch {
-        setError('Failed to load weather report. Please check your connection.');
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [zipCode]);
+    fetchData();
+  }, [query]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'} backgroundColor={palette.background} />
+      <StatusBar barStyle="dark-content" backgroundColor={palette.background} />
 
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => router.back()}
+          accessibilityRole="button"
+          accessibilityLabel="Go back"
         >
           <Ionicons name="arrow-back" size={24} color={palette.text} />
         </TouchableOpacity>
+        <Image source={brandLogo} style={styles.headerLogo} resizeMode="contain" />
         <Text style={styles.headerTitle}>Weather Report</Text>
-        <View style={{ width: 44 }} />
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={handleBookmark}
+          disabled={isSaving}
+          accessibilityRole="button"
+          accessibilityLabel={isSaved ? 'Location saved' : 'Save location'}
+          accessibilityState={{ disabled: isSaving }}
+        >
+          <Ionicons
+            name={isSaved ? 'bookmark' : 'bookmark-outline'}
+            size={24}
+            color={isSaved ? palette.primary : palette.text}
+          />
+        </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
@@ -114,30 +229,17 @@ export default function WeatherReport() {
           state={loading ? 'loading' : error ? 'error' : 'success'}
           loadingText="Loading weather report..."
           errorText={error || 'Failed to load report'}
-          onRetry={() => {
-            setLoading(true);
-            setError(null);
-            // Retry the fetch
-            (async () => {
-              try {
-                await loadWeatherReport();
-              } catch {
-                setError('Failed to load weather report. Please check your connection.');
-              } finally {
-                setLoading(false);
-              }
-            })();
-          }}
+          onRetry={fetchData}
         >
           {/* Location Header */}
           <View style={styles.mainWeatherCard}>
             <Text style={styles.locationText}>
               {locationInfo
-                ? `${locationInfo.city}, ${locationInfo.state} ${zipCode}`
-                : `Location: ${zipCode}`}
+                ? `${locationInfo.city}, ${locationInfo.state}${locationInfo.zip_code ? ` ${locationInfo.zip_code}` : ''}`
+                : query}
             </Text>
             <View style={styles.tempContainer}>
-              <Ionicons name="partly-sunny" size={80} color="#F59E0B" />
+              <Ionicons name="partly-sunny" size={80} color={palette.warning} />
             </View>
           </View>
 
@@ -161,6 +263,41 @@ export default function WeatherReport() {
               )}
             </View>
           </View>
+
+          {/* 7-Day Forecast */}
+          {forecast.length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>7-Day Forecast</Text>
+              <View style={styles.summaryCard}>
+                {forecast.map((period, i) => {
+                  const dayLabel = period.day_name.slice(0, 3);
+                  const icon = forecastIcon(period.weather_main);
+                  const iconColor = forecastIconColor(period.weather_main, palette);
+                  return (
+                    <React.Fragment key={i}>
+                      {i > 0 && <View style={styles.forecastDivider} />}
+                      <View style={styles.forecastRow}>
+                        <Text style={styles.forecastDay}>{dayLabel}</Text>
+                        <Ionicons name={icon} size={22} color={iconColor} />
+                        <Text style={styles.forecastDesc} numberOfLines={1}>{period.description}</Text>
+                        <View style={styles.forecastRight}>
+                          {period.precip_chance > 0 && (
+                            <Text style={styles.forecastPrecip}>
+                              <Ionicons name="water-outline" size={11} color={palette.primary} />{' '}
+                              {period.precip_chance}%
+                            </Text>
+                          )}
+                          <Text style={styles.forecastTemp}>
+                            {Math.round(period.high_temp)}° / {Math.round(period.low_temp)}°
+                          </Text>
+                        </View>
+                      </View>
+                    </React.Fragment>
+                  );
+                })}
+              </View>
+            </View>
+          )}
 
           {/* Active Alerts Summary */}
           <View style={styles.section}>
@@ -193,7 +330,7 @@ export default function WeatherReport() {
   );
 }
 
-function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
+function getStyles(palette: typeof Colors.light) {
   return StyleSheet.create({
     safeArea: {
       flex: 1,
@@ -203,9 +340,9 @@ function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingHorizontal: 16,
-      paddingTop: Platform.OS === 'android' ? 16 : 0,
-      paddingBottom: 16,
+      paddingHorizontal: Spacing.md,
+      paddingTop: SafeArea.paddingTop,
+      paddingBottom: Spacing.md,
       backgroundColor: palette.card,
       borderBottomWidth: 1,
       borderBottomColor: palette.border,
@@ -216,24 +353,27 @@ function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
       justifyContent: 'center',
       alignItems: 'center',
     },
+    headerLogo: {
+      width: 32,
+      height: 32,
+    },
     headerTitle: {
-      fontSize: 18,
-      fontWeight: '700',
+      ...Typography.subtitle,
+      flex: 1,
       color: palette.text,
     },
     scrollContent: {
-      padding: 24,
-      paddingBottom: 40,
+      padding: Spacing.lg,
+      paddingBottom: Spacing.xxl,
     },
     mainWeatherCard: {
       alignItems: 'center',
-      marginBottom: 32,
+      marginBottom: Spacing.xl,
     },
     locationText: {
-      fontSize: 20,
-      fontWeight: '600',
+      ...Typography.sectionLabel,
       color: palette.text,
-      marginBottom: 16,
+      marginBottom: Spacing.md,
     },
     tempContainer: {
       flexDirection: 'row',
@@ -241,49 +381,45 @@ function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
       justifyContent: 'center',
     },
     section: {
-      marginBottom: 24,
+      marginBottom: Spacing.lg,
     },
     sectionTitle: {
-      fontSize: 20,
-      fontWeight: '700',
+      ...Typography.sectionLabel,
       color: palette.text,
-      marginBottom: 12,
+      marginBottom: Spacing.sm,
     },
     summaryCard: {
       backgroundColor: palette.card,
-      borderRadius: 20,
-      padding: 20,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.05,
-      shadowRadius: 12,
-      elevation: 4,
+      borderRadius: Radius.lg,
+      padding: Spacing.md + 4,
+      ...Shadows.card,
       borderWidth: 1,
       borderColor: palette.border,
     },
     summaryHeading: {
-      fontSize: 16,
+      ...Typography.cardHeading,
       fontWeight: '700',
       color: palette.text,
-      marginBottom: 8,
+      marginBottom: Spacing.sm,
     },
     summaryText: {
+      ...Typography.body,
       fontSize: 16,
       lineHeight: 24,
       color: palette.textSecondary,
     },
     summaryMeta: {
-      fontSize: 12,
+      ...Typography.meta,
       color: palette.textSecondary,
-      marginTop: 12,
+      marginTop: Spacing.sm,
     },
     alertRow: {
       flexDirection: 'row',
       alignItems: 'center',
       backgroundColor: palette.card,
-      borderRadius: 16,
-      padding: 16,
-      marginBottom: 10,
+      borderRadius: Radius.md,
+      padding: Spacing.md,
+      marginBottom: Spacing.sm,
       borderWidth: 1,
       borderColor: palette.border,
     },
@@ -291,21 +427,59 @@ function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
       width: 12,
       height: 12,
       borderRadius: 6,
-      marginRight: 12,
+      marginRight: Spacing.sm,
     },
     alertRowText: {
       flex: 1,
     },
     alertTitle: {
-      fontSize: 15,
+      ...Typography.body,
       fontWeight: '600',
       color: palette.text,
     },
     alertMeta: {
+      ...Typography.meta,
       fontSize: 13,
       color: palette.textSecondary,
       marginTop: 2,
       textTransform: 'capitalize',
+    },
+    forecastRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: Spacing.sm + 4,
+      gap: Spacing.sm,
+    },
+    forecastDivider: {
+      height: 1,
+      backgroundColor: palette.border,
+    },
+    forecastDay: {
+      ...Typography.meta,
+      fontSize: 14,
+      fontWeight: '600',
+      color: palette.text,
+      width: 72,
+    },
+    forecastDesc: {
+      flex: 1,
+      ...Typography.meta,
+      fontSize: 13,
+      color: palette.textSecondary,
+    },
+    forecastRight: {
+      alignItems: 'flex-end',
+    },
+    forecastTemp: {
+      ...Typography.body,
+      fontWeight: '700',
+      color: palette.text,
+    },
+    forecastPrecip: {
+      ...Typography.meta,
+      fontSize: 11,
+      color: palette.primary,
+      marginBottom: 2,
     },
   });
 }

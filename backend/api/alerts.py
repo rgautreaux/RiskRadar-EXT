@@ -1,3 +1,4 @@
+import logging
 import math
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
@@ -10,72 +11,31 @@ from config.settings import settings
 from auth.security import get_current_user_optional
 from schemas.alert import AlertOut, AlertStats
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix="/alerts", tags=["Alerts"])
 
 
-# Simple zip-code prefix to approximate lat/lon lookup.
-# This covers major regions; a full dataset would use a geocoding API.
-_ZIP_COORDS: dict[str, tuple[float, float]] = {
-    "700": (30.0, -90.2),   # Louisiana (New Orleans area)
-    "701": (30.2, -92.0),   # Louisiana (Lafayette area)
-    "703": (30.5, -91.2),   # Louisiana (Baton Rouge area)
-    "704": (32.5, -93.7),   # Louisiana (Shreveport area)
-    "705": (30.2, -92.0),   # Louisiana (Lafayette/Lake Charles)
-    "706": (31.3, -92.4),   # Louisiana (Alexandria)
-    "707": (29.9, -90.1),   # Louisiana (New Orleans)
-    "708": (30.2, -93.2),   # Louisiana (Lake Charles)
-    "750": (32.8, -96.8),   # Texas (Dallas)
-    "770": (29.8, -95.4),   # Texas (Houston)
-    "900": (34.1, -118.2),  # California (Los Angeles)
-    "910": (34.1, -118.2),  # California (Los Angeles area)
-    "920": (32.7, -117.2),  # California (San Diego)
-    "940": (37.8, -122.4),  # California (San Francisco)
-    "950": (37.3, -121.9),  # California (San Jose)
-    "100": (40.7, -74.0),   # New York
-    "200": (38.9, -77.0),   # DC area
-    "300": (33.7, -84.4),   # Georgia (Atlanta)
-    "330": (25.8, -80.2),   # Florida (Miami)
-    "606": (41.9, -87.6),   # Illinois (Chicago)
-}
+def _zip_to_coords(zip_code: str) -> tuple[float, float, str | None] | None:
+    """Convert a 5-digit zip code to (lat, lon, state) using the zippopotam.us API.
 
-
-def _zip_to_coords(zip_code: str) -> tuple[float, float] | None:
-    """Convert a 5-digit zip code to approximate (lat, lon) using prefix lookup."""
-    for prefix_len in (3, 2, 1):
-        prefix = zip_code[:prefix_len]
-        if prefix in _ZIP_COORDS:
-            return _ZIP_COORDS[prefix]
-    return None
-
-
-def _haversine_miles(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
-    """Calculate distance in miles between two lat/lon points."""
-    R = 3959  # Earth radius in miles
-    dlat = math.radians(lat2 - lat1)
-    dlon = math.radians(lon2 - lon1)
-    a = (math.sin(dlat / 2) ** 2 +
-         math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) *
-         math.sin(dlon / 2) ** 2)
-    return R * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-
-
-# Map state abbreviations to full names for location_name matching
-_STATE_FROM_ZIP_PREFIX: dict[str, str] = {
-    "700": "LA", "701": "LA", "703": "LA", "704": "LA",
-    "705": "LA", "706": "LA", "707": "LA", "708": "LA",
-    "750": "TX", "770": "TX",
-    "900": "CA", "910": "CA", "920": "CA", "940": "CA", "950": "CA",
-    "100": "NY", "200": "DC", "300": "GA", "330": "FL", "606": "IL",
-}
-
-
-def _zip_to_state(zip_code: str) -> str | None:
-    """Get state abbreviation from zip code prefix."""
-    for prefix_len in (3, 2, 1):
-        prefix = zip_code[:prefix_len]
-        if prefix in _STATE_FROM_ZIP_PREFIX:
-            return _STATE_FROM_ZIP_PREFIX[prefix]
-    return None
+    Reuses the same free API that location.py uses, so any valid US zip code
+    is supported instead of a small hardcoded prefix table.
+    """
+    try:
+        import httpx
+        resp = httpx.get(f"https://api.zippopotam.us/us/{zip_code}", timeout=10)
+        if resp.status_code != 200:
+            return None
+        data = resp.json()
+        place = data["places"][0]
+        lat = float(place["latitude"])
+        lon = float(place["longitude"])
+        state = place["state abbreviation"]
+        return lat, lon, state
+    except Exception:
+        logger.debug("Zip lookup failed for %s", zip_code)
+        return None
 
 
 @router.get("", response_model=list[AlertOut])
@@ -129,6 +89,7 @@ def list_alerts(
         q = q.filter(Alert.source == source)
 
     if zip_code and len(zip_code) == 5:
+<<<<<<< HEAD
         coords = None
         if settings.GEO_USE_ZIP_LOOKUP:
             zip_match = db.query(ZipGeo).filter(ZipGeo.zip_code == zip_code).first()
@@ -140,6 +101,12 @@ def list_alerts(
         if coords:
             lat, lon = coords
             # Filter by bounding box first (rough filter), then haversine
+=======
+        result = _zip_to_coords(zip_code)
+        if result:
+            lat, lon, state = result
+            # Filter by bounding box first (rough filter)
+>>>>>>> QuiV2
             deg_offset = radius_miles / 55  # ~55 miles per degree
             q = q.filter(
                 (
@@ -155,32 +122,29 @@ def list_alerts(
                     (Alert.location_name.like(f"%, {state}%"))
                 )
             )
-        elif state:
-            # No coords in lookup, but we know the state — filter by name
-            q = q.filter(
-                Alert.location_name.isnot(None),
-                Alert.location_name.like(f"%, {state}%"),
-            )
+        # If zip lookup failed, return unfiltered results rather than silently
+        # dropping the zip filter — the caller can see from the results that
+        # the zip wasn't resolved.
 
     return q.order_by(Alert.fetched_at.desc()).offset(offset).limit(limit).all()
 
 
 @router.get("/stats", response_model=AlertStats)
 def alert_stats(db: Session = Depends(get_db)):
-    total = db.query(func.count(Alert.id)).scalar()
+    total = db.query(func.count(Alert.id)).scalar() or 0
 
-    by_type = dict(
-        db.query(Alert.alert_type, func.count(Alert.id))
-        .group_by(Alert.alert_type)
-        .all()
-    )
-    by_severity = dict(
-        db.query(Alert.severity, func.count(Alert.id))
-        .group_by(Alert.severity)
-        .all()
-    )
+    by_type = {
+        k: v for k, v in db.query(Alert.alert_type, func.count(Alert.id))
+        .group_by(Alert.alert_type).all()
+        if k is not None
+    }
+    by_severity = {
+        k: v for k, v in db.query(Alert.severity, func.count(Alert.id))
+        .group_by(Alert.severity).all()
+        if k is not None
+    }
 
-    return AlertStats(total=total or 0, by_type=by_type, by_severity=by_severity)
+    return AlertStats(total=total, by_type=by_type, by_severity=by_severity)
 
 
 @router.get("/{alert_id}", response_model=AlertOut)

@@ -1,5 +1,18 @@
+<<<<<<< HEAD
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from typing import Literal, Optional
+=======
+from pydantic import BaseModel, ConfigDict, field_validator, EmailStr
+
+"""
+Pydantic schemas for the User resource.
+
+These schemas validate request bodies and shape response payloads
+for the /api/v1/users/* endpoints.
+"""
+
+from typing import Optional
+>>>>>>> QuiV2
 from datetime import datetime
 import re
 
@@ -11,6 +24,7 @@ ALERT_TYPE_VALUES = ("all", "weather", "air_quality", "wildfire", "pollution", "
 
 class UserCreate(BaseModel):
     """POST /users/register — required fields to create an account."""
+<<<<<<< HEAD
     display_name: str = Field(min_length=1, max_length=120)
     email: str
     password: str = Field(min_length=6)
@@ -24,10 +38,23 @@ class UserCreate(BaseModel):
         if not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", normalized):
             raise ValueError("Invalid email format")
         return normalized
+=======
+    display_name: str
+    email: EmailStr
+    password: str
+    zip_code: Optional[str] = None
+>>>>>>> QuiV2
+
+    @field_validator("password")
+    @classmethod
+    def password_strength(cls, v: str) -> str:
+        if len(v) < 6:
+            raise ValueError("Password must be at least 6 characters")
+        return v
 
 class UserLogin(BaseModel):
     """POST /users/login — email + password to get a JWT back."""
-    email: str
+    email: EmailStr
     password: str
 
     @field_validator("email")
@@ -109,4 +136,26 @@ class NotificationSettingsOut(BaseModel):
     notify_email: Optional[bool] = None
     notify_sms: Optional[bool] = None
     device_token: Optional[str] = None
+    model_config = ConfigDict(from_attributes=True)
+
+
+# --- Saved destinations -----------------------------------------------------
+
+class SavedDestinationCreate(BaseModel):
+    """POST /users/destinations — save a travel destination."""
+    city: str
+    state: Optional[str] = None
+    zip_code: Optional[str] = None
+    latitude: float
+    longitude: float
+
+class SavedDestinationOut(BaseModel):
+    """Response for saved destination endpoints."""
+    id: int
+    city: str
+    state: Optional[str] = None
+    zip_code: Optional[str] = None
+    latitude: float
+    longitude: float
+    created_at: datetime
     model_config = ConfigDict(from_attributes=True)

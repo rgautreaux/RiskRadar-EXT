@@ -27,7 +27,7 @@ function RootNavigator() {
 
   const navigationTheme: Theme = {
     ...DefaultTheme,
-    dark: scheme === 'dark',
+    dark: false,
     colors: {
       ...DefaultTheme.colors,
       primary: palette.primary,
@@ -42,6 +42,7 @@ function RootNavigator() {
   if (isLoading) {
     return (
       <ThemeProvider value={navigationTheme}>
+<<<<<<< HEAD
         <View
           style={{
             flex: 1,
@@ -53,6 +54,27 @@ function RootNavigator() {
           <ActivityIndicator size="large" color={palette.primary} />
         </View>
         <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} backgroundColor={palette.primaryDark} />
+=======
+        <Stack
+          screenOptions={{
+            contentStyle: { backgroundColor: palette.background },
+            headerStyle: { backgroundColor: palette.primaryDark },
+            headerTintColor: palette.white,
+            headerShadowVisible: false,
+          }}>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="auth" options={{ headerShown: false }} />
+          <Stack.Screen name="main" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="modal"
+            options={{
+              presentation: 'modal',
+              title: 'Notifications',
+            }}
+          />
+        </Stack>
+        <StatusBar style="dark" backgroundColor={palette.primaryDark} />
+>>>>>>> QuiV2
       </ThemeProvider>
     );
   }

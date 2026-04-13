@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { Alert as RNAlert } from 'react-native';
 import { apiFetch, setToken, removeToken, getToken } from '@/utils/api';
 
 interface User {
@@ -36,26 +37,35 @@ interface AuthState {
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
 
+const FAKE_USER: User = {
+  id: 999,
+  display_name: 'Dev Mock User',
+  email: 'dev@riskradar.local',
+  zip_code: '12345',
+  latitude: null,
+  longitude: null,
+  alert_types: null,
+  notify_severity: null,
+  created_at: '1970-01-01T00:00:00.000Z',
+};
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isDevUserMode, setIsDevUserMode] = useState(false);
 
   const toggleDevUserMode = useCallback(() => {
-    setIsDevUserMode((prev) => !prev);
+    setIsDevUserMode((prev) => {
+      const next = !prev;
+      if (next) {
+        RNAlert.alert(
+          'Dev Mode Enabled',
+          'You are using a simulated user. Features that require a real account (saved destinations, preferences) will not work.',
+        );
+      }
+      return next;
+    });
   }, []);
-
-  const fakeUser: User = {
-    id: 999,
-    display_name: 'Dev Mock User',
-    email: 'dev@riskradar.local',
-    zip_code: '12345',
-    latitude: null,
-    longitude: null,
-    alert_types: null,
-    notify_severity: null,
-    created_at: new Date().toISOString()
-  };
 
   // Check for existing token on mount
   useEffect(() => {
@@ -125,7 +135,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   return (
     <AuthContext.Provider
       value={{
-        user: isDevUserMode ? fakeUser : user,
+        user: isDevUserMode ? FAKE_USER : user,
         isLoading,
         isLoggedIn: isDevUserMode ? true : !!user,
         isDevUserMode,

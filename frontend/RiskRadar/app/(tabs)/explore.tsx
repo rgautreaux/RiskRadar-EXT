@@ -117,6 +117,7 @@ export default function AlertsScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+<<<<<<< HEAD
   const [activeFilter, setActiveFilter] = useState<'all' | 'critical' | 'weather' | 'airquality'>('all');
 
   const buildAlertsPath = useCallback((filter: 'all' | 'critical' | 'weather' | 'airquality') => {
@@ -132,6 +133,13 @@ export default function AlertsScreen() {
 
     return `/alerts/?${params.toString()}`;
   }, []);
+=======
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
+
+  const toggleFilter = (type: string) => {
+    setActiveFilter(prev => prev === type ? null : type);
+  };
+>>>>>>> QuiV2
 
   const fetchAlerts = useCallback(async () => {
     try {
@@ -175,6 +183,7 @@ export default function AlertsScreen() {
     }
   };
 
+<<<<<<< HEAD
   const priorityRank = (severity: string) => {
     switch (getSeverityLevel(severity)) {
       case 'critical':
@@ -213,6 +222,8 @@ export default function AlertsScreen() {
   //   return `${diffDays}d ago`;
   // };
 
+=======
+>>>>>>> QuiV2
   if (loading) {
     return (
       <ThemedView style={[styles.container, styles.centered]}>
@@ -225,7 +236,6 @@ export default function AlertsScreen() {
   }
 
 
-  // Example hazard chips (static for now, could be dynamic)
   const hazardChips = [
     { hazardType: 'weather', label: 'Weather', icon: hazardIconMap.weather },
     { hazardType: 'airquality', label: 'Air Quality', icon: hazardIconMap.airquality },
@@ -237,19 +247,32 @@ export default function AlertsScreen() {
     { hazardType: 'fire', label: 'Fire', icon: hazardIconMap.fire },
   ];
 
+<<<<<<< HEAD
   const filterChips = [
     { key: 'all', label: 'All' },
     { key: 'critical', label: 'Critical First' },
     { key: 'weather', label: 'Weather' },
     { key: 'airquality', label: 'Air Quality' },
   ] as const;
+=======
+  const filteredAlerts = activeFilter
+    ? alerts.filter(alert => {
+        const typeKey = (alert.alert_type || '').toLowerCase().replace(/[^a-z]/g, '');
+        return typeKey === activeFilter || typeKey.includes(activeFilter) || activeFilter.includes(typeKey);
+      })
+    : alerts;
+>>>>>>> QuiV2
 
   return (
     <ThemedView style={styles.container}>
       {/* Branded Section Header */}
       <SectionHeader
         title="Alerts"
+<<<<<<< HEAD
         subtitle={`${filteredAlerts.length} active alert${filteredAlerts.length !== 1 ? 's' : ''}`}
+=======
+        subtitle={`${filteredAlerts.length} active alert${filteredAlerts.length !== 1 ? 's' : ''}${activeFilter ? ` · filtered` : ''}`}
+>>>>>>> QuiV2
         style={styles.sectionHeader}
       />
 
@@ -266,7 +289,8 @@ export default function AlertsScreen() {
             hazardType={chip.hazardType}
             label={chip.label}
             iconSource={chip.icon}
-            isActive={false}
+            isActive={activeFilter === chip.hazardType}
+            onPress={() => toggleFilter(chip.hazardType)}
             style={{ marginRight: Spacing.sm }}
           />
         ))}
