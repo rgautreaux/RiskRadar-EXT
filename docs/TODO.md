@@ -253,6 +253,21 @@ Maintain delivered features, harden security, and keep documentation and verific
 
 ### Stage 5 Session Entries (After Checklist)
 
+#### Stage 5 Unrelated-Change Isolation via Separate Worktree/Branch Session (2026-04-12)
+Summary:
+- Reviewed active local changes and isolated unrelated files from the main branch workflow.
+- Split and committed unrelated updates (`backend/scripts/pre_demo_connectivity_check.py`, `frontend/web/README.md`) into dedicated branch/worktree `chore/unrelated-connectivity-readme`.
+- Created isolated commit `67abd7b2` and pushed branch to origin for separate PR review.
+- Preserved a clean, focused current branch state for continued feature/documentation work.
+
+#### Stage 5 Connectivity Preflight, Canonical Local Topology, and Documentation Synchronization Session (2026-04-12)
+Summary:
+- Added a fail-fast connectivity preflight workflow (`npm run verify:connectivity`) to validate backend/frontend/API wiring before demos.
+- Added new preflight scripts (`backend/scripts/pre_demo_connectivity_check.py`, `backend/scripts/run_connectivity_preflight.mjs`) and wired `demo:run` to execute preflight before journey automation.
+- Standardized canonical local runtime topology to backend `127.0.0.1:8001` and frontend `127.0.0.1:8080` in config defaults and docs.
+- Updated runbook/execution/frontend setup docs with explicit pre-demo connectivity validation flow.
+- Ran transcript duplicate-entry pass; stage-session headings remain unique and chronologically ordered.
+
 #### Stage 5 Golby Runtime Resilience and Interaction Verification Hardening Session (2026-04-12)
 Summary:
 - Added lightweight user-visible diagnostics in Golby chat for backend assistant call, feedback sync, and profile sync failure paths while preserving local fallback behavior.

@@ -16,6 +16,15 @@
 
 function rr_render_layout_start(string $title, string $activePage): void
 {
+    $GLOBALS['rr_layout_active_page'] = $activePage;
+
+    $apiBase = '/api/v1';
+    $globalConfig = $GLOBALS['config'] ?? null;
+    if (is_array($globalConfig) && function_exists('rr_api_url')) {
+        $apiBase = rtrim(rr_api_url($globalConfig, ''), '/');
+    }
+
+    $shouldRenderGolbyWidget = $activePage !== 'login';
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -27,8 +36,15 @@ function rr_render_layout_start(string $title, string $activePage): void
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="assets/app.css">
+        <script>
+        window.__RISKRADAR_API_BASE__ = <?php echo json_encode($apiBase); ?>;
+        </script>
+        <?php if ($shouldRenderGolbyWidget) : ?>
+        <link rel="stylesheet" href="assets/golby-widget.css">
+        <script type="module" src="assets/golby-widget.js" defer></script>
+        <?php endif; ?>
     </head>
-    <body>
+    <body class="page-<?php echo e($activePage); ?>" data-page="<?php echo e($activePage); ?>">
         <div class="app-shell">
             <header class="topbar">
                 <div>
@@ -71,8 +87,14 @@ function rr_render_layout_start(string $title, string $activePage): void
 
 function rr_render_layout_end(): void
 {
+    $activePage = (string) ($GLOBALS['rr_layout_active_page'] ?? 'unknown');
+    $shouldRenderGolbyWidget = $activePage !== 'login';
+
     ?>
             </main>
+            <?php if ($shouldRenderGolbyWidget) : ?>
+            <div id="riskradar-ai-assistant-widget"></div>
+            <?php endif; ?>
         </div>
     </body>
     </html>

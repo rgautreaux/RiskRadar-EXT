@@ -18,10 +18,9 @@ from __future__ import annotations
 import argparse
 import json
 import subprocess
-import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
@@ -68,8 +67,9 @@ def _check_json_endpoint(name: str, url: str, timeout: float) -> CheckResult:
         status, body, _ = _http_request(url, timeout=timeout)
     except HTTPError as error:
         return CheckResult(name=name, ok=False, details=f"HTTP {error.code} from {url}")
-    except URLError as error:
-        return CheckResult(name=name, ok=False, details=f"Connection error to {url}: {error.reason}")
+    except (URLError, TimeoutError, OSError) as error:
+        reason = getattr(error, "reason", str(error))
+        return CheckResult(name=name, ok=False, details=f"Connection error to {url}: {reason}")
 
     if status != 200:
         return CheckResult(name=name, ok=False, details=f"Expected HTTP 200, got {status} from {url}")
@@ -109,7 +109,7 @@ def _load_frontend_api_config() -> dict[str, Any]:
     if not isinstance(parsed, dict):
         raise RuntimeError("Frontend config root is not an object")
 
-    return parsed
+    return cast(dict[str, Any], parsed)
 
 
 def _frontend_origin(frontend_url: str) -> str:
@@ -124,11 +124,12 @@ def run_preflight(enforce_canonical: bool, timeout_seconds: float) -> int:
 
     try:
         config = _load_frontend_api_config()
-    except Exception as error:  # pragma: no cover - defensive runtime capture
+    except RuntimeError as error:
         print(f"FAIL: frontend config load: {error}")
         return 1
 
-    api = config.get("api") if isinstance(config.get("api"), dict) else {}
+    api_raw = config.get("api")
+    api: dict[str, Any] = cast(dict[str, Any], api_raw) if isinstance(api_raw, dict) else {}
     configured_base_url = _normalize_base_url(str(api.get("base_url") or DEFAULT_BACKEND_URL))
     configured_prefix = _normalize_prefix(str(api.get("prefix") or DEFAULT_API_PREFIX))
 
@@ -179,8 +180,9 @@ def run_preflight(enforce_canonical: bool, timeout_seconds: float) -> int:
         except HTTPError as error:
             results.append(CheckResult(name=label, ok=False, details=f"HTTP {error.code} from {page_url}"))
             continue
-        except URLError as error:
-            results.append(CheckResult(name=label, ok=False, details=f"Connection error to {page_url}: {error.reason}"))
+        except (URLError, TimeoutError, OSError) as error:
+            reason = getattr(error, "reason", str(error))
+            results.append(CheckResult(name=label, ok=False, details=f"Connection error to {page_url}: {reason}"))
             continue
 
         if status != 200:
@@ -190,7 +192,12 @@ def run_preflight(enforce_canonical: bool, timeout_seconds: float) -> int:
         if label == "frontend map":
             expected_alerts_url = f"{configured_base_url}{configured_prefix}/alerts/map"
             expected_risk_url = f"{configured_base_url}{configured_prefix}/risk/map"
-            map_ok = (expected_alerts_url in body) and (expected_risk_url in body)
+            expected_alerts_url_escaped = expected_alerts_url.replace("/", "\\/")
+            expected_risk_url_escaped = expected_risk_url.replace("/", "\\/")
+            map_ok = (
+                (expected_alerts_url in body or expected_alerts_url_escaped in body)
+                and (expected_risk_url in body or expected_risk_url_escaped in body)
+            )
             details = (
                 "Map page includes configured API endpoints"
                 if map_ok
@@ -216,7 +223,7 @@ def run_preflight(enforce_canonical: bool, timeout_seconds: float) -> int:
                 "Access-Control-Request-Method": "GET",
             },
         )
-    except Exception as error:  # pragma: no cover - defensive runtime capture
+    except (HTTPError, URLError, TimeoutError, OSError) as error:
         results.append(CheckResult(name="CORS preflight", ok=False, details=f"Preflight request failed: {error}"))
     else:
         cors_origin = headers.get("access-control-allow-origin", "")

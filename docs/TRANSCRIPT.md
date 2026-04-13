@@ -1,4 +1,64 @@
-﻿# Stage 5: Golby Operational Frontend Wiring, Verification, and Documentation Synchronization Session (2026-04-12)
+﻿# Stage 5: Unrelated-Change Isolation via Separate Worktree/Branch Session (2026-04-12)
+
+Rebecca: First review and separate unrelated changes into a different commit/worktree
+
+GitHub Copilot: Completed. I reviewed the currently uncommitted changes and separated them into a dedicated commit on a dedicated worktree branch.
+
+Rebecca: Procceed
+
+GitHub Copilot: Proceed complete.
+
+Rebecca: Which of these is reccomended?
+
+GitHub Copilot: Recommended: option 1.
+
+Rebecca: Proceed with the reccomended option now
+
+GitHub Copilot: Done on my side for the recommended option.
+
+Rebecca: Perform the following Documentation Updates for Rebecca now:
+
+- Add a summary of all developments of this session to all relevant files whlie preserving the existing formatting/style of the document (maintain chronological order and stage categorization)
+- Update TODO, STAGES, and all progress-tracking documentation
+- Add an entry in TRANSCRIPT with a verbatim, word-for-word, exact transcript of this session in its correct chronological place for historical accuracy
+- Run a pass and eliminate all duplicate TRANSCRIPT entries so that all entries are unique/distinct and are listed in the correct chronological order for historical accuracy
+- Update REFLECTION with a summary of this session, the developments made, why they were made, and how it betters the project all within its correct chronological place for historical accuracy
+- Update REFLECTION so it contains a summary of each TRANSCRIPT entry and are listed in the correct chronological order for historical accuracy
+- Run a pass and update all top-level documetation so that they are all in sync and agreement
+- Update AUTHORS with each member's contributions to the project so far and the roles they have assumed within project development in the correct chronological order for historical accuracy
+- Add sections to README regarding the implementation, functionality, execution, and importance of the major developments for this project and are listed in the correct chronological order and stage categorization for historical accuracy
+
+GitHub Copilot: I need your direction before I edit docs: I found unexpected local changes that I did not make in this worktree.
+
+Rebecca: Stash these two files temporarily while I do doc updates, then restore them.
+
+GitHub Copilot: I’ll stash those two files exactly as requested, then perform documentation-only updates and restore them afterward unchanged.
+
+# Stage 5: Connectivity Preflight, Canonical Local Topology, Pass Verification, and Documentation Synchronization Session (2026-04-12)
+
+Rebecca: Implement both of these Suggested Steps to verify the connectivity of project components and ensure that failures/issues can be caught before demos
+
+GitHub Copilot: Implemented both requested steps end-to-end by adding a pre-demo connectivity preflight gate and standardizing a canonical local demo topology, then updating scripts/config/docs to enforce and document the flow.
+
+Rebecca: run this passnow
+
+GitHub Copilot: Executed the connectivity pass immediately, fixed preflight robustness issues found during execution, reran the pass, and reached a full PASS result across canonical base/prefix, backend endpoints, frontend pages, map API wiring, and CORS preflight.
+
+Rebecca: Perform the following Documentation Updates for Rebecca now:
+
+- Add a summary of all developments of this session to all relevant files whlie preserving the existing formatting/style of the document (maintain chronological order and stage categorization)
+- Update TODO, STAGES, and all progress-tracking documentation
+- Add an entry in TRANSCRIPT with a verbatim, word-for-word, exact transcript of this session in its correct chronological place for historical accuracy
+- Run a pass and eliminate all duplicate TRANSCRIPT entries so that all entries are unique/distinct and are listed in the correct chronological order for historical accuracy
+- Update REFLECTION with a summary of this session, the developments made, why they were made, and how it betters the project all within its correct chronological place for historical accuracy
+- Update REFLECTION so it contains a summary of each TRANSCRIPT entry and are listed in the correct chronological order for historical accuracy
+- Run a pass and update all top-level documetation so that they are all in sync and agreement
+- Update AUTHORS with each member's contributions to the project so far and the roles they have assumed within project development in the correct chronological order for historical accuracy
+- Add sections to README regarding the implementation, functionality, execution, and importance of the major developments for this project and are listed in the correct chronological order and stage categorization for historical accuracy
+
+GitHub Copilot: Synchronized top-level documentation in chronological Stage 5 order across README, STAGES, TODO, TRANSCRIPT, REFLECTION, and AUTHORS. Ran a duplicate-pass for transcript stage-session headings and confirmed they remain unique and correctly ordered.
+
+# Stage 5: Golby Operational Frontend Wiring, Verification, and Documentation Synchronization Session (2026-04-12)
 
 Rebecca: Why is the user unable to interact with Golby? When teseting manually it is still only the scaffolding present.
 

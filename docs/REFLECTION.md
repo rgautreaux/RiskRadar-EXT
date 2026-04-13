@@ -2,6 +2,24 @@
 
 ## Session Reflections
 
+# Stage 5 Connectivity Preflight, Canonical Local Topology, Pass Verification, and Documentation Synchronization Session (2026-04-12)
+Summary:
+- Implemented a fail-fast connectivity preflight workflow that checks canonical API configuration, backend endpoints, frontend reachability, map API wiring markers, and CORS preflight behavior.
+- Added and wired new verification scripts (`backend/scripts/pre_demo_connectivity_check.py`, `backend/scripts/run_connectivity_preflight.mjs`) and integrated preflight into `demo:run` through `npm run verify:connectivity`.
+- Standardized canonical local runtime topology to backend `127.0.0.1:8001` and frontend `127.0.0.1:8080` across config defaults and documentation.
+- Ran the pass end-to-end, fixed timeout/crash handling and escaped-map-URL detection in preflight logic, and revalidated to full PASS.
+- Synchronized top-level docs (README, STAGES, TODO, TRANSCRIPT, REFLECTION, AUTHORS) and rechecked transcript duplicate-stage headings.
+
+Why this was done:
+- To catch integration failures before demos with deterministic, actionable checks.
+- To reduce port/config drift across local environments and prevent false demo failures.
+- To keep project governance/history artifacts aligned with implementation and verification outcomes.
+
+How this improved the project:
+- Added a repeatable pre-demo quality gate for frontend/backend/API connectivity.
+- Increased demo reliability by formalizing one canonical local topology and execution path.
+- Improved maintainability and historical accuracy through synchronized documentation updates and duplicate-pass verification.
+
 # Stage 5 Golby Operational Frontend Wiring, Verification, and Documentation Synchronization Session (2026-04-12)
 Summary:
 - Diagnosed the assistant non-interactivity issue as frontend asset execution failure (raw source/scaffold loading path), then moved the web assistant runtime to compiled bundle loading.

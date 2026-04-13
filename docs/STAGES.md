@@ -3,6 +3,85 @@
 - Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
 - Historical lower totals in older session entries are retained intentionally as time-stamped snapshots.
 
+## Stage 5: Frontend-Backend Wiring Completion, Verification, and Documentation Synchronization Session (2026-04-12)
+
+### Implementation
+Completed an end-to-end frontend-backend wiring completion pass for the web runtime and synchronized top-level documentation in chronological Stage 5 order.
+
+### Functionality
+- Diagnosed no-data web rendering as connectivity/config mismatch plus browser-relative API fetch paths.
+- Updated forecast runtime URL construction to use injected backend API base/prefix configuration.
+- Hardened map runtime wiring to avoid fragile relative fallback and added explicit missing-config fallback messaging.
+- Reused bootstrap config in map view endpoint injection to keep API source-of-truth consistent across pages.
+- Hardened backend CORS origin parsing and added startup visibility for configured origins.
+- Added frontend wiring troubleshooting guidance for faster environment triage.
+
+### Verification Evidence
+- ✅ `php -l` syntax checks passed for modified frontend PHP view files.
+- ✅ Python compile check passed for modified backend entrypoint.
+- ✅ Runtime injection checks confirmed configured API base/prefix values on forecast/map pages.
+- ✅ CORS preflight from frontend origin returned expected allow-origin and credentials headers.
+- ✅ Dashboard/alerts/summaries pages rendered without backend-unavailable fallback warnings when backend was active on configured port.
+- ✅ Transcript duplicate-heading and duplicate-section-body passes reported zero duplicates.
+
+### Importance
+- Improves reliability of frontend data display by aligning browser requests with runtime backend configuration.
+- Reduces regression risk in forecast/map browser integrations.
+- Keeps governance/history artifacts synchronized with implemented runtime fixes.
+
+## Stage 5: Unrelated-Change Isolation via Separate Worktree/Branch Session (2026-04-12)
+
+### Implementation
+Completed a review-scope hygiene pass by isolating unrelated local changes into a dedicated branch/worktree so primary branch history remains focused.
+
+### Functionality
+- Classified active local changes and identified unrelated files.
+- Isolated unrelated edits to:
+   - `backend/scripts/pre_demo_connectivity_check.py`
+   - `frontend/web/README.md`
+- Created dedicated branch/worktree: `chore/unrelated-connectivity-readme`.
+- Created isolated commit: `67abd7b2` (`chore: update connectivity preflight handling and web README defaults`).
+- Pushed isolated branch to origin for separate PR review path.
+
+### Verification Evidence
+- ✅ Current branch remains clean after split.
+- ✅ Isolated branch exists and tracks origin.
+- ✅ Isolated commit includes only the two intended unrelated files.
+
+### Importance
+- Keeps PRs easier to review by concern.
+- Prevents unrelated operations/docs churn from obscuring feature intent.
+- Improves traceability and safer merge/revert sequencing.
+
+## Stage 5: Connectivity Preflight, Canonical Local Topology, and Documentation Synchronization Session (2026-04-12)
+
+### Implementation
+Implemented a pre-demo connectivity gate and canonical local runtime topology, then synchronized top-level documentation so execution guidance and progress tracking remain consistent.
+
+### Functionality
+- Added repo-root connectivity command: `npm run verify:connectivity`.
+- Added preflight scripts:
+   - `backend/scripts/pre_demo_connectivity_check.py`
+   - `backend/scripts/run_connectivity_preflight.mjs`
+- Preflight now validates:
+   - canonical frontend API base/prefix
+   - backend root, alerts, and forecast endpoints
+   - frontend index reachability
+   - frontend map API wiring markers
+   - CORS preflight from frontend origin
+- Updated canonical local topology across config/docs to backend `127.0.0.1:8001` and frontend `127.0.0.1:8080`.
+- Updated `demo:run` to run connectivity preflight before demo journey automation.
+
+### Verification Evidence
+- ✅ `npm run verify:connectivity` reaches full PASS with all checks green.
+- ✅ No static-analysis errors remain in `backend/scripts/pre_demo_connectivity_check.py`.
+- ✅ Transcript duplicate-heading pass executed; duplicate Stage-session headings count remains zero.
+
+### Importance
+- Establishes a repeatable fail-fast gate for demo readiness.
+- Reduces environment drift and port-mismatch confusion.
+- Improves reliability of frontend/backend/API integration during grading and presentations.
+
 ## Stage 5: Golby Runtime Resilience and Interaction Verification Hardening Session (2026-04-12)
 
 ### Implementation

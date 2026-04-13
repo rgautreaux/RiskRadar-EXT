@@ -1,17 +1,5 @@
 <?php rr_render_layout_start('AI Assistant', 'assistant'); ?>
 
-<?php $currentUserResult = rr_fetch_current_user($config); ?>
-<?php $currentUser = $currentUserResult['ok'] ? $currentUserResult['data'] : null; ?>
-<?php $apiBase = rtrim(rr_api_url($config, ''), '/'); ?>
-
-<script>
-window.__RISKRADAR_API_BASE__ = <?php echo json_encode($apiBase); ?>;
-</script>
-
-<!-- RiskRadar AI Assistant Widget Assets -->
-<link rel="stylesheet" href="/assets/golby-widget.css">
-<script type="module" src="/assets/golby-widget.js" defer></script>
-
 <section class="page-heading">
     <div>
         <p class="eyebrow">AI assistant</p>
@@ -31,12 +19,9 @@ window.__RISKRADAR_API_BASE__ = <?php echo json_encode($apiBase); ?>;
         </div>
     </div>
 
-    <!-- React AI Assistant Widget Mount Point -->
-    <div
-        id="riskradar-ai-assistant-widget"
-        data-current-user-id="<?php echo e((string) ($currentUser['id'] ?? '')); ?>"
-        data-is-admin="<?php echo e(!empty($currentUser['is_admin']) ? 'true' : 'false'); ?>"
-    ></div>
+    <div class="mt-3" style="font-size: 14px; color: var(--muted-foreground);">
+        <em>The Golby assistant widget is available on this and other pages (except login).</em>
+    </div>
     <div class="mt-3" style="font-size: 13px; color: var(--muted-foreground);">
         <em>Tip: Ask about forecast, alerts, map risk, or how to use RiskRadar features.</em>
     </div>

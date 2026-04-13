@@ -5,6 +5,59 @@
 - Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
 - Historical 191/196 totals in session sections are preserved as point-in-time records from earlier runs.
 
+## Stage 5: Frontend-Backend Wiring Completion, Verification, and Documentation Synchronization Session (2026-04-12)
+
+### Implementation
+Completed a full frontend-backend wiring completion pass for web runtime reliability, then synchronized all progress/history documentation artifacts for this session.
+
+### Functionality
+- Diagnosed root causes of empty-state/fallback rendering as frontend API base mismatch and relative browser fetch paths in forecast/map flows.
+- Updated forecast browser wiring to use injected backend base/prefix configuration rather than same-origin relative fallback paths.
+- Hardened map wiring to require injected API URLs and fail safely with actionable configuration messaging.
+- Ensured map page reuses bootstrap config source so endpoint injection remains consistent across pages.
+- Hardened backend CORS origin parsing with safe fallback behavior and startup visibility logging.
+- Added wiring troubleshooting guidance to frontend runbook documentation.
+
+### Execution
+- Implemented code changes across backend entrypoint and frontend forecast/map runtime paths.
+- Ran syntax checks (`php -l` for modified PHP files, Python compile for backend entrypoint).
+- Ran runtime verification with split-origin topology and validated:
+	- configured endpoint injection on forecast/map pages
+	- CORS preflight success for frontend origin
+	- dashboard/alerts/summaries rendering without backend-unavailable fallbacks once backend was active on configured port
+- Performed transcript duplicate-entry pass and duplicate-section-body pass; both reported zero duplicates.
+- Synchronized README, STAGES, TODO, TRANSCRIPT, REFLECTION, AUTHORS, and docs README.
+
+### Importance
+- Restores dependable data display across web surfaces by aligning browser requests with backend runtime configuration.
+- Prevents silent same-origin regressions in forecast/map browser code paths.
+- Improves demo/grading reliability through explicit wiring verification and synchronized project history tracking.
+
+## Stage 5: Unrelated-Change Isolation via Separate Worktree/Branch Session (2026-04-12)
+
+### Implementation
+Executed a clean review-scope isolation pass by separating unrelated connectivity/docs edits from the active branch workflow into a dedicated worktree and branch.
+
+### Functionality
+- Reviewed active working-tree changes and classified files by scope relevance.
+- Isolated unrelated changes to:
+	- `backend/scripts/pre_demo_connectivity_check.py`
+	- `frontend/web/README.md`
+- Created dedicated branch/worktree: `chore/unrelated-connectivity-readme`.
+- Created isolated commit: `67abd7b2`.
+- Pushed the isolated branch to origin.
+
+### Execution
+- Performed targeted stash/apply flow to avoid cross-scope contamination.
+- Committed unrelated changes in the isolated worktree branch.
+- Pushed branch and generated PR creation URL for independent review.
+- Preserved current branch cleanliness after split.
+
+### Importance
+- Improves PR review clarity by separating unrelated operational/docs updates from main feature work.
+- Reduces merge risk and rollback complexity through concern-scoped history.
+- Strengthens project governance by keeping changes categorized and traceable.
+
 ## Stage 5: Connectivity Preflight, Canonical Local Topology, and Documentation Synchronization Session (2026-04-12)
 
 ### Implementation
