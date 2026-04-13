@@ -66,16 +66,15 @@ export default function WeatherReport() {
 
         if (isValidZip) {
           // Fetch location info and alerts while triggering summary generation in parallel
-          const [locInfo, alertsData] = await Promise.all([
+          const [locInfo, alertsData, summaryData] = await Promise.all([
             apiFetch<LocationInfo>(`/location/info?zip_code=${zipCode}`).catch(() => null),
             apiFetch<AlertItem[]>(`/location/alerts?zip_code=${zipCode}`).catch(() => []),
             apiFetch<Summary | null>(`/summaries/generate/local?zip_code=${zipCode}`, { method: 'POST' }).catch(() => null),
           ]);
-
-        const [summaryData, locInfo, alertsData] = await Promise.all(promises);
-        setSummary(summaryData);
-        setLocationInfo(locInfo);
-        setAlerts(alertsData ?? []);
+          setSummary(summaryData);
+          setLocationInfo(locInfo);
+          setAlerts(alertsData ?? []);
+        }
       } catch {
         setError('Failed to load weather report. Please check your connection.');
       } finally {
