@@ -253,6 +253,16 @@ Maintain delivered features, harden security, and keep documentation and verific
 
 ### Stage 5 Session Entries (After Checklist)
 
+#### Stage 5 Golby Runtime Resilience and Interaction Verification Hardening Session (2026-04-12)
+Summary:
+- Added lightweight user-visible diagnostics in Golby chat for backend assistant call, feedback sync, and profile sync failure paths while preserving local fallback behavior.
+- Retired obsolete scaffold widget loader assets (`frontend/web/public/assets/ai-assistant-widget.js` and `.jsx`) after migration to compiled `golby-widget` artifacts.
+- Expanded `frontend/web/tests/demo/demo_journey.js` assistant coverage to include endpoint contract checks and role-context validation for anonymous, authenticated non-admin, and admin scenarios.
+- Added API base override support (`--api-base-url`) for demo automation in split local frontend/backend port setups.
+- Updated `package.json` `demo:run` script to build assistant assets before journey execution.
+- Updated `docs/DEMO_RUNBOOK.md` setup checklist to require `npm run build:web` before presentation or automation runs.
+- Re-ran verification: assistant interaction journey passed **6/6** with evidence screenshots (`06a`-`06e`), report regenerated, backend verification passed **211/211** plus smoke test.
+
 #### Stage 5 Frontend Contrast Accessibility Final Pass and Documentation Synchronization Session (2026-04-12)
 Summary:
 - Completed a final frontend visual polish pass to tighten edge-case contrast while preserving the richer, energetic color direction.

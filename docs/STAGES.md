@@ -3,6 +3,33 @@
 - Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
 - Historical lower totals in older session entries are retained intentionally as time-stamped snapshots.
 
+## Stage 5: Golby Runtime Resilience and Interaction Verification Hardening Session (2026-04-12)
+
+### Implementation
+Completed assistant operability hardening by adding visible runtime diagnostics, retiring obsolete scaffold loader artifacts, and expanding automated assistant verification to include contract checks and role-aware behavior.
+
+### Functionality
+- Added non-sensitive runtime diagnostics in Golby chat when assistant response, feedback sync, or profile sync calls fail.
+- Removed retired scaffold loader files from web assets (`ai-assistant-widget.js`, `ai-assistant-widget.jsx`).
+- Extended assistant demo journey checks to validate:
+   - anonymous contract behavior and hidden diagnostics controls
+   - authenticated non-admin interaction plus feedback behavior
+   - admin diagnostics-panel availability
+- Added explicit API base URL override support in demo automation for split local frontend/backend ports.
+- Updated `demo:run` script orchestration to build Golby assets before Playwright execution.
+
+### Verification Evidence
+- ✅ `npm run build:web` generated non-empty `golby-widget.js` and `golby-widget.css`.
+- ✅ `node frontend/web/tests/demo/demo_journey.js --base-url http://127.0.0.1:8080 --api-base-url http://127.0.0.1:8001` passed **6/6** steps.
+- ✅ Assistant evidence captures include anonymous open, response, feedback, guardrail, and admin diagnostics screenshots (`06a` through `06e`).
+- ✅ `npm run demo:report` regenerated `static/evidence/DEMO_REPORT.md`.
+- ✅ `npm run verify:backend` passed with **211/211** tests plus smoke verification pass.
+
+### Importance
+- Demonstrates real assistant operability beyond scaffold rendering.
+- Improves runtime transparency during backend/API degradation.
+- Reduces local/CI drift by enforcing assistant asset build before demo automation.
+
 ## Stage 5: Golby Operational Frontend Wiring and End-to-End Verification Session (2026-04-12)
 
 ### Implementation
