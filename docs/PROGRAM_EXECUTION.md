@@ -280,25 +280,27 @@ php -S 127.0.0.1:8080 -t frontend/web/public
 
 ### 5.4 Open the web app
 
-Navigate to <http://127.0.0.1:8080/index.php> in your browser.
+Navigate to <http://127.0.0.1:8080/login.php> in your browser.
 
 ### 5.5 Available pages
 
 | URL | Page | Description |
 |---|---|---|
-| `/index.php` | Dashboard | Alert stats, top 5 alerts, latest AI summary |
-| `/alerts.php` | Alerts | Filterable alert list (type, severity, source) |
-| `/alert_detail.php` | Alert Detail | Full detail view for a single alert |
-| `/summaries.php` | Summaries | Browse AI-generated summary archive |
-| `/summary_detail.php` | Summary Detail | Full detail view for a single summary |
-| `/risk.php` | Risk Score | Personalized environmental risk score and factor breakdown (Stage 2) |
-| `/smart_alerts.php` | Smart Alerts | Personalized prioritized alert list with urgency labels (Stage 2) |
-| `/map.php` | Interactive Map | Live risk map with alert and risk overlays, personalized overlays, region filters, and accessibility support (Stage 3) |
+| `/login.php` | Login | Required entry page: sign in, register path, or continue as guest |
 | `/register.php` | Register | Create a new user account |
-| `/login.php` | Login | User login (session support scaffolded) |
-| `/profile.php` | Profile | Update notification preferences for an existing user |
-| `/forecast.php` | Forecast | Short-horizon risk forecasting (Stage 4 scaffold — planned, not yet functional) |
-| `/assistant.php` | Assistant | AI-driven insights assistant (Stage 4 scaffold — planned, not yet functional) |
+| `/index.php` | Dashboard | Alert stats, top 5 alerts, latest AI summary (requires auth or guest session) |
+| `/alerts.php` | Alerts | Filterable alert list (type, severity, source) (requires auth or guest session) |
+| `/alert_detail.php` | Alert Detail | Full detail view for a single alert (requires auth or guest session) |
+| `/summaries.php` | Summaries | Browse AI-generated summary archive (requires auth or guest session) |
+| `/summary_detail.php` | Summary Detail | Full detail view for a single summary (requires auth or guest session) |
+| `/risk.php` | Risk Score | Personalized environmental risk score and factor breakdown (Stage 2; requires auth or guest session) |
+| `/smart_alerts.php` | Smart Alerts | Personalized prioritized alert list with urgency labels (Stage 2; requires auth or guest session) |
+| `/map.php` | Interactive Map | Live risk map with overlays and accessibility support (Stage 3; requires auth or guest session) |
+| `/profile.php` | Profile | Update notification preferences for an existing user (requires auth or guest session) |
+| `/forecast.php` | Forecast | Short-horizon risk forecasting (requires auth or guest session) |
+| `/assistant.php` | Assistant | AI-driven insights assistant (requires auth or guest session) |
+
+Feature pages are protected by a shared access guard and redirect to `/login.php` when neither authenticated session nor guest session is active.
 
 ---
 

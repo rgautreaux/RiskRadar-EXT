@@ -84,8 +84,8 @@ It started as the CMPS 357 Stage 1 web extension and now includes:
 	- Handles account creation with server-side validation and CSRF protection.
 	- Calls `POST users/register` and redirects to login on success.
 - `public/login.php` (Login UI)
-	- Implements validated, CSRF-protected login form scaffolding.
-	- Displays clear UX messaging that backend login/auth endpoint is not yet active.
+	- Implements validated, CSRF-protected login form.
+	- Supports three entry paths: sign in, create an account, or continue as guest.
 
 ### Stage 2 Kickoff (Connected to Planned Endpoints)
 
@@ -108,6 +108,13 @@ It started as the CMPS 357 Stage 1 web extension and now includes:
 
 - `public/error.php` renders explicit error title/message with HTTP 500 behavior.
 - `public/404.php` renders a dedicated not-found page.
+
+### Access Control
+
+- `public/login.php` and `public/register.php` are anonymous entry pages.
+- Feature pages (dashboard, alerts, summaries, profile, risk, smart alerts, map, forecast, assistant) require either:
+	- an authenticated session cookie (`riskradar_session`), or
+	- guest-mode session state created from the Login page.
 
 ## How the Web App Works
 
@@ -163,6 +170,8 @@ The current web frontend reads/writes through the existing API prefix (`/api/v1`
 - `GET /summaries/latest`
 - `GET /summaries/{id}`
 - `POST /users/register`
+- `POST /auth/login`
+- `GET /auth/me`
 - `PUT /users/{id}/preferences`
 - `GET /users/{id}/risk-score` (Stage 2 kickoff integration)
 
@@ -209,7 +218,7 @@ For local rebuild-on-change during UI work:
 npm run build:web:watch
 ```
 
-4. Open `http://127.0.0.1:8080/index.php`.
+4. Open `http://127.0.0.1:8080/login.php`.
 
 If backend port `8001` is unavailable, set `RISKRADAR_API_BASE_URL` (for example to `http://127.0.0.1:8001`) or use `config/config.local.php`.
 

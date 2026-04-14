@@ -47,7 +47,7 @@ Once all required services are running and preflight passes, navigate to **http:
 
 | Step | Duration | Feature | Demo URL | Key Points |
 |------|----------|---------|----------|-----------|
-| 1 | 2 min | Registration & Profile | `/register.php` → `/profile.php` | Health sensitivities configuration |
+| 1 | 2 min | Login Gate, Registration, and Guest Option | `/login.php` | Required entry point with sign in/register/guest choices |
 | 2 | 1 min | Dashboard Overview | `/index.php` | Live data integration, summary display |
 | 3 | 2 min | Personalized Risk Scoring | `/risk.php` | Enter user ID, view score breakdown |
 | 4 | 2 min | Smart/Prioritized Alerts | `/smart_alerts.php` | Ranking based on risk factors |
@@ -58,29 +58,37 @@ Once all required services are running and preflight passes, navigate to **http:
 
 ## Detailed Demo Steps
 
-### **Step 1: Registration & Profile Setup** *(2 minutes)*
+### **Step 1: Login Gate, Registration & Profile Setup** *(2 minutes)*
 
 **Narrative:**  
-*"Let me start by creating a new user account to show how personalized profiles drive the entire system. I'll register with some health sensitivities that will affect risk scoring throughout the demo."*
+*"The web app now starts at Login. From here, users can sign in, create an account, or continue as guest. For this demo, I'll create a new account to show how personalized profiles drive risk scoring."*
 
 #### Actions
 
-1. **Open Registration Page**
-   - Navigate to **http://127.0.0.1:8080/register.php**
-   - Title should say "Create Your Account"
+1. **Open Login Page (Required Entry)**
+   - Navigate to **http://127.0.0.1:8080/login.php**
+   - Confirm page offers **Sign in**, **Create one**, and **Continue as Guest**
 
-2. **Fill Registration Form**
+2. **Open Registration Page from Login**
+   - Click **Create one** (or navigate to `/register.php`)
+   - Title should say "Create a RiskRadar account"
+
+3. **Fill Registration Form**
    - Display Name: `Demo User - [Your Name]`
    - Email: `demo_test@riskradar.local`
    - Password: `DemoPass123!` (meets strength requirements: 8+ chars, mixed case, number, special char)
    - ZIP Code: `90001` (Los Angeles area)
    - Click **Register**
 
-3. **Verify Success**
+4. **Verify Success**
    - System redirect to login page with success message
    - Point out: *"The system validates password strength before storing. Passwords are hashed with pbkdf2_sha256, and emails are encrypted at rest."*
 
-4. **Open Profile/Preferences**
+5. **Optional Guest Demo Path**
+   - From login, click **Continue as Guest** to demonstrate no-account access to feature pages
+   - Continue demo either as guest or signed-in user
+
+6. **Open Profile/Preferences**
    - Navigate to **http://127.0.0.1:8080/profile.php**
    - Scroll to "Health Conditions" section
    - Set the following sensitivities:
@@ -91,7 +99,7 @@ Once all required services are running and preflight passes, navigate to **http:
    - Scroll down to view current settings if available
    - Click **Save Preferences**
 
-5. **Presenter Notes**
+7. **Presenter Notes**
    - Highlight: *"These sensitivities are stored securely and will be used to personalize risk scoring, smart alert ranking, and forecast advice."*
    - Point out: *"This is Stage 2 personalization—the system now knows about this user's health profile."*
 
