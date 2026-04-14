@@ -195,3 +195,40 @@ class TestFeedbackAnalytics:
         _login(test_client, "test@example.com", "password123")
         resp = test_client.get("/api/v1/feedback/analytics")
         assert resp.status_code == 403
+
+
+class TestSessionFeedback:
+    def test_session_feedback_requires_auth(self, test_client):
+        resp = test_client.get("/api/v1/feedback/session/some-session-id")
+        assert resp.status_code == 401
+
+    def test_admin_can_see_all_session_feedback(self, test_client, admin_user):
+        _ = admin_user
+        _login(test_client, "admin@example.com", "password123")
+        test_client.post("/api/v1/feedback", json={
+            "session_id": "session-admin-view",
+            "message_id": "msg-av1",
+            "reaction": "thumbs_up",
+            "rating": 5,
+        })
+        resp = test_client.get("/api/v1/feedback/session/session-admin-view")
+        assert resp.status_code == 200
+        assert len(resp.json()) >= 1
+
+    def test_regular_user_sees_only_own_session_feedback(self, test_client, sample_user, db_session):
+        _ = sample_user
+        _login(test_client, "test@example.com", "password123")
+        resp = test_client.post("/api/v1/feedback", json={
+            "session_id": "session-user-own",
+            "message_id": "msg-uo1",
+            "reaction": "smile",
+            "rating": 4,
+        })
+        assert resp.status_code == 200
+
+        resp = test_client.get("/api/v1/feedback/session/session-user-own")
+        assert resp.status_code == 200
+        data = resp.json()
+        # Only returns feedback owned by this user
+        for item in data:
+            assert item["user_id"] == sample_user.id

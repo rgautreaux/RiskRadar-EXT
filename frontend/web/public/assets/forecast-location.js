@@ -21,7 +21,23 @@ function normalizeApiConfig() {
     };
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+async function initCurrentUser() {
+    try {
+        const api = normalizeApiConfig();
+        const res = await fetch(`${api.base}${api.prefix}/auth/me`, { credentials: 'include' });
+        if (res.ok) {
+            const user = await res.json();
+            if (user && user.id) {
+                CURRENT_USER_ID = user.id;
+            }
+        }
+    } catch (_err) {
+        // Not authenticated or network error — use anonymous forecast endpoint.
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await initCurrentUser();
     const locationForm = document.getElementById('forecast-location-form');
     const locationInput = document.getElementById('forecast-location-input');
     const useMyLocationBtn = document.getElementById('use-my-location-btn');
