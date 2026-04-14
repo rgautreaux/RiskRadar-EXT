@@ -381,9 +381,14 @@ function rr_register_user(array $config, array $payload): array
 {
     $result = rr_http_request($config, 'POST', 'users/register', [], $payload);
     if (!$result['ok']) {
-        $message = ($result['status'] ?? 0) === 400
-            ? 'That email address is already registered or the form data is invalid.'
-            : 'Registration failed. Please verify the backend is running and try again.';
+        $backendDetail = is_array($result['data']) ? ($result['data']['detail'] ?? null) : null;
+        if (is_string($backendDetail) && $backendDetail !== '') {
+            $message = $backendDetail;
+        } elseif (($result['status'] ?? 0) === 400) {
+            $message = 'That email address is already registered or the form data is invalid.';
+        } else {
+            $message = 'Registration failed. Please verify the backend is running and try again.';
+        }
 
         return rr_fallback_result(rr_normalize_user(is_array($result['data']) ? $result['data'] : null), $message, $result['status'] ?? null);
     }
