@@ -1,4 +1,22 @@
-﻿# Stage 5: Registration Fix and Backend Settings Extension Session (2026-04-14)
+﻿# Stage 5: OpenWeather Source Wiring and YAML Syntax Fix Session (2026-04-14)
+
+Max: Is the OPENWEATHER_API_KEY not wired?
+
+GitHub Copilot: Confirmed. `OPENWEATHER_API_KEY` is present in `.env` and declared in `backend/config/settings.py`, but no entry in `backend/config/sources.yaml` references it — the key was not wired to any data source. Also identified a YAML syntax error: the `gbif_occurrences` entry was preceded by a root-level comment block (`# **POSSIBLE NEW SOURCES TO ADD:**`) at column 0, placing it visually outside the `api_sources` list and causing indentation inconsistency. Both issues needed to be fixed.
+
+Max: Yes. Also can you fix the YAML syntax error too?
+
+GitHub Copilot: Analyzed the full `sources.yaml` file and the `GenericAPIScraper` implementation to confirm the OpenWeather `/data/2.5/weather` single-object response would be handled correctly (scraper auto-wraps dicts in a list). Prepared a plan to: (1) remove the misaligned root-level comment block; (2) add a properly indented `openweather_current` source entry using `query_param` auth with `OPENWEATHER_API_KEY`; (3) fix the `gbif_occurrences` comment to be properly indented inside `api_sources`.
+
+Max: Start implementation
+
+GitHub Copilot: Applied both fixes to `backend/config/sources.yaml`. Removed the root-level `# **POSSIBLE NEW SOURCES TO ADD:**` comment block and replaced it with the fully wired `openweather_current` source entry (calling `https://api.openweathermap.org/data/2.5/weather` every 30 minutes, authenticated via `?appid=OPENWEATHER_API_KEY`, with severity mapping for Tornado/Thunderstorm/Squall/Snow/Rain/Drizzle conditions) followed by a properly indented `gbif_occurrences` comment. Verified the surrounding YAML structure looks clean.
+
+Max: Can you document these changes into the following files: 1. TRANSCRIPT.md 2. REFLECTION.md Follow the format of previous entries in these documentation files.
+
+GitHub Copilot: Added this session's verbatim transcript entry to TRANSCRIPT.md and a matching reflection summary entry to REFLECTION.md, both prepended at the top in chronological Stage 5 order consistent with existing formatting.
+
+# Stage 5: Registration Fix and Backend Settings Extension Session (2026-04-14)
 
 Max: For some reason, I cannot create an account. Can you help me determine why? The only error messages I get are the following: INFO:     127.0.0.1:50673 - "GET /api/v1/auth/me HTTP/1.1" 401 Unauthorized
 

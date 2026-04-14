@@ -166,9 +166,53 @@ api_sources:
           value: "moderate"   # EPA "Moderate"
         - default: "low"
 
-# **POSSIBLE NEW SOURCES TO ADD:**
-# Global Biodiversity Information Facility (GBIF) API — no API key required
-# Environmental type -> Invasive species occurrences
+  # OpenWeather Current Weather API — API key required
+  # Environmental type -> weather
+  # Usage -> Current weather conditions (temperature, pressure, wind, precipitation type)
+  #          for the configured default location. Updated every 30 minutes.
+  - name: "openweather_current"
+    enabled: true
+    alert_type: "weather"
+    url: "https://api.openweathermap.org/data/2.5/weather"
+    method: "GET"
+    interval_minutes: 30
+    request:
+      params:
+        lat: "{default_lat}"
+        lon: "{default_lon}"
+        units: "imperial"
+      headers: {}
+    auth:
+      type: "query_param"
+      env_var: "OPENWEATHER_API_KEY"
+      param_name: "appid"
+    response:
+      format: "json"
+      items_path: null  # Single-object response; scraper wraps it in a list automatically
+    field_mapping:
+      source_id: "id"
+      title: "weather[0].main"
+      description: "weather[0].description"
+      latitude: "coord.lat"
+      longitude: "coord.lon"
+      location_name: "name"
+      event_start: "dt"
+      event_end: null
+      raw_data: "__full_item__"
+    severity:
+      type: "mapping"
+      field: "weather[0].main"
+      map:
+        Tornado: "critical"
+        Thunderstorm: "high"
+        Squall: "high"
+        Snow: "moderate"
+        Rain: "moderate"
+        Drizzle: "low"
+      default: "low"
+
+  # Global Biodiversity Information Facility (GBIF) API — no API key required
+  # Environmental type -> Invasive species occurrences
   - name: "gbif_occurrences"
     enabled: true  # can enable if we want to monitor invasive species occurrences worldwide
     alert_type: "environmental"

@@ -2,6 +2,23 @@
 
 ## Session Reflections
 
+# Stage 5: OpenWeather Source Wiring and YAML Syntax Fix Session (2026-04-14)
+Summary:
+- Confirmed `OPENWEATHER_API_KEY` was declared in `backend/config/settings.py` but not referenced by any entry in `backend/config/sources.yaml`, leaving the key unwired with no data flowing from OpenWeather.
+- Fixed a YAML syntax error in `sources.yaml` where a root-level comment block (`# **POSSIBLE NEW SOURCES TO ADD:**`) at column 0 was misaligning the `gbif_occurrences` entry visually outside the `api_sources` list.
+- Added a fully wired `openweather_current` source entry to `api_sources` using `query_param` auth with `OPENWEATHER_API_KEY`, polling `https://api.openweathermap.org/data/2.5/weather` every 30 minutes for the configured default lat/lon.
+- Configured severity mapping for weather condition names: Tornado → critical, Thunderstorm/Squall → high, Snow/Rain → moderate, Drizzle → low, with a safe default of low.
+- The registry skips the source automatically if `OPENWEATHER_API_KEY` is empty, so the entry is safe in environments without the key.
+
+Why this was done:
+- The OpenWeather API key had been added to `.env` to enable additional alert data, but without a `sources.yaml` entry the key was never used and no weather data was being fetched.
+- The YAML indentation error risked silent misconfiguration — parsers that are strict about document structure could reject or misinterpret the `gbif_occurrences` entry depending on how the root-level comment broke the mapping context.
+
+How this improved the project:
+- OpenWeather current weather data is now actively scraped and ingested as `weather` alerts every 30 minutes, expanding the alert feed with real atmospheric condition data.
+- The `sources.yaml` file is now structurally valid with all entries consistently indented inside `api_sources`, reducing the risk of future parse errors when adding new sources.
+- The severity mapping gives weather alerts meaningful priority tiers immediately upon ingestion without requiring any additional code changes.
+
 # Stage 5: Registration Fix and Backend Settings Extension Session (2026-04-14)
 Summary:
 - Diagnosed silent registration failures caused by a password validation mismatch between the PHP frontend and the FastAPI backend.
