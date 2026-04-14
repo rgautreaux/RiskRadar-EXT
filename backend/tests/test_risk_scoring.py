@@ -286,6 +286,13 @@ class TestRiskScoreAPI:
         db_session.commit()
         db_session.refresh(user)
 
+        # Login as the user
+        resp = test_client.post(
+            "/api/v1/auth/login",
+            json={"email": "riskuser@test.com", "password": "RiskPass123!"},
+        )
+        assert resp.status_code == 200
+
         resp = test_client.get(f"/api/v1/risk/score/{user.id}")
         assert resp.status_code == 200
         data = resp.json()
@@ -315,6 +322,13 @@ class TestRiskScoreAPI:
         db_session.commit()
         db_session.refresh(user)
 
+        # Login as the user
+        resp = test_client.post(
+            "/api/v1/auth/login",
+            json={"email": "nearla@test.com", "password": "pass"},
+        )
+        assert resp.status_code == 200
+
         resp = test_client.get(f"/api/v1/risk/score/{user.id}")
         assert resp.status_code == 200
         data = resp.json()
@@ -338,6 +352,13 @@ class TestRiskScoreAPI:
         db_session.refresh(user)
 
         # Very small radius should exclude most alerts
+        # Login as the user
+        resp = test_client.post(
+            "/api/v1/auth/login",
+            json={"email": "radius@test.com", "password": "RadiusPass123!"},
+        )
+        assert resp.status_code == 200
+
         resp = test_client.get(f"/api/v1/risk/score/{user.id}?radius_km=1")
         assert resp.status_code == 200
         data = resp.json()

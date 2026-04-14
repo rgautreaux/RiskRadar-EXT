@@ -36,10 +36,17 @@ function rr_access_context(): string
 
 function rr_require_feature_access(): void
 {
-    if (rr_access_context() !== 'anonymous') {
+    $context = rr_access_context();
+    if ($context === 'authenticated') {
         return;
     }
-
+    // Guests are not allowed for restricted features
+    if ($context === 'guest') {
+        rr_set_flash('warning', 'Guest mode: Please sign in or create an account to access this feature.');
+        header('Location: login.php');
+        exit;
+    }
+    // Anonymous users
     rr_set_flash('warning', 'Please sign in, create an account, or continue as guest to use RiskRadar.');
     header('Location: login.php');
     exit;

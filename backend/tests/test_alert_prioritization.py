@@ -1,6 +1,7 @@
 """Tests for Stage 2 Step 2: Smart Alert Prioritization System."""
 
 import json
+from auth.security import hash_email
 import pytest
 from datetime import datetime, timezone, timedelta
 
@@ -429,25 +430,42 @@ class TestComputeAlertPriority:
 
 class TestPrioritizedAlertsAPI:
     def _register_user(self, test_client, db_session, lat=34.05, lon=-118.24, conditions=None):
-        from passlib.context import CryptContext
-        pwd = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
-        user = User(
-            display_name="API Priority User",
-            email=f"apipri_{lat}@test.com",
-            password_hash=pwd.hash("pass"),
-            latitude=lat,
-            longitude=lon,
-            health_conditions=json.dumps(conditions or []),
-            created_at=NOW_ISO,
-            updated_at=NOW_ISO,
+        # Register via API to ensure password is valid and matches login
+        import uuid
+        email = f"apipri_{uuid.uuid4().hex[:8]}@test.com"
+        password = "Secret123!Aa"
+        resp = test_client.post(
+            "/api/v1/users/register",
+            json={
+                "display_name": "API Priority User",
+                "email": email,
+                "password": password,
+            },
         )
-        db_session.add(user)
+        assert resp.status_code == 200
+        user = db_session.query(User).filter(User.email_lookup_hash == hash_email(email)).first()
+        # Set additional fields directly if needed
+        user.latitude = lat
+        user.longitude = lon
+        if conditions is not None:
+            user.health_conditions = json.dumps(conditions)
         db_session.commit()
         db_session.refresh(user)
-        return user
+        # Clear cookies to ensure clean login session
+        test_client.cookies.clear()
+        return user, email
+
 
     def test_prioritized_alerts_endpoint(self, test_client, db_session, sample_alerts):
-        user = self._register_user(test_client, db_session)
+        user, plain_email = self._register_user(test_client, db_session)
+        # Custom login with debug output
+        resp = test_client.post(
+            "/api/v1/auth/login",
+            json={"email": plain_email, "password": "Secret123!Aa"},
+        )
+        if resp.status_code != 200:
+            print("LOGIN FAILURE RESPONSE:", resp.status_code, resp.text)
+        assert resp.status_code == 200
 
         resp = test_client.get(f"/api/v1/alerts/prioritized/{user.id}")
         assert resp.status_code == 200
@@ -459,11 +477,16 @@ class TestPrioritizedAlertsAPI:
 
     def test_prioritized_alerts_user_not_found(self, test_client):
         resp = test_client.get("/api/v1/alerts/prioritized/9999")
-        assert resp.status_code == 404
+        assert resp.status_code == 401
 
     def test_prioritized_alerts_with_data(self, test_client, db_session, sample_alerts):
-        user = self._register_user(test_client, db_session)
+        user, email = self._register_user(test_client, db_session)
 
+        resp = test_client.post(
+            "/api/v1/auth/login",
+            json={"email": email, "password": "Secret123!Aa"},
+        )
+        assert resp.status_code == 200
         resp = test_client.get(f"/api/v1/alerts/prioritized/{user.id}")
         assert resp.status_code == 200
         data = resp.json()
@@ -477,23 +500,39 @@ class TestPrioritizedAlertsAPI:
             assert alert["priority_level"] in ("low", "medium", "high")
 
     def test_prioritized_alerts_ordered(self, test_client, db_session, sample_alerts):
-        user = self._register_user(test_client, db_session)
+        user, email = self._register_user(test_client, db_session)
 
+        resp = test_client.post(
+            "/api/v1/auth/login",
+            json={"email": email, "password": "Secret123!Aa"},
+        )
+        assert resp.status_code == 200
         resp = test_client.get(f"/api/v1/alerts/prioritized/{user.id}")
         data = resp.json()
         scores = [a["priority_score"] for a in data["alerts"]]
         assert scores == sorted(scores, reverse=True)
 
     def test_prioritized_alerts_limit(self, test_client, db_session, sample_alerts):
-        user = self._register_user(test_client, db_session)
+        user, email = self._register_user(test_client, db_session)
 
+        resp = test_client.post(
+            "/api/v1/auth/login",
+            json={"email": email, "password": "Secret123!Aa"},
+        )
+        assert resp.status_code == 200
         resp = test_client.get(f"/api/v1/alerts/prioritized/{user.id}?limit=1")
         assert resp.status_code == 200
         data = resp.json()
         assert len(data["alerts"]) <= 1
 
     def test_prioritized_alerts_radius(self, test_client, db_session, sample_alerts):
-        user = self._register_user(test_client, db_session)
+        user, email = self._register_user(test_client, db_session)
+
+        resp = test_client.post(
+            "/api/v1/auth/login",
+            json={"email": email, "password": "Secret123!Aa"},
+        )
+        assert resp.status_code == 200
 
         resp_small = test_client.get(f"/api/v1/alerts/prioritized/{user.id}?radius_km=1")
         resp_large = test_client.get(f"/api/v1/alerts/prioritized/{user.id}?radius_km=500")
@@ -503,10 +542,16 @@ class TestPrioritizedAlertsAPI:
         assert len(small_data["alerts"]) <= len(large_data["alerts"])
 
     def test_prioritized_alerts_with_health_conditions(self, test_client, db_session, sample_alerts):
-        user = self._register_user(
+        user, email = self._register_user(
             test_client, db_session,
             conditions=["respiratory"],
         )
+
+        resp = test_client.post(
+            "/api/v1/auth/login",
+            json={"email": email, "password": "Secret123!Aa"},
+        )
+        assert resp.status_code == 200
 
         resp = test_client.get(f"/api/v1/alerts/prioritized/{user.id}")
         assert resp.status_code == 200
@@ -529,6 +574,13 @@ class TestPrioritizedAlertsAPI:
         db_session.add(user)
         db_session.commit()
         db_session.refresh(user)
+
+        # Login as the user
+        resp = test_client.post(
+            "/api/v1/auth/login",
+            json={"email": "noloc_api@test.com", "password": "pass"},
+        )
+        assert resp.status_code == 200
 
         resp = test_client.get(f"/api/v1/alerts/prioritized/{user.id}")
         assert resp.status_code == 200

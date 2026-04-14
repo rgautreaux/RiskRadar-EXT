@@ -161,6 +161,13 @@ function rr_http_request(array $config, string $method, string $path, array $que
         $decoded = json_decode($bodyText, true);
 
         if ($status < 200 || $status >= 300) {
+            // Custom user-facing messages for restricted endpoints
+            if ($status === 401) {
+                return rr_fallback_result($decoded, 'You must be signed in to access this feature.', $status);
+            }
+            if ($status === 403) {
+                return rr_fallback_result($decoded, 'This feature is only available to registered users. Please sign in or create an account.', $status);
+            }
             return rr_fallback_result($decoded, 'The backend returned an error response.', $status);
         }
 
@@ -198,6 +205,13 @@ function rr_http_request(array $config, string $method, string $path, array $que
 
     $decoded = json_decode($bodyText, true);
     if (($status !== null && ($status < 200 || $status >= 300))) {
+        // Custom user-facing messages for restricted endpoints
+        if ($status === 401) {
+            return rr_fallback_result($decoded, 'You must be signed in to access this feature.', $status);
+        }
+        if ($status === 403) {
+            return rr_fallback_result($decoded, 'This feature is only available to registered users. Please sign in or create an account.', $status);
+        }
         return rr_fallback_result($decoded, 'The backend returned an error response.', $status);
     }
 

@@ -98,6 +98,7 @@ class User(Base):
     email_lookup_hash = Column(Text, unique=True, nullable=False)
     password_hash = Column(Text)
     is_admin = Column(Boolean, nullable=False, default=False)
+    is_guest = Column(Boolean, nullable=False, default=False)  # New: True if user is a guest
     zip_code = Column(Text)
     latitude = Column(Float)
     longitude = Column(Float)

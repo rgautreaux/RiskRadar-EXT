@@ -7,6 +7,7 @@
 <script>
 window.__RISKRADAR_FORECAST_API_BASE__ = <?php echo json_encode($forecastApiBase); ?>;
 window.__RISKRADAR_FORECAST_API_PREFIX__ = <?php echo json_encode($forecastApiPrefix); ?>;
+window.__RISKRADAR_IS_GUEST__ = <?php echo isset($isGuest) && $isGuest ? 'true' : 'false'; ?>;
 </script>
 <script src="/assets/forecast-location.js"></script>
 <?php rr_render_layout_start('Forecast', 'forecast'); ?>
@@ -19,6 +20,11 @@ window.__RISKRADAR_FORECAST_API_PREFIX__ = <?php echo json_encode($forecastApiPr
     <p class="muted">This page will surface 24-48 hour environmental risk forecasts and confidence/trend visuals.</p>
 </section>
 
+<?php if (isset($isGuest) && $isGuest) : ?>
+    <section class="panel warning-panel">
+        <p class="empty-state">Guest mode: Forecasting is only available to registered users. <a href="login.php">Sign in</a> or <a href="register.php">create an account</a> for full access.</p>
+    </section>
+<?php else : ?>
 <section class="panel" style="background: var(--card); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 1.5rem; max-width: 700px; margin: 0 auto 2rem auto;">
     <form id="forecast-location-form" class="flex items-center gap-2" style="margin-bottom: 0.5rem;">
         <input id="forecast-location-input" type="text" placeholder="Enter ZIP or City, State" style="flex:1; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--muted); font-size: 1rem;" />
@@ -35,9 +41,10 @@ window.__RISKRADAR_FORECAST_API_PREFIX__ = <?php echo json_encode($forecastApiPr
 // Stage 4: Dynamic forecast data integration now happens in the companion script.
 ?>
 <section class="panel" style="background: var(--card); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 2rem 1.5rem; max-width: 700px; margin: 0 auto;">
-    <h2 class="mb-2" style="color: var(--primary); font-family: 'Space Grotesk', Inter, Arial, sans-serif;">24–48 Hour Risk Forecast</h2>
+    <h2 class="mb-2" style="color: var(--primary); font-family: 'Space Grotesk', Inter, Arial, sans-serif;">248 Hour Risk Forecast</h2>
     <p class="muted" style="margin-bottom: 1rem;">The live forecast panel above will update from the backend and summarize risk, confidence, and the current outlook for your selected location.</p>
     <!-- Forecasted condition icons row (static preview) -->
+<?php endif; ?>
     <div class="flex items-center justify-between mb-2" style="gap: 0.5rem; max-width: 560px; margin: 0 auto 1.5rem auto;">
         <img src="/assets/illustrations/weather.svg" alt="Weather" title="Weather" style="width: 38px; height: 38px;" />
         <img src="/assets/illustrations/fire.svg" alt="Fire" title="Fire" style="width: 38px; height: 38px;" />

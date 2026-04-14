@@ -42,6 +42,17 @@ def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
     return user
 
 
+# New: Require account (non-guest) user for restricted features
+def require_account_user(request: Request, db: Session = Depends(get_db)) -> User:
+    user = get_optional_current_user(request, db)
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication required")
+    # Guest users are marked by a special flag or property; adjust as needed
+    if getattr(user, "is_guest", False):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account required for this feature")
+    return user
+
+
 def require_admin_user(current_user: User = Depends(get_current_user)) -> User:
     if not bool(current_user.is_admin):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required")

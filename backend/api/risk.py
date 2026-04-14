@@ -1,8 +1,9 @@
 
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from datetime import datetime
-from auth.dependencies import require_self_or_admin
+from auth.dependencies import require_account_user
 from db.database import get_db
 from db.models import Alert, User
 from schemas.risk_score import RiskScoreOut, MapRiskOverlayOut, MapRiskZone
@@ -68,12 +69,13 @@ def map_risk_overlay(
 
 
 # New: Personalized Map Risk Overlay Endpoint
+from auth.dependencies import require_account_user
+
 @router.get("/map/personalized/{user_id}", response_model=MapRiskOverlayOut)
 def personalized_map_risk_overlay(
     user_id: int,
     region: str | None = None,
-    # Removed unused argument 'bbox'
-    _current_user: User = Depends(require_self_or_admin),
+    _current_user: User = Depends(lambda request=Depends(), db=Depends(get_db), user_id=user_id: require_self_or_admin(user_id, require_account_user(request, db))),
     db: Session = Depends(get_db),
 ):
     """Return a map overlay with user-personalized risk scores for each alert location."""
@@ -112,11 +114,12 @@ def personalized_map_risk_overlay(
     )
 
 
+
 @router.get("/score/{user_id}", response_model=RiskScoreOut)
 def get_risk_score(
     user_id: int,
     radius_km: float = Query(default=150.0, ge=1.0, le=500.0),
-    _current_user: User = Depends(require_self_or_admin),
+    _current_user: User = Depends(lambda request=Depends(), db=Depends(get_db), user_id=user_id: require_self_or_admin(user_id, require_account_user(request, db))),
     db: Session = Depends(get_db),
 ):
     """Compute a personalized environmental risk score for the user."""

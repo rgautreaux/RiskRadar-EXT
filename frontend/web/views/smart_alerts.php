@@ -26,7 +26,12 @@
     </form>
 </section>
 
-<?php if ($userId <= 0) : ?>
+
+<?php if ($isGuest) : ?>
+    <section class="panel warning-panel">
+        <p class="empty-state">Guest mode: Prioritized alerts are only available to registered users. <a href="login.php">Sign in</a> or <a href="register.php">create an account</a> for full access.</p>
+    </section>
+<?php elseif ($userId <= 0) : ?>
     <section class="panel">
         <p class="empty-state">Enter a user ID above to view prioritized alerts. You can find your user ID on the <a href="profile.php">Profile</a> page after registering.</p>
     </section>

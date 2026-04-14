@@ -43,6 +43,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     const useMyLocationBtn = document.getElementById('use-my-location-btn');
     const status = document.getElementById('forecast-location-status');
 
+    // Block guest forecast requests
+    if (window.__RISKRADAR_IS_GUEST__ === true || window.__RISKRADAR_IS_GUEST__ === 'true') {
+        if (status) {
+            status.textContent = 'Forecasting is only available to registered users. Please sign in or create an account.';
+        }
+        if (locationForm) {
+            locationForm.style.display = 'none';
+        }
+        if (useMyLocationBtn) {
+            useMyLocationBtn.style.display = 'none';
+        }
+        return;
+    }
+
     if (locationForm && locationInput) {
         locationForm.addEventListener('submit', event => {
             event.preventDefault();

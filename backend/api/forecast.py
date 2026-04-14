@@ -1,3 +1,4 @@
+
 from collections import Counter
 from datetime import datetime, timedelta, timezone
 from math import atan2, cos, radians, sin, sqrt
@@ -7,7 +8,7 @@ import json
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
-from auth.dependencies import get_current_user, require_self_or_admin
+from auth.dependencies import get_current_user, require_account_user
 from db.database import get_db
 from db.models import Alert, User
 from schemas.risk_score import ForecastPoint, MapRiskOverlayOut, MapRiskZone
@@ -285,6 +286,8 @@ def _build_response(
     )
 
 
+from auth.dependencies import require_account_user
+
 @router.get("/personalized/{user_id}", response_model=MapRiskOverlayOut)
 def get_personalized_forecast(
     user_id: int,
@@ -292,7 +295,7 @@ def get_personalized_forecast(
     lon: Optional[float] = Query(None, description="Longitude for location-based forecast"),
     location: Optional[str] = Query(None, description="Location string (ZIP or City, State)"),
     hours: int = Query(48, ge=1, le=72, description="Forecast window in hours (default 48)"),
-    _current_user: User = Depends(require_self_or_admin),
+    _current_user: User = Depends(lambda request=Depends(), db=Depends(get_db), user_id=user_id: require_self_or_admin(user_id, require_account_user(request, db))),
     db: Session = Depends(get_db),
 ):
     """Returns a personalized risk forecast for the next 24-48 hours for a given user and location."""
