@@ -224,6 +224,7 @@ def run_preflight(enforce_canonical: bool, timeout_seconds: float) -> int:
 
     # Backend root and representative API routes.
     results.append(_check_json_endpoint("backend root", f"{configured_base_url}/", timeout_seconds))
+    results.append(_check_json_endpoint("readiness API", f"{configured_base_url}{configured_prefix}/health/ready", timeout_seconds))
     results.append(_check_json_endpoint("alerts API", f"{configured_base_url}{configured_prefix}/alerts?limit=1", timeout_seconds))
     results.append(
         _check_json_endpoint(

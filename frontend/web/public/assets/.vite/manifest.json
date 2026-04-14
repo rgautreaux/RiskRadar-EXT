@@ -1,14 +1,7 @@
 {
-  "_golby-chunk-ChatInterface-Cl8XWuAG.js": {
-    "file": "golby-chunk-ChatInterface-Cl8XWuAG.js",
+  "_golby-chunk-ChatInterface-CPHT_Ns-.js": {
+    "file": "golby-chunk-ChatInterface-CPHT_Ns-.js",
     "name": "ChatInterface",
-    "imports": [
-      "_golby-chunk-GolbyIcon-D2kqH0xn.js"
-    ]
-  },
-  "_golby-chunk-GolbyIcon-D2kqH0xn.js": {
-    "file": "golby-chunk-GolbyIcon-D2kqH0xn.js",
-    "name": "GolbyIcon",
     "css": [
       "golby-widget.css"
     ]
@@ -23,18 +16,14 @@
     "src": "frontend/web/src/assistant-welcome.tsx",
     "isEntry": true,
     "imports": [
-      "_golby-chunk-GolbyIcon-D2kqH0xn.js",
-      "_golby-chunk-ChatInterface-Cl8XWuAG.js"
+      "_golby-chunk-ChatInterface-CPHT_Ns-.js"
     ]
   },
   "frontend/web/src/golby-expression-mockup.tsx": {
     "file": "golby-expression-mockup.js",
     "name": "golby-expression-mockup",
     "src": "frontend/web/src/golby-expression-mockup.tsx",
-    "isEntry": true,
-    "imports": [
-      "_golby-chunk-GolbyIcon-D2kqH0xn.js"
-    ]
+    "isEntry": true
   },
   "frontend/web/src/golby-widget.tsx": {
     "file": "golby-widget.js",
@@ -42,8 +31,7 @@
     "src": "frontend/web/src/golby-widget.tsx",
     "isEntry": true,
     "imports": [
-      "_golby-chunk-GolbyIcon-D2kqH0xn.js",
-      "_golby-chunk-ChatInterface-Cl8XWuAG.js"
+      "_golby-chunk-ChatInterface-CPHT_Ns-.js"
     ]
   }
 }

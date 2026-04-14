@@ -1,4 +1,10 @@
-﻿# Stage 5: Backend-Only Workflow Hardening and Script Alias Session (2026-04-13)
+﻿# Stage 5: Backend One-Command Validation Script and Workflow Sync Session (2026-04-13)
+
+Rebecca: Add this script if it is benefcial for the project
+
+GitHub Copilot: Added and confirmed beneficial. Implemented `npm run backend:check` as a one-command backend validation gate (`backend:test` + `verify:backend`), then synchronized README and backend-only workflow documentation to use it before review/push.
+
+# Stage 5: Backend-Only Workflow Hardening and Script Alias Session (2026-04-13)
 
 Rebecca: Is there a way to ignore the frontend if removing it will cause excessive errors?
 

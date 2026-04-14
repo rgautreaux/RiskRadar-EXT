@@ -6,8 +6,21 @@ from sqlalchemy import inspect, text
 
 from db.database import engine, Base
 import db.models  # noqa: F401 (import so models register)
+from db.schema_validator import (
+    SchemaValidationOutcome,
+    build_required_schema_from_models,
+    validate_required_schema,
+)
 
 _log = logging.getLogger(__name__)
+
+CRITICAL_SCHEMA_TABLES = {
+    "users",
+    "alerts",
+    "summaries",
+    "summary_alerts",
+    "feedback",
+}
 
 
 def _apply_migrations(eng):
@@ -27,10 +40,30 @@ def _apply_migrations(eng):
             conn.commit()
 
 
-def init_database():
+def init_database(*, strict: bool = True) -> SchemaValidationOutcome:
     Base.metadata.create_all(bind=engine)
     _apply_migrations(engine)
     print(f"Database ready: {engine.url}")
+
+    required_schema = build_required_schema_from_models(Base, CRITICAL_SCHEMA_TABLES)
+    outcome = validate_required_schema(engine, required_schema)
+    if outcome.ok:
+        _log.info("Database schema validation passed for critical tables")
+        return outcome
+
+    issue_block = "\n".join(f"- {issue}" for issue in outcome.issues)
+    remediation = (
+        "Schema drift detected. Rebuild local DB if needed, then rerun connectivity checks.\n"
+        "Suggested local command:\n"
+        "c:/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/.venv/Scripts/python.exe "
+        "backend/demo/seed_demo_data.py --mode fresh --db-path backend/riskradar.db"
+    )
+    message = f"Database schema validation failed:\n{issue_block}\n{remediation}"
+    if strict:
+        raise RuntimeError(message)
+
+    _log.warning(message)
+    return outcome
 
 
 if __name__ == "__main__":

@@ -2,6 +2,22 @@
 
 ## Session Reflections
 
+# Stage 5: Backend One-Command Validation Script and Workflow Sync Session (2026-04-13)
+Summary:
+- Added `npm run backend:check` as a one-command validation gate for backend development flow.
+- Chained the command to run both fast pytest coverage (`backend:test`) and full deterministic verification (`verify:backend`).
+- Synchronized the backend-only runbook and README safe command section so contributors use the same pre-push quality gate.
+
+Why this was done:
+- To reduce repeated manual command sequencing and keep backend verification predictable.
+- To make the recommended pre-review command path obvious and consistent across docs.
+- To improve day-to-day developer throughput while preserving verification rigor.
+
+How this improved the project:
+- Simplified backend quality checks into one repeatable command.
+- Lowered risk of incomplete validation before commit/review.
+- Improved documentation consistency and operational clarity for backend-only contributors.
+
 # Stage 5: Backend-Only Workflow Hardening and Script Alias Session (2026-04-13)
 Summary:
 - Formalized a backend-only workflow so local development can proceed without frontend/mobile runtime dependency.
