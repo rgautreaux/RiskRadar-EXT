@@ -82,6 +82,66 @@ def _check_json_endpoint(name: str, url: str, timeout: float) -> CheckResult:
     return CheckResult(name=name, ok=True, details=f"OK ({url})")
 
 
+def _check_assistant_user_lookup(base_url: str, api_prefix: str, timeout: float) -> CheckResult:
+    url = f"{base_url}{api_prefix}/assistant/respond"
+    payload = json.dumps(
+        {
+            "message": "connectivity probe",
+            "page_context": "assistant",
+            "user_id": 1,
+            "location": "Baton Rouge",
+        }
+    ).encode("utf-8")
+
+    request = Request(
+        url=url,
+        method="POST",
+        data=payload,
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+
+    try:
+        with urlopen(request, timeout=timeout) as response:
+            status = response.status
+            body = response.read().decode("utf-8", errors="replace")
+    except HTTPError as error:
+        status = error.code
+        body = error.read().decode("utf-8", errors="replace") if error.fp is not None else ""
+    except (URLError, TimeoutError, OSError) as error:
+        reason = getattr(error, "reason", str(error))
+        return CheckResult(
+            name="assistant user lookup",
+            ok=False,
+            details=f"Connection error to {url}: {reason}",
+        )
+
+    if status >= 500:
+        return CheckResult(
+            name="assistant user lookup",
+            ok=False,
+            details=(
+                f"Received HTTP {status} from {url}. "
+                "This usually indicates backend/db schema drift (for example missing users columns)."
+            ),
+        )
+
+    # Any non-5xx response keeps connectivity health green; auth/validation can vary by environment.
+    try:
+        if body:
+            json.loads(body)
+    except json.JSONDecodeError:
+        return CheckResult(
+            name="assistant user lookup",
+            ok=False,
+            details=f"Response from {url} is not valid JSON",
+        )
+
+    return CheckResult(name="assistant user lookup", ok=True, details=f"OK (HTTP {status})")
+
+
 def _load_frontend_api_config() -> dict[str, Any]:
     php_expression = (
         "$config = require 'frontend/web/config/app.php';"
@@ -172,6 +232,7 @@ def run_preflight(enforce_canonical: bool, timeout_seconds: float) -> int:
             timeout_seconds,
         )
     )
+    results.append(_check_assistant_user_lookup(configured_base_url, configured_prefix, timeout_seconds))
 
     # Frontend pages should render and map page should include API endpoints.
     for label, page_url in (("frontend index", DEFAULT_FRONTEND_URL), ("frontend map", DEFAULT_MAP_URL)):

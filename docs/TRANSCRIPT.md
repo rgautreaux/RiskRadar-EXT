@@ -1,4 +1,22 @@
-﻿# Stage 5: SVG Asset White-Pixel Removal and Documentation Synchronization Session (2026-04-13)
+﻿# Stage 5: Backend-Only Workflow Hardening and Script Alias Session (2026-04-13)
+
+Rebecca: Is there a way to ignore the frontend if removing it will cause excessive errors?
+
+GitHub Copilot: Yes, but only partially. You can safely ignore the mobile frontend, but you should not remove the web frontend in this repo.
+
+Rebecca: Create this workflow
+
+GitHub Copilot: Created. I added a backend-only workflow that lets you ignore frontend/mobile paths without deleting anything.
+
+Rebecca: Yes, implement this if it will help the project run smoother
+
+GitHub Copilot: Implemented. Added a root backend run alias (`npm run backend:run`) and synchronized the backend-only runbook and README safe command guidance.
+
+Rebecca: Yes, proceed with this, then update the Transcript and Reflection for Rebecca with the contents and deatils of this session as per the exisisting format
+
+GitHub Copilot: Proceeded by adding a backend test alias (`npm run backend:test`), updating the backend-only runbook usage, and appending this verbatim transcript plus a matching reflection entry in chronological Stage 5 order.
+
+# Stage 5: SVG Asset White-Pixel Removal and Documentation Synchronization Session (2026-04-13)
 
 Rebecca: Remove all white pixels from ai-assistant-react.svg
 

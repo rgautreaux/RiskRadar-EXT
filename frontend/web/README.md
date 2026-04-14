@@ -240,6 +240,12 @@ Invoke-RestMethod http://127.0.0.1:8001/api/v1/alerts?limit=1
 	- Ensure backend `CORS_ALLOWED_ORIGINS` includes frontend host/port values.
 	- Restart backend after changing environment values.
 
+6. If assistant/user API calls fail with HTTP 500 and backend logs show `no such column: users.is_admin`:
+	- This is local SQLite schema drift, not frontend wiring.
+	- Stop backend and rebuild the backend database using project fixtures:
+	  - `c:/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/.venv/Scripts/python.exe backend/demo/seed_demo_data.py --mode fresh --db-path backend/riskradar.db`
+	- Restart backend on `127.0.0.1:8001` and re-run `npm run verify:connectivity`.
+
 ## Security and Validation Notes
 
 - CSRF tokens are required and verified for all POST form submissions.

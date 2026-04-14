@@ -653,9 +653,10 @@ The mobile app is not required for this CMPS 357 repository workflow.
 
 ```bash
 # Backend
-cd backend
-py -m pip install -r requirements.txt
-py -m uvicorn main:app --host 0.0.0.0 --port 8001
+py -m pip install -r backend/requirements.txt
+npm run backend:test
+npm run backend:check
+npm run backend:run
 
 # Web frontend
 php -S 127.0.0.1:8080 -t frontend/web/public
@@ -669,6 +670,12 @@ npx expo start
 ```
 
 Those commands are mobile-repo commands and will fail here if the mobile directory is absent.
+
+### Backend-Only Workflow (No Frontend)
+
+If you want to avoid frontend/mobile errors and work only on backend tasks, use:
+
+- [`docs/BACKEND_ONLY_WORKFLOW.md`](./docs/BACKEND_ONLY_WORKFLOW.md)
 
 ---
 
@@ -746,6 +753,7 @@ See [DEMO_FEATURES_BY_STAGE.md](./docs/DEMO_FEATURES_BY_STAGE.md) for detailed f
 | `ModuleNotFoundError` | Run `py -m pip install -r requirements.txt` in the backend folder |
 | Expo QR code won't scan | Press `w` to test on web first; make sure Expo Go app is installed on phone |
 | Registration fails silently | Check the backend terminal for error messages |
+| Assistant or user routes return HTTP 500 with `no such column: users.is_admin` | Local SQLite schema is stale. Stop backend and rebuild backend DB with fixtures: `c:/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/.venv/Scripts/python.exe backend/demo/seed_demo_data.py --mode fresh --db-path backend/riskradar.db`, then restart backend on `8001`. |
 
 ---
 
@@ -765,6 +773,7 @@ npm run verify:backend
 **Navigation hubs**
 
 - Scope and requirements: [docs/INSTRUCTIONS.md](./docs/INSTRUCTIONS.md), [docs/PROJECT_DESCRIPTION.md](./docs/PROJECT_DESCRIPTION.md)
+- Backend-only workflow (no frontend runtime required): [docs/BACKEND_ONLY_WORKFLOW.md](./docs/BACKEND_ONLY_WORKFLOW.md)
 - Planning and stage narrative: [docs/STAGES.md](./docs/STAGES.md), [docs/PLANNING_DOCS/PLANNING_STAGES.md](./docs/PLANNING_DOCS/PLANNING_STAGES.md)
 - Execution tracker and weekly status: [docs/TODO.md](./docs/TODO.md)
 - Status authority and summary snapshot: [README.md](./README.md)

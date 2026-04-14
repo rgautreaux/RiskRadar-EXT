@@ -2,6 +2,23 @@
 
 ## Session Reflections
 
+# Stage 5: Backend-Only Workflow Hardening and Script Alias Session (2026-04-13)
+Summary:
+- Formalized a backend-only workflow so local development can proceed without frontend/mobile runtime dependency.
+- Added root command aliases `npm run backend:run` and `npm run backend:test` to reduce path mistakes and speed up daily execution.
+- Added/updated backend-only guidance so fast local pytest and full verification are both clearly documented.
+- Added the corresponding transcript entry for this session in chronological Stage 5 order.
+
+Why this was done:
+- To reduce friction and avoid avoidable frontend/mobile command errors during backend-focused work.
+- To make routine backend operations consistent from repository root with one-command entry points.
+- To preserve documentation governance by recording this workflow hardening session in project history.
+
+How this improved the project:
+- Backend-only contributors now have a safer, faster, and clearer command path.
+- Lower operational risk from directory/context mismatch when starting API or running tests.
+- Improved maintainability and traceability by synchronizing runbook and history artifacts.
+
 # Stage 5: SVG Asset White-Pixel Removal and Documentation Synchronization Session (2026-04-13)
 Summary:
 - Removed white-background pixel paths from assistant-reacting SVG assets so both now render transparently.

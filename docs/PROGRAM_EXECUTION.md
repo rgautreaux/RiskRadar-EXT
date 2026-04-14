@@ -441,6 +441,27 @@ cd backend
 python test_scrape_and_summarize.py --mock-summary
 ```
 
+### 8.4 Required pre-demo safety sequence (recommended gate)
+
+Run this sequence from the repository root before demos or grading runs:
+
+```bash
+# 1) Validate frontend/backend/API wiring and CORS
+npm run verify:connectivity
+
+# 2) Validate backend tests + runtime smoke
+npm run verify:backend
+```
+
+If `verify:connectivity` fails on `assistant user lookup` with HTTP 500, your local
+SQLite schema is likely stale relative to the current backend model. Rebuild the local
+backend database and rerun the checks:
+
+```bash
+c:/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/.venv/Scripts/python.exe backend/demo/seed_demo_data.py --mode fresh --db-path backend/riskradar.db
+npm run verify:connectivity
+```
+
 ---
 
 ## 9. Common Operations
@@ -529,6 +550,23 @@ ERROR: [Errno 10048] error while attempting to bind on address ('127.0.0.1', 800
 - Confirm the port in `frontend/web/config/app.php` (or `config.local.php`) matches the port the backend is running on.
 - Check that PHP's `curl` extension is enabled: `php -m | findstr curl` (Windows) or `php -m | grep curl` (macOS/Linux).
 
+### Assistant/user routes return HTTP 500 with SQLite column errors
+
+If backend logs include errors like `no such column: users.is_admin`, the local
+SQLite file is out of date and can appear as a frontend/backend disconnect.
+
+**Fix:**
+
+```bash
+c:/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/.venv/Scripts/python.exe backend/demo/seed_demo_data.py --mode fresh --db-path backend/riskradar.db
+```
+
+Then restart backend and rerun:
+
+```bash
+npm run verify:connectivity
+```
+
 ### Database locked (SQLite)
 
 If you see `database is locked` errors, ensure only one instance of the backend is running. SQLite does not support concurrent writers.
@@ -558,5 +596,6 @@ For the fastest path to a working system:
 4. [ ] Start the backend: `uvicorn main:app --reload --host 127.0.0.1 --port 8001`
 5. [ ] Verify: open <http://127.0.0.1:8001/docs>
 6. [ ] Run pre-demo wiring check: `npm run verify:connectivity`
-6. [ ] Start the web frontend: `php -S 127.0.0.1:8080 -t frontend/web/public`
-7. [ ] Open the dashboard: <http://127.0.0.1:8080/index.php>
+7. [ ] Run backend verification gate: `npm run verify:backend`
+8. [ ] Start the web frontend: `php -S 127.0.0.1:8080 -t frontend/web/public`
+9. [ ] Open the dashboard: <http://127.0.0.1:8080/index.php>
