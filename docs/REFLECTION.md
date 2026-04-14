@@ -2,6 +2,60 @@
 
 ## Session Reflections
 
+# Stage 5: Registration Fix and Backend Settings Extension Session (2026-04-14)
+Summary:
+- Diagnosed silent registration failures caused by a password validation mismatch between the PHP frontend and the FastAPI backend.
+- Updated `rr_validate_registration()` in `frontend/web/services/validators.php` to enforce full password strength rules (uppercase, lowercase, digit, and special character) matching the backend's `validate_password_strength()` in `backend/auth/security.py`.
+- Updated `rr_register_user()` in `frontend/web/services/api_client.php` to surface the backend's `detail` error message on 400 responses instead of always showing a generic fallback string.
+- Identified that the `401 Unauthorized` on `GET /api/v1/auth/me` is expected Golby widget behavior (polling for a user session on every page load) and not related to the registration issue.
+- Diagnosed a Pydantic `ValidationError` on backend startup caused by `OPENWEATHER_API_KEY` being present in `.env` without a corresponding field in `backend/config/settings.py`; provided a plan to add the field to the `Settings` class.
+
+Why this was done:
+- Registration was silently failing because passwords passing the frontend's length-only check were rejected by the backend's stronger requirements, and the resulting backend error was replaced by a misleading generic message.
+- A new OpenWeather API key added to `.env` for additional environmental alert data sources caused the entire backend to fail to start due to pydantic-settings' strict extra-field rejection.
+
+How this improved the project:
+- Users can now successfully create accounts and receive clear, actionable password requirement feedback inline before any API call is made.
+- Backend error messages for registration failures are now surfaced accurately to users rather than being obscured by a generic fallback.
+- The new OpenWeather API key integration path is unblocked by declaring its field in `Settings`, enabling additional alert data sources to be wired in cleanly.
+
+# Stage 5: Database Schema Migration Merge Session (2026-04-14)
+Summary:
+- Diagnosed `DATABASE_URL` placeholder values in `.env` causing MySQL connection failures (`getaddrinfo failed` then `Access denied for user 'user'`). Explained the SQLite fallback behavior built into `backend/db/database.py`.
+- Read all seven migration files under `backend/db/migrations/` and cross-referenced against `backend/db/models.py` as the canonical source of truth for final column shapes.
+- Rewrote `riskradarweb_db.sql` as a clean final-state bootstrap schema — no ALTER chains, only correct CREATE TABLE definitions — incorporating every migration in order.
+- Key schema changes applied: PKs renamed (`alert_id`→`id`, `log_id`→`id`, `user_id`→`id`), legacy columns dropped (`article_id`, `priority`, `token_id`, `is_active`, `last_login_at`, `scraped_at`, `http_status`, `articles_found`, `articles_inserted`), column types corrected and nullability updated throughout, `reigon` typo fixed to `region`, `json_valid` CHECK constraints removed, HASH-based unique indexes replaced with named unique keys.
+- Added four new tables: `feedback` (with FK to `users.id` ON DELETE SET NULL), `summary_alerts` (junction table with CASCADE FKs to `summaries` and `alerts`), `user_alert_preferences` (FK to `users.id` CASCADE), `user_health_conditions` (FK to `users.id` CASCADE).
+- Added `is_admin` column present in `models.py` but missing from all migration files.
+- Retained legacy tables (`articles`, `article_tags`, `categories`, etc.) with indexes moved inline for compatibility.
+
+Why this was done:
+- The `.env` placeholder `DATABASE_URL` prevented backend startup entirely; clarifying the fallback behavior unblocked local development.
+- The base `riskradarweb_db.sql` was generated from the original mobile-era schema (Feb 2026) and had never been updated to reflect seven subsequent migrations, making it unusable for bootstrapping a fresh MySQL/MariaDB database.
+- Without a correct bootstrap script, new team members or fresh database deployments would produce a broken schema that would immediately cause backend API failures.
+
+How this improved the project:
+- `riskradarweb_db.sql` is now a reliable single-file bootstrap for any fresh MariaDB deployment — import once and the database is fully up to date.
+- Eliminated the need for any additional ALTER chains or manual migration steps when setting up a new MySQL environment.
+- Improved schema correctness by catching and applying the `is_admin` column that existed in the ORM but was absent from all migration files.
+- Reduced onboarding friction and demo setup risk by ensuring the canonical SQL file matches the running backend exactly.
+
+# Stage 5: Forecast Icon SVG Asset Fix Session (2026-04-14)
+Summary:
+- Diagnosed missing forecast icons on the frontend caused by six empty placeholder SVG files at `frontend/web/public/assets/illustrations/`.
+- Identified the correct illustrated SVG content in `UI_UX_STYLE_FILES/assets/svg/illustrations/` for all six icons: weather, fire, air-quality, flood, pollen, and earthquake.
+- Copied all six SVG files to the public assets path, overwriting the empty stubs. Verified all files populated with expected byte counts.
+- All six forecast icons now render correctly on the forecast page.
+
+Why this was done:
+- The forecast page icon row displayed broken images because the public asset files lacked content despite existing at the correct path.
+- The `UI_UX_STYLE_FILES` design-source set contained the canonical illustrated SVGs that were never propagated to the served assets directory.
+
+How this improved the project:
+- Restored visual completeness to the forecast page by ensuring all six condition icons render with proper illustrated content.
+- Eliminated a visible UI defect without requiring any code or path changes — a purely asset-propagation fix.
+- Improved frontend polish and demo readiness by making the forecast icon row fully functional.
+
 # Stage 5: Final Golby Verification Pass, Safe Artifact Reversion, and Documentation Synchronization Session (2026-04-14)
 Summary:
 - Completed a final Golby verification pass on live local services covering connectivity preflight, frontend build, and assistant journey automation.
@@ -141,6 +195,8 @@ How this improved the project:
 - Improved historical accuracy and reviewer traceability through synchronized docs and transcript dedupe verification.
 
 ## Transcript Entry Summary Coverage (Chronological Snapshot)
+
+0. Stage 5: Forecast Icon SVG Asset Fix Session (2026-04-14): Diagnosed empty placeholder SVG files for all six forecast icons and copied the correct illustrated content from the design-source directory to the public assets path.
 
 0. Stage 5: Final Golby Verification Pass, Safe Artifact Reversion, and Documentation Synchronization Session (2026-04-14): Completed final full verification chain (connectivity/build/demo), reverted generated artifacts, and synchronized top-level documentation records.
 
