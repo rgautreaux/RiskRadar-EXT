@@ -472,6 +472,10 @@ class TestPrioritizedAlertsAPI:
     def test_prioritized_alerts_with_data(self, test_client, db_session):
         user, email = self._register_user(test_client, db_session)
 
+        # Add alerts for this user
+        _add_alert(db_session, lat=user.latitude, lon=user.longitude, severity="high", alert_type="weather", title="Test Weather Alert")
+        _add_alert(db_session, lat=user.latitude, lon=user.longitude, severity="moderate", alert_type="pollution", title="Test Pollution Alert")
+
         resp = test_client.post(
             "/api/v1/auth/login",
             json={"email": email, "password": "Secret123!Aa"},

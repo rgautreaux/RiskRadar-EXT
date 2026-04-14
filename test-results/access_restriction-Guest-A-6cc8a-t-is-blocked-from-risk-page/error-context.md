@@ -6,64 +6,29 @@
 
 # Test info
 
-- Name: access_restriction.spec.js >> Authenticated User Access >> User can access risk page
-- Location: frontend\web\tests\access_restriction.spec.js:51:3
+- Name: access_restriction.spec.js >> Guest Access Restriction >> Guest is blocked from risk page
+- Location: frontend\web\tests\access_restriction.spec.js:19:3
 
 # Error details
 
 ```
-Error: expect(page).toHaveURL(expected) failed
+Test timeout of 60000ms exceeded while running "beforeEach" hook.
+```
 
-Expected pattern: /index\.php/
-Received string:  "http://localhost:8080/login.php"
-Timeout: 5000ms
-
+```
+Error: page.click: Test timeout of 60000ms exceeded.
 Call log:
-  - Expect "toHaveURL" with timeout 5000ms
-    9 × unexpected value "http://localhost:8080/login.php"
+  - waiting for locator('button[name="action"][value="guest"]')
 
 ```
 
 # Page snapshot
 
 ```yaml
-- generic [ref=e2]:
-  - banner [ref=e3]:
-    - generic [ref=e4]:
-      - paragraph [ref=e5]: CMPS 357 Web Extension
-      - link "RiskRadar Web" [ref=e6] [cursor=pointer]:
-        - /url: index.php
-    - navigation "Primary navigation" [ref=e7]:
-      - link "Login Icon Login" [ref=e8] [cursor=pointer]:
-        - /url: login.php
-        - img "Login Icon" [ref=e9]
-        - text: Login
-      - link "Register Icon Sign Up" [ref=e10] [cursor=pointer]:
-        - /url: register.php
-        - img "Register Icon" [ref=e11]
-        - text: Sign Up
-  - main [ref=e12]:
-    - article [ref=e14]:
-      - generic [ref=e16]:
-        - paragraph [ref=e17]: Account access
-        - heading "Sign in to RiskRadar" [level=1] [ref=e18]
-      - paragraph [ref=e20]: Login failed. Please verify the backend is running and try again.
-      - generic [ref=e21]:
-        - generic [ref=e22]:
-          - generic [ref=e23]: Email
-          - textbox "Email" [ref=e24]: demo_low@riskradar.local
-        - generic [ref=e25]:
-          - generic [ref=e26]: Password
-          - textbox "Password" [ref=e27]
-        - generic [ref=e28]:
-          - generic [ref=e29]: ZIP code (optional)
-          - textbox "ZIP code (optional)" [ref=e30]
-        - button "Sign in" [ref=e31] [cursor=pointer]
-      - button "Continue as Guest" [ref=e33] [cursor=pointer]
-      - paragraph [ref=e34]:
-        - text: Don’t have an account?
-        - link "Create one" [ref=e35] [cursor=pointer]:
-          - /url: register.php
+- main [ref=e2]:
+  - generic [ref=e3]:
+    - generic [ref=e4]: "404"
+    - paragraph [ref=e5]: The requested path could not be found
 ```
 
 # Test source
@@ -83,7 +48,8 @@ Call log:
   12 |   test.beforeEach(async ({ page }) => {
   13 |     // Go to login and click "Continue as Guest" to set guest mode
   14 |     await page.goto(`${BASE_URL}/login.php`);
-  15 |     await page.click('button[name="action"][value="guest"]');
+> 15 |     await page.click('button[name="action"][value="guest"]');
+     |                ^ Error: page.click: Test timeout of 60000ms exceeded.
   16 |     // Should redirect to index.php, but session is now guest
   17 |   });
   18 | 
@@ -116,8 +82,7 @@ Call log:
   45 |     await page.fill('input[name="email"]', 'demo_low@riskradar.local');
   46 |     await page.fill('input[name="password"]', 'DemoLow123!');
   47 |     await page.click('button[type="submit"]');
-> 48 |     await expect(page).toHaveURL(/index\.php/);
-     |                        ^ Error: expect(page).toHaveURL(expected) failed
+  48 |     await expect(page).toHaveURL(/index\.php/);
   49 |   });
   50 | 
   51 |   test('User can access risk page', async ({ page }) => {
