@@ -16,14 +16,16 @@ Optional:
 from __future__ import annotations
 
 import argparse
+import http.cookiejar
 import json
+import re
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlparse
-from urllib.request import Request, urlopen
+from urllib.parse import urlencode, urlparse
+from urllib.request import HTTPCookieProcessor, Request, build_opener, urlopen
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -60,6 +62,57 @@ def _http_request(url: str, timeout: float, method: str = "GET", headers: dict[s
         body = response.read().decode("utf-8", errors="replace")
         response_headers = {k.lower(): v for (k, v) in response.headers.items()}
         return response.status, body, response_headers
+
+
+def _extract_csrf_token(html: str) -> str | None:
+    match = re.search(r'name=["\']csrf_token["\']\s+value=["\']([^"\']+)["\']', html)
+    if match:
+        return match.group(1)
+    return None
+
+
+def _fetch_frontend_map_with_guest(frontend_origin: str, timeout: float) -> tuple[bool, str]:
+    cookie_jar = http.cookiejar.CookieJar()
+    opener = build_opener(HTTPCookieProcessor(cookie_jar))
+
+    login_url = f"{frontend_origin}/login.php"
+    map_url = f"{frontend_origin}/map.php"
+
+    try:
+        login_response = opener.open(Request(url=login_url, method="GET"), timeout=timeout)
+        login_html = login_response.read().decode("utf-8", errors="replace")
+    except (HTTPError, URLError, TimeoutError, OSError) as error:
+        reason = getattr(error, "reason", str(error))
+        return False, f"Unable to load login page for guest session setup: {reason}"
+
+    csrf_token = _extract_csrf_token(login_html)
+    if not csrf_token:
+        return False, "Unable to extract CSRF token from login page for guest session setup"
+
+    payload = urlencode({"csrf_token": csrf_token, "action": "guest"}).encode("utf-8")
+    guest_request = Request(
+        url=login_url,
+        method="POST",
+        data=payload,
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+    )
+
+    try:
+        opener.open(guest_request, timeout=timeout)
+    except (HTTPError, URLError, TimeoutError, OSError) as error:
+        reason = getattr(error, "reason", str(error))
+        return False, f"Unable to establish guest session via login.php: {reason}"
+
+    try:
+        map_response = opener.open(Request(url=map_url, method="GET"), timeout=timeout)
+        map_body = map_response.read().decode("utf-8", errors="replace")
+    except HTTPError as error:
+        return False, f"HTTP {error.code} from {map_url} after guest session setup"
+    except (URLError, TimeoutError, OSError) as error:
+        reason = getattr(error, "reason", str(error))
+        return False, f"Connection error to {map_url} after guest session setup: {reason}"
+
+    return True, map_body
 
 
 def _check_json_endpoint(name: str, url: str, timeout: float) -> CheckResult:
@@ -252,19 +305,24 @@ def run_preflight(enforce_canonical: bool, timeout_seconds: float) -> int:
             continue
 
         if label == "frontend map":
+            guest_ok, map_body = _fetch_frontend_map_with_guest(_frontend_origin(DEFAULT_FRONTEND_URL), timeout_seconds)
+            if not guest_ok:
+                results.append(CheckResult(name="frontend map API wiring", ok=False, details=map_body))
+                continue
+
             expected_alerts_url = f"{configured_base_url}{configured_prefix}/alerts/map"
             expected_risk_url = f"{configured_base_url}{configured_prefix}/risk/map"
             expected_alerts_url_escaped = expected_alerts_url.replace("/", "\\/")
             expected_risk_url_escaped = expected_risk_url.replace("/", "\\/")
             map_ok = (
-                (expected_alerts_url in body or expected_alerts_url_escaped in body)
-                and (expected_risk_url in body or expected_risk_url_escaped in body)
+                (expected_alerts_url in map_body or expected_alerts_url_escaped in map_body)
+                and (expected_risk_url in map_body or expected_risk_url_escaped in map_body)
             )
             details = (
                 "Map page includes configured API endpoints"
                 if map_ok
                 else (
-                    "Map page did not include configured API endpoints. "
+                    "Map page did not include configured API endpoints after guest session setup. "
                     f"Expected markers for {expected_alerts_url} and {expected_risk_url}"
                 )
             )
