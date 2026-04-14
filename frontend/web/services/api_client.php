@@ -1,3 +1,5 @@
+<?php
+
 // Stage 3: Map Data API Client
 function rr_api_get_map_alerts(array $config, array $query = []): array
 {
@@ -10,7 +12,12 @@ function rr_api_get_map_risk_overlay(array $config, array $query = []): array
     // GET /api/v1/risk/map
     return rr_http_request($config, 'GET', 'risk/map', $query);
 }
-<?php
+
+function rr_api_get_forecast(array $config, array $query = []): array
+{
+    // GET /api/v1/forecast
+    return rr_http_request($config, 'GET', 'forecast', $query);
+}
 
 function rr_api_url(array $config, string $path, array $query = []): string
 {
@@ -38,11 +45,6 @@ function rr_fallback_result(mixed $fallbackData, string $message, ?int $status =
         'data' => $fallbackData,
         'message' => $message,
     ];
-    function rr_api_get_forecast(array $config, array $query = []): array
-    {
-        // GET /api/v1/forecast
-        return rr_http_request($config, 'GET', 'forecast', $query);
-    }
 }
 
 function rr_success_result(mixed $data, ?int $status = null): array
@@ -102,7 +104,7 @@ function rr_safe_nullable_float(mixed $value): ?float
     return is_numeric($value) ? (float) $value : null;
 }
 
-function rr_http_request(array $config, string $method, string $path, array $query = [], ?array $body = null): array
+function rr_http_request(array $config, string $method, string $path, array $query = [], ?array $body = null, array $extraHeaders = []): array
 {
     $url = rr_api_url($config, $path, $query);
     $timeout = (float) ($config['api']['timeout'] ?? 5.0);
@@ -117,6 +119,12 @@ function rr_http_request(array $config, string $method, string $path, array $que
         }
 
         $headers[] = 'Content-Type: application/json';
+    }
+
+    foreach ($extraHeaders as $header) {
+        if (is_string($header) && $header !== '') {
+            $headers[] = $header;
+        }
     }
 
     if (function_exists('curl_init')) {
@@ -364,6 +372,40 @@ function rr_register_user(array $config, array $payload): array
             : 'Registration failed. Please verify the backend is running and try again.';
 
         return rr_fallback_result(rr_normalize_user(is_array($result['data']) ? $result['data'] : null), $message, $result['status'] ?? null);
+    }
+
+    return rr_success_result(rr_normalize_user($result['data']), $result['status']);
+}
+
+function rr_login_user(array $config, array $payload): array
+{
+    $result = rr_http_request($config, 'POST', 'auth/login', [], $payload);
+    if (!$result['ok'] || !is_array($result['data'])) {
+        $message = ($result['status'] ?? 0) === 401
+            ? 'Invalid email or password.'
+            : 'Login failed. Please verify the backend is running and try again.';
+
+        return rr_fallback_result(
+            ['session_token' => '', 'expires_at' => '', 'user' => null],
+            $message,
+            $result['status'] ?? null,
+        );
+    }
+
+    return rr_success_result($result['data'], $result['status']);
+}
+
+function rr_fetch_current_user(array $config): array
+{
+    $sessionToken = $_COOKIE['riskradar_session'] ?? '';
+    $headers = [];
+    if (is_string($sessionToken) && $sessionToken !== '') {
+        $headers[] = 'Cookie: riskradar_session=' . $sessionToken;
+    }
+
+    $result = rr_http_request($config, 'GET', 'auth/me', [], null, $headers);
+    if (!$result['ok'] || !is_array($result['data'])) {
+        return rr_fallback_result(null, 'No authenticated user is available right now.', $result['status'] ?? null);
     }
 
     return rr_success_result(rr_normalize_user($result['data']), $result['status']);

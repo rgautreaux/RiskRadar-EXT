@@ -157,7 +157,7 @@ Use a virtual environment to avoid conflicts with other projects:
 From the `backend/` directory:
 
 ```bash
-uvicorn main:app --reload --host 127.0.0.1 --port 8000
+uvicorn main:app --reload --host 127.0.0.1 --port 8001
 ```
 
 You should see output similar to:
@@ -165,7 +165,7 @@ You should see output similar to:
 ```
 INFO     Database initialized. Engine URL: sqlite:///...backend/riskradar.db
 INFO     Scheduler started with X scrapers
-INFO     Uvicorn running on http://127.0.0.1:8000
+INFO     Uvicorn running on http://127.0.0.1:8001
 ```
 
 ### 4.3 Verify the server is running
@@ -173,7 +173,7 @@ INFO     Uvicorn running on http://127.0.0.1:8000
 Open a browser or use `curl`:
 
 ```bash
-curl http://127.0.0.1:8000/
+curl http://127.0.0.1:8001/
 ```
 
 Expected response:
@@ -188,8 +188,8 @@ FastAPI auto-generates interactive docs:
 
 | URL | Interface |
 |---|---|
-| <http://127.0.0.1:8000/docs> | Swagger UI — interactive endpoint testing |
-| <http://127.0.0.1:8000/redoc> | ReDoc — read-only reference documentation |
+| <http://127.0.0.1:8001/docs> | Swagger UI — interactive endpoint testing |
+| <http://127.0.0.1:8001/redoc> | ReDoc — read-only reference documentation |
 
 ### 4.5 What happens on startup
 
@@ -218,10 +218,10 @@ FastAPI auto-generates interactive docs:
 
 ### 4.7 Changing the port
 
-If port 8000 is already in use, specify a different port:
+If port 8001 is already in use, specify a different port:
 
 ```bash
-uvicorn main:app --reload --host 127.0.0.1 --port 8001
+uvicorn main:app --reload --host 127.0.0.1 --port 8002
 ```
 
 If you change the backend port, update the web frontend configuration to match (see [Section 5.2](#52-configure-the-api-connection)).
@@ -239,7 +239,7 @@ The web frontend is a desktop-oriented PHP application that consumes the backend
 
 ### 5.2 Configure the API connection
 
-The web frontend reads its settings from `frontend/web/config/app.php`. By default it connects to `http://127.0.0.1:8000`.
+The web frontend reads its settings from `frontend/web/config/app.php`. By default it connects to `http://127.0.0.1:8001`.
 
 **If you changed the backend port or host**, create a local config override:
 
@@ -280,62 +280,61 @@ php -S 127.0.0.1:8080 -t frontend/web/public
 
 ### 5.4 Open the web app
 
-Navigate to <http://127.0.0.1:8080/index.php> in your browser.
+Navigate to <http://127.0.0.1:8080/login.php> in your browser.
+
+### 5.4a Run Connectivity Preflight (Recommended Before Demo/Manual QA)
+
+From the repository root:
+
+```bash
+npm run verify:connectivity
+```
+
+This preflight validates:
+- canonical frontend API base/prefix wiring
+- backend root and readiness endpoint (`/api/v1/health/ready`)
+- representative API routes (alerts/forecast/assistant probe)
+- frontend page reachability and map API wiring markers
+- CORS preflight for frontend origin
+
+Use this as the fail-fast gate before running demo automation.
 
 ### 5.5 Available pages
 
 | URL | Page | Description |
 |---|---|---|
-| `/index.php` | Dashboard | Alert stats, top 5 alerts, latest AI summary |
-| `/alerts.php` | Alerts | Filterable alert list (type, severity, source) |
-| `/alert_detail.php` | Alert Detail | Full detail view for a single alert |
-| `/summaries.php` | Summaries | Browse AI-generated summary archive |
-| `/summary_detail.php` | Summary Detail | Full detail view for a single summary |
-| `/risk.php` | Risk Score | Personalized environmental risk score and factor breakdown (Stage 2) |
-| `/smart_alerts.php` | Smart Alerts | Personalized prioritized alert list with urgency labels (Stage 2) |
-| `/map.php` | Interactive Map | Live risk map with alert and risk overlays, personalized overlays, region filters, and accessibility support (Stage 3) |
+| `/login.php` | Login | Required entry page: sign in, register path, or continue as guest |
 | `/register.php` | Register | Create a new user account |
-| `/login.php` | Login | User login (session support scaffolded) |
-| `/profile.php` | Profile | Update notification preferences for an existing user |
-| `/forecast.php` | Forecast | Short-horizon risk forecasting (Stage 4 scaffold — planned, not yet functional) |
-| `/assistant.php` | Assistant | AI-driven insights assistant (Stage 4 scaffold — planned, not yet functional) |
+| `/index.php` | Dashboard | Alert stats, top 5 alerts, latest AI summary (requires auth or guest session) |
+| `/alerts.php` | Alerts | Filterable alert list (type, severity, source) (requires auth or guest session) |
+| `/alert_detail.php` | Alert Detail | Full detail view for a single alert (requires auth or guest session) |
+| `/summaries.php` | Summaries | Browse AI-generated summary archive (requires auth or guest session) |
+| `/summary_detail.php` | Summary Detail | Full detail view for a single summary (requires auth or guest session) |
+| `/risk.php` | Risk Score | Personalized environmental risk score and factor breakdown (Stage 2; requires auth or guest session) |
+| `/smart_alerts.php` | Smart Alerts | Personalized prioritized alert list with urgency labels (Stage 2; requires auth or guest session) |
+| `/map.php` | Interactive Map | Live risk map with overlays and accessibility support (Stage 3; requires auth or guest session) |
+| `/profile.php` | Profile | Update notification preferences for an existing user (requires auth or guest session) |
+| `/forecast.php` | Forecast | Short-horizon risk forecasting (requires auth or guest session) |
+| `/assistant.php` | Assistant | AI-driven insights assistant (requires auth or guest session) |
+
+Feature pages are protected by a shared access guard and redirect to `/login.php` when neither authenticated session nor guest session is active.
 
 ---
 
-## 6. Mobile Frontend (Expo / React Native)
+## 6. Mobile Frontend (Reference Only / Not Required for CMPS 357)
 
-The mobile app is built with Expo and React Native.
+For this repository's required workflow, mobile setup is not required.
 
-### 6.1 Install dependencies
+- Required workflow: backend + web only
+- If `frontend/mobile/RiskRadar` is absent, that is expected for this project scope
+- Mobile app repository (separate): <https://github.com/QuiHu/Team6Project.git>
+
+Commands below are mobile-repository commands and are intentionally not part of required execution in this repo:
 
 ```bash
 cd frontend/mobile/RiskRadar
 npm install
-```
-
-### 6.2 Start the Expo development server
-
-```bash
 npx expo start
-```
-
-This opens the Expo developer tools. From here you can:
-
-- Press **`a`** to open in an Android emulator
-- Press **`i`** to open in an iOS simulator (macOS only)
-- Press **`w`** to open in a web browser
-- Scan the QR code with the **Expo Go** app on a physical device
-
-### 6.3 Other mobile commands
-
-```bash
-# Start directly for a specific platform
-npx expo start --android
-npx expo start --ios
-npx expo start --web
-
-# Lint the codebase
-npm run lint
 ```
 
 ---
@@ -383,9 +382,35 @@ For a production-style database:
 
 6. **Start the backend** — SQLAlchemy will create any missing tables on startup.
 
+### 4.5 Demo Data & Grading
+
+To quickly set up a demo database with pre-populated users, alerts, and summaries:
+
+```bash
+# Terminal 1: Create fresh demo database
+npm run demo:setup
+
+# Verify demo data loaded
+npm run demo:verify
+
+# View demo user IDs and session tokens
+npm run demo:info
+
+# Generate additional alerts for scale/stress testing
+npm run demo:generate-alerts -- --count 50 --type air_quality
+```
+
+**Demo users available in fixtures:**
+- User 1: Low risk profile (baseline)
+- User 2: Medium risk profile (respiratory sensitivities)
+- User 3: High risk profile (multiple conditions)
+- User 4: Admin user (system-level access)
+
+For complete demo instructions, see [../DEMO_RUNBOOK.md](../docs/DEMO_RUNBOOK.md).
+
 ---
 
-## 8. Running Tests
+## 4.6 Verification & Testing
 
 ### 8.1 Backend tests
 
@@ -404,10 +429,13 @@ pytest tests/test_scrapers.py
 pytest tests/test_api_alerts.py
 ```
 
-### 8.2 Mobile app linting
+### 8.2 Mobile app linting (reference only)
+
+Mobile linting is not part of required validation for this repository.
+
+If you are working in the separate mobile repository, run:
 
 ```bash
-cd frontend/mobile/RiskRadar
 npm run lint
 ```
 
@@ -432,6 +460,27 @@ cd backend
 python test_scrape_and_summarize.py --mock-summary
 ```
 
+### 8.4 Required pre-demo safety sequence (recommended gate)
+
+Run this sequence from the repository root before demos or grading runs:
+
+```bash
+# 1) Validate frontend/backend/API wiring and CORS
+npm run verify:connectivity
+
+# 2) Validate backend tests + runtime smoke
+npm run verify:backend
+```
+
+If `verify:connectivity` fails on `assistant user lookup` with HTTP 500, your local
+SQLite schema is likely stale relative to the current backend model. Rebuild the local
+backend database and rerun the checks:
+
+```bash
+c:/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/.venv/Scripts/python.exe backend/demo/seed_demo_data.py --mode fresh --db-path backend/riskradar.db
+npm run verify:connectivity
+```
+
 ---
 
 ## 9. Common Operations
@@ -441,7 +490,7 @@ python test_scrape_and_summarize.py --mock-summary
 With the backend running and an `LLM_API_KEY` configured:
 
 ```bash
-curl -X POST http://127.0.0.1:8000/api/v1/summaries/generate
+curl -X POST http://127.0.0.1:8001/api/v1/summaries/generate
 ```
 
 This calls the configured LLM provider to generate a daily digest of the last 24 hours of alerts.
@@ -450,19 +499,19 @@ This calls the configured LLM provider to generate a daily digest of the last 24
 
 ```bash
 # All alerts (default limit)
-curl http://127.0.0.1:8000/api/v1/alerts
+curl http://127.0.0.1:8001/api/v1/alerts
 
 # Filter by type
-curl "http://127.0.0.1:8000/api/v1/alerts?alert_type=earthquake"
+curl "http://127.0.0.1:8001/api/v1/alerts?alert_type=earthquake"
 
 # Filter by severity
-curl "http://127.0.0.1:8000/api/v1/alerts?severity=high&limit=10"
+curl "http://127.0.0.1:8001/api/v1/alerts?severity=high&limit=10"
 ```
 
 ### 9.3 Registering a user
 
 ```bash
-curl -X POST http://127.0.0.1:8000/api/v1/users/register \
+curl -X POST http://127.0.0.1:8001/api/v1/users/register \
   -H "Content-Type: application/json" \
   -d '{"display_name": "Jane", "email": "jane@example.com", "password": "securepass123", "zip_code": "90001"}'
 ```
@@ -485,7 +534,7 @@ python -m db.init_db
 ### Port already in use
 
 ```
-ERROR: [Errno 10048] error while attempting to bind on address ('127.0.0.1', 8000)
+ERROR: [Errno 10048] error while attempting to bind on address ('127.0.0.1', 8001)
 ```
 
 **Fix:** Use a different port with `--port 8001` and update the web frontend config to match.
@@ -505,7 +554,7 @@ ERROR: [Errno 10048] error while attempting to bind on address ('127.0.0.1', 800
 - **Wait for the scrape interval** — Scrapers run on a configurable interval (default: 30 minutes). The first run is staggered after startup.
 - **Check manually:**
   ```bash
-  curl http://127.0.0.1:8000/api/v1/alerts
+   curl http://127.0.0.1:8001/api/v1/alerts
   ```
 
 ### Summary generation fails
@@ -519,6 +568,23 @@ ERROR: [Errno 10048] error while attempting to bind on address ('127.0.0.1', 800
 - Confirm the backend server is running and accessible.
 - Confirm the port in `frontend/web/config/app.php` (or `config.local.php`) matches the port the backend is running on.
 - Check that PHP's `curl` extension is enabled: `php -m | findstr curl` (Windows) or `php -m | grep curl` (macOS/Linux).
+
+### Assistant/user routes return HTTP 500 with SQLite column errors
+
+If backend logs include errors like `no such column: users.is_admin`, the local
+SQLite file is out of date and can appear as a frontend/backend disconnect.
+
+**Fix:**
+
+```bash
+c:/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/.venv/Scripts/python.exe backend/demo/seed_demo_data.py --mode fresh --db-path backend/riskradar.db
+```
+
+Then restart backend and rerun:
+
+```bash
+npm run verify:connectivity
+```
 
 ### Database locked (SQLite)
 
@@ -546,7 +612,9 @@ For the fastest path to a working system:
 1. [ ] Clone the repository
 2. [ ] Create `.env` in the project root (can be empty for basic operation)
 3. [ ] Install Python dependencies: `cd backend && pip install -r requirements.txt`
-4. [ ] Start the backend: `uvicorn main:app --reload --host 127.0.0.1 --port 8000`
-5. [ ] Verify: open <http://127.0.0.1:8000/docs>
-6. [ ] Start the web frontend: `php -S 127.0.0.1:8080 -t frontend/web/public`
-7. [ ] Open the dashboard: <http://127.0.0.1:8080/index.php>
+4. [ ] Start the backend: `uvicorn main:app --reload --host 127.0.0.1 --port 8001`
+5. [ ] Verify: open <http://127.0.0.1:8001/docs>
+6. [ ] Run pre-demo wiring check: `npm run verify:connectivity`
+7. [ ] Run backend verification gate: `npm run verify:backend`
+8. [ ] Start the web frontend: `php -S 127.0.0.1:8080 -t frontend/web/public`
+9. [ ] Open the dashboard: <http://127.0.0.1:8080/index.php>

@@ -1,0 +1,12 @@
+@import 'tailwindcss';
+
+.golby-bootstrap-error {
+  margin-top: 0.75rem;
+  border: 1px solid #fca5a5;
+  border-radius: 0.75rem;
+  background: #fef2f2;
+  color: #7f1d1d;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  padding: 0.75rem 0.875rem;
+}

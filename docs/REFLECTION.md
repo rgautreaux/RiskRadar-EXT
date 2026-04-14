@@ -2,6 +2,413 @@
 
 ## Session Reflections
 
+# Stage 5: Final Golby Verification Pass, Safe Artifact Reversion, and Documentation Synchronization Session (2026-04-14)
+Summary:
+- Completed a final Golby verification pass on live local services covering connectivity preflight, frontend build, and assistant journey automation.
+- Verified full PASS outcomes for preflight and build, and **6/6** pass for the demo journey.
+- Reverted generated runtime/evidence artifacts after verification to preserve a clean, review-focused working set.
+- Synchronized README, STAGES, TODO, TRANSCRIPT, REFLECTION, and AUTHORS with this session in chronological Stage 5 order.
+- Ran transcript duplicate-heading pass and confirmed unique stage headings.
+
+Why this was done:
+- To close the verification loop with high confidence after implementation completion.
+- To ensure documentation and history files reflect the verified runtime state and final operational outcomes.
+- To prevent generated artifacts from obscuring intentional implementation and documentation review scope.
+
+How this improved the project:
+- Strengthened confidence that Golby behavior and project wiring remain stable in canonical local execution.
+- Improved repository hygiene by separating generated runtime churn from intentional tracked changes.
+- Preserved historical accuracy by synchronizing all major tracking docs with the final verification session.
+
+# Stage 5: Connectivity Hardening Completion, Safe Option Selection, and Documentation Synchronization Session (2026-04-13)
+Summary:
+- Completed the remaining Stage 5 connectivity hardening tasks and verified both gates: connectivity preflight and end-to-end demo journey.
+- Resolved verification-time issues that surfaced during real execution (frontend document-root mismatch and login-gated map preflight false negatives).
+- Applied safe cleanup via artifact isolation stashes so generated runtime/evidence outputs do not obscure review intent.
+- Synchronized the requested documentation set in chronological Stage 5 order, including transcript/reflection/authorship updates.
+
+Why this was done:
+- To fully close unresolved wiring reliability concerns before demos and grading workflows.
+- To ensure verification tooling reflects real application access control behavior instead of producing false negatives.
+- To preserve a clean, review-friendly repository state while retaining historical accuracy in project documentation.
+
+How this improved the project:
+- Connectivity validation is now more robust and representative of actual runtime conditions.
+- Demo reliability confidence increased through repeated full-pass verification.
+- Project governance quality improved by keeping all major tracking/history docs synchronized and chronologically accurate.
+
+# Stage 5: Backend One-Command Validation Script and Workflow Sync Session (2026-04-13)
+Summary:
+- Added `npm run backend:check` as a one-command validation gate for backend development flow.
+- Chained the command to run both fast pytest coverage (`backend:test`) and full deterministic verification (`verify:backend`).
+- Synchronized the backend-only runbook and README safe command section so contributors use the same pre-push quality gate.
+
+Why this was done:
+- To reduce repeated manual command sequencing and keep backend verification predictable.
+- To make the recommended pre-review command path obvious and consistent across docs.
+- To improve day-to-day developer throughput while preserving verification rigor.
+
+How this improved the project:
+- Simplified backend quality checks into one repeatable command.
+- Lowered risk of incomplete validation before commit/review.
+- Improved documentation consistency and operational clarity for backend-only contributors.
+
+# Stage 5: Backend-Only Workflow Hardening and Script Alias Session (2026-04-13)
+Summary:
+- Formalized a backend-only workflow so local development can proceed without frontend/mobile runtime dependency.
+- Added root command aliases `npm run backend:run` and `npm run backend:test` to reduce path mistakes and speed up daily execution.
+- Added/updated backend-only guidance so fast local pytest and full verification are both clearly documented.
+- Added the corresponding transcript entry for this session in chronological Stage 5 order.
+
+Why this was done:
+- To reduce friction and avoid avoidable frontend/mobile command errors during backend-focused work.
+- To make routine backend operations consistent from repository root with one-command entry points.
+- To preserve documentation governance by recording this workflow hardening session in project history.
+
+How this improved the project:
+- Backend-only contributors now have a safer, faster, and clearer command path.
+- Lower operational risk from directory/context mismatch when starting API or running tests.
+- Improved maintainability and traceability by synchronizing runbook and history artifacts.
+
+# Stage 5: SVG Asset White-Pixel Removal and Documentation Synchronization Session (2026-04-13)
+Summary:
+- Removed white-background pixel paths from assistant-reacting SVG assets so both now render transparently.
+- Applied low-risk asset-only edits that preserve all non-background vector paths and existing icon behavior.
+- Added the verbatim transcript entry for this session and synchronized Stage 5 progress-tracking documentation.
+- Re-ran transcript duplicate-heading checks to preserve unique historical entries.
+
+Why this was done:
+- To eliminate visible white-box artifacts around assistant imagery on non-white backgrounds.
+- To improve visual consistency while keeping the implementation scope safe and minimal.
+- To keep governance/history artifacts synchronized with the latest implementation work.
+
+How this improved the project:
+- Assistant-reacting assets now integrate cleanly over varied page backgrounds.
+- UI polish improved without introducing backend/frontend runtime risk.
+- Documentation chronology and auditability were strengthened with synchronized updates.
+
+# Stage 5: Golby Feature Verification and RiskRadar Branding Restoration Session (2026-04-13)
+Summary:
+- Verified full feature equivalence between floating widget and full-page assistant implementations by confirming both share the same ChatInterface behavior and capabilities.
+- Restored RiskRadar branding by replacing the Golby placeholder rendering with the globe-based `ai-assistant-reacting.svg` asset in `frontend/web/components/golby/GolbyIcon.tsx`.
+- Rebuilt facial expression overlays to align with the globe coordinate system (495x468) and validated all supported expressions.
+- Ran frontend rebuild verification and confirmed successful output with no TypeScript errors after branding restoration changes.
+- Synchronized session records across transcript and stage/reflection tracking documents in chronological Stage 5 order.
+
+Why this was done:
+- To remove the mismatch between project mockups and live UI where the assistant mascot was displayed as a placeholder instead of the RiskRadar globe character.
+- To preserve behavioral parity while improving visual identity consistency across assistant entry points.
+- To keep project governance artifacts aligned with the implementation and verification outcomes of this session.
+
+How this improved the project:
+- Restored authentic RiskRadar mascot presentation and branding consistency in the assistant UI.
+- Maintained stable functionality while improving visual trust and polish for end users.
+- Improved documentation traceability by recording verification, implementation, and rationale in synchronized Stage 5 history files.
+
+# Stage 5: Golby Chat Interface Visibility Enhancement and Auto-Open Wiring Session (2026-04-12)
+Summary:
+- Diagnosed chat interface visibility issues stemming from two separate frontend blockers: missing route detection and missing facial expressions.
+- Implemented three targeted fixes: (1) added 'assistant' route fallback detection in pageContext.ts, (2) added facial expression overlays to GolbyIcon.tsx, (3) added conditional auto-open logic in GolbyAssistantWidget.tsx.
+- Rebuilt frontend bundle (354.72 kB golby-widget.js) and verified fixes with Playwright browser checks showing chat interface now visible on page load.
+- Synchronized this session's transcript entry and updates to REFLECTION, TODO, STAGES, AUTHORS, and README in chronological Stage 5 order.
+
+Why this was done:
+- To fix a critical user-facing visibility issue that made the chat interface appear unavailable despite backend API and E2E tests passing.
+- To resolve both the page-context detection gap and the button-rendering visibility gap in a single focused session.
+- To keep documentation governance accurate after fixing visibility blockers that directly impact user experience.
+
+How this improved the project:
+- Restored visible, functional chat interface on the assistant page for end users testing the application.
+- Improved developer debugging by separating UI/visibility issues from backend functionality issues.
+- Strengthened end-to-end verification quality by catching visibility regressions with automated Playwright checks.
+
+# Stage 5 Frontend-Backend Wiring Completion, Verification, and Documentation Synchronization Session (2026-04-12)
+Summary:
+- Completed frontend-backend wiring fixes across forecast/map browser API path construction and backend CORS startup handling.
+- Verified behavior through syntax checks, endpoint-injection checks, CORS preflight checks, and fallback-state regression checks.
+- Resolved runtime environment mismatch during verification by aligning frontend backend-base configuration with the active backend port.
+- Synchronized top-level progress/history docs and added this session transcript entry in chronological Stage 5 order.
+- Ran transcript duplicate passes for headings and section bodies; both reported zero duplicates.
+
+Why this was done:
+- To fix no-data/empty-state user experience caused by wiring/config mismatches rather than true data absence.
+- To ensure browser-side forecast/map requests reliably target configured backend origin/prefix in split-origin local setups.
+- To keep documentation governance accurate after implementation and verification completion.
+
+How this improved the project:
+- Improved frontend runtime reliability so data surfaces can render backend payloads when backend is available.
+- Reduced map/forecast regression risk by removing fragile same-origin fallback assumptions.
+- Improved historical accuracy and reviewer traceability through synchronized docs and transcript dedupe verification.
+
+## Transcript Entry Summary Coverage (Chronological Snapshot)
+
+0. Stage 5: Final Golby Verification Pass, Safe Artifact Reversion, and Documentation Synchronization Session (2026-04-14): Completed final full verification chain (connectivity/build/demo), reverted generated artifacts, and synchronized top-level documentation records.
+
+0. Stage 5: Connectivity Hardening Completion, Safe Option Selection, and Documentation Synchronization Session (2026-04-13): Completed remaining wiring-hardening implementation, verified connectivity + demo passes, applied safe artifact isolation, and synchronized documentation.
+1. Stage 5: SVG Asset White-Pixel Removal and Documentation Synchronization Session (2026-04-13): Removed white background pixel paths from assistant-reacting SVG assets and synchronized top-level docs.
+2. Stage 5: Golby Feature Verification and RiskRadar Branding Restoration Session (2026-04-13): Verified widget/assistant feature parity and restored globe mascot branding with rebuilt facial overlays.
+3. Stage 5 Golby Chat Interface Visibility Enhancement and Auto-Open Wiring Session (2026-04-12): Fixed chat interface visibility blockers (route detection + facial expressions) and implemented auto-open wiring.
+4. Stage 5 Frontend-Backend Wiring Completion, Verification, and Documentation Synchronization Session (2026-04-12): Completed wiring fixes and verification for backend-connected web rendering.
+5. Stage 5 Connectivity Preflight, Canonical Local Topology, Pass Verification, and Documentation Synchronization Session (2026-04-12): Added fail-fast connectivity preflight and canonical local topology governance.
+6. Stage 5 Golby Operational Frontend Wiring, Verification, and Documentation Synchronization Session (2026-04-12): Operationalized assistant runtime with compiled assets and validated interaction path.
+7. Stage 5 RiskRadar Top-Text Removal and Documentation Synchronization Session (2026-04-12): Removed leaked top-of-page raw text and synchronized docs.
+8. Stage 5 Frontend Contrast Accessibility Final Pass and Documentation Synchronization Session (2026-04-12): Finalized contrast/readability polish and synchronized records.
+9. Stage 5 Review-Ready Commit Split and Push Session (2026-04-12): Split changes into review-focused commits and pushed branch.
+10. Stage 5 Frontend Visual Refresh Low-Risk Implementation and Max Validation Handoff Session (2026-04-12): Applied low-risk visual refresh and assigned remaining manual signoff to Max.
+11. Stage 5 Web-Only Scope Hardening and S3 Evidence Closeout Session (2026-04-11): Hardened required workflows to backend+web scope and closed S3 evidence gate.
+12. Stage 5 Rebecca Implementation Closeout and Max Handoff Session (2026-04-11): Closed Rebecca-safe scope and formalized manual-evidence handoff.
+13. Stage 5 Verified Map Closeout and Documentation Sync Session (2026-04-11): Recorded verified map closeout and evidence completion state.
+14. Stage 5 Demo Verification Pass and FIRMS Warning Risk-Free Fix Session (2026-04-11): Re-verified demo flow and applied low-risk FIRMS warning fix.
+15. Stage 5 Demo Workflow Sanity Pass and Documentation Synchronization Session (2026-04-11): Confirmed demo runbook command reliability and synchronized docs.
+16. Stage 5 Golby Personality Learning, Communication Controls, and Cross-Device Sync Session (2026-04-10): Implemented persistent assistant style-learning and sync path.
+17. Stage 3/4 Implementation Verification and Closeout Session (2026-04-10): Verified Forecast/Assistant integration and resolved runtime schema drift.
+18. Stage 5 User Data Security, Migration, and Full-Suite Verification Session (2026-04-02): Advanced user-data security posture and migration verification.
+19. Stage 5 Full Backend Verification Workflow and Documentation Sync Session (2026-04-02): Added repeatable full verification workflow and synchronized records.
+20. Stage 5 Ongoing Maintenance, Advanced Features, and Review Session (2026-04-02): Transitioned into maintenance and review governance cadence.
+21. Stage 4 Documentation Synchronization & Forecast UI Session (2026-04-02): Consolidated forecast/UI documentation synchronization pass.
+22. Stage 4: Context-Aware Golby, Backend Data Integration, and Documentation Sync Session (2026-04-02): Integrated context-aware assistant behavior using backend data.
+23. Stage 4 Forecast UI Completion & Documentation Update Session (2026-03-31): Marked forecast UI completion and synchronized documentation.
+24. Stage 2 Contract/Evidence Creation and Transcript/Reflection Completion Session (2026-03-17): Finalized Stage 2 contract/evidence artifacts and history coverage.
+25. Stage 2 Planning, Scaffolding, and Documentation Synchronization Session (2026-03-17): Completed Stage 2 scaffolding/planning baseline and sync.
+26. Stage 2 Documentation and Synchronization Session (2026-03-23): Recorded Stage 2 completion state and cross-doc alignment.
+27. Stage 3 Phase 5 Completion Session (2026-03-24): Documented Stage 3 phase completion and evidence readiness.
+28. Stage 3 Documentation and Synchronization Session (2026-04-27): Executed broad Stage 3 synchronization follow-up pass.
+29. Stage 4: Forecast UI & Asset Integration Session (2026-03-30): Integrated forecast UI assets and theme alignment.
+30. Stage 3 Documentation and Synchronization Session (2026-03-31): Performed Stage 3 documentation synchronization pass.
+31. Stage 4 Planning and Asset Integration Session (2026-03-26): Established Stage 4 planning and asset integration baseline.
+32. Stage 4 Forecast UI & Asset Integration Session (2026-03-30): Continued forecast visual integration and documentation alignment.
+33. Stage 4: AI Assistant Widget Integration & Documentation Sync Session (2026-03-31): Integrated assistant widget into web runtime and synchronized docs.
+34. Stage 1 Progress Check and Next Steps: Captured Stage 1 progress validation and follow-up direction.
+35. Stage 1 Planning and Setup: Captured early planning/setup baseline for project startup.
+
+# Stage 5 Connectivity Preflight, Canonical Local Topology, Pass Verification, and Documentation Synchronization Session (2026-04-12)
+Summary:
+- Implemented a fail-fast connectivity preflight workflow that checks canonical API configuration, backend endpoints, frontend reachability, map API wiring markers, and CORS preflight behavior.
+- Added and wired new verification scripts (`backend/scripts/pre_demo_connectivity_check.py`, `backend/scripts/run_connectivity_preflight.mjs`) and integrated preflight into `demo:run` through `npm run verify:connectivity`.
+- Standardized canonical local runtime topology to backend `127.0.0.1:8001` and frontend `127.0.0.1:8080` across config defaults and documentation.
+- Ran the pass end-to-end, fixed timeout/crash handling and escaped-map-URL detection in preflight logic, and revalidated to full PASS.
+- Synchronized top-level docs (README, STAGES, TODO, TRANSCRIPT, REFLECTION, AUTHORS) and rechecked transcript duplicate-stage headings.
+
+Why this was done:
+- To catch integration failures before demos with deterministic, actionable checks.
+- To reduce port/config drift across local environments and prevent false demo failures.
+- To keep project governance/history artifacts aligned with implementation and verification outcomes.
+
+How this improved the project:
+- Added a repeatable pre-demo quality gate for frontend/backend/API connectivity.
+- Increased demo reliability by formalizing one canonical local topology and execution path.
+- Improved maintainability and historical accuracy through synchronized documentation updates and duplicate-pass verification.
+
+# Stage 5 Golby Operational Frontend Wiring, Verification, and Documentation Synchronization Session (2026-04-12)
+Summary:
+- Diagnosed the assistant non-interactivity issue as frontend asset execution failure (raw source/scaffold loading path), then moved the web assistant runtime to compiled bundle loading.
+- Completed build + wiring + runtime verification flow and documented all major outcomes in synchronized Stage 5 records.
+- Captured this session in transcript/reflection/authorship tracking and aligned README/USER_GUIDE/STAGES/TODO entries with verified behavior.
+- Confirmed transcript stage-heading dedupe status with a duplicate-check pass and preserved chronological order.
+
+Why this was done:
+- To make Golby operational in real manual testing rather than scaffold-only rendering.
+- To remove ambiguity between backend readiness and frontend runtime wiring by verifying the full path end-to-end.
+- To keep project history/governance artifacts accurate and synchronized after implementation.
+
+How this improved the project:
+- Assistant frontend is now documented and validated as operational with reproducible verification evidence.
+- The project now has clearer build/runtime expectations for assistant assets in web deployments.
+- Historical tracking quality improved by synchronizing transcript, reflection, authorship, and stage trackers for this session.
+
+# Stage 5 Frontend Contrast Accessibility Final Pass and Documentation Synchronization Session (2026-04-12)
+Summary:
+- Completed the final frontend polish sequence by combining color-rich styling with accessibility-first contrast hardening.
+- Tightened edge-case readability for small chips/pills/badges and strengthened keyboard focus visibility across shared and map-specific controls.
+- Kept implementation risk low by limiting all behavior changes to shared stylesheet updates in `frontend/web/public/assets/app.css`.
+- Synchronized all requested top-level documentation artifacts in chronological Stage 5 order.
+
+Why this was done:
+- To maintain a lively visual design without sacrificing readability and navigation clarity.
+- To address known contrast-risk surfaces (accent-heavy controls and small metadata chips) that impact accessibility quality.
+- To keep project history and governance docs aligned with implementation reality.
+
+How this improved the project:
+- Improved practical text readability on energetic color surfaces, including compact UI metadata elements.
+- Improved keyboard and focus discoverability, making page navigation clearer and more inclusive.
+- Preserved maintainability and low regression risk through CSS-scoped, token-driven refinements and synchronized documentation.
+
+# Stage 5 RiskRadar Top-Text Removal and Documentation Synchronization Session (2026-04-12)
+Summary:
+- Removed distracting, non-product text appearing at the top of RiskRadar pages by fixing PHP opening-tag/header placement in shared frontend files.
+- Corrected `frontend/web/services/api_client.php` and `frontend/web/components/layout.php` so comments/helper declarations remain in PHP scope and are not rendered as page content.
+- Re-validated both edited files with PHP lint checks to confirm syntax safety.
+- Synchronized TODO, STAGES, README, AUTHORS, TRANSCRIPT, and REFLECTION with this session.
+- Performed transcript cleanup to remove duplicate replay-style entries and preserve unique chronological history.
+
+Why this was done:
+- To restore UI clarity and professionalism by removing text leakage that disrupted page appearance.
+- To apply the lowest-risk fix in shared files so all affected pages benefit without behavior changes.
+- To keep historical tracking documentation synchronized after implementation changes.
+
+How this improved the project:
+- Eliminated a user-facing presentation defect across the shared web shell path.
+- Reduced maintenance risk by clarifying PHP scope boundaries in shared layout/API files.
+- Improved grading/onboarding traceability through synchronized and deduplicated documentation.
+
+# Stage 5 Review-Ready Commit Split and Push Session (2026-04-12)
+Summary:
+- Grouped the remaining uncommitted/unpushed work into review-friendly commits by project area and pushed the branch successfully.
+- Separated backend normalization/guardrail logic, evidence docs, top-level status docs, and the runtime SQLite artifact into distinct commits.
+- Preserved the repository’s existing low-risk style by avoiding any code changes during the documentation-only wrap-up.
+
+Why this was done:
+- To make the PR easier to review by reducing change-set overlap.
+- To keep the commit history aligned with project boundaries that reviewers can reason about independently.
+- To avoid mixing runtime artifacts with documentation or backend implementation changes.
+
+How this improved the project:
+- Produced a cleaner commit stack that is simpler to inspect and discuss.
+- Reduced reviewer burden by separating implementation concerns from docs-only updates.
+- Preserved traceability between each part of the project and the corresponding commit.
+
+### Stage 5 Frontend Visual Refresh Low-Risk Implementation and Max Validation Handoff Session (2026-04-12)
+Summary:
+- Completed the Rebecca-safe frontend visual refresh implementation using shared token/style updates and low-risk page polish on dashboard, alerts, summaries, and map.
+- Replaced remaining inline style attributes in `frontend/web/views/map.php` with shared CSS classes in `frontend/web/public/assets/app.css`.
+- Preserved behavior boundaries by keeping map/backend/API logic unchanged while improving visual hierarchy, consistency, and accessibility cues.
+- Updated top-level tracking docs to explicitly assign remaining manual frontend validation/signoff tasks to Max.
+
+Why this was done:
+- To improve frontend liveliness and consistency while minimizing regression risk.
+- To centralize styling for maintainability and reduce inline-style drift in the map view.
+- To make final manual validation/signoff ownership explicit for closeout accountability.
+
+How this improved the project:
+- Improved UX quality with safer, token-driven style changes rather than broad structural refactors.
+- Reduced future maintenance overhead by consolidating map presentation styles in shared CSS.
+- Strengthened documentation traceability by synchronizing ownership and remaining manual tasks across top-level records.
+
+### Stage 5 Verified Map Closeout and Documentation Sync Session (2026-04-11)
+Summary:
+- Confirmed the Stage 3 map closeout is now verifier-clean after normalizing frontend coordinate parsing for alerts and risk polygons.
+- Verified that all required S3-06 evidence artifacts are present and that `npm run verify:evidence:s3` passes.
+- Synchronized the top-level project summary to reflect the validated map state and evidence bundle.
+
+Why this was done:
+- To record the final verified state of the map demonstration in the repository’s canonical summary docs.
+- To keep the closeout narrative aligned with the actual verified artifact bundle.
+- To preserve a concise audit trail for grading and handoff.
+
+How this improved the project:
+- Documented the final working state of the map closeout in the same style as prior sessions.
+- Reduced confusion by tying the verified evidence bundle to the summary docs.
+- Kept the repository’s top-level status narrative synchronized with the validation result.
+
+### Stage 5 Web-Only Scope Hardening and S3 Evidence Closeout Session (2026-04-11)
+Summary:
+- Hardened top-level setup and execution documentation so required local workflows are explicitly backend + web only.
+- Corrected top-level web startup guidance to the actual PHP runtime command path used by this repository.
+- Converted S3-06 closeout guidance into an exact verifier-gated checklist tied to required artifact paths.
+- Produced all required S3-06 evidence artifacts under `static/evidence/` and re-ran the verifier to successful completion.
+
+Why this was done:
+- To prevent setup failures and contributor confusion caused by outdated or mixed-scope instructions.
+- To close the remaining Stage 3 evidence gate with objective, reproducible verification evidence.
+- To keep documentation synchronized with actual repository behavior and grading workflows.
+
+How this improved the project:
+- Improved onboarding and grading reliability by reducing workflow ambiguity.
+- Brought Stage 3 evidence closeout to a passing, verifier-confirmed state.
+- Kept top-level documentation chronology and status alignment consistent across tracking files.
+
+### Stage 5 Rebecca Implementation Closeout and Max Handoff Session (2026-04-11)
+Summary:
+- Completed a final closeout audit of remaining remediation items and confirmed no additional Rebecca-safe implementation tasks remained.
+- Assigned all manual-only S3-06 evidence capture and final filing work to Max across tracker and evidence documentation.
+- Preserved the objective closeout gate by keeping `npm run verify:evidence:s3` as the required evidence-validation command.
+
+Why this was done:
+- To close Rebecca-owned implementation scope without introducing unnecessary code-surface risk.
+- To prevent ambiguity in ownership for the final manual evidence bundle.
+- To keep grading/onboarding closeout steps explicit and verifiable.
+
+How this improved the project:
+- Improved accountability through clear owner assignment for the last manual deliverable.
+- Kept documentation, status tracking, and verification gating aligned.
+- Reduced risk of duplicate/overlapping effort by separating implementation completion from manual evidence collection.
+
+### Stage 5 Demo Verification Pass and FIRMS Warning Risk-Free Fix Session (2026-04-11)
+Summary:
+- Ran repeated demo verification passes using `npm run demo:setup`, `npm run demo:verify`, `npm run demo:info`, `npm run demo:run`, and `npm run demo:report`.
+- Confirmed walkthrough stability across headless and visible presenter modes with **6/6** automated step completion.
+- Investigated FIRMS warning severity and determined it is non-blocking for seeded demo mode, while still relevant for live wildfire ingestion.
+- Implemented a low-risk settings-first key-resolution fix in scraper registry lookup logic to prevent false skip warnings when keys are present in `.env`.
+- Revalidated post-run data integrity and preserved refreshed evidence artifacts.
+
+Why this was done:
+- To ensure demo workflows remain repeatable and grading-ready across multiple execution modes.
+- To reduce avoidable configuration confusion from false warning conditions.
+- To apply the safest possible fix with minimal code-surface impact.
+
+How this improved the project:
+- Increased confidence in automated demo reliability and presentation consistency.
+- Improved operational clarity by distinguishing non-blocking demo warnings from live-ingestion configuration requirements.
+- Hardened registry key checks without changing normal behavior when keys are truly missing.
+
+### Stage 5 Demo Workflow Sanity Pass and Documentation Synchronization Session (2026-04-11)
+Summary:
+- Ran the final demo workflow sanity pass using documented commands: `npm run demo:setup`, `npm run demo:verify`, and `npm run demo:info`.
+- Confirmed demo seeding, verification checks, and metadata output all execute successfully in sequence.
+- Validated the safest handling for demo artifacts by keeping demo tooling integrated with repository scripts and documentation.
+- Cleaned generated artifacts after verification (`npm run demo:clean`).
+- Synchronized top-level documentation with this session’s results and decisions.
+
+Why this was done:
+- To ensure the documented demo runbook paths are accurate, executable, and grading-ready.
+- To reduce risk around accidental removal of active demo tooling.
+- To preserve top-level documentation consistency after executing the sanity pass.
+
+How this improved the project:
+- Increased reliability of demo setup and verification workflows for contributors and graders.
+- Confirmed end-to-end command parity between docs and runtime behavior.
+- Kept repository hygiene intact by removing generated demo artifacts after verification.
+- Maintained historical traceability with synchronized top-level documentation updates.
+
+### Stage 5 Golby Personality Learning, Communication Controls, and Cross-Device Sync Session (2026-04-10)
+Summary:
+- Implemented persistent assistant communication-style profiles (`assistant_style_profile`) on user records with a migration path for existing databases.
+- Added backend soft-learning logic that converts feedback reactions/ratings/comments into bounded updates for warmth, calmness, humor, conciseness, detail, and expandability.
+- Integrated profile-aware response shaping into `/api/v1/assistant/respond` while preserving guardrail-first behavior for safety-sensitive requests.
+- Added explicit communication directives (for example: be shorter, more detailed, warmer, goofier, calmer), with persistence for identified users and non-persistent handling for anonymous users.
+- Synced frontend local Golby learning to backend preferences so communication style can carry across sessions/devices.
+- Verified changes with targeted suites (**27/27 passed**) and full backend suite (**196/196 passed**).
+
+Why this was done:
+- To let Golby learn from user preferences in a deterministic and transparent way without retraining models.
+- To improve communication quality and user trust while keeping reliability and safety controls stable.
+- To close the loop between frontend interaction signals and backend assistant behavior.
+
+How this improved the project:
+- Strengthened assistant personalization with persistent, testable profile state.
+- Improved user communication control through explicit style commands and adaptive feedback learning.
+- Preserved consistency by keeping safety guardrails and factual response structure higher-priority than tone shifts.
+- Increased maintainability through dedicated personality service helpers and added regression coverage.
+
+### Stage 3/4 Implementation Verification and Closeout Session (2026-04-10)
+Summary:
+- Ran focused frontend verification pass validating Forecast and Assistant API integration end-to-end.
+- Fixed runtime schema drift by applying missing columns (`users.email_lookup_hash`, `users.health_conditions`) to local test database.
+- Fixed assistant widget mount attribute compatibility (attribute name fallback).
+- Executed full backend verification: 191/191 tests passed.
+- Updated all top-level documentation (TODO.md, STAGES.md, README.md, STAGE3_VERIFICATION_EVIDENCE.md) to reflect completion state.
+
+Why this was done:
+- To validate and close Stages 3 and 4 implementation work with verifiable evidence.
+- To correct runtime environment drift that was blocking live browser/API validation.
+- To prepare grading-ready documentation reflecting actual completion status.
+
+How this improved the project:
+- Ensured all implemented features are verified and validated in production-like conditions.
+- Eliminated environment-specific test failures and schema mismatches.
+- Created concrete, actionable evidence checklist for Stage 3 manual closeout (S3-06).
+- Maintained documentation accuracy and grading readiness.
+
 ### Gate A Mapping Matrix Completion and Documentation Synchronization Session (2026-03-17)
 Summary:
 - Completed Gate A mapping artifacts, checklists, status updates, and reviewer handoff notes.

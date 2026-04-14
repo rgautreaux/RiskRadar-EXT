@@ -1,6 +1,8 @@
-# Stage 3: Map Risk Overlay Output
+"""Shared forecast and risk overlay response models."""
+
 from typing import Any
-from pydantic import BaseModel
+
+from pydantic import BaseModel, Field
 
 class MapRiskZone(BaseModel):
     # For simplicity, use centroid and risk info; can extend to full polygon later
@@ -9,11 +11,26 @@ class MapRiskZone(BaseModel):
     risk_score: float | None = None
     polygon: list[dict[str, float]] | None = None  # Optional: list of {"lat": float, "lon": float}
 
+
+class ForecastPoint(BaseModel):
+    hour_offset: int
+    risk_score: float
+    risk_level: str
+    confidence: float
+    alert_count: int
+    dominant_type: str | None = None
+
 class MapRiskOverlayOut(BaseModel):
-    risk_zones: list[MapRiskZone]
+    risk_zones: list[MapRiskZone] = Field(default_factory=list)
     region: str | dict[str, Any]
     generated_at: str
-from pydantic import BaseModel
+    forecast_hours: int | None = None
+    forecast_points: list[ForecastPoint] = Field(default_factory=list)
+    confidence: float | None = None
+    trend: str | None = None
+    summary: str | None = None
+    baseline_risk_score: float | None = None
+    personalized: bool = False
 
 
 class RiskFactor(BaseModel):

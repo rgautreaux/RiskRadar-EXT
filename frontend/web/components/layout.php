@@ -1,3 +1,4 @@
+<?php
 
 /*
 ====================================================
@@ -12,10 +13,23 @@
 ====================================================
 */
 
-<?php
-
 function rr_render_layout_start(string $title, string $activePage): void
 {
+    $GLOBALS['rr_layout_active_page'] = $activePage;
+
+    $accessContext = function_exists('rr_access_context') ? rr_access_context() : 'anonymous';
+    $isAnonymous = $accessContext === 'anonymous';
+    $isGuest = $accessContext === 'guest';
+
+    $apiBase = 'http://127.0.0.1:8001';
+    $apiPrefix = '/api/v1';
+    $globalConfig = $GLOBALS['config'] ?? null;
+    if (is_array($globalConfig) && function_exists('rr_api_url')) {
+        $apiBase = rtrim((string) ($globalConfig['api']['base_url'] ?? $apiBase), '/');
+        $apiPrefix = '/' . trim((string) ($globalConfig['api']['prefix'] ?? $apiPrefix), '/');
+    }
+
+    $shouldRenderGolbyWidget = $activePage !== 'login';
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -27,15 +41,34 @@ function rr_render_layout_start(string $title, string $activePage): void
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="assets/app.css">
+        <script>
+        window.__RISKRADAR_API_BASE__ = <?php echo json_encode($apiBase); ?>;
+        window.__RISKRADAR_API_PREFIX__ = <?php echo json_encode($apiPrefix); ?>;
+        </script>
+        <?php if ($shouldRenderGolbyWidget) : ?>
+        <link rel="stylesheet" href="assets/golby-widget.css">
+        <script type="module" src="assets/golby-widget.js" defer></script>
+        <?php endif; ?>
     </head>
-    <body>
+    <body class="page-<?php echo e($activePage); ?>" data-page="<?php echo e($activePage); ?>">
         <div class="app-shell">
             <header class="topbar">
                 <div>
                     <p class="eyebrow">CMPS 357 Web Extension</p>
                     <a class="brand" href="index.php">RiskRadar Web</a>
+                    <?php if ($isGuest) : ?>
+                    <p class="eyebrow">Guest mode enabled</p>
+                    <?php endif; ?>
                 </div>
                 <nav class="topnav" aria-label="Primary navigation">
+                    <?php if ($isAnonymous) : ?>
+                    <a class="<?php echo $activePage === 'login' ? 'is-active' : ''; ?>" href="login.php">
+                        <img src="assets/icons/profile.svg" alt="Login Icon" class="nav-icon"> Login
+                    </a>
+                    <a class="<?php echo $activePage === 'register' ? 'is-active' : ''; ?>" href="register.php">
+                        <img src="assets/icons/profile.svg" alt="Register Icon" class="nav-icon"> Sign Up
+                    </a>
+                    <?php else : ?>
                     <a class="<?php echo $activePage === 'dashboard' ? 'is-active' : ''; ?>" href="index.php">
                         <img src="assets/icons/home-green.svg" alt="Dashboard Icon" class="nav-icon"> Dashboard
                     </a>
@@ -60,9 +93,10 @@ function rr_render_layout_start(string $title, string $activePage): void
                     <a class="<?php echo $activePage === 'assistant' ? 'is-active' : ''; ?>" href="assistant.php">
                         <img src="assets/icons/ai-assistant.svg" alt="Assistant Icon" class="nav-icon"> Assistant
                     </a>
-                    <a class="<?php echo $activePage === 'login' ? 'is-active' : ''; ?>" href="login.php">
-                        <img src="assets/icons/profile.svg" alt="Login Icon" class="nav-icon"> Login
+                    <a href="login.php">
+                        <img src="assets/icons/profile.svg" alt="Login Icon" class="nav-icon"><?php echo $isGuest ? ' Sign In' : ' Login'; ?>
                     </a>
+                    <?php endif; ?>
                 </nav>
             </header>
             <main class="page-shell">
@@ -71,8 +105,14 @@ function rr_render_layout_start(string $title, string $activePage): void
 
 function rr_render_layout_end(): void
 {
+    $activePage = (string) ($GLOBALS['rr_layout_active_page'] ?? 'unknown');
+    $shouldRenderGolbyWidget = $activePage !== 'login';
+
     ?>
             </main>
+            <?php if ($shouldRenderGolbyWidget) : ?>
+            <div id="riskradar-ai-assistant-widget"></div>
+            <?php endif; ?>
         </div>
     </body>
     </html>

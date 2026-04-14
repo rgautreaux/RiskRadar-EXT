@@ -1,5 +1,50 @@
 <?php
 
+function rr_is_authenticated(): bool
+{
+    $sessionToken = $_COOKIE['riskradar_session'] ?? '';
+    return is_string($sessionToken) && $sessionToken !== '';
+}
+
+function rr_is_guest_mode(): bool
+{
+    return !empty($_SESSION['riskradar_guest_mode']);
+}
+
+function rr_set_guest_mode(bool $enabled): void
+{
+    if ($enabled) {
+        $_SESSION['riskradar_guest_mode'] = true;
+        return;
+    }
+
+    unset($_SESSION['riskradar_guest_mode']);
+}
+
+function rr_access_context(): string
+{
+    if (rr_is_authenticated()) {
+        return 'authenticated';
+    }
+
+    if (rr_is_guest_mode()) {
+        return 'guest';
+    }
+
+    return 'anonymous';
+}
+
+function rr_require_feature_access(): void
+{
+    if (rr_access_context() !== 'anonymous') {
+        return;
+    }
+
+    rr_set_flash('warning', 'Please sign in, create an account, or continue as guest to use RiskRadar.');
+    header('Location: login.php');
+    exit;
+}
+
 function rr_csrf_token(): string
 {
     if (empty($_SESSION['csrf_token'])) {
@@ -36,4 +81,30 @@ function rr_get_flash(): ?array
     unset($_SESSION['flash']);
 
     return $flash;
+}
+
+function rr_set_session_cookie(string $token, int $expiresAt): void
+{
+    setcookie('riskradar_session', $token, [
+        'expires' => $expiresAt,
+        'path' => '/',
+        'httponly' => true,
+        'samesite' => 'Lax',
+        'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+    ]);
+
+    rr_set_guest_mode(false);
+}
+
+function rr_clear_session_cookie(): void
+{
+    setcookie('riskradar_session', '', [
+        'expires' => time() - 3600,
+        'path' => '/',
+        'httponly' => true,
+        'samesite' => 'Lax',
+        'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+    ]);
+
+    rr_set_guest_mode(false);
 }

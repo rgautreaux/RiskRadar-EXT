@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, easeInOut } from 'framer-motion';
+import { AnimatePresence, easeInOut, motion, useReducedMotion } from 'framer-motion';
 
 export type GolbyExpression = 
   | 'happy' 
@@ -27,12 +27,88 @@ const sizeMap = {
   xl: 'w-24 h-24'
 };
 
+const GOLBY_EXPRESSION_ASSET: Record<GolbyExpression, string> = {
+  happy: '/assets/icons/ai-assistant.svg',
+  thinking: '/assets/icons/Golby-Thinking.svg',
+  surprised: '/assets/icons/Golby-Surprised.svg',
+  puzzled: '/assets/icons/Golby-Puzzled.svg',
+  waving: '/assets/icons/Golby-Waving.svg',
+  winking: '/assets/icons/Golby-Wink.svg',
+  laughing: '/assets/icons/Golby-Laugh.svg',
+  excited: '/assets/icons/Golby-Excited.svg'
+};
+
+const GOLBY_FALLBACK_ASSET = GOLBY_EXPRESSION_ASSET.happy;
+const EXPRESSION_SWAP_DEBOUNCE_MS = 70;
+
+function resolveExpressionAsset(expression: GolbyExpression): string {
+  return GOLBY_EXPRESSION_ASSET[expression] ?? GOLBY_FALLBACK_ASSET;
+}
+
 export function GolbyIcon({ 
   expression = 'happy', 
   size = 'md', 
   animate = true,
   className = ''
 }: GolbyIconProps) {
+  const prefersReducedMotion = useReducedMotion();
+  const [displayExpression, setDisplayExpression] = React.useState<GolbyExpression>(expression);
+  const loadRequestId = React.useRef(0);
+  const debounceTimerRef = React.useRef<number | null>(null);
+
+  React.useEffect(() => {
+    const uniqueAssets = Array.from(new Set(Object.values(GOLBY_EXPRESSION_ASSET)));
+    uniqueAssets.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
+  React.useEffect(() => {
+    if (expression === displayExpression) return;
+
+    const requestId = ++loadRequestId.current;
+    const nextAsset = resolveExpressionAsset(expression);
+    const preload = new Image();
+
+    const commitExpression = () => {
+      // Latest-wins guard for rapid expression changes.
+      if (requestId === loadRequestId.current) {
+        if (debounceTimerRef.current !== null) {
+          window.clearTimeout(debounceTimerRef.current);
+        }
+
+        const delay = prefersReducedMotion ? 0 : EXPRESSION_SWAP_DEBOUNCE_MS;
+        debounceTimerRef.current = window.setTimeout(() => {
+          if (requestId === loadRequestId.current) {
+            setDisplayExpression(expression);
+          }
+        }, delay);
+      }
+    };
+
+    preload.onload = commitExpression;
+    preload.onerror = commitExpression;
+    preload.src = nextAsset;
+
+    if (preload.complete) {
+      commitExpression();
+    }
+
+    return () => {
+      preload.onload = null;
+      preload.onerror = null;
+    };
+  }, [displayExpression, expression, prefersReducedMotion]);
+
+  React.useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current !== null) {
+        window.clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
+
   // Animation variants based on expression
   // Always return all keys for framer-motion animate prop
   const getAnimationVariant = () => {
@@ -83,6 +159,7 @@ export function GolbyIcon({
   };
 
   const staticPose = { scale: 1, rotate: 0, y: 0 };
+  const displayedAsset = resolveExpressionAsset(displayExpression);
   return (
     <motion.div
       className={`relative inline-flex items-center justify-center ${sizeMap[size]} ${className}`}
@@ -92,46 +169,37 @@ export function GolbyIcon({
       role="img"
       aria-label={`Golby the assistant looking ${expression}`}
     >
-      {/* Base Golby SVG - replace with your SVG import or inline SVG */}
-      <svg viewBox="0 0 100 100" className="w-full h-full object-contain" aria-hidden="true">
-        <circle cx="50" cy="50" r="48" fill="#ffe6b3" stroke="#e0b060" strokeWidth="4" />
-      </svg>
-      {/* Facial expression overlays - drawn as SVG on top */}
-      <FacialExpressionOverlay expression={expression} size={size} />
+      <AnimatePresence mode="sync" initial={false}>
+        <motion.img
+          key={displayExpression}
+          src={displayedAsset}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+          initial={
+            prefersReducedMotion
+              ? { opacity: 1, scale: 1 }
+              : { opacity: 0, scale: 0.98 }
+          }
+          animate={{ opacity: 1, scale: 1 }}
+          exit={
+            prefersReducedMotion
+              ? { opacity: 1, scale: 1 }
+              : { opacity: 0, scale: 1.02 }
+          }
+          transition={
+            prefersReducedMotion
+              ? { duration: 0 }
+              : { duration: 0.22, ease: easeInOut }
+          }
+          onError={(event) => {
+            const target = event.currentTarget;
+            if (target.dataset.fallbackApplied === 'true') return;
+            target.dataset.fallbackApplied = 'true';
+            target.src = GOLBY_FALLBACK_ASSET;
+          }}
+        />
+      </AnimatePresence>
     </motion.div>
-  );
-}
-
-function FacialExpressionOverlay({ expression, size }: { expression: GolbyExpression; size: GolbySize }) {
-  const sizeScale = {
-    sm: 0.5,
-    md: 0.75,
-    lg: 1,
-    xl: 1.5
-  };
-  const scale = sizeScale[size];
-  return (
-    <svg 
-      className="absolute inset-0 w-full h-full pointer-events-none" 
-      viewBox="0 0 100 100"
-      style={{ transform: `scale(${scale})` }}
-    >
-      {/* Eyes and mouth positioned on Golby's face */}
-      {expression === 'happy' && (
-        <>
-          <circle cx="35" cy="42" r="4" fill="#1a1a1a" />
-          <circle cx="65" cy="42" r="4" fill="#1a1a1a" />
-          <path d="M 35 58 Q 50 68 65 58" stroke="#1a1a1a" strokeWidth="3" fill="none" strokeLinecap="round" />
-        </>
-      )}
-      {expression === 'thinking' && (
-        <>
-          <circle cx="35" cy="40" r="3.5" fill="#1a1a1a" />
-          <circle cx="65" cy="40" r="3.5" fill="#1a1a1a" />
-          <path d="M 38 60 Q 50 57 62 60" stroke="#1a1a1a" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-        </>
-      )}
-      {/* Add other expressions as needed */}
-    </svg>
   );
 }

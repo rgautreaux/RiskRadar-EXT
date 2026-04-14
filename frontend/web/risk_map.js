@@ -3,6 +3,18 @@
 // Requires Plotly.js (CDN or npm)
 
 document.addEventListener('DOMContentLoaded', function() {
+    const alertsUrl = window.RISKRADAR_MAP_ALERTS_URL;
+    const riskUrl = window.RISKRADAR_MAP_RISK_URL;
+    const hasConfiguredUrls = typeof alertsUrl === 'string'
+        && alertsUrl.length > 0
+        && typeof riskUrl === 'string'
+        && riskUrl.length > 0;
+
+    if (!hasConfiguredUrls) {
+        // Avoid making requests to an unintended same-origin /api path.
+        return;
+    }
+
     const mapContainer = document.createElement('div');
     mapContainer.id = 'risk-map-container';
     document.querySelector('section.panel').appendChild(mapContainer);
@@ -20,8 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function renderMap() {
         // Fetch alert and risk zone data
         Promise.all([
-            fetch('/api/v1/alerts/map').then(r => r.json()),
-            fetch('/api/v1/risk/map').then(r => r.json())
+            fetch(alertsUrl).then(r => r.json()),
+            fetch(riskUrl).then(r => r.json())
         ]).then(([alertsData, riskData]) => {
             // Prepare alert markers
             const alertMarkers = {

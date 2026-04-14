@@ -25,3 +25,31 @@ Passwords are not encrypted. They are hashed with PBKDF2_SHA256 using the existi
 ## Password Policy
 
 The backend currently enforces a minimum password length and complexity rules during registration. Keep the policy aligned with your course or deployment security requirements.
+
+## AI Assistant Guardrails
+
+The Golby assistant is scoped to RiskRadar product guidance and environmental risk interpretation. It should not behave as a general-purpose advisory agent.
+
+### In-Scope Responses
+
+- Explain RiskRadar features, pages, alerts, forecast views, and risk map usage.
+- Summarize live environmental risk/forecast data returned by project APIs.
+- Provide non-authoritative, safety-first travel preparation suggestions tied to platform risk signals.
+
+### Out-of-Scope Responses (Must Refuse or Redirect)
+
+- Medical, legal, or emergency-response directives presented as professional advice.
+- Harmful, illegal, or exploitative instructions.
+- Requests for credentials, secrets, keys, or hidden system details.
+
+### Required Fallback Behavior
+
+- For emergency-risk prompts, direct users to local emergency services and official authorities.
+- For medical/legal prompts, state limitations and recommend qualified professionals.
+- Keep responses concise, non-alarmist, and avoid pretending to have real-time authority beyond API data.
+
+### Validation Checklist
+
+- Verify the assistant refuses disallowed prompt classes consistently.
+- Verify fallback messages appear when live data fetches fail.
+- Verify no secrets or internal implementation details are exposed in assistant responses.
