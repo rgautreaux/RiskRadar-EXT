@@ -1,11 +1,11 @@
 # Documentation Synchronization Note
 
-All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) has been reviewed and updated for consistency and agreement through the Stage 5 closeout/handoff sessions (2026-04-11). This ensures grading clarity, onboarding readiness, and a single source of truth for project status and history.
+All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) has been reviewed and updated for consistency and agreement through the Stage 5 connectivity hardening and documentation synchronization sessions (2026-04-13). This ensures grading clarity, onboarding readiness, and a single source of truth for project status and history.
 
 
 # RiskRadar Web-Extension User Guide
 
-This guide walks you through how to run and use the RiskRadar Web-Extension, including all features and updates through Stage 5 closeout (2026-04-12).
+This guide walks you through how to run and use the RiskRadar Web-Extension, including all features and updates through Stage 5 connectivity hardening closeout (2026-04-13).
 
 ## Documentation Navigation Hub
 
@@ -145,13 +145,13 @@ cd backend
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-uvicorn main:app --reload --host 127.0.0.1 --port 8000
+uvicorn main:app --reload --host 127.0.0.1 --port 8001
 ```
 
 When successful, the API is available at:
 
-- `http://127.0.0.1:8000`
-- Health/root check: `http://127.0.0.1:8000/`
+- `http://127.0.0.1:8001`
+- Health/root check: `http://127.0.0.1:8001/`
 
 Notes:
 
@@ -184,13 +184,19 @@ Open the app in your browser:
 
 - `http://127.0.0.1:8080/login.php`
 
+Run the connectivity preflight before demos or manual validation:
+
+```powershell
+npm run verify:connectivity
+```
+
 ---
 
 ## 4. (Optional) Change Backend URL for the Web App
 
 By default, the web app points to:
 
-- Base URL: `http://127.0.0.1:8000`
+- Base URL: `http://127.0.0.1:8001`
 - API prefix: `/api/v1`
 
 If your backend runs on another port:
@@ -327,7 +333,7 @@ Open `http://127.0.0.1:8080/map.php` to access the interactive risk map.
 ### Web page says no data / empty state
 
 - Confirm backend is running on the expected port.
-- Visit `http://127.0.0.1:8000/` and verify it returns a JSON status payload.
+- Visit `http://127.0.0.1:8001/` and verify it returns a JSON status payload.
 - Verify web config points to the correct API base URL and prefix.
 
 ### PHP server command fails
@@ -431,11 +437,14 @@ To verify all features are functional:
 # Backend verification (full test suite)
 npm run verify:backend
 
+# Connectivity preflight (frontend/backend wiring)
+npm run verify:connectivity
+
 # Demo database verification
 npm run demo:verify
 
 # Frontend navigation (manual)
-# Navigate to: http://localhost:8000/index.php → /risk.php → /map.php → /forecast.php
+# Navigate to: http://127.0.0.1:8080/index.php → /risk.php → /map.php → /forecast.php
 ```
 
 ### Common Grading Questions
@@ -499,7 +508,7 @@ The interactive map and overlays are fully accessible by keyboard and screen rea
 ### Automated Testing
 - Run the automated test script at `frontend/web/tests/test_map_accessibility.js` (requires Node.js, puppeteer, axe-puppeteer, jest):
   1. `npm install puppeteer axe-puppeteer jest`
-  2. Start the PHP server and ensure the map is available at http://localhost:8000/web/views/map.php
+   2. Start the PHP server and ensure the map is available at http://127.0.0.1:8080/map.php
   3. `npx jest frontend/web/tests/test_map_accessibility.js`
 - This script checks:
   - No critical accessibility violations (axe-core)

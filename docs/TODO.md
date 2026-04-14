@@ -15,6 +15,7 @@ Optional stretch goals:
 
 ## Verification Snapshot (Latest)
 
+- Latest final Golby verification pass: connectivity preflight **PASS**, frontend build **PASS**, and demo journey **6/6 passed** (2026-04-14).
 - Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
 - S3-06 closeout command added: `npm run verify:evidence:s3` (passes when all required evidence files and links are present).
 
@@ -252,6 +253,14 @@ Maintain delivered features, harden security, and keep documentation and verific
 - [x] One-command backend verification workflow added and validated with `npm run verify:backend`.
 
 ### Stage 5 Session Entries (After Checklist)
+
+#### Stage 5: Final Golby Verification Pass, Safe Artifact Reversion, and Documentation Synchronization Session (2026-04-14)
+Summary:
+- Ran the final end-to-end Golby verification chain on live canonical local services.
+- Confirmed pre-demo connectivity preflight reached full PASS, web frontend build succeeded, and demo journey passed **6/6**.
+- Reverted generated runtime artifacts (`backend/riskradar.db`, pycache files, and evidence output churn) to keep review scope clean.
+- Confirmed transcript stage-heading uniqueness with duplicate-heading pass (`NO_DUPLICATE_STAGE_HEADINGS`).
+- Synchronized top-level progress-tracking documentation in chronological Stage 5 order.
 
 #### Stage 5: Connectivity Hardening Completion, Safe Artifact Isolation, and Documentation Synchronization Session (2026-04-13)
 Summary:

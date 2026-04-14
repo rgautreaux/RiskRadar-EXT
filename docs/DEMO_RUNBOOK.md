@@ -15,6 +15,7 @@
 - [ ] Demo database populated (`npm run demo:setup`)
 - [ ] Assistant assets built (`npm run build:web`)
 - [ ] Connectivity preflight passes (`npm run verify:connectivity`)
+- [ ] Connectivity preflight confirms readiness and map API wiring (includes guest-session bootstrap for login-gated map verification)
 - [ ] `.env` file configured with API settings (see [PROGRAM_EXECUTION.md](./PROGRAM_EXECUTION.md))
 - [ ] Modern web browser (Chrome, Firefox, Safari, Edge)
 - [ ] ~15 minutes of uninterrupted time

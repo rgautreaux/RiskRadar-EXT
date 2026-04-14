@@ -2,12 +2,37 @@
 
 ## Verification Snapshot (Latest)
 
+- Latest final Golby verification pass: connectivity preflight **PASS**, frontend build **PASS**, and demo journey **6/6 passed** on canonical local topology (2026-04-14).
 - Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
 - Latest connectivity preflight (`npm run verify:connectivity`): **PASS** for canonical base/prefix, backend root, readiness API, alerts API, forecast API, assistant user lookup, frontend index, frontend map API wiring, and CORS (2026-04-13).
 - Latest end-to-end demo journey: **6/6 passed** using split-origin local topology (`--base-url http://127.0.0.1:8080 --api-base-url http://127.0.0.1:8001`) (2026-04-13).
 - Widget/assistant feature-equivalence review completed and branding restoration validated with successful frontend build (`npm run build:web`) (2026-04-13).
 - SVG asset white-pixel removal completed for assistant icon transparency optimization (2026-04-13).
 - Historical 191/196 totals in session sections are preserved as point-in-time records from earlier runs.
+
+## Stage 5: Final Golby Verification Pass, Safe Artifact Reversion, and Documentation Synchronization Session (2026-04-14)
+
+### Implementation
+Completed a final Stage 5 verification and hygiene closeout by running the full Golby validation chain on live local services, reverting generated runtime artifacts, and synchronizing project documentation in chronological order.
+
+### Functionality
+- Confirmed canonical split-origin runtime behavior remains healthy for backend API (`127.0.0.1:8001`) and frontend PHP (`127.0.0.1:8080`).
+- Confirmed pre-demo connectivity checks still pass end-to-end, including map API wiring with guest-session setup and CORS.
+- Confirmed Golby assistant journey behavior remains stable with full **6/6** demo steps passing.
+- Reverted generated runtime artifacts (SQLite DB churn, pycache files, evidence snapshots/logs) so review scope remains intentional.
+
+### Execution
+- Started backend service and frontend service on canonical ports.
+- Ran `py backend/scripts/pre_demo_connectivity_check.py` to full PASS.
+- Ran `npm run build:web` successfully.
+- Ran `node frontend/web/tests/demo/demo_journey.js --base-url http://127.0.0.1:8080 --api-base-url http://127.0.0.1:8001` to **6/6 passed**.
+- Stopped temporary local services and restored generated artifacts.
+- Ran transcript duplicate-heading pass and confirmed `NO_DUPLICATE_STAGE_HEADINGS`.
+
+### Importance
+- Provides high-confidence final verification that Golby and wiring-critical paths remain operational.
+- Keeps repository history clean by excluding generated runtime/evidence churn from implementation review.
+- Maintains documentation governance by synchronizing progress, transcript, reflection, and authorship records.
 
 ## Stage 5: Connectivity Hardening Completion, Safe Artifact Isolation, and Documentation Synchronization Session (2026-04-13)
 
