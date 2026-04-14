@@ -253,6 +253,15 @@ Maintain delivered features, harden security, and keep documentation and verific
 
 ### Stage 5 Session Entries (After Checklist)
 
+#### Stage 5: Connectivity Hardening Completion, Safe Artifact Isolation, and Documentation Synchronization Session (2026-04-13)
+Summary:
+- Completed remaining connectivity/wiring hardening tasks and validated all Stage 5 reliability checks.
+- Confirmed readiness and schema-validation guardrails operate in runtime and preflight flows.
+- Updated map-wiring preflight to authenticate guest session before endpoint-marker validation to avoid login-page false negatives.
+- Re-ran `npm run verify:connectivity` to full PASS and re-ran demo journey to **6/6 passed**.
+- Performed safe artifact isolation using dedicated safety stashes so generated runtime/evidence files do not contaminate review scope.
+- Synchronized top-level documentation (README, STAGES, TODO, TRANSCRIPT, REFLECTION, AUTHORS, PROGRAM_EXECUTION, DEMO_RUNBOOK, USER_GUIDE).
+
 #### Stage 5: SVG Asset White-Pixel Removal and Documentation Synchronization Session (2026-04-13)
 Summary:
 - Removed white background pixel paths from `frontend/web/public/assets/icons/ai-assistant-reacting.svg` and `frontend/web/public/assets/golby-asset-ai-assistant-reacting-DRoynDD7.svg`.

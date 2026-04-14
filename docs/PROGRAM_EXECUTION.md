@@ -282,6 +282,23 @@ php -S 127.0.0.1:8080 -t frontend/web/public
 
 Navigate to <http://127.0.0.1:8080/login.php> in your browser.
 
+### 5.4a Run Connectivity Preflight (Recommended Before Demo/Manual QA)
+
+From the repository root:
+
+```bash
+npm run verify:connectivity
+```
+
+This preflight validates:
+- canonical frontend API base/prefix wiring
+- backend root and readiness endpoint (`/api/v1/health/ready`)
+- representative API routes (alerts/forecast/assistant probe)
+- frontend page reachability and map API wiring markers
+- CORS preflight for frontend origin
+
+Use this as the fail-fast gate before running demo automation.
+
 ### 5.5 Available pages
 
 | URL | Page | Description |

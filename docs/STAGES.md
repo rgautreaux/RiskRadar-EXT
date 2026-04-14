@@ -1,7 +1,30 @@
 ## Verification Snapshot (Latest)
 
 - Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
+- Latest connectivity preflight (`npm run verify:connectivity`): full PASS across backend/frontend/map/CORS checks (2026-04-13).
+- Latest end-to-end demo journey: **6/6 passed** on canonical local topology (2026-04-13).
 - Historical lower totals in older session entries are retained intentionally as time-stamped snapshots.
+
+## Stage 5: Connectivity Hardening Completion, Safe Artifact Isolation, and Documentation Synchronization Session (2026-04-13)
+
+### Implementation
+Completed the remaining Stage 5 wiring-hardening closeout work by finalizing readiness/schema guardrails, stabilizing map-wiring preflight behavior under login-gated frontend pages, and applying safe repository cleanup practices for generated artifacts.
+
+### Functionality
+- Verified startup schema validation and strict fail-fast behavior remain active.
+- Verified readiness endpoint integration in connectivity preflight and pre-demo checks.
+- Updated map API wiring validation flow to establish guest session first, preventing login-page false negatives.
+- Confirmed canonical split-origin demo flow remains stable with resilient assistant auth/session setup.
+
+### Verification Evidence
+- ✅ `npm run verify:connectivity` passed with all checks green (canonical base/prefix, backend root, readiness API, alerts API, forecast API, assistant user lookup, frontend index, frontend map API wiring, CORS preflight).
+- ✅ `node frontend/web/tests/demo/demo_journey.js --base-url http://127.0.0.1:8080 --api-base-url http://127.0.0.1:8001` passed **6/6**.
+- ✅ Transcript duplicate-heading pass reported `NO_DUPLICATE_STAGE_HEADINGS`.
+
+### Importance
+- Finalizes wiring reliability for demo/grading workflows.
+- Reduces false-negative operational checks and schema-drift surprises.
+- Keeps chronology/governance docs synchronized with verified runtime outcomes.
 
 ## Stage 5: SVG Asset White-Pixel Removal and Documentation Synchronization Session (2026-04-13)
 

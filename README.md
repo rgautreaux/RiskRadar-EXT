@@ -3,9 +3,33 @@
 ## Verification Snapshot (Latest)
 
 - Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
+- Latest connectivity preflight (`npm run verify:connectivity`): **PASS** for canonical base/prefix, backend root, readiness API, alerts API, forecast API, assistant user lookup, frontend index, frontend map API wiring, and CORS (2026-04-13).
+- Latest end-to-end demo journey: **6/6 passed** using split-origin local topology (`--base-url http://127.0.0.1:8080 --api-base-url http://127.0.0.1:8001`) (2026-04-13).
 - Widget/assistant feature-equivalence review completed and branding restoration validated with successful frontend build (`npm run build:web`) (2026-04-13).
 - SVG asset white-pixel removal completed for assistant icon transparency optimization (2026-04-13).
 - Historical 191/196 totals in session sections are preserved as point-in-time records from earlier runs.
+
+## Stage 5: Connectivity Hardening Completion, Safe Artifact Isolation, and Documentation Synchronization Session (2026-04-13)
+
+### Implementation
+Completed the remaining wiring-hardening closeout tasks, including startup schema fail-fast, readiness verification flow, map-wiring preflight reliability fixes, and safe cleanup of runtime artifacts for review-ready repository state.
+
+### Functionality
+- Confirmed strict schema validation and readiness behavior are active in backend startup/runtime.
+- Confirmed pre-demo connectivity checks validate canonical wiring, including map API markers after guest-session setup.
+- Confirmed demo journey auth/session resilience and assistant-path checks pass in full split-origin local execution.
+- Isolated runtime/evidence artifacts with safety stashes so intentional code/docs changes remain review-focused.
+
+### Execution
+- Ran `npm run verify:connectivity` to full PASS.
+- Ran `node frontend/web/tests/demo/demo_journey.js --base-url http://127.0.0.1:8080 --api-base-url http://127.0.0.1:8001` to **6/6 passed**.
+- Performed transcript duplicate-heading pass and confirmed no duplicate Stage-session headings.
+- Synchronized top-level documentation set (README, STAGES, TODO, TRANSCRIPT, REFLECTION, AUTHORS, PROGRAM_EXECUTION, DEMO_RUNBOOK, USER_GUIDE).
+
+### Importance
+- Closes the remaining frontend-backend wiring reliability gaps before demos.
+- Improves fail-fast behavior for schema drift and readiness regressions.
+- Keeps repository history and operational guidance aligned with verified runtime behavior.
 
 ## Stage 5: Golby Feature Verification and RiskRadar Branding Restoration Session (2026-04-13)
 

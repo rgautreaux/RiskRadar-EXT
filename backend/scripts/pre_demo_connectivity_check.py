@@ -18,8 +18,8 @@ from __future__ import annotations
 import argparse
 import http.cookiejar
 import json
-import re
 import subprocess
+from html.parser import HTMLParser
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
@@ -65,10 +65,22 @@ def _http_request(url: str, timeout: float, method: str = "GET", headers: dict[s
 
 
 def _extract_csrf_token(html: str) -> str | None:
-    match = re.search(r'name=["\']csrf_token["\']\s+value=["\']([^"\']+)["\']', html)
-    if match:
-        return match.group(1)
-    return None
+    class _CsrfTokenParser(HTMLParser):
+        def __init__(self) -> None:
+            super().__init__()
+            self.token: str | None = None
+
+        def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+            if self.token is not None or tag.lower() != "input":
+                return
+
+            attr_map = {key.lower(): (value or "") for key, value in attrs}
+            if attr_map.get("name") == "csrf_token" and attr_map.get("value"):
+                self.token = attr_map["value"]
+
+    parser = _CsrfTokenParser()
+    parser.feed(html)
+    return parser.token
 
 
 def _fetch_frontend_map_with_guest(frontend_origin: str, timeout: float) -> tuple[bool, str]:
@@ -162,7 +174,7 @@ def _check_assistant_user_lookup(base_url: str, api_prefix: str, timeout: float)
             body = response.read().decode("utf-8", errors="replace")
     except HTTPError as error:
         status = error.code
-        body = error.read().decode("utf-8", errors="replace") if error.fp is not None else ""
+        body = error.read().decode("utf-8", errors="replace")
     except (URLError, TimeoutError, OSError) as error:
         reason = getattr(error, "reason", str(error))
         return CheckResult(
@@ -291,7 +303,7 @@ def run_preflight(enforce_canonical: bool, timeout_seconds: float) -> int:
     # Frontend pages should render and map page should include API endpoints.
     for label, page_url in (("frontend index", DEFAULT_FRONTEND_URL), ("frontend map", DEFAULT_MAP_URL)):
         try:
-            status, body, _ = _http_request(page_url, timeout=timeout_seconds)
+            status, _page_body, _ = _http_request(page_url, timeout=timeout_seconds)
         except HTTPError as error:
             results.append(CheckResult(name=label, ok=False, details=f"HTTP {error.code} from {page_url}"))
             continue

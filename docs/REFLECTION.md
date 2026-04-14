@@ -2,6 +2,23 @@
 
 ## Session Reflections
 
+# Stage 5: Connectivity Hardening Completion, Safe Option Selection, and Documentation Synchronization Session (2026-04-13)
+Summary:
+- Completed the remaining Stage 5 connectivity hardening tasks and verified both gates: connectivity preflight and end-to-end demo journey.
+- Resolved verification-time issues that surfaced during real execution (frontend document-root mismatch and login-gated map preflight false negatives).
+- Applied safe cleanup via artifact isolation stashes so generated runtime/evidence outputs do not obscure review intent.
+- Synchronized the requested documentation set in chronological Stage 5 order, including transcript/reflection/authorship updates.
+
+Why this was done:
+- To fully close unresolved wiring reliability concerns before demos and grading workflows.
+- To ensure verification tooling reflects real application access control behavior instead of producing false negatives.
+- To preserve a clean, review-friendly repository state while retaining historical accuracy in project documentation.
+
+How this improved the project:
+- Connectivity validation is now more robust and representative of actual runtime conditions.
+- Demo reliability confidence increased through repeated full-pass verification.
+- Project governance quality improved by keeping all major tracking/history docs synchronized and chronologically accurate.
+
 # Stage 5: Backend One-Command Validation Script and Workflow Sync Session (2026-04-13)
 Summary:
 - Added `npm run backend:check` as a one-command validation gate for backend development flow.
@@ -107,6 +124,7 @@ How this improved the project:
 
 ## Transcript Entry Summary Coverage (Chronological Snapshot)
 
+0. Stage 5: Connectivity Hardening Completion, Safe Option Selection, and Documentation Synchronization Session (2026-04-13): Completed remaining wiring-hardening implementation, verified connectivity + demo passes, applied safe artifact isolation, and synchronized documentation.
 1. Stage 5: SVG Asset White-Pixel Removal and Documentation Synchronization Session (2026-04-13): Removed white background pixel paths from assistant-reacting SVG assets and synchronized top-level docs.
 2. Stage 5: Golby Feature Verification and RiskRadar Branding Restoration Session (2026-04-13): Verified widget/assistant feature parity and restored globe mascot branding with rebuilt facial overlays.
 3. Stage 5 Golby Chat Interface Visibility Enhancement and Auto-Open Wiring Session (2026-04-12): Fixed chat interface visibility blockers (route detection + facial expressions) and implemented auto-open wiring.
