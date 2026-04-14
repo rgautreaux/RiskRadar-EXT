@@ -12,25 +12,58 @@
 # Error details
 
 ```
-Test timeout of 60000ms exceeded while running "beforeEach" hook.
-```
+Error: expect(page).toHaveURL(expected) failed
 
-```
-Error: page.fill: Test timeout of 60000ms exceeded.
+Expected pattern: /index\.php/
+Received string:  "http://localhost:8080/login.php"
+Timeout: 5000ms
+
 Call log:
-  - waiting for locator('input[name="email"]')
+  - Expect "toHaveURL" with timeout 5000ms
+    9 × unexpected value "http://localhost:8080/login.php"
 
 ```
 
 # Page snapshot
 
 ```yaml
-- generic [active] [ref=e1]:
-  - heading "Not Found" [level=1] [ref=e2]
-  - paragraph [ref=e3]:
-    - text: The requested resource
-    - code [ref=e4]: /login.php
-    - text: was not found on this server.
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - paragraph [ref=e5]: CMPS 357 Web Extension
+      - link "RiskRadar Web" [ref=e6] [cursor=pointer]:
+        - /url: index.php
+    - navigation "Primary navigation" [ref=e7]:
+      - link "Login Icon Login" [ref=e8] [cursor=pointer]:
+        - /url: login.php
+        - img "Login Icon" [ref=e9]
+        - text: Login
+      - link "Register Icon Sign Up" [ref=e10] [cursor=pointer]:
+        - /url: register.php
+        - img "Register Icon" [ref=e11]
+        - text: Sign Up
+  - main [ref=e12]:
+    - article [ref=e14]:
+      - generic [ref=e16]:
+        - paragraph [ref=e17]: Account access
+        - heading "Sign in to RiskRadar" [level=1] [ref=e18]
+      - paragraph [ref=e20]: Login failed. Please verify the backend is running and try again.
+      - generic [ref=e21]:
+        - generic [ref=e22]:
+          - generic [ref=e23]: Email
+          - textbox "Email" [ref=e24]: demo_low@riskradar.local
+        - generic [ref=e25]:
+          - generic [ref=e26]: Password
+          - textbox "Password" [ref=e27]
+        - generic [ref=e28]:
+          - generic [ref=e29]: ZIP code (optional)
+          - textbox "ZIP code (optional)" [ref=e30]
+        - button "Sign in" [ref=e31] [cursor=pointer]
+      - button "Continue as Guest" [ref=e33] [cursor=pointer]
+      - paragraph [ref=e34]:
+        - text: Don’t have an account?
+        - link "Create one" [ref=e35] [cursor=pointer]:
+          - /url: register.php
 ```
 
 # Test source
@@ -80,11 +113,11 @@ Call log:
   42 |   test.beforeEach(async ({ page }) => {
   43 |     // Log in as a seeded demo user
   44 |     await page.goto(`${BASE_URL}/login.php`);
-> 45 |     await page.fill('input[name="email"]', 'demo_low@riskradar.local');
-     |                ^ Error: page.fill: Test timeout of 60000ms exceeded.
+  45 |     await page.fill('input[name="email"]', 'demo_low@riskradar.local');
   46 |     await page.fill('input[name="password"]', 'DemoLow123!');
   47 |     await page.click('button[type="submit"]');
-  48 |     await expect(page).toHaveURL(/index\.php/);
+> 48 |     await expect(page).toHaveURL(/index\.php/);
+     |                        ^ Error: expect(page).toHaveURL(expected) failed
   49 |   });
   50 | 
   51 |   test('User can access risk page', async ({ page }) => {
