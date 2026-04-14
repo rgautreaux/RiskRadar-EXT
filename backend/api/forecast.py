@@ -313,7 +313,6 @@ def get_forecast(
     lon: Optional[float] = Query(None, description="Longitude for location-based forecast"),
     location: Optional[str] = Query(None, description="Location string (ZIP or City, State)"),
     hours: int = Query(48, ge=1, le=72, description="Forecast window in hours (default 48)"),
-    _current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """Returns a risk forecast for the next 24-48 hours for a given location."""

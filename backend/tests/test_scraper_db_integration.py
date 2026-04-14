@@ -143,9 +143,9 @@ def test_scrapers_persist_alerts_and_logs_end_to_end(db_session):
     ]
 
     with (
-        patch("scrapers.base_scraper.SessionLocal", return_value=db_session),
+        patch("backend.scrapers.base_scraper.SessionLocal", return_value=db_session),
         patch("httpx.get", side_effect=_mocked_httpx_get),
-        patch("scrapers.generic_api_scraper.httpx.request", side_effect=_mocked_usgs_request),
+        patch("backend.scrapers.generic_api_scraper.httpx.request", side_effect=_mocked_usgs_request),
     ):
         for scraper in scrapers:
             scraper.run()
@@ -191,9 +191,9 @@ def test_scrapers_second_run_deduplicates_but_logs_again(db_session):
     ]
 
     with (
-        patch("scrapers.base_scraper.SessionLocal", return_value=db_session),
+        patch("backend.scrapers.base_scraper.SessionLocal", return_value=db_session),
         patch("httpx.get", side_effect=_mocked_httpx_get),
-        patch("scrapers.generic_api_scraper.httpx.request", side_effect=_mocked_usgs_request),
+        patch("backend.scrapers.generic_api_scraper.httpx.request", side_effect=_mocked_usgs_request),
     ):
         for scraper in scrapers:
             scraper.run()

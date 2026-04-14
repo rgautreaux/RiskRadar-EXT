@@ -468,7 +468,7 @@ class TestPrioritizedAlertsAPI:
 
     def test_prioritized_alerts_user_not_found(self, test_client):
         resp = test_client.get("/api/v1/alerts/prioritized/9999")
-        assert resp.status_code == 401
+        assert resp.status_code == 404
 
     def test_prioritized_alerts_with_data(self, test_client, db_session, sample_alerts):
         user, email = self._register_user(test_client, db_session)

@@ -7,10 +7,10 @@ from sqlalchemy.exc import IntegrityError
 
 from backend.auth.security import decrypt_email, hash_email, password_hash, verify_password
 from backend.db.models import Alert, Summary, SummaryAlertLink, User, UserAlertPreference, ScrapeLog
-from scripts.backfill_summary_alert_links import backfill_summary_alert_links
-from scripts.backfill_user_health_conditions import backfill_user_health_conditions
-from scripts.backfill_user_alert_preferences import backfill_user_alert_preferences
-from scripts.reconcile_summary_alert_links import reconcile_summary_alert_links
+from backend.scripts.backfill_summary_alert_links import backfill_summary_alert_links
+from backend.scripts.backfill_user_health_conditions import backfill_user_health_conditions
+from backend.scripts.backfill_user_alert_preferences import backfill_user_alert_preferences
+from backend.scripts.reconcile_summary_alert_links import reconcile_summary_alert_links
 from tests.conftest import NOW
 
 

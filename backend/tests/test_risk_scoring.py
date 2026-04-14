@@ -289,7 +289,7 @@ class TestRiskScoreAPI:
         # Login as the user
         resp = test_client.post(
             "/api/v1/auth/login",
-            json={"email": "riskuser@test.com", "password": "RiskPass123!"},
+            json={"email": "apiuser@test.com", "password": "pass"},
         )
         assert resp.status_code == 200
 
@@ -301,7 +301,29 @@ class TestRiskScoreAPI:
         assert "factors" in data
         assert len(data["factors"]) == 4
 
-    def test_risk_score_user_not_found(self, test_client):
+    def test_risk_score_user_not_found(self, test_client, db_session):
+        # Create and login as a valid user
+        from passlib.context import CryptContext
+        pwd = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
+        user = User(
+            display_name="API User",
+            email="apiuser@test.com",
+            password_hash=pwd.hash("pass"),
+            latitude=34.05,
+            longitude=-118.24,
+            created_at=NOW,
+            updated_at=NOW,
+        )
+        db_session.add(user)
+        db_session.commit()
+        db_session.refresh(user)
+
+        resp = test_client.post(
+            "/api/v1/auth/login",
+            json={"email": "apiuser@test.com", "password": "pass"},
+        )
+        assert resp.status_code == 200
+
         resp = test_client.get("/api/v1/risk/score/9999")
         assert resp.status_code == 404
 
@@ -372,6 +394,13 @@ class TestRiskScoreAPI:
             "password": "HealthPass123!",
         })
         user_id = resp.json()["id"]
+
+        # Login as the user
+        resp = test_client.post(
+            "/api/v1/auth/login",
+            json={"email": "health@test.com", "password": "HealthPass123!"},
+        )
+        assert resp.status_code == 200
 
         # Update with health conditions
         resp = test_client.put(f"/api/v1/users/{user_id}/preferences", json={
