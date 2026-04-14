@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     AIRNOW_API_KEY: str = ""
     OpenAQ_API_KEY: str = ""
     NASA_FIRMS_MAP_KEY: str = ""
+    OPENWEATHER_API_KEY: str = ""
 
     # Firecrawl API Key
     FIRECRAWL_API_KEY: str = ""

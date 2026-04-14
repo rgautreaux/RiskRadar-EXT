@@ -105,6 +105,14 @@ function rr_validate_registration(array $post): array
         $errors['password'] = 'Password must be at least 8 characters.';
     } elseif (strlen($data['password']) > 255) {
         $errors['password'] = 'Password must be 255 characters or fewer.';
+    } elseif (!preg_match('/[a-z]/', $data['password'])) {
+        $errors['password'] = 'Password must include a lowercase letter.';
+    } elseif (!preg_match('/[A-Z]/', $data['password'])) {
+        $errors['password'] = 'Password must include an uppercase letter.';
+    } elseif (!preg_match('/[0-9]/', $data['password'])) {
+        $errors['password'] = 'Password must include a number.';
+    } elseif (!preg_match('/[^a-zA-Z0-9]/', $data['password'])) {
+        $errors['password'] = 'Password must include a special character.';
     }
 
     if ($data['zip_code'] !== '' && !preg_match('/^\d{5}$/', $data['zip_code'])) {
