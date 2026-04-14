@@ -1,4 +1,3 @@
-
 <?php
 
 /*
@@ -17,6 +16,10 @@
 function rr_render_layout_start(string $title, string $activePage): void
 {
     $GLOBALS['rr_layout_active_page'] = $activePage;
+
+    $accessContext = function_exists('rr_access_context') ? rr_access_context() : 'anonymous';
+    $isAnonymous = $accessContext === 'anonymous';
+    $isGuest = $accessContext === 'guest';
 
     $apiBase = 'http://127.0.0.1:8001';
     $apiPrefix = '/api/v1';
@@ -53,8 +56,19 @@ function rr_render_layout_start(string $title, string $activePage): void
                 <div>
                     <p class="eyebrow">CMPS 357 Web Extension</p>
                     <a class="brand" href="index.php">RiskRadar Web</a>
+                    <?php if ($isGuest) : ?>
+                    <p class="eyebrow">Guest mode enabled</p>
+                    <?php endif; ?>
                 </div>
                 <nav class="topnav" aria-label="Primary navigation">
+                    <?php if ($isAnonymous) : ?>
+                    <a class="<?php echo $activePage === 'login' ? 'is-active' : ''; ?>" href="login.php">
+                        <img src="assets/icons/profile.svg" alt="Login Icon" class="nav-icon"> Login
+                    </a>
+                    <a class="<?php echo $activePage === 'register' ? 'is-active' : ''; ?>" href="register.php">
+                        <img src="assets/icons/profile.svg" alt="Register Icon" class="nav-icon"> Sign Up
+                    </a>
+                    <?php else : ?>
                     <a class="<?php echo $activePage === 'dashboard' ? 'is-active' : ''; ?>" href="index.php">
                         <img src="assets/icons/home-green.svg" alt="Dashboard Icon" class="nav-icon"> Dashboard
                     </a>
@@ -79,9 +93,10 @@ function rr_render_layout_start(string $title, string $activePage): void
                     <a class="<?php echo $activePage === 'assistant' ? 'is-active' : ''; ?>" href="assistant.php">
                         <img src="assets/icons/ai-assistant.svg" alt="Assistant Icon" class="nav-icon"> Assistant
                     </a>
-                    <a class="<?php echo $activePage === 'login' ? 'is-active' : ''; ?>" href="login.php">
-                        <img src="assets/icons/profile.svg" alt="Login Icon" class="nav-icon"> Login
+                    <a href="login.php">
+                        <img src="assets/icons/profile.svg" alt="Login Icon" class="nav-icon"><?php echo $isGuest ? ' Sign In' : ' Login'; ?>
                     </a>
+                    <?php endif; ?>
                 </nav>
             </header>
             <main class="page-shell">

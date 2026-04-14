@@ -2,6 +2,11 @@
 
 require_once __DIR__ . '/../services/bootstrap.php';
 
+if (rr_access_context() !== 'anonymous') {
+    header('Location: index.php');
+    exit;
+}
+
 $flash = rr_get_flash();
 $loginErrors = [];
 $loginForm = [
@@ -13,6 +18,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!rr_verify_csrf($_POST['csrf_token'] ?? null)) {
         rr_set_flash('warning', 'The form could not be verified. Refresh the page and try again.');
         header('Location: login.php');
+        exit;
+    }
+
+    $action = (string) ($_POST['action'] ?? 'login');
+
+    if ($action === 'guest') {
+        rr_set_guest_mode(true);
+        rr_set_flash('success', 'You are now exploring RiskRadar as a guest.');
+        header('Location: index.php');
         exit;
     }
 
@@ -30,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($sessionToken !== '') {
                 rr_set_session_cookie($sessionToken, $expiresAt);
                 rr_set_flash('success', 'Signed in successfully.');
-                header('Location: assistant.php');
+                header('Location: index.php');
                 exit;
             }
 
