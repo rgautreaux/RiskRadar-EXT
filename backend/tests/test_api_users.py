@@ -5,6 +5,14 @@ import json
 from auth.security import decrypt_email, hash_email, verify_password
 
 
+def _login(test_client, email: str, password: str = "password123"):
+    resp = test_client.post(
+        "/api/v1/auth/login",
+        json={"email": email, "password": password},
+    )
+    assert resp.status_code == 200
+
+
 
 class TestRegisterUser:
     def test_register_success(self, test_client):
@@ -109,6 +117,7 @@ class TestRegisterUser:
 
 class TestUpdatePreferences:
     def test_update_zip_code(self, test_client, sample_user):
+        _login(test_client, "test@example.com")
         resp = test_client.put(f"/api/v1/users/{sample_user.id}/preferences", json={
             "zip_code": "10001",
         })
@@ -118,6 +127,7 @@ class TestUpdatePreferences:
     def test_update_alert_types(self, test_client, db_session, sample_user):
         from db.models import UserAlertPreference
 
+        _login(test_client, "test@example.com")
         resp = test_client.put(f"/api/v1/users/{sample_user.id}/preferences", json={
             "alert_types": ["weather", "earthquake"],
         })
@@ -138,6 +148,7 @@ class TestUpdatePreferences:
         sample_user.alert_types = None
         db_session.commit()
 
+        _login(test_client, "test@example.com")
         resp = test_client.put(f"/api/v1/users/{sample_user.id}/preferences", json={"zip_code": "90002"})
         assert resp.status_code == 200
         alert_types = json.loads(resp.json()["alert_types"])
@@ -151,18 +162,22 @@ class TestUpdatePreferences:
         sample_user.health_conditions = None
         db_session.commit()
 
+        _login(test_client, "test@example.com")
         resp = test_client.put(f"/api/v1/users/{sample_user.id}/preferences", json={"zip_code": "90003"})
         assert resp.status_code == 200
         conditions = json.loads(resp.json()["health_conditions"])
         assert conditions == ["respiratory"]
 
-    def test_update_not_found(self, test_client):
+    def test_update_not_found(self, test_client, admin_user):
+        _ = admin_user
+        _login(test_client, "admin@example.com")
         resp = test_client.put("/api/v1/users/9999/preferences", json={
             "zip_code": "00000",
         })
         assert resp.status_code == 404
 
     def test_update_assistant_style_profile(self, test_client, sample_user):
+        _login(test_client, "test@example.com")
         resp = test_client.put(f"/api/v1/users/{sample_user.id}/preferences", json={
             "assistant_style_profile": {
                 "tone": {
@@ -186,3 +201,38 @@ class TestUpdatePreferences:
         })
         assert resp.status_code == 200
         assert '"warmth": 0.82' in resp.json()["assistant_style_profile"]
+
+    def test_update_preferences_requires_authentication(self, test_client, sample_user):
+        resp = test_client.put(
+            f"/api/v1/users/{sample_user.id}/preferences",
+            json={"zip_code": "94105"},
+        )
+        assert resp.status_code == 401
+
+    def test_update_preferences_forbids_non_owner(self, test_client, sample_user):
+        create_resp = test_client.post(
+            "/api/v1/users/register",
+            json={
+                "display_name": "Other User",
+                "email": "other-pref@test.com",
+                "password": "OtherUser123!",
+            },
+        )
+        assert create_resp.status_code == 200
+
+        _login(test_client, "other-pref@test.com", "OtherUser123!")
+        resp = test_client.put(
+            f"/api/v1/users/{sample_user.id}/preferences",
+            json={"zip_code": "10002"},
+        )
+        assert resp.status_code == 403
+
+    def test_update_preferences_allows_admin_for_other_user(self, test_client, sample_user, admin_user):
+        _ = sample_user
+        _ = admin_user
+        _login(test_client, "admin@example.com")
+        resp = test_client.put(
+            f"/api/v1/users/{sample_user.id}/preferences",
+            json={"zip_code": "10003"},
+        )
+        assert resp.status_code == 200

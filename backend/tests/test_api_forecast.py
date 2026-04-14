@@ -4,9 +4,19 @@ import json
 from datetime import datetime, timedelta, timezone
 
 
+def _login(test_client, email: str, password: str = "password123"):
+    resp = test_client.post(
+        "/api/v1/auth/login",
+        json={"email": email, "password": password},
+    )
+    assert resp.status_code == 200
+
+
 class TestForecastEndpoint:
-    def test_forecast_returns_points_and_summary(self, test_client, sample_alerts):
+    def test_forecast_returns_points_and_summary(self, test_client, sample_user, sample_alerts):
         assert sample_alerts
+        _ = sample_user
+        _login(test_client, "test@example.com")
         resp = test_client.get("/api/v1/forecast?location=Los Angeles")
         assert resp.status_code == 200
 
@@ -35,6 +45,7 @@ class TestForecastEndpoint:
         db_session.commit()
         db_session.refresh(sample_user)
 
+        _login(test_client, "test@example.com")
         resp = test_client.get(f"/api/v1/forecast/personalized/{sample_user.id}?location=Los Angeles")
         assert resp.status_code == 200
 
@@ -43,8 +54,9 @@ class TestForecastEndpoint:
         assert data["forecast_points"]
         assert data["risk_zones"]
 
-    def test_forecast_filters_mixed_timestamp_formats(self, test_client, db_session):
+    def test_forecast_filters_mixed_timestamp_formats(self, test_client, sample_user, db_session):
         from db.models import Alert
+        _ = sample_user
 
         now = datetime.now(timezone.utc)
         rows = [
@@ -109,9 +121,33 @@ class TestForecastEndpoint:
         db_session.add_all(rows)
         db_session.commit()
 
+        _login(test_client, "test@example.com")
         resp = test_client.get("/api/v1/forecast?location=Los Angeles")
         assert resp.status_code == 200
         data = resp.json()
 
         assert len(data["risk_zones"]) == 2
         assert data["forecast_points"]
+
+    def test_forecast_requires_authentication(self, test_client):
+        resp = test_client.get("/api/v1/forecast?location=Los Angeles")
+        assert resp.status_code == 401
+
+    def test_personalized_forecast_requires_authentication(self, test_client, sample_user):
+        resp = test_client.get(f"/api/v1/forecast/personalized/{sample_user.id}?location=Los Angeles")
+        assert resp.status_code == 401
+
+    def test_personalized_forecast_forbids_non_owner(self, test_client, sample_user):
+        create_resp = test_client.post(
+            "/api/v1/users/register",
+            json={
+                "display_name": "Other User",
+                "email": "other-forecast@test.com",
+                "password": "OtherUser123!",
+            },
+        )
+        assert create_resp.status_code == 200
+
+        _login(test_client, "other-forecast@test.com", "OtherUser123!")
+        resp = test_client.get(f"/api/v1/forecast/personalized/{sample_user.id}?location=Los Angeles")
+        assert resp.status_code == 403

@@ -47,3 +47,11 @@ def require_admin_user(current_user: User = Depends(get_current_user)) -> User:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required")
 
     return current_user
+
+
+def require_self_or_admin(user_id: int, current_user: User = Depends(get_current_user)) -> User:
+    """Allow access only to the account owner or an admin user."""
+    if current_user.id != user_id and not bool(current_user.is_admin):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
+
+    return current_user

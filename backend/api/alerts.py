@@ -1,8 +1,9 @@
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from datetime import datetime
+from auth.dependencies import require_self_or_admin
 from db.database import get_db
 from db.models import Alert, User
 from schemas.alert import AlertOut, AlertStats, PrioritizedAlertListOut, MapAlertListOut
@@ -81,6 +82,7 @@ def prioritized_alerts(
     user_id: int,
     radius_km: float = Query(default=150.0, ge=1.0, le=500.0),
     limit: int = Query(default=50, ge=1, le=200),
+    _current_user: User = Depends(require_self_or_admin),
     db: Session = Depends(get_db),
 ):
     """Return alerts ranked by personalized priority for the given user.

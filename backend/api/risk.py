@@ -2,6 +2,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from datetime import datetime
+from auth.dependencies import require_self_or_admin
 from db.database import get_db
 from db.models import Alert, User
 from schemas.risk_score import RiskScoreOut, MapRiskOverlayOut, MapRiskZone
@@ -72,6 +73,7 @@ def personalized_map_risk_overlay(
     user_id: int,
     region: str | None = None,
     # Removed unused argument 'bbox'
+    _current_user: User = Depends(require_self_or_admin),
     db: Session = Depends(get_db),
 ):
     """Return a map overlay with user-personalized risk scores for each alert location."""
@@ -114,6 +116,7 @@ def personalized_map_risk_overlay(
 def get_risk_score(
     user_id: int,
     radius_km: float = Query(default=150.0, ge=1.0, le=500.0),
+    _current_user: User = Depends(require_self_or_admin),
     db: Session = Depends(get_db),
 ):
     """Compute a personalized environmental risk score for the user."""

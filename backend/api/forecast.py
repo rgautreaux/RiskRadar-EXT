@@ -1,12 +1,13 @@
 from collections import Counter
 from datetime import datetime, timedelta, timezone
 from math import atan2, cos, radians, sin, sqrt
-from typing import Any, Optional
+from typing import Optional
 
 import json
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
+from auth.dependencies import get_current_user, require_self_or_admin
 from db.database import get_db
 from db.models import Alert, User
 from schemas.risk_score import ForecastPoint, MapRiskOverlayOut, MapRiskZone
@@ -291,6 +292,7 @@ def get_personalized_forecast(
     lon: Optional[float] = Query(None, description="Longitude for location-based forecast"),
     location: Optional[str] = Query(None, description="Location string (ZIP or City, State)"),
     hours: int = Query(48, ge=1, le=72, description="Forecast window in hours (default 48)"),
+    _current_user: User = Depends(require_self_or_admin),
     db: Session = Depends(get_db),
 ):
     """Returns a personalized risk forecast for the next 24-48 hours for a given user and location."""
@@ -308,6 +310,7 @@ def get_forecast(
     lon: Optional[float] = Query(None, description="Longitude for location-based forecast"),
     location: Optional[str] = Query(None, description="Location string (ZIP or City, State)"),
     hours: int = Query(48, ge=1, le=72, description="Forecast window in hours (default 48)"),
+    _current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """Returns a risk forecast for the next 24-48 hours for a given location."""
