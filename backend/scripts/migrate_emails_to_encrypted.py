@@ -12,7 +12,7 @@ if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
 from auth.security import decrypt_email, encrypt_email, hash_email, is_encrypted_email, normalize_email  # noqa: E402
-from db.database import SessionLocal  # noqa: E402
+from backend.db.database import SessionLocal  # noqa: E402
 
 
 LOGGER = logging.getLogger("riskradar.email_migration")

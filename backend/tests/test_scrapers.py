@@ -291,14 +291,14 @@ class TestBaseScraperRun:
             scraper.run()  # first run: 2 new
             scraper.run()  # second run: 0 new (dedup)
 
-        from db.models import Alert
+        from backend.db.models import Alert
         alerts = db_session.query(Alert).filter(Alert.source == "fake").all()
         assert len(alerts) == 2
 
     def test_run_creates_scrape_log(self, db_session):
         """Each run should create a ScrapeLog entry."""
         from scrapers.base_scraper import BaseScraper
-        from db.models import ScrapeLog
+        from backend.db.models import ScrapeLog
 
         class EmptyScraper(BaseScraper):
             source_name = "empty"

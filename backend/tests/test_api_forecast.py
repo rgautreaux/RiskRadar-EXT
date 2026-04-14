@@ -55,7 +55,7 @@ class TestForecastEndpoint:
         assert data["risk_zones"]
 
     def test_forecast_filters_mixed_timestamp_formats(self, test_client, sample_user, db_session):
-        from db.models import Alert
+        from backend.db.models import Alert
         _ = sample_user
 
         now = datetime.now(timezone.utc)

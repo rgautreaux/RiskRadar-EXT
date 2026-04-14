@@ -47,7 +47,7 @@ def main(argv: list[str] | None = None) -> int:
 
     # --- Step 1: Initialize database ---
     logger.info("=== Step 1: Initializing database ===")
-    from db.init_db import init_database
+    from backend.db.init_db import init_database
 
     init_database()
     logger.info("Database initialized.\n")
@@ -87,8 +87,8 @@ def main(argv: list[str] | None = None) -> int:
 
     # --- Step 3: Check what we scraped ---
     logger.info("=== Step 3: Checking scraped alerts ===")
-    from db.database import SessionLocal
-    from db.models import Alert
+    from backend.db.database import SessionLocal
+    from backend.db.models import Alert
 
     db = SessionLocal()
     try:

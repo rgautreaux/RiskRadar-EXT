@@ -51,7 +51,7 @@ def test_client(db_session):
     so tests run isolated and fast.
     """
     from fastapi.middleware.cors import CORSMiddleware
-    from api.router import api_router
+    from backend.api.router import api_router
 
     # Build a clean app without the lifespan that starts the scheduler
     test_app = FastAPI(title="RiskRadar API Test")

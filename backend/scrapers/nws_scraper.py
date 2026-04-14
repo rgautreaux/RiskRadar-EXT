@@ -8,7 +8,7 @@ import json
 import httpx
 
 from backend.config.settings import settings
-from scrapers.base_scraper import BaseScraper
+from backend.scrapers.base_scraper import BaseScraper
 
 SEVERITY_MAP = {
     "Extreme": "critical",

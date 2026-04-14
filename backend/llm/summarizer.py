@@ -7,7 +7,7 @@ from datetime import date, datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 
 from backend.config.settings import settings
-from db.models import Alert, Summary, SummaryAlertLink
+from backend.db.models import Alert, Summary, SummaryAlertLink
 from llm.prompts import DAILY_DIGEST_SYSTEM, DAILY_DIGEST_USER, BREAKING_SYSTEM, BREAKING_USER
 
 logger = logging.getLogger(__name__)

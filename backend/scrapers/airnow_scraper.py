@@ -8,7 +8,7 @@ import json
 import httpx
 
 from backend.config.settings import settings
-from scrapers.base_scraper import BaseScraper
+from backend.scrapers.base_scraper import BaseScraper
 
 
 def _aqi_to_severity(aqi: int) -> str:

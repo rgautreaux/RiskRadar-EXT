@@ -6,7 +6,7 @@ import pytest
 from datetime import datetime, timezone
 
 from backend.db.models import Alert, User
-from scoring import (
+from backend.scoring import (
     compute_risk_score,
     haversine_km,
     _proximity_score,

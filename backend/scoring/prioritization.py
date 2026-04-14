@@ -25,8 +25,8 @@ from datetime import datetime, timezone
 
 from sqlalchemy.orm import Session
 
-from db.models import Alert, User
-from scoring import (
+from backend.db.models import Alert, User
+from backend.scoring import (
     haversine_km,
     CONDITION_ALERT_MAP,
     MAX_RADIUS_KM,

@@ -4,7 +4,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, EmailStr
 
-from schemas.user import UserOut
+from backend.schemas.user import UserOut
 
 
 class AuthLoginRequest(BaseModel):
