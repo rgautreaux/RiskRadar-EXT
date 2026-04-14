@@ -47,7 +47,7 @@
                 <p class="eyebrow">Overview module</p>
                 <h2>Top alerts now</h2>
             </div>
-            <a href="alerts.php">Open alerts list</a>
+            <a class="content-action" href="alerts.php">Open alerts list</a>
         </div>
 
         <?php if (!$alertsResult['data']) : ?>
@@ -77,7 +77,7 @@
                 <p class="eyebrow">Summary module</p>
                 <h2>Latest generated summary</h2>
             </div>
-            <a href="summaries.php">Browse summaries</a>
+            <a class="content-action" href="summaries.php">Browse summaries</a>
         </div>
 
         <?php if (!$latestSummaryResult['data']) : ?>

@@ -7,7 +7,7 @@ from datetime import date, datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 
 from config.settings import settings
-from db.models import Alert, Summary
+from db.models import Alert, Summary, SummaryAlertLink
 from llm.prompts import DAILY_DIGEST_SYSTEM, DAILY_DIGEST_USER, BREAKING_SYSTEM, BREAKING_USER
 
 logger = logging.getLogger(__name__)
@@ -93,9 +93,16 @@ class Summarizer:
             token_count=tokens,
         )
         db.add(summary)
+        db.flush()
+        db.add_all(
+            [
+                SummaryAlertLink(summary_id=summary.id, alert_id=alert.id)
+                for alert in alerts
+            ]
+        )
         db.commit()
         db.refresh(summary)
-        logger.info(f"Daily digest generated: {len(alerts)} alerts, {tokens} tokens")
+        logger.info("Daily digest generated: %s alerts, %s tokens", len(alerts), tokens)
         return summary
 
     def generate_breaking_summary(self, alert: Alert) -> str:

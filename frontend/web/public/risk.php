@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '/../services/bootstrap.php';
 
+rr_require_feature_access();
+
 $userId = rr_read_query_int('user_id', 0, 0, 999999);
 $radiusKm = rr_read_query_int('radius_km', 150, 1, 500);
 

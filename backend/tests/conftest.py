@@ -14,6 +14,7 @@ from fastapi.testclient import TestClient
 
 from db.database import Base, get_db
 from db.models import Alert, Summary, User, ScrapeLog
+from config.settings import settings
 
 
 # ---------------------------------------------------------------------------
@@ -54,11 +55,17 @@ def test_client(db_session):
 
     # Build a clean app without the lifespan that starts the scheduler
     test_app = FastAPI(title="RiskRadar API Test")
+    allowed_origins = [
+        origin.strip()
+        for origin in settings.CORS_ALLOWED_ORIGINS.split(",")
+        if origin.strip()
+    ]
     test_app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
+        allow_origins=allowed_origins,
         allow_methods=["*"],
         allow_headers=["*"],
+        allow_credentials=True,
     )
     test_app.include_router(api_router)
 
@@ -153,6 +160,27 @@ def sample_user(db_session):
         display_name="Test User",
         email="test@example.com",
         password_hash=_pwd_context.hash("password123"),
+        is_admin=False,
+        zip_code="90001",
+        created_at=NOW,
+        updated_at=NOW,
+    )
+    db_session.add(user)
+    db_session.commit()
+    db_session.refresh(user)
+    return user
+
+
+@pytest.fixture
+def admin_user(db_session):
+    from passlib.context import CryptContext
+
+    _pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
+    user = User(
+        display_name="Admin User",
+        email="admin@example.com",
+        password_hash=_pwd_context.hash("password123"),
+        is_admin=True,
         zip_code="90001",
         created_at=NOW,
         updated_at=NOW,

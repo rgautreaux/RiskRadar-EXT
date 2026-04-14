@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '/../services/bootstrap.php';
 
+rr_require_feature_access();
+
 $statsResult = rr_fetch_alert_stats($config);
 $alertsResult = rr_fetch_alerts($config, ['limit' => 5, 'offset' => 0]);
 $latestSummaryResult = rr_fetch_latest_summary($config);

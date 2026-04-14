@@ -17,6 +17,18 @@ from scrapers.firms_scraper import FIRMSScraper
 
 logger = logging.getLogger(__name__)
 
+
+def _get_config_value(name: str) -> str:
+    """Resolve config values from Settings first, then process env.
+
+    This keeps behavior consistent whether values come from .env (pydantic settings)
+    or shell-exported environment variables.
+    """
+    value = getattr(settings, name, "")
+    if isinstance(value, str) and value.strip():
+        return value.strip()
+    return os.environ.get(name, "").strip()
+
 # Legacy scrapers with custom Python logic.
 # These coexist alongside config-driven sources from sources.yaml.
 LEGACY_SCRAPERS: list[dict] = [
@@ -78,7 +90,7 @@ def load_all_scrapers() -> list[dict]:
     # 1) Legacy scrapers (the original four)
     for entry in LEGACY_SCRAPERS:
         if entry["requires_env"]:
-            if not os.environ.get(entry["requires_env"], ""):
+            if not _get_config_value(entry["requires_env"]):
                 logger.info(
                     f"Skipping legacy scraper '{entry['id']}': "
                     f"{entry['requires_env']} not set"
@@ -100,7 +112,7 @@ def load_all_scrapers() -> list[dict]:
             continue
         auth = api_cfg.get("auth", {})
         if auth.get("type", "none") != "none" and auth.get("env_var"):
-            if not os.environ.get(auth["env_var"], ""):
+            if not _get_config_value(auth["env_var"]):
                 logger.info(
                     f"Skipping API source '{api_cfg['name']}': "
                     f"{auth['env_var']} not set"

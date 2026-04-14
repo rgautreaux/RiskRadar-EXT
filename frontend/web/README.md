@@ -84,8 +84,8 @@ It started as the CMPS 357 Stage 1 web extension and now includes:
 	- Handles account creation with server-side validation and CSRF protection.
 	- Calls `POST users/register` and redirects to login on success.
 - `public/login.php` (Login UI)
-	- Implements validated, CSRF-protected login form scaffolding.
-	- Displays clear UX messaging that backend login/auth endpoint is not yet active.
+	- Implements validated, CSRF-protected login form.
+	- Supports three entry paths: sign in, create an account, or continue as guest.
 
 ### Stage 2 Kickoff (Connected to Planned Endpoints)
 
@@ -94,19 +94,27 @@ It started as the CMPS 357 Stage 1 web extension and now includes:
 	- Calls `GET alerts/prioritized` with `user_id` and `limit`.
 	- Renders score, derived risk level, and prioritized alert preview.
 
-### Stage 3/4 Scaffolds
+### Stage 3/4 Extensions
 
 - `public/map.php` (Stage 3 scaffold)
 	- Placeholder for interactive map/layer workflow.
-- `public/forecast.php` (Stage 4 scaffold)
-	- Placeholder for 24-48 hour forecast timeline and confidence visuals.
-- `public/assistant.php` (Stage 4 scaffold)
-	- Placeholder for natural-language risk assistant flow.
+- `public/forecast.php` (Stage 4 live integration)
+	- Live 24-48 hour forecast output with confidence/trend summary cards and timeline rendering.
+- `public/assistant.php` (Stage 4 assistant integration)
+	- Golby assistant interface with context-aware answers and safety guardrail fallbacks.
+	- Uses compiled frontend bundle artifacts built by `npm run build:web`.
 
 ### Error and Fallback Pages
 
 - `public/error.php` renders explicit error title/message with HTTP 500 behavior.
 - `public/404.php` renders a dedicated not-found page.
+
+### Access Control
+
+- `public/login.php` and `public/register.php` are anonymous entry pages.
+- Feature pages (dashboard, alerts, summaries, profile, risk, smart alerts, map, forecast, assistant) require either:
+	- an authenticated session cookie (`riskradar_session`), or
+	- guest-mode session state created from the Login page.
 
 ## How the Web App Works
 
@@ -162,6 +170,8 @@ The current web frontend reads/writes through the existing API prefix (`/api/v1`
 - `GET /summaries/latest`
 - `GET /summaries/{id}`
 - `POST /users/register`
+- `POST /auth/login`
+- `GET /auth/me`
 - `PUT /users/{id}/preferences`
 - `GET /users/{id}/risk-score` (Stage 2 kickoff integration)
 
@@ -183,7 +193,7 @@ Override options:
 
 Defaults:
 
-- Base URL: `http://127.0.0.1:8000`
+- Base URL: `http://127.0.0.1:8001`
 - API prefix: `/api/v1`
 - Timeout: `5.0` seconds
 
@@ -196,9 +206,54 @@ Defaults:
 php -S 127.0.0.1:8080 -t frontend/web/public
 ```
 
-3. Open `http://127.0.0.1:8080/index.php`.
+3. Build the Golby assistant frontend bundle from repository root:
 
-If backend port `8000` is unavailable, set `RISKRADAR_API_BASE_URL` (for example to `http://127.0.0.1:8001`) or use `config/config.local.php`.
+```powershell
+npm run build:web
+```
+
+For local rebuild-on-change during UI work:
+
+```powershell
+npm run build:web:watch
+```
+
+4. Open `http://127.0.0.1:8080/login.php`.
+
+If backend port `8001` is unavailable, set `RISKRADAR_API_BASE_URL` (for example to `http://127.0.0.1:8001`) or use `config/config.local.php`.
+
+## Troubleshooting Wiring Issues
+
+If the web app shows fallback messages like alerts/summaries unavailable, forecast failed, or map network error, walk through these checks in order:
+
+1. Confirm backend is running and reachable:
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:8001/
+Invoke-RestMethod http://127.0.0.1:8001/api/v1/alerts?limit=1
+```
+
+2. Confirm frontend API config points to the same backend origin:
+	- Set `RISKRADAR_API_BASE_URL` or create `config/config.local.php`.
+	- Keep `RISKRADAR_API_PREFIX` as `/api/v1` unless backend prefix is customized.
+
+3. Run frontend and backend on separate ports and inspect browser network requests:
+	- Frontend page origin can be `http://127.0.0.1:8080`.
+	- Forecast and map requests must still target backend origin (for example `http://127.0.0.1:8001/api/v1/...`).
+
+4. Distinguish wiring failures from true no-data cases:
+	- Wiring failure: request errors in browser network tab (status, CORS, DNS, refused connection).
+	- No-data case: request returns 200 but payload arrays are empty.
+
+5. CORS check for split-origin local setup:
+	- Ensure backend `CORS_ALLOWED_ORIGINS` includes frontend host/port values.
+	- Restart backend after changing environment values.
+
+6. If assistant/user API calls fail with HTTP 500 and backend logs show `no such column: users.is_admin`:
+	- This is local SQLite schema drift, not frontend wiring.
+	- Stop backend and rebuild the backend database using project fixtures:
+	  - `c:/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/.venv/Scripts/python.exe backend/demo/seed_demo_data.py --mode fresh --db-path backend/riskradar.db`
+	- Restart backend on `127.0.0.1:8001` and re-run `npm run verify:connectivity`.
 
 ## Security and Validation Notes
 
@@ -212,7 +267,8 @@ If backend port `8000` is unavailable, set `RISKRADAR_API_BASE_URL` (for example
 - Stage 1 web-app extension requirements: implemented and integrated.
 - Stage 2 kickoff web integration: implemented for risk and prioritization read paths.
 - Stage 3 interactive map: backend endpoints, API client, and frontend scaffold complete; dynamic Plotly rendering, overlays, and accessibility features in progress (see below).
-- Stage 4 forecast + assistant: scaffolded pages and UX placeholders.
+- Stage 4 forecast + assistant: forecast backend/live timeline and assistant backend prompt/data integration are implemented and verified.
+- Assistant frontend runtime now uses compiled Golby bundle assets rather than raw source imports.
 
 ## Related Docs
 
@@ -238,12 +294,12 @@ If backend port `8000` is unavailable, set `RISKRADAR_API_BASE_URL` (for example
 - [ ] Update documentation and add screenshots/evidence
 
 ### Manual Verification Checklist
-- [ ] Map loads with overlays and toggles work
-- [ ] Personalized risk overlay is accessible and visually distinct
-- [ ] All controls are keyboard accessible and ARIA-labeled
-- [ ] Error/fallback states are user-friendly
-- [ ] Documentation and user guide are updated
-- [ ] Screenshots and recordings are collected for grading
+- [ ] Map loads with overlays and toggles work. Assigned: Max
+- [ ] Personalized risk overlay is accessible and visually distinct. Assigned: Max
+- [ ] All controls are keyboard accessible and ARIA-labeled. Assigned: Max
+- [ ] Error/fallback states are user-friendly. Assigned: Max
+- [ ] Documentation and user guide are updated with validation/signoff outcome. Assigned: Max
+- [ ] Screenshots and recordings are collected for grading. Assigned: Max
 
 ### How to Use the Map Feature
 1. Start backend and PHP server as usual (see above)
