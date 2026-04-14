@@ -14,7 +14,7 @@
 ```
 Error: expect(page).toHaveURL(expected) failed
 
-Expected pattern: /profile\.php/
+Expected pattern: /index\.php/
 Received string:  "http://localhost:8080/login.php"
 Timeout: 5000ms
 
@@ -51,7 +51,7 @@ Call log:
       - generic [ref=e21]:
         - generic [ref=e22]:
           - generic [ref=e23]: Email
-          - textbox "Email" [ref=e24]: testuser@example.com
+          - textbox "Email" [ref=e24]: demo_low@riskradar.local
         - generic [ref=e25]:
           - generic [ref=e26]: Password
           - textbox "Password" [ref=e27]
@@ -105,18 +105,18 @@ Call log:
   34 | 
   35 |   test('Guest is shown map overlay lockout', async ({ page }) => {
   36 |     await page.goto(`${BASE_URL}/map.php`);
-  37 |     await expect(page.locator('.warning-panel, .empty-state')).toContainText('Guest mode: Personalized map overlays and controls are only available to registered users');
+  37 |     await expect(page.locator('.warning-panel')).toContainText('Guest mode: Personalized map overlays and controls are only available to registered users');
   38 |   });
   39 | });
   40 | 
   41 | test.describe('Authenticated User Access', () => {
   42 |   test.beforeEach(async ({ page }) => {
-  43 |     // Log in as a test user (assumes a test user exists)
+  43 |     // Log in as a seeded demo user
   44 |     await page.goto(`${BASE_URL}/login.php`);
-  45 |     await page.fill('input[name="email"]', 'testuser@example.com');
-  46 |     await page.fill('input[name="password"]', 'testpassword');
+  45 |     await page.fill('input[name="email"]', 'demo_low@riskradar.local');
+  46 |     await page.fill('input[name="password"]', 'DemoLow123!');
   47 |     await page.click('button[type="submit"]');
-> 48 |     await expect(page).toHaveURL(/profile\.php/);
+> 48 |     await expect(page).toHaveURL(/index\.php/);
      |                        ^ Error: expect(page).toHaveURL(expected) failed
   49 |   });
   50 | 

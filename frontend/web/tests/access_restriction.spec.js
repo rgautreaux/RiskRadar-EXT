@@ -34,18 +34,18 @@ test.describe('Guest Access Restriction', () => {
 
   test('Guest is shown map overlay lockout', async ({ page }) => {
     await page.goto(`${BASE_URL}/map.php`);
-    await expect(page.locator('.warning-panel, .empty-state')).toContainText('Guest mode: Personalized map overlays and controls are only available to registered users');
+    await expect(page.locator('.warning-panel')).toContainText('Guest mode: Personalized map overlays and controls are only available to registered users');
   });
 });
 
 test.describe('Authenticated User Access', () => {
   test.beforeEach(async ({ page }) => {
-    // Log in as a test user (assumes a test user exists)
+    // Log in as a seeded demo user
     await page.goto(`${BASE_URL}/login.php`);
-    await page.fill('input[name="email"]', 'testuser@example.com');
-    await page.fill('input[name="password"]', 'testpassword');
+    await page.fill('input[name="email"]', 'demo_low@riskradar.local');
+    await page.fill('input[name="password"]', 'DemoLow123!');
     await page.click('button[type="submit"]');
-    await expect(page).toHaveURL(/profile\.php/);
+    await expect(page).toHaveURL(/index\.php/);
   });
 
   test('User can access risk page', async ({ page }) => {

@@ -7,9 +7,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.config.settings import settings
-from db.init_db import init_database
-from scrapers.scheduler import start_scheduler
-from api.router import api_router
+from backend.db.init_db import init_database
+from backend.scrapers.scheduler import start_scheduler
+from backend.api.router import api_router
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
 
