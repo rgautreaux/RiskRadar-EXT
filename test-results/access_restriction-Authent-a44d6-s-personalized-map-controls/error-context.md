@@ -27,43 +27,7 @@ Call log:
 # Page snapshot
 
 ```yaml
-- generic [ref=e2]:
-  - banner [ref=e3]:
-    - generic [ref=e4]:
-      - paragraph [ref=e5]: CMPS 357 Web Extension
-      - link "RiskRadar Web" [ref=e6] [cursor=pointer]:
-        - /url: index.php
-    - navigation "Primary navigation" [ref=e7]:
-      - link "Login Icon Login" [ref=e8] [cursor=pointer]:
-        - /url: login.php
-        - img "Login Icon" [ref=e9]
-        - text: Login
-      - link "Register Icon Sign Up" [ref=e10] [cursor=pointer]:
-        - /url: register.php
-        - img "Register Icon" [ref=e11]
-        - text: Sign Up
-  - main [ref=e12]:
-    - article [ref=e14]:
-      - generic [ref=e16]:
-        - paragraph [ref=e17]: Account access
-        - heading "Sign in to RiskRadar" [level=1] [ref=e18]
-      - paragraph [ref=e20]: Login failed. Please verify the backend is running and try again.
-      - generic [ref=e21]:
-        - generic [ref=e22]:
-          - generic [ref=e23]: Email
-          - textbox "Email" [ref=e24]: demo_low@riskradar.local
-        - generic [ref=e25]:
-          - generic [ref=e26]: Password
-          - textbox "Password" [ref=e27]
-        - generic [ref=e28]:
-          - generic [ref=e29]: ZIP code (optional)
-          - textbox "ZIP code (optional)" [ref=e30]
-        - button "Sign in" [ref=e31] [cursor=pointer]
-      - button "Continue as Guest" [ref=e33] [cursor=pointer]
-      - paragraph [ref=e34]:
-        - text: Don’t have an account?
-        - link "Create one" [ref=e35] [cursor=pointer]:
-          - /url: register.php
+- generic [active] [ref=e1]: "Fatal error: Uncaught Error: Call to undefined function curl_init() in C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\frontend\\web\\public\\login.php:50 Stack trace: #0 {main} thrown in C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\frontend\\web\\public\\login.php on line 50"
 ```
 
 # Test source

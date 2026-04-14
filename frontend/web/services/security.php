@@ -3,7 +3,42 @@
 function rr_is_authenticated(): bool
 {
     $sessionToken = $_COOKIE['riskradar_session'] ?? '';
-    return is_string($sessionToken) && $sessionToken !== '';
+    if (!is_string($sessionToken) || $sessionToken === '') {
+        if (isset($_GET['debug_auth'])) {
+            error_log('[rr_is_authenticated] No session token present');
+        }
+        return false;
+    }
+
+    // Validate session token with backend API using /auth/me and cookie
+    $config = $GLOBALS['config'] ?? null;
+    if (!is_array($config)) {
+        if (isset($_GET['debug_auth'])) {
+            error_log('[rr_is_authenticated] No config present');
+        }
+        return false;
+    }
+    $apiUrl = rtrim($config['api']['base_url'], '/') . $config['api']['prefix'] . '/auth/me';
+    $ch = curl_init($apiUrl);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPGET, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Accept: application/json',
+    ]);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+    curl_setopt($ch, CURLOPT_COOKIE, 'riskradar_session=' . $sessionToken);
+    $response = curl_exec($ch);
+    $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    if (isset($_GET['debug_auth'])) {
+        error_log('[rr_is_authenticated] Sent session token: ' . $sessionToken);
+        error_log('[rr_is_authenticated] Backend status: ' . $status);
+        error_log('[rr_is_authenticated] Backend response: ' . $response);
+    }
+    curl_close($ch);
+    if ($status === 200) {
+        return true;
+    }
+    return false;
 }
 
 function rr_is_guest_mode(): bool
@@ -90,14 +125,25 @@ function rr_get_flash(): ?array
 
 function rr_set_session_cookie(string $token, int $expiresAt): void
 {
+    // Force secure=false for localhost development
+    $isLocalhost = (
+        isset($_SERVER['HTTP_HOST']) && (
+            $_SERVER['HTTP_HOST'] === 'localhost' ||
+            strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false
+        )
+    );
+    $secure = !$isLocalhost && !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
     setcookie('riskradar_session', $token, [
         'expires' => $expiresAt,
         'path' => '/',
         'httponly' => true,
         'samesite' => 'Lax',
-        'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+        'secure' => $secure,
     ]);
-
+    // Debug: Log cookie set
+    if (isset($_GET['debug_cookie'])) {
+        error_log('Set-Cookie: riskradar_session=' . $token . '; expires=' . date('r', $expiresAt) . '; secure=' . ($secure ? 'true' : 'false'));
+    }
     rr_set_guest_mode(false);
 }
 
