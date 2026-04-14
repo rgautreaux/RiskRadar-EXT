@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from datetime import datetime, timezone
+from datetime import datetime
 from backend.auth.dependencies import require_account_owner_or_admin
 from backend.db.database import get_db
 from backend.db.models import Alert, User

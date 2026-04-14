@@ -8,7 +8,7 @@ import json
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
-from backend.auth.dependencies import get_current_user, require_account_owner_or_admin
+from backend.auth.dependencies import require_account_owner_or_admin
 from backend.db.database import get_db
 from backend.db.models import Alert, User
 from backend.schemas.risk_score import ForecastPoint, MapRiskOverlayOut, MapRiskZone

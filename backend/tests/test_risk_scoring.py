@@ -1,7 +1,6 @@
 """Tests for Stage 2 Step 1: Personal Risk Scoring Engine."""
 
 import json
-import math
 import pytest
 from datetime import datetime, timezone
 
@@ -68,7 +67,7 @@ class TestSeverityScore:
     def test_empty_returns_zero(self):
         assert _severity_score([]) == 0.0
 
-    def test_single_critical(self, db_session):
+    def test_single_critical(self):
         alert = Alert(
             source="test", alert_type="weather", severity="critical",
             title="t", fetched_at=NOW, created_at=NOW, updated_at=NOW,
@@ -76,7 +75,7 @@ class TestSeverityScore:
         score = _severity_score([alert])
         assert score == 100.0
 
-    def test_single_low(self, db_session):
+    def test_single_low(self):
         alert = Alert(
             source="test", alert_type="weather", severity="low",
             title="t", fetched_at=NOW, created_at=NOW, updated_at=NOW,
@@ -84,7 +83,7 @@ class TestSeverityScore:
         score = _severity_score([alert])
         assert score == 25.0
 
-    def test_mixed_severity_weighted(self, db_session):
+    def test_mixed_severity_weighted(self):
         alerts = [
             Alert(source="test", alert_type="weather", severity="critical",
                   title="t", fetched_at=NOW, created_at=NOW, updated_at=NOW),
@@ -232,7 +231,6 @@ class TestComputeRiskScore:
         assert result["user_id"] == user.id
 
     def test_health_conditions_amplify_score(self, db_session):
-        user_no_cond = self._make_user(db_session, conditions=[])
 
         # Need a different email for second user
         db_session.query(User).delete()
@@ -386,7 +384,7 @@ class TestRiskScoreAPI:
         data = resp.json()
         assert data["nearby_alert_count"] <= 1
 
-    def test_update_health_conditions(self, test_client, db_session):
+    def test_update_health_conditions(self, test_client):
         # Register user
         resp = test_client.post("/api/v1/users/register", json={
             "display_name": "Health User",

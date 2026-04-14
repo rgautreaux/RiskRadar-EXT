@@ -14,7 +14,10 @@ def require_account_owner_or_admin(user_id: int, request: Request, db: Session =
 
     user = require_account_user(request, db)
     # SQLAlchemy boolean columns require .is_(True) for correct evaluation
-    if user.id != user_id and not (getattr(user, "is_admin", False) is True or getattr(user, "is_admin", False) == True or (hasattr(user, "is_admin") and getattr(user, "is_admin").__class__.__name__ == 'InstrumentedAttribute' and getattr(user, "is_admin").is_(True))):
+    is_admin = getattr(user, "is_admin", False)
+    if hasattr(is_admin, "is_"):
+        is_admin = is_admin.is_(True)
+    if user.id != user_id and not is_admin:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     return user
 
@@ -66,7 +69,10 @@ def require_account_user(request: Request, db: Session = Depends(get_db)) -> Use
 
 
 def require_admin_user(current_user: User = Depends(get_current_user)) -> User:
-    if not (getattr(current_user, "is_admin", False) is True or getattr(current_user, "is_admin", False) == True or (hasattr(current_user, "is_admin") and getattr(current_user, "is_admin").__class__.__name__ == 'InstrumentedAttribute' and getattr(current_user, "is_admin").is_(True))):
+    is_admin = getattr(current_user, "is_admin", False)
+    if hasattr(is_admin, "is_"):
+        is_admin = is_admin.is_(True)
+    if not is_admin:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required")
 
     return current_user
@@ -74,7 +80,10 @@ def require_admin_user(current_user: User = Depends(get_current_user)) -> User:
 
 def require_self_or_admin(user_id: int, current_user: User = Depends(get_current_user)) -> User:
     """Allow access only to the account owner or an admin user."""
-    if current_user.id != user_id and not (getattr(current_user, "is_admin", False) is True or getattr(current_user, "is_admin", False) == True or (hasattr(current_user, "is_admin") and getattr(current_user, "is_admin").__class__.__name__ == 'InstrumentedAttribute' and getattr(current_user, "is_admin").is_(True))):
+    is_admin = getattr(current_user, "is_admin", False)
+    if hasattr(is_admin, "is_"):
+        is_admin = is_admin.is_(True)
+    if current_user.id != user_id and not is_admin:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
 
     return current_user

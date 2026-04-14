@@ -3,7 +3,6 @@
 import json
 import pytest
 from datetime import datetime, timezone
-from contextlib import asynccontextmanager
 from unittest.mock import patch
 
 from sqlalchemy import create_engine
@@ -80,7 +79,7 @@ def test_client(db_session):
         finally:
             pass
 
-    test_app.dependency_overrides[get_db] = _override_get_db
+    test_app.dependency_overrides[get_db] = lambda: db_session
     client = TestClient(test_app)
     yield client
     test_app.dependency_overrides.clear()

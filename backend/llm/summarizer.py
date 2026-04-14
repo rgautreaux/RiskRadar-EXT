@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from backend.config.settings import settings
 from backend.db.models import Alert, Summary, SummaryAlertLink
-from llm.prompts import DAILY_DIGEST_SYSTEM, DAILY_DIGEST_USER, BREAKING_SYSTEM, BREAKING_USER
+from backend.llm.prompts import DAILY_DIGEST_SYSTEM, DAILY_DIGEST_USER, BREAKING_SYSTEM, BREAKING_USER
 
 logger = logging.getLogger(__name__)
 

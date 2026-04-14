@@ -5,7 +5,6 @@ import logging
 from sqlalchemy import inspect, text
 
 from backend.db.database import engine, Base
-import backend.db.models  # noqa: F401 (import so models register)
 from backend.db.schema_validator import (
     SchemaValidationOutcome,
     build_required_schema_from_models,

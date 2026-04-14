@@ -2,7 +2,6 @@
 
 import json
 from backend.auth.security import hash_email
-import pytest
 from datetime import datetime, timezone, timedelta
 
 from backend.db.models import Alert, User
@@ -447,7 +446,7 @@ class TestPrioritizedAlertsAPI:
         return user, email
 
 
-    def test_prioritized_alerts_endpoint(self, test_client, db_session, sample_alerts):
+    def test_prioritized_alerts_endpoint(self, test_client, db_session):
         user, plain_email = self._register_user(test_client, db_session)
         # Custom login with debug output
         resp = test_client.post(
@@ -470,7 +469,7 @@ class TestPrioritizedAlertsAPI:
         resp = test_client.get("/api/v1/alerts/prioritized/9999")
         assert resp.status_code == 404
 
-    def test_prioritized_alerts_with_data(self, test_client, db_session, sample_alerts):
+    def test_prioritized_alerts_with_data(self, test_client, db_session):
         user, email = self._register_user(test_client, db_session)
 
         resp = test_client.post(
@@ -490,7 +489,7 @@ class TestPrioritizedAlertsAPI:
             assert "priority_factors" in alert
             assert alert["priority_level"] in ("low", "medium", "high")
 
-    def test_prioritized_alerts_ordered(self, test_client, db_session, sample_alerts):
+    def test_prioritized_alerts_ordered(self, test_client, db_session):
         user, email = self._register_user(test_client, db_session)
 
         resp = test_client.post(
@@ -503,7 +502,7 @@ class TestPrioritizedAlertsAPI:
         scores = [a["priority_score"] for a in data["alerts"]]
         assert scores == sorted(scores, reverse=True)
 
-    def test_prioritized_alerts_limit(self, test_client, db_session, sample_alerts):
+    def test_prioritized_alerts_limit(self, test_client, db_session):
         user, email = self._register_user(test_client, db_session)
 
         resp = test_client.post(
@@ -516,7 +515,7 @@ class TestPrioritizedAlertsAPI:
         data = resp.json()
         assert len(data["alerts"]) <= 1
 
-    def test_prioritized_alerts_radius(self, test_client, db_session, sample_alerts):
+    def test_prioritized_alerts_radius(self, test_client, db_session):
         user, email = self._register_user(test_client, db_session)
 
         resp = test_client.post(
@@ -532,7 +531,7 @@ class TestPrioritizedAlertsAPI:
 
         assert len(small_data["alerts"]) <= len(large_data["alerts"])
 
-    def test_prioritized_alerts_with_health_conditions(self, test_client, db_session, sample_alerts):
+    def test_prioritized_alerts_with_health_conditions(self, test_client, db_session):
         user, email = self._register_user(
             test_client, db_session,
             conditions=["respiratory"],
@@ -552,7 +551,7 @@ class TestPrioritizedAlertsAPI:
             factors = data["alerts"][0]["priority_factors"]
             assert "sensitivity" in factors
 
-    def test_no_location_returns_empty(self, test_client, db_session, sample_alerts):
+    def test_no_location_returns_empty(self, test_client, db_session):
         from passlib.context import CryptContext
         pwd = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
         user = User(

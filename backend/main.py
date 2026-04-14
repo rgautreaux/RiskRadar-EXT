@@ -24,7 +24,9 @@ async def lifespan(_app: FastAPI):
     scheduler.shutdown()
 
 
+
 app = FastAPI(title="RiskRadar API", version="1.0.0", lifespan=lifespan)
+
 
 _DEFAULT_LOCAL_ORIGINS = [
     "http://127.0.0.1:8080",
@@ -32,11 +34,11 @@ _DEFAULT_LOCAL_ORIGINS = [
 ]
 
 
+
 def _parse_allowed_origins(raw_origins: str) -> list[str]:
     origins = [origin.strip() for origin in raw_origins.split(",") if origin.strip()]
     if origins:
         return origins
-
     logging.getLogger(__name__).warning(
         "CORS_ALLOWED_ORIGINS was empty; falling back to default local development origins"
     )

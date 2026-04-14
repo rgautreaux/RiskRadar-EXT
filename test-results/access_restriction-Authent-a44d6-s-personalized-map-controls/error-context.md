@@ -6,8 +6,8 @@
 
 # Test info
 
-- Name: frontend\web\tests\access_restriction.spec.js >> Authenticated User Access >> User can access profile
-- Location: frontend\web\tests\access_restriction.spec.js:61:3
+- Name: access_restriction.spec.js >> Authenticated User Access >> User can access personalized map controls
+- Location: frontend\web\tests\access_restriction.spec.js:71:3
 
 # Error details
 
