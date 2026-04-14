@@ -14,7 +14,7 @@ from typing import Any
 
 import httpx
 
-from config.settings import settings
+from backend.config.settings import settings
 from scrapers.base_scraper import BaseScraper
 
 logger = logging.getLogger(__name__)

@@ -2,13 +2,13 @@
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from sqlalchemy import func
-from datetime import datetime
-from auth.dependencies import require_account_user
-from db.database import get_db
-from db.models import Alert, User
-from schemas.alert import AlertOut, AlertStats, PrioritizedAlertListOut, MapAlertListOut
-from scoring.prioritization import prioritize_alerts as build_prioritized_alerts
+from sqlalchemy import func as sa_func
+from datetime import datetime, timezone
+from backend.auth.dependencies import require_account_owner_or_admin
+from backend.db.database import get_db
+from backend.db.models import Alert, User
+from backend.schemas.alert import AlertOut, AlertStats, PrioritizedAlertListOut, MapAlertListOut
+from backend.scoring.prioritization import prioritize_alerts as build_prioritized_alerts
 
 router = APIRouter(prefix="/alerts", tags=["Alerts"])
 
@@ -44,10 +44,12 @@ def map_alerts(
             pass  # Ignore invalid bbox
     alerts = q.order_by(Alert.fetched_at.desc()).limit(500).all()
     region_val = region or "all"
+    # Convert Alert ORM objects to AlertOut Pydantic models
+    alert_outs = [AlertOut.model_validate(alert) for alert in alerts]
     return MapAlertListOut(
-        alerts=alerts,
+        alerts=alert_outs,
         region=region_val,
-        generated_at=datetime.utcnow().isoformat() + "Z",
+        generated_at=datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
     )
 
 
@@ -72,20 +74,21 @@ def list_alerts(
 
 @router.get("/stats", response_model=AlertStats)
 def alert_stats(db: Session = Depends(get_db)):
+    from sqlalchemy import func
     total = db.query(func.count(Alert.id)).scalar()
-    by_type = dict(db.query(Alert.alert_type, func.count(Alert.id)).group_by(Alert.alert_type).all())
-    by_severity = dict(db.query(Alert.severity, func.count(Alert.id)).group_by(Alert.severity).all())
+    by_type = {str(k): int(v) for k, v in db.query(Alert.alert_type, func.count(Alert.id)).group_by(Alert.alert_type).all()}
+    by_severity = {str(k): int(v) for k, v in db.query(Alert.severity, func.count(Alert.id)).group_by(Alert.severity).all()}
     return AlertStats(total=total or 0, by_type=by_type, by_severity=by_severity)
 
 
-from auth.dependencies import require_account_user
+
 
 @router.get("/prioritized/{user_id}", response_model=PrioritizedAlertListOut)
 def prioritized_alerts(
     user_id: int,
     radius_km: float = Query(default=150.0, ge=1.0, le=500.0),
     limit: int = Query(default=50, ge=1, le=200),
-    _current_user: User = Depends(lambda request=Depends(), db=Depends(get_db), user_id=user_id: require_self_or_admin(user_id, require_account_user(request, db))),
+    _current_user: User = Depends(require_account_owner_or_admin),
     db: Session = Depends(get_db),
 ):
     """Return alerts ranked by personalized priority for the given user.

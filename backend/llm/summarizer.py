@@ -6,7 +6,7 @@ from datetime import date, datetime, timedelta, timezone
 
 from sqlalchemy.orm import Session
 
-from config.settings import settings
+from backend.config.settings import settings
 from db.models import Alert, Summary, SummaryAlertLink
 from llm.prompts import DAILY_DIGEST_SYSTEM, DAILY_DIGEST_USER, BREAKING_SYSTEM, BREAKING_USER
 

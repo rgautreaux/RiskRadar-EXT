@@ -37,7 +37,7 @@ class TestAssistantRespond:
         assert "User not found" in resp.json()["detail"]
 
     def test_profile_shaped_help_response(self, test_client, sample_user, db_session):
-        from db.models import User
+        from backend.db.models import User
 
         user = db_session.query(User).filter(User.id == sample_user.id).first()
         profile = json.loads(user.assistant_style_profile)
@@ -55,7 +55,7 @@ class TestAssistantRespond:
         assert data["reply"].startswith("Absolutely.")
 
     def test_style_directive_persists_for_known_user(self, test_client, sample_user, db_session):
-        from db.models import User
+        from backend.db.models import User
 
         before = db_session.query(User).filter(User.id == sample_user.id).first()
         before_profile = json.loads(before.assistant_style_profile)
@@ -84,7 +84,7 @@ class TestAssistantRespond:
         assert "for this reply" in data["reply"].lower()
 
     def test_alert_filter_handles_mixed_timestamp_formats(self, test_client, db_session):
-        from db.models import Alert
+        from backend.db.models import Alert
 
         now = datetime.now(timezone.utc)
 

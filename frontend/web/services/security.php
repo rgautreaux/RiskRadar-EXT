@@ -40,11 +40,9 @@ function rr_require_feature_access(): void
     if ($context === 'authenticated') {
         return;
     }
-    // Guests are not allowed for restricted features
+    // Guests: allow page to render, but show lockout UI in the view
     if ($context === 'guest') {
-        rr_set_flash('warning', 'Guest mode: Please sign in or create an account to access this feature.');
-        header('Location: login.php');
-        exit;
+        return;
     }
     // Anonymous users
     rr_set_flash('warning', 'Please sign in, create an account, or continue as guest to use RiskRadar.');

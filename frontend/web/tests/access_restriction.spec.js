@@ -5,10 +5,17 @@ const BASE_URL = 'http://localhost:8080';
 // Helper: Go to a page and return guest lockout message selector
 async function expectGuestLockout(page, path, expectedText) {
   await page.goto(`${BASE_URL}${path}`);
-  await expect(page.locator('.warning-panel, .empty-state')).toContainText(expectedText);
+  await expect(page.locator('.warning-panel').first()).toContainText(expectedText);
 }
 
 test.describe('Guest Access Restriction', () => {
+  test.beforeEach(async ({ page }) => {
+    // Go to login and click "Continue as Guest" to set guest mode
+    await page.goto(`${BASE_URL}/login.php`);
+    await page.click('button[name="action"][value="guest"]');
+    // Should redirect to index.php, but session is now guest
+  });
+
   test('Guest is blocked from risk page', async ({ page }) => {
     await expectGuestLockout(page, '/risk.php', 'Guest mode: Personalized risk scoring is only available to registered users');
   });

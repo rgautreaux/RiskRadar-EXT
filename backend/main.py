@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from config.settings import settings
+from backend.config.settings import settings
 from db.init_db import init_database
 from scrapers.scheduler import start_scheduler
 from api.router import api_router

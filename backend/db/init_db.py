@@ -4,9 +4,9 @@ import logging
 
 from sqlalchemy import inspect, text
 
-from db.database import engine, Base
-import db.models  # noqa: F401 (import so models register)
-from db.schema_validator import (
+from backend.db.database import engine, Base
+import backend.db.models  # noqa: F401 (import so models register)
+from backend.db.schema_validator import (
     SchemaValidationOutcome,
     build_required_schema_from_models,
     validate_required_schema,

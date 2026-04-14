@@ -2,13 +2,13 @@
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from datetime import datetime
-from auth.dependencies import require_account_user
-from db.database import get_db
-from db.models import Alert, User
-from schemas.risk_score import RiskScoreOut, MapRiskOverlayOut, MapRiskZone
-from scoring import compute_risk_score
-from scrapers.registry import load_all_scrapers
+from datetime import datetime, timezone
+from backend.auth.dependencies import require_account_owner_or_admin
+from backend.db.database import get_db
+from backend.db.models import Alert, User
+from backend.schemas.risk_score import RiskScoreOut, MapRiskOverlayOut, MapRiskZone
+from backend.scoring import compute_risk_score
+from backend.scrapers.registry import load_all_scrapers
 
 router = APIRouter(prefix="/risk", tags=["Risk Scoring"])
 
@@ -69,13 +69,13 @@ def map_risk_overlay(
 
 
 # New: Personalized Map Risk Overlay Endpoint
-from auth.dependencies import require_account_user
+
 
 @router.get("/map/personalized/{user_id}", response_model=MapRiskOverlayOut)
 def personalized_map_risk_overlay(
     user_id: int,
     region: str | None = None,
-    _current_user: User = Depends(lambda request=Depends(), db=Depends(get_db), user_id=user_id: require_self_or_admin(user_id, require_account_user(request, db))),
+    _current_user: User = Depends(require_account_owner_or_admin),
     db: Session = Depends(get_db),
 ):
     """Return a map overlay with user-personalized risk scores for each alert location."""
@@ -119,7 +119,7 @@ def personalized_map_risk_overlay(
 def get_risk_score(
     user_id: int,
     radius_km: float = Query(default=150.0, ge=1.0, le=500.0),
-    _current_user: User = Depends(lambda request=Depends(), db=Depends(get_db), user_id=user_id: require_self_or_admin(user_id, require_account_user(request, db))),
+    _current_user: User = Depends(require_account_owner_or_admin),
     db: Session = Depends(get_db),
 ):
     """Compute a personalized environmental risk score for the user."""

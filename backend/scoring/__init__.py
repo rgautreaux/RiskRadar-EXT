@@ -19,7 +19,7 @@ from datetime import datetime, timezone
 
 from sqlalchemy.orm import Session
 
-from db.models import Alert, User
+from backend.db.models import Alert, User
 
 # ---------------------------------------------------------------------------
 # Constants

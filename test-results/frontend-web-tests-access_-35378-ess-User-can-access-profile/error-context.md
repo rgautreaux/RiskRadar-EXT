@@ -6,8 +6,8 @@
 
 # Test info
 
-- Name: frontend\web\tests\access_restriction.spec.js >> Authenticated User Access >> User can access smart alerts
-- Location: frontend\web\tests\access_restriction.spec.js:56:3
+- Name: frontend\web\tests\access_restriction.spec.js >> Authenticated User Access >> User can access profile
+- Location: frontend\web\tests\access_restriction.spec.js:61:3
 
 # Error details
 

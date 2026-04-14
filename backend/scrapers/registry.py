@@ -6,7 +6,7 @@ from pathlib import Path
 
 import yaml
 
-from config.settings import settings
+from backend.config.settings import settings
 from scrapers.base_scraper import BaseScraper
 from scrapers.generic_api_scraper import GenericAPIScraper
 from scrapers.web_scraper import WebScraper

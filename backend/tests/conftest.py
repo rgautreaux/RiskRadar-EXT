@@ -12,9 +12,9 @@ from sqlalchemy.pool import StaticPool
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from db.database import Base, get_db
-from db.models import Alert, Summary, User, ScrapeLog
-from config.settings import settings
+from backend.db.database import Base, get_db
+from backend.db.models import Alert, Summary, User, ScrapeLog
+from backend.config.settings import settings
 
 
 # ---------------------------------------------------------------------------

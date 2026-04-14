@@ -2,7 +2,7 @@
 
 import json
 
-from auth.security import decrypt_email, hash_email, verify_password
+from backend.auth.security import decrypt_email, hash_email, verify_password
 
 
 def _login(test_client, email: str, password: str = "password123"):
@@ -48,7 +48,7 @@ class TestRegisterUser:
         assert "Password must be at least" in resp.json()["detail"]
 
     def test_password_is_hashed(self, test_client, db_session):
-        from db.models import User
+        from backend.db.models import User
 
         test_client.post("/api/v1/users/register", json={
             "display_name": "Carol",
@@ -61,7 +61,7 @@ class TestRegisterUser:
         assert decrypt_email(user.email) == "carol@test.com"
 
     def test_email_normalized_to_lowercase(self, test_client, db_session):
-        from db.models import User
+        from backend.db.models import User
 
         resp = test_client.post("/api/v1/users/register", json={
             "display_name": "Dave",
@@ -99,7 +99,7 @@ class TestRegisterUser:
         assert "Email already registered" in resp.json()["detail"]
 
     def test_register_creates_default_alert_preference(self, test_client, db_session):
-        from db.models import User, UserAlertPreference
+        from backend.db.models import User, UserAlertPreference
 
         resp = test_client.post("/api/v1/users/register", json={
             "display_name": "DefaultPref",
@@ -125,7 +125,7 @@ class TestUpdatePreferences:
         assert resp.json()["zip_code"] == "10001"
 
     def test_update_alert_types(self, test_client, db_session, sample_user):
-        from db.models import UserAlertPreference
+        from backend.db.models import UserAlertPreference
 
         _login(test_client, "test@example.com")
         resp = test_client.put(f"/api/v1/users/{sample_user.id}/preferences", json={
@@ -141,7 +141,7 @@ class TestUpdatePreferences:
         assert [row.alert_type for row in rows] == ["earthquake", "weather"]
 
     def test_alert_types_fallbacks_to_relational_rows_when_json_missing(self, test_client, db_session, sample_user):
-        from db.models import UserAlertPreference
+        from backend.db.models import UserAlertPreference
 
         db_session.query(UserAlertPreference).filter(UserAlertPreference.user_id == sample_user.id).delete()
         db_session.add(UserAlertPreference(user_id=sample_user.id, alert_type="wildfire"))
@@ -155,7 +155,7 @@ class TestUpdatePreferences:
         assert alert_types == ["wildfire"]
 
     def test_health_conditions_fallbacks_to_relational_rows_when_json_missing(self, test_client, db_session, sample_user):
-        from db.models import UserHealthCondition
+        from backend.db.models import UserHealthCondition
 
         db_session.query(UserHealthCondition).filter(UserHealthCondition.user_id == sample_user.id).delete()
         db_session.add(UserHealthCondition(user_id=sample_user.id, condition_key="respiratory"))

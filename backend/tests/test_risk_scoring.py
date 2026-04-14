@@ -5,7 +5,7 @@ import math
 import pytest
 from datetime import datetime, timezone
 
-from db.models import Alert, User
+from backend.db.models import Alert, User
 from scoring import (
     compute_risk_score,
     haversine_km,

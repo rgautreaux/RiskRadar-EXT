@@ -7,30 +7,63 @@
 # Test info
 
 - Name: frontend\web\tests\access_restriction.spec.js >> Authenticated User Access >> User can access risk page
-- Location: frontend\web\tests\access_restriction.spec.js:44:3
+- Location: frontend\web\tests\access_restriction.spec.js:51:3
 
 # Error details
 
 ```
-Test timeout of 30000ms exceeded while running "beforeEach" hook.
-```
+Error: expect(page).toHaveURL(expected) failed
 
-```
-Error: page.fill: Test timeout of 30000ms exceeded.
+Expected pattern: /profile\.php/
+Received string:  "http://localhost:8080/login.php"
+Timeout: 5000ms
+
 Call log:
-  - waiting for locator('input[name="email"]')
+  - Expect "toHaveURL" with timeout 5000ms
+    9 × unexpected value "http://localhost:8080/login.php"
 
 ```
 
 # Page snapshot
 
 ```yaml
-- generic [active] [ref=e1]:
-  - heading "Not Found" [level=1] [ref=e2]
-  - paragraph [ref=e3]:
-    - text: The requested resource
-    - code [ref=e4]: /login.php
-    - text: was not found on this server.
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - paragraph [ref=e5]: CMPS 357 Web Extension
+      - link "RiskRadar Web" [ref=e6] [cursor=pointer]:
+        - /url: index.php
+    - navigation "Primary navigation" [ref=e7]:
+      - link "Login Icon Login" [ref=e8] [cursor=pointer]:
+        - /url: login.php
+        - img "Login Icon" [ref=e9]
+        - text: Login
+      - link "Register Icon Sign Up" [ref=e10] [cursor=pointer]:
+        - /url: register.php
+        - img "Register Icon" [ref=e11]
+        - text: Sign Up
+  - main [ref=e12]:
+    - article [ref=e14]:
+      - generic [ref=e16]:
+        - paragraph [ref=e17]: Account access
+        - heading "Sign in to RiskRadar" [level=1] [ref=e18]
+      - paragraph [ref=e20]: Login failed. Please verify the backend is running and try again.
+      - generic [ref=e21]:
+        - generic [ref=e22]:
+          - generic [ref=e23]: Email
+          - textbox "Email" [ref=e24]: testuser@example.com
+        - generic [ref=e25]:
+          - generic [ref=e26]: Password
+          - textbox "Password" [ref=e27]
+        - generic [ref=e28]:
+          - generic [ref=e29]: ZIP code (optional)
+          - textbox "ZIP code (optional)" [ref=e30]
+        - button "Sign in" [ref=e31] [cursor=pointer]
+      - button "Continue as Guest" [ref=e33] [cursor=pointer]
+      - paragraph [ref=e34]:
+        - text: Don’t have an account?
+        - link "Create one" [ref=e35] [cursor=pointer]:
+          - /url: register.php
 ```
 
 # Test source
@@ -43,67 +76,74 @@ Call log:
   5  | // Helper: Go to a page and return guest lockout message selector
   6  | async function expectGuestLockout(page, path, expectedText) {
   7  |   await page.goto(`${BASE_URL}${path}`);
-  8  |   await expect(page.locator('.warning-panel, .empty-state')).toContainText(expectedText);
+  8  |   await expect(page.locator('.warning-panel').first()).toContainText(expectedText);
   9  | }
   10 | 
   11 | test.describe('Guest Access Restriction', () => {
-  12 |   test('Guest is blocked from risk page', async ({ page }) => {
-  13 |     await expectGuestLockout(page, '/risk.php', 'Guest mode: Personalized risk scoring is only available to registered users');
-  14 |   });
-  15 | 
-  16 |   test('Guest is blocked from smart alerts', async ({ page }) => {
-  17 |     await expectGuestLockout(page, '/smart_alerts.php', 'Guest mode: Prioritized alerts are only available to registered users');
-  18 |   });
-  19 | 
-  20 |   test('Guest is blocked from profile', async ({ page }) => {
-  21 |     await expectGuestLockout(page, '/profile.php', 'Guest mode: Profile management is only available to registered users');
-  22 |   });
-  23 | 
-  24 |   test('Guest is blocked from forecast', async ({ page }) => {
-  25 |     await expectGuestLockout(page, '/forecast.php', 'Guest mode: Forecasting is only available to registered users');
-  26 |   });
-  27 | 
-  28 |   test('Guest is shown map overlay lockout', async ({ page }) => {
-  29 |     await page.goto(`${BASE_URL}/map.php`);
-  30 |     await expect(page.locator('.warning-panel, .empty-state')).toContainText('Guest mode: Personalized map overlays and controls are only available to registered users');
-  31 |   });
-  32 | });
-  33 | 
-  34 | test.describe('Authenticated User Access', () => {
-  35 |   test.beforeEach(async ({ page }) => {
-  36 |     // Log in as a test user (assumes a test user exists)
-  37 |     await page.goto(`${BASE_URL}/login.php`);
-> 38 |     await page.fill('input[name="email"]', 'testuser@example.com');
-     |                ^ Error: page.fill: Test timeout of 30000ms exceeded.
-  39 |     await page.fill('input[name="password"]', 'testpassword');
-  40 |     await page.click('button[type="submit"]');
-  41 |     await expect(page).toHaveURL(/profile\.php/);
-  42 |   });
-  43 | 
-  44 |   test('User can access risk page', async ({ page }) => {
-  45 |     await page.goto(`${BASE_URL}/risk.php`);
-  46 |     await expect(page.locator('.warning-panel, .empty-state')).not.toContainText('Guest mode');
-  47 |   });
-  48 | 
-  49 |   test('User can access smart alerts', async ({ page }) => {
-  50 |     await page.goto(`${BASE_URL}/smart_alerts.php`);
-  51 |     await expect(page.locator('.warning-panel, .empty-state')).not.toContainText('Guest mode');
-  52 |   });
-  53 | 
-  54 |   test('User can access profile', async ({ page }) => {
-  55 |     await page.goto(`${BASE_URL}/profile.php`);
-  56 |     await expect(page.locator('.warning-panel, .empty-state')).not.toContainText('Guest mode');
-  57 |   });
-  58 | 
-  59 |   test('User can access forecast', async ({ page }) => {
-  60 |     await page.goto(`${BASE_URL}/forecast.php`);
-  61 |     await expect(page.locator('.warning-panel, .empty-state')).not.toContainText('Guest mode');
-  62 |   });
-  63 | 
-  64 |   test('User can access personalized map controls', async ({ page }) => {
-  65 |     await page.goto(`${BASE_URL}/map.php`);
-  66 |     await expect(page.locator('.warning-panel, .empty-state')).not.toContainText('Guest mode');
-  67 |   });
-  68 | });
-  69 | 
+  12 |   test.beforeEach(async ({ page }) => {
+  13 |     // Go to login and click "Continue as Guest" to set guest mode
+  14 |     await page.goto(`${BASE_URL}/login.php`);
+  15 |     await page.click('button[name="action"][value="guest"]');
+  16 |     // Should redirect to index.php, but session is now guest
+  17 |   });
+  18 | 
+  19 |   test('Guest is blocked from risk page', async ({ page }) => {
+  20 |     await expectGuestLockout(page, '/risk.php', 'Guest mode: Personalized risk scoring is only available to registered users');
+  21 |   });
+  22 | 
+  23 |   test('Guest is blocked from smart alerts', async ({ page }) => {
+  24 |     await expectGuestLockout(page, '/smart_alerts.php', 'Guest mode: Prioritized alerts are only available to registered users');
+  25 |   });
+  26 | 
+  27 |   test('Guest is blocked from profile', async ({ page }) => {
+  28 |     await expectGuestLockout(page, '/profile.php', 'Guest mode: Profile management is only available to registered users');
+  29 |   });
+  30 | 
+  31 |   test('Guest is blocked from forecast', async ({ page }) => {
+  32 |     await expectGuestLockout(page, '/forecast.php', 'Guest mode: Forecasting is only available to registered users');
+  33 |   });
+  34 | 
+  35 |   test('Guest is shown map overlay lockout', async ({ page }) => {
+  36 |     await page.goto(`${BASE_URL}/map.php`);
+  37 |     await expect(page.locator('.warning-panel, .empty-state')).toContainText('Guest mode: Personalized map overlays and controls are only available to registered users');
+  38 |   });
+  39 | });
+  40 | 
+  41 | test.describe('Authenticated User Access', () => {
+  42 |   test.beforeEach(async ({ page }) => {
+  43 |     // Log in as a test user (assumes a test user exists)
+  44 |     await page.goto(`${BASE_URL}/login.php`);
+  45 |     await page.fill('input[name="email"]', 'testuser@example.com');
+  46 |     await page.fill('input[name="password"]', 'testpassword');
+  47 |     await page.click('button[type="submit"]');
+> 48 |     await expect(page).toHaveURL(/profile\.php/);
+     |                        ^ Error: expect(page).toHaveURL(expected) failed
+  49 |   });
+  50 | 
+  51 |   test('User can access risk page', async ({ page }) => {
+  52 |     await page.goto(`${BASE_URL}/risk.php`);
+  53 |     await expect(page.locator('.warning-panel, .empty-state')).not.toContainText('Guest mode');
+  54 |   });
+  55 | 
+  56 |   test('User can access smart alerts', async ({ page }) => {
+  57 |     await page.goto(`${BASE_URL}/smart_alerts.php`);
+  58 |     await expect(page.locator('.warning-panel, .empty-state')).not.toContainText('Guest mode');
+  59 |   });
+  60 | 
+  61 |   test('User can access profile', async ({ page }) => {
+  62 |     await page.goto(`${BASE_URL}/profile.php`);
+  63 |     await expect(page.locator('.warning-panel, .empty-state')).not.toContainText('Guest mode');
+  64 |   });
+  65 | 
+  66 |   test('User can access forecast', async ({ page }) => {
+  67 |     await page.goto(`${BASE_URL}/forecast.php`);
+  68 |     await expect(page.locator('.warning-panel, .empty-state')).not.toContainText('Guest mode');
+  69 |   });
+  70 | 
+  71 |   test('User can access personalized map controls', async ({ page }) => {
+  72 |     await page.goto(`${BASE_URL}/map.php`);
+  73 |     await expect(page.locator('.warning-panel, .empty-state')).not.toContainText('Guest mode');
+  74 |   });
+  75 | });
+  76 | 
 ```

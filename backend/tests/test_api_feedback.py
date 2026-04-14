@@ -60,7 +60,7 @@ class TestRecordFeedback:
         assert resp.status_code == 422
 
     def test_feedback_updates_user_assistant_profile(self, test_client, sample_user, db_session):
-        from db.models import User
+        from backend.db.models import User
 
         _ = sample_user
         _login(test_client, "test@example.com", "password123")
