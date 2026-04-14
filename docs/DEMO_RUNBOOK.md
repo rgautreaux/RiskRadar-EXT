@@ -4,6 +4,8 @@
 **Audience**: Graders, professors, stakeholders.  
 **Duration**: ~12–15 minutes for the full demonstration.
 
+Latest verification snapshot (2026-04-14): connectivity preflight PASS, web build PASS, and demo journey PASS (6/6).
+
 ---
 
 ## Prerequisites
