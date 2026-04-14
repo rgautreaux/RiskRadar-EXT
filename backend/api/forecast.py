@@ -59,6 +59,10 @@ def _severity_score(alert: Alert) -> float:
     return SEVERITY_SCORES.get((alert.severity or "").lower(), 0.4)
 
 
+def _type_weight(alert: Alert) -> float:
+    return TYPE_WEIGHTS.get(_alert_type_key(alert), 0.8)
+
+
 def _alert_type_key(alert: Alert) -> str:
     alert_type = (alert.alert_type or "").lower()
     if "air" in alert_type:
@@ -244,7 +248,7 @@ def _build_response(
             "lon": float(alert_lon) if alert_lon is not None else 0.0,
         }
         zone_score = _clamp(
-            base_score * _severity_score(alert) * _distance_factor(alert, lat, lon) * _recency_factor(alert, now),
+            base_score * _severity_score(alert) * _type_weight(alert) * _distance_factor(alert, lat, lon) * _recency_factor(alert, now),
             0.0,
             100.0,
         )

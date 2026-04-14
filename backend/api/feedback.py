@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
@@ -83,13 +83,19 @@ def record_feedback(
 
 
 @router.get("/session/{session_id}", response_model=list[FeedbackOut])
-def list_session_feedback(session_id: str, db: Session = Depends(get_db)):
-    return (
-        db.query(Feedback)
-        .filter(Feedback.session_id == session_id)
-        .order_by(Feedback.updated_at.desc())
-        .all()
-    )
+def list_session_feedback(
+    session_id: str,
+    db: Session = Depends(get_db),
+    current_user: User | None = Depends(get_optional_current_user),
+):
+    if current_user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication required")
+
+    query = db.query(Feedback).filter(Feedback.session_id == session_id)
+    if not bool(current_user.is_admin):
+        query = query.filter(Feedback.user_id == current_user.id)
+
+    return query.order_by(Feedback.updated_at.desc()).all()
 
 
 @router.get("/analytics")
