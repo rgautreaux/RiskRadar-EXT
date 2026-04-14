@@ -43,7 +43,7 @@ class Settings(BaseSettings):
     SOURCES_CONFIG_PATH: str = str(BASE_DIR / "config" / "sources.yaml")
 
     # CORS
-    CORS_ALLOWED_ORIGINS: str = "http://127.0.0.1:8080,http://localhost:8080"
+    CORS_ALLOWED_ORIGINS: str = "http://127.0.0.1:8080,http://localhost:8080,http://riskradar.local"
 
     # Startup safety
     SCHEMA_VALIDATION_STRICT: bool = True

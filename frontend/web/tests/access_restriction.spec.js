@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = 'http://riskradar.local';
 
 // Helper: Go to a page and return guest lockout message selector
 async function expectGuestLockout(page, path, expectedText) {

@@ -31,6 +31,7 @@ app = FastAPI(title="RiskRadar API", version="1.0.0", lifespan=lifespan)
 _DEFAULT_LOCAL_ORIGINS = [
     "http://127.0.0.1:8080",
     "http://localhost:8080",
+    "http://riskradar.local",
 ]
 
 

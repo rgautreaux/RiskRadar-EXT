@@ -21,7 +21,7 @@ function rr_render_layout_start(string $title, string $activePage): void
     $isAnonymous = $accessContext === 'anonymous';
     $isGuest = $accessContext === 'guest';
 
-    $apiBase = 'http://127.0.0.1:8001';
+    $apiBase = 'http://riskradar.local:8001';
     $apiPrefix = '/api/v1';
     $globalConfig = $GLOBALS['config'] ?? null;
     if (is_array($globalConfig) && function_exists('rr_api_url')) {

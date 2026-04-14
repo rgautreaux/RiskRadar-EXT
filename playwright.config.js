@@ -6,7 +6,7 @@ const config = {
   retries: 0,
   use: {
     headless: true,
-    baseURL: 'http://localhost:8080',
+    baseURL: 'http://riskradar.local',
   },
 };
 
