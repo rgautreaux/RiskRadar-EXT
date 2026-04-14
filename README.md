@@ -2,6 +2,7 @@
 
 ## Verification Snapshot (Latest)
 
+- Latest login-first entry and feature-access guard verification pass: protected pages require sign-in or guest mode, login/register are first-touch anonymous pages, and guest continuation path is active (2026-04-14).
 - Latest final Golby verification pass: connectivity preflight **PASS**, frontend build **PASS**, and demo journey **6/6 passed** on canonical local topology (2026-04-14).
 - Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
 - Latest connectivity preflight (`npm run verify:connectivity`): **PASS** for canonical base/prefix, backend root, readiness API, alerts API, forecast API, assistant user lookup, frontend index, frontend map API wiring, and CORS (2026-04-13).
@@ -9,6 +10,29 @@
 - Widget/assistant feature-equivalence review completed and branding restoration validated with successful frontend build (`npm run build:web`) (2026-04-13).
 - SVG asset white-pixel removal completed for assistant icon transparency optimization (2026-04-13).
 - Historical 191/196 totals in session sections are preserved as point-in-time records from earlier runs.
+
+## Stage 5: Login-First Entry With Guest Path Completion, Verification, and Documentation Synchronization Session (2026-04-14)
+
+### Implementation
+Completed the Login-First Entry With Guest Path plan by enforcing entry-point access rules, wiring strict feature-page guards, and synchronizing documentation artifacts in chronological Stage 5 order.
+
+### Functionality
+- `login.php` and `register.php` remain anonymous-first entry points.
+- `index.php` and all feature pages now require authenticated session or guest-mode session.
+- Login view supports three explicit entry paths: sign in, create account, or continue as guest.
+- Shared layout navigation now renders context-aware actions for anonymous, guest, and authenticated users.
+
+### Execution
+- Verified guard/helper wiring in `frontend/web/services/security.php` and protected controller pages.
+- Verified login/register/index routing behavior and guest action handling.
+- Verified demo and accessibility tests reflect login-first and guest bootstrap flow.
+- Synchronized README, STAGES, TODO, TRANSCRIPT, REFLECTION, AUTHORS, PROGRAM_EXECUTION, and USER_GUIDE.
+- Ran transcript duplicate-heading pass and confirmed `NO_DUPLICATE_STAGE_HEADINGS`.
+
+### Importance
+- Establishes a clear and safe first-touch user journey before feature access.
+- Preserves demo usability by supporting guest entry without forcing account creation.
+- Improves project-history integrity by recording implementation, verification, and rationale consistently across all tracking docs.
 
 ## Stage 5: Final Golby Verification Pass, Safe Artifact Reversion, and Documentation Synchronization Session (2026-04-14)
 

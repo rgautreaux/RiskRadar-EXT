@@ -1,10 +1,33 @@
 ## Verification Snapshot (Latest)
 
+- Latest login-first entry and feature-access guard verification pass: protected pages require sign-in or guest mode, login/register are first-touch anonymous pages, and guest continuation path is active (2026-04-14).
 - Latest final Golby verification pass: connectivity preflight **PASS**, frontend build **PASS**, and demo journey **6/6 passed** (2026-04-14).
 - Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
 - Latest connectivity preflight (`npm run verify:connectivity`): full PASS across backend/frontend/map/CORS checks (2026-04-13).
 - Latest end-to-end demo journey: **6/6 passed** on canonical local topology (2026-04-13).
 - Historical lower totals in older session entries are retained intentionally as time-stamped snapshots.
+
+## Stage 5: Login-First Entry With Guest Path Completion, Verification, and Documentation Synchronization Session (2026-04-14)
+
+### Implementation
+Completed the Login-First Entry With Guest Path plan by enforcing login-first entry behavior, adding strict feature-page access guards, and synchronizing top-level governance documents.
+
+### Functionality
+- Enabled three first-touch options from login: sign in, create account, or continue as guest.
+- Restricted feature-page access to authenticated sessions or guest-mode sessions.
+- Preserved anonymous access only for login/register/error paths.
+- Updated shared navigation to reflect anonymous, guest, and authenticated access states.
+
+### Verification Evidence
+- ✅ Verified `rr_require_feature_access()` guard presence on intended protected pages.
+- ✅ Verified login controller/view support guest action flow and redirect behavior.
+- ✅ Verified updated demo and accessibility tests include login-first and guest bootstrap steps.
+- ✅ Transcript duplicate-heading pass reported `NO_DUPLICATE_STAGE_HEADINGS`.
+
+### Importance
+- Establishes a predictable and secure entry path for all users.
+- Preserves onboarding flexibility with explicit guest continuation support.
+- Keeps Stage 5 history and verification records synchronized across project docs.
 
 ## Stage 5: Final Golby Verification Pass, Safe Artifact Reversion, and Documentation Synchronization Session (2026-04-14)
 

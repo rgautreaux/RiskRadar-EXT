@@ -1,5 +1,7 @@
 # RiskRadar — Program Execution Guide
 
+> Documentation sync status: aligned through Stage 5 login-first entry with guest path completion, verification, and documentation synchronization session (2026-04-14).
+
 > Step-by-step instructions for setting up, starting, and operating all components of the RiskRadar system (backend API, web frontend, and mobile app).
 
 ---
@@ -231,6 +233,10 @@ If you change the backend port, update the web frontend configuration to match (
 ## 5. Web Frontend (PHP)
 
 The web frontend is a desktop-oriented PHP application that consumes the backend API.
+
+Entry-flow note:
+- Login-first entry is enforced. Start at `/login.php` and choose sign in, create account, or continue as guest.
+- Protected pages require authenticated or guest-mode session context.
 
 ### 5.1 Prerequisites
 

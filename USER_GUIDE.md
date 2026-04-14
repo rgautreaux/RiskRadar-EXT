@@ -1,11 +1,11 @@
 # Documentation Synchronization Note
 
-All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) has been reviewed and updated for consistency and agreement through the Stage 5 connectivity hardening and documentation synchronization sessions (2026-04-14). This ensures grading clarity, onboarding readiness, and a single source of truth for project status and history.
+All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) has been reviewed and updated for consistency and agreement through the Stage 5 login-first entry with guest path completion, verification, and documentation synchronization session (2026-04-14). This ensures grading clarity, onboarding readiness, and a single source of truth for project status and history.
 
 
 # RiskRadar Web-Extension User Guide
 
-This guide walks you through how to run and use the RiskRadar Web-Extension, including all features and updates through Stage 5 connectivity hardening closeout (2026-04-14).
+This guide walks you through how to run and use the RiskRadar Web-Extension, including all features and updates through Stage 5 login-first entry with guest path completion closeout (2026-04-14).
 
 ## Documentation Navigation Hub
 

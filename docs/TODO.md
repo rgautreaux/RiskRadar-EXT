@@ -15,6 +15,7 @@ Optional stretch goals:
 
 ## Verification Snapshot (Latest)
 
+- Latest login-first entry and feature-access guard verification pass: protected pages require sign-in or guest mode, login/register are first-touch anonymous pages, and guest continuation path is active (2026-04-14).
 - Latest final Golby verification pass: connectivity preflight **PASS**, frontend build **PASS**, and demo journey **6/6 passed** (2026-04-14).
 - Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
 - S3-06 closeout command added: `npm run verify:evidence:s3` (passes when all required evidence files and links are present).
@@ -253,6 +254,15 @@ Maintain delivered features, harden security, and keep documentation and verific
 - [x] One-command backend verification workflow added and validated with `npm run verify:backend`.
 
 ### Stage 5 Session Entries (After Checklist)
+
+#### Stage 5: Login-First Entry With Guest Path Completion, Verification, and Documentation Synchronization Session (2026-04-14)
+Summary:
+- Confirmed complete implementation of login-first entry behavior with explicit login, sign-up, and guest continuation paths.
+- Confirmed strict feature-page access guards now enforce authenticated-or-guest session requirements.
+- Confirmed shared layout/nav access-context rendering is aligned for anonymous, guest, and authenticated states.
+- Confirmed demo/accessibility test updates reflect login-first redirect and guest bootstrap flow.
+- Synchronized top-level docs (README, STAGES, TODO, TRANSCRIPT, REFLECTION, AUTHORS, PROGRAM_EXECUTION, USER_GUIDE) in chronological Stage 5 order.
+- Ran transcript duplicate-heading pass and confirmed `NO_DUPLICATE_STAGE_HEADINGS`.
 
 #### Stage 5: Final Golby Verification Pass, Safe Artifact Reversion, and Documentation Synchronization Session (2026-04-14)
 Summary:
