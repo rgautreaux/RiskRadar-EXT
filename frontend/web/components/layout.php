@@ -61,8 +61,9 @@ function rr_render_layout_start(string $title, string $activePage): void
                     <p class="eyebrow">Guest mode enabled</p>
                     <?php endif; ?>
                 </div>
+                <?php if ($activePage !== 'login') : ?>
                 <nav class="topnav" aria-label="Primary navigation">
-                    <?php if ($isAnonymous) : ?>
+                    <?php if ($isAnonymous && $activePage !== 'login') : ?>
                     <a class="<?php echo $activePage === 'login' ? 'is-active' : ''; ?>" href="login.php">
                         <img src="assets/icons/profile.svg" alt="Login Icon" class="nav-icon"> Login
                     </a>
@@ -115,6 +116,7 @@ function rr_render_layout_start(string $title, string $activePage): void
                     </a>
                     <?php endif; ?>
                 </nav>
+                <?php endif; ?>
             </header>
             <main class="page-shell">
     <?php

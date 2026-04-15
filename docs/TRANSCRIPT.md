@@ -1,4 +1,34 @@
-﻿# Stage 5: Logout Tab and Sign-Out Flow Session (2026-04-15)
+﻿# Stage 5: Login Page UI Refinements Session (2026-04-15)
+
+Max: I want to make some changes to the login page. Currently, there is a text box prompting for a zipcode. I would want to remove this text box from this page.
+
+Claude Code: Located the ZIP code field in `frontend/web/views/login.php` and the corresponding `zip_code` key in the `$loginForm` array in `frontend/web/public/login.php`. Removed the ZIP code `<label>` block (including its input and error message) from the view, and removed `'zip_code' => ''` from the `$loginForm` initialization in the controller.
+
+Max: On the navigation bar, only a guest can see a tab to login. Can you make this tab redirect back to the login page?
+
+Claude Code: Read `frontend/web/public/login.php` and found the access guard at the top was `if (rr_access_context() !== 'anonymous')` — this redirected guests to `index.php` before they could reach the login page, making the guest Login nav tab non-functional. Updated the guard to also allow guests through so the tab could land correctly.
+
+Max: For that login tab only seen by guests, I want it to redirect to the initial login page encountered when opening the application.
+
+Claude Code: Refined the guard in `frontend/web/public/login.php` so that when a guest visits the page, `rr_set_guest_mode(false)` is called to clear their session before the page renders. This makes the experience identical to the first-open anonymous state — the same login page a brand-new visitor sees — rather than passing them through as an active guest. Authenticated users are still redirected to `index.php`.
+
+Max: Can you remove the "login" and "sign up" tabs on the login page?
+
+Claude Code: Added `&& $activePage !== 'login'` to the anonymous nav branch condition in `frontend/web/components/layout.php`, suppressing both the Login and Sign Up tabs when the active page is `login`.
+
+Max: Can you hide the entire navigation tab on the login page as well?
+
+Claude Code: Read `layout.php` and wrapped the entire `<nav class="topnav">` element with `<?php if ($activePage !== 'login') : ?>` and a matching `<?php endif; ?>`, hiding the full navigation bar on the login page regardless of access context.
+
+Max: Can you add some space between the "Sign In" and "Continue as Guest" Button.
+
+Claude Code: Added `style="margin-top: 1.5rem;"` to the `<form>` tag wrapping the Continue as Guest button in `frontend/web/views/login.php`, creating clear vertical separation between the two actions.
+
+Max: Thank you. Can you document these changes into the REFLECTION.md and TRANSCRIPT.md files? Follow the format of the entries currently in the files.
+
+Claude Code: Added this session's verbatim transcript entry to TRANSCRIPT.md and a matching reflection summary entry to REFLECTION.md, both prepended at the top in chronological Stage 5 order consistent with existing formatting.
+
+# Stage 5: Logout Tab and Sign-Out Flow Session (2026-04-15)
 
 Max: Can you insert a logout tab to the main navigation bar that only users can see? This tab will allow users to sign out when clicked.
 

@@ -2,6 +2,27 @@
 
 ## Session Reflections
 
+# Stage 5: Login Page UI Refinements Session (2026-04-15)
+Summary:
+- Removed the ZIP code input field from the login form in `frontend/web/views/login.php` and removed the `zip_code` key from the `$loginForm` initialization array in `frontend/web/public/login.php`.
+- Identified that `login.php` was redirecting any non-anonymous user (including guests) to `index.php`, preventing the guest Login nav tab from working. Updated the access guard to call `rr_set_guest_mode(false)` when a guest visits `login.php`, clearing their session so they see the page in the same anonymous state as a first-time visitor.
+- Hid the Login and Sign Up nav tabs when `$activePage === 'login'` by adding that condition to the anonymous branch guard in `frontend/web/components/layout.php`.
+- Wrapped the entire `<nav>` element in `layout.php` with a `<?php if ($activePage !== 'login') : ?>` guard, hiding the full navigation bar on the login page.
+- Added `style="margin-top: 1.5rem;"` to the "Continue as Guest" form in `frontend/web/views/login.php` to create visual separation between the Sign In and Continue as Guest buttons.
+
+Why this was done:
+- The ZIP code field on the login form was unnecessary — login only requires email and password — and its presence created user confusion about whether it was required.
+- The guest Login tab linked to `login.php` but the page's access guard redirected guests away, making the tab non-functional.
+- Showing Login and Sign Up nav tabs while already on the login page added visual noise with no navigational value.
+- Showing any navigation bar on the login page was inconsistent with a clean, focused sign-in experience — the nav served no purpose before a session was established.
+- The Sign In and Continue as Guest buttons had no vertical spacing between them, making the two actions appear visually merged.
+
+How this improved the project:
+- The login form is now minimal and unambiguous — only email and password are prompted, matching what the backend actually requires.
+- Guests can now click the Login tab and land on the login page as expected, with their guest session cleanly ended so they can authenticate fresh.
+- The login page now renders without a navigation bar, giving it a focused, distraction-free layout consistent with standard authentication UI patterns.
+- The added margin between Sign In and Continue as Guest gives the two actions clear visual separation, making it easier for users to distinguish and choose between them.
+
 # Stage 5: Logout Tab and Sign-Out Flow Session (2026-04-15)
 Summary:
 - Confirmed no logout page or sign-out flow existed in the frontend — `rr_clear_session_cookie()` was defined in `security.php` but never called from any public-facing page, and the backend `POST /api/v1/auth/logout` endpoint had no corresponding frontend route.

@@ -2,7 +2,10 @@
 
 require_once __DIR__ . '/../services/bootstrap.php';
 
-if (rr_access_context() !== 'anonymous') {
+$accessContext = rr_access_context();
+if ($accessContext === 'guest') {
+    rr_set_guest_mode(false);
+} elseif ($accessContext !== 'anonymous') {
     header('Location: index.php');
     exit;
 }
@@ -11,7 +14,6 @@ $flash = rr_get_flash();
 $loginErrors = [];
 $loginForm = [
     'email' => '',
-    'zip_code' => '',
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -25,7 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($action === 'guest') {
         rr_set_guest_mode(true);
-        rr_set_flash('success', 'You are now exploring RiskRadar as a guest.');
         header('Location: index.php');
         exit;
     }
