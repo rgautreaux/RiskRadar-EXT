@@ -30,7 +30,7 @@
                 <input type="password" name="password" minlength="8" autocomplete="current-password" required>
                 <?php if (isset($loginErrors['password'])) : ?><small class="field-error"><?php echo e($loginErrors['password']); ?></small><?php endif; ?>
             </label>
-<button class="button-primary" type="submit">Sign in</button>
+            <button class="button-primary" type="submit">Sign in</button>
         </form>
 
         <form method="post" action="login.php" class="form-stack" style="margin-top: 1.5rem;">
