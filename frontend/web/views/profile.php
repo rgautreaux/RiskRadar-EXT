@@ -26,11 +26,13 @@
         <form method="post" action="profile.php" class="form-stack">
             <input type="hidden" name="csrf_token" value="<?php echo e(rr_csrf_token()); ?>">
             <input type="hidden" name="action" value="preferences">
-            <label>
+            <div class="readonly-userid">
                 <span>User ID</span>
-                <input type="number" name="user_id" min="1" value="<?php echo e((string) ($preferencesForm['user_id'] ?: '')); ?>" required>
-                <?php if (isset($preferencesErrors['user_id'])) : ?><small class="field-error"><?php echo e($preferencesErrors['user_id']); ?></small><?php endif; ?>
-            </label>
+                <span class="userid-value" style="font-family:monospace;font-weight:bold;"> 
+                    <?php echo isset($currentUser) ? e((string)$currentUser['id']) : '<em>Unknown</em>'; ?>
+                </span>
+                <small class="field-help">This is your unique User ID. Use it for features that require UserID entry (e.g., Risk Scoring).</small>
+            </div>
             <label>
                 <span>ZIP code</span>
                 <input type="text" name="zip_code" inputmode="numeric" maxlength="5" value="<?php echo e((string) ($preferencesForm['zip_code'] ?? '')); ?>">

@@ -493,6 +493,12 @@ export function ChatInterface({
 				category: 'static',
 			};
 		}
+		// Emotional intelligence: detect sentiment and offer supportive/friendly response
+		const sentiment = detectSentiment(userMessage);
+		const supportive = getSupportiveResponse(sentiment);
+		if (supportive && sentiment !== 'neutral') {
+			return { text: supportive, category: 'playful' };
+		}
 
 		const locationMatch = userMessage.match(/(?:for|in)\s+([\w\s,]+)/i);
 		const locationHint = locationMatch ? locationMatch[1].trim() : undefined;
@@ -534,7 +540,6 @@ export function ChatInterface({
 				}
 				continue;
 			}
-
 			if (category === 'page') {
 				if (pageContext === 'map' && lowerMessage.includes('risk')) {
 					return withStyle("You're on the map view! Click any location to see detailed risk scores and environmental data for that area.", 'page');
@@ -556,8 +561,13 @@ export function ChatInterface({
 				}
 				continue;
 			}
-
 			if (category === 'live') {
+				// Proactive travel/packing/preparation advice
+				if (topic === 'travel') {
+					// Optionally, fetch live risk data here for more dynamic advice
+					// For now, use static example
+					return withStyle(generateTravelChecklist(), 'live');
+				}
 				try {
 					if (lowerMessage.includes('current alert') || lowerMessage.includes('latest alert')) {
 						const alerts = await fetchCurrentAlerts();
@@ -593,7 +603,6 @@ export function ChatInterface({
 				}
 				continue;
 			}
-
 			if (category === 'playful') {
 				if (topic === 'joke') {
 					return withStyle(golbyJokes[Math.floor(Math.random() * golbyJokes.length)], 'playful');
@@ -603,7 +612,6 @@ export function ChatInterface({
 				}
 				continue;
 			}
-
 			if (category === 'static') {
 				if (lowerMessage.includes('help')) {
 					return withStyle(golbyResponses['help'], 'static');
@@ -622,15 +630,6 @@ export function ChatInterface({
 		}
 
 		return withStyle(golbyResponses['default'], 'static');
-	};
-
-	const handleFeedback = async (message: Message, reaction: FeedbackReaction) => {
-		const category = message.responseCategory ?? 'static';
-		const nextProfile = applyFeedback(assistantProfile, category, reaction);
-		const nextFeedbackCount = feedbackCount + 1;
-		const nextStyleBias = updateStyleBias(styleBias, reaction, message.text);
-
-		setAssistantProfile(nextProfile);
 		persistProfile(nextProfile);
 		setFeedbackCount(nextFeedbackCount);
 		persistNumber(FEEDBACK_COUNT_STORAGE_KEY, nextFeedbackCount);

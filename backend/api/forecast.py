@@ -270,6 +270,24 @@ def _build_response(
 
     region_value = location or (f"{lat},{lon}" if lat is not None and lon is not None else "all")
 
+    # Per-risk forecast breakdown (optional)
+    per_risk_forecasts = {}
+    for risk_type in ["weather", "air_quality", "wildfire", "flood", "earthquake", "pollen", "pollution"]:
+        risk_alerts = [a for a in alerts if _alert_type_key(a) == risk_type]
+        if risk_alerts:
+            per_risk_forecasts[risk_type] = _forecast_points(base_score, risk_alerts, hours)
+    # Only include per_risk_forecasts if requested (detailed param)
+    import flask
+    detailed = False
+    try:
+        from fastapi import Request
+        import starlette.requests
+        request = starlette.requests.Request.scope.get('request') if hasattr(starlette.requests.Request, 'scope') else None
+        if request:
+            detailed = request.query_params.get('detailed', 'false').lower() == 'true'
+    except Exception:
+        # fallback for non-FastAPI context
+        detailed = False
     return MapRiskOverlayOut(
         risk_zones=risk_zones,
         region=region_value,
@@ -281,6 +299,7 @@ def _build_response(
         summary=summary,
         baseline_risk_score=round(base_score, 2),
         personalized=user is not None,
+        per_risk_forecasts=per_risk_forecasts if detailed else None,
     )
 
 
