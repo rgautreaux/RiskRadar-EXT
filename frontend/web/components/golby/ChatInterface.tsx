@@ -659,23 +659,24 @@ export function ChatInterface({
 	return (
 		<div className="flex flex-col h-full max-h-[600px] bg-white rounded-2xl shadow-xl overflow-hidden">
 			{/* Header */}
-			<div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 flex items-center gap-3">
-				<GolbyIcon expression="happy" size="md" />
+			<div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 flex items-center gap-3" role="banner" aria-label="Golby chat header">
+				<GolbyIcon expression="happy" size="md" aria-label="Golby assistant icon" />
 				<div className="flex-1">
-					<h2 className="text-white font-medium">Chat with Golby</h2>
-					<p className="text-blue-100 text-sm">Your AI Travel Assistant</p>
+					<h2 className="text-white font-medium" tabIndex={0}>Chat with Golby</h2>
+					<p className="text-blue-100 text-sm" tabIndex={0}>Your AI Travel Assistant</p>
 				</div>
 				{isAdmin && (
 					<button
 						onClick={() => setShowDiagnostics((current) => !current)}
-						className="text-blue-100 hover:text-white text-xs px-2 py-1 border border-blue-300/50 rounded-md transition"
+						className="text-blue-100 hover:text-white text-xs px-2 py-1 border border-blue-300/50 rounded-md transition focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400"
 						aria-label="Toggle diagnostics panel"
+						tabIndex={0}
 					>
 						{showDiagnostics ? 'Hide Panels' : 'Show Panels'}
 					</button>
 				)}
 				{onClose && (
-					<button onClick={onClose} className="text-white hover:text-blue-200 text-xl font-bold ml-2" aria-label="Close chat">×</button>
+					<button onClick={onClose} className="text-white hover:text-blue-200 text-xl font-bold ml-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400" aria-label="Close chat" tabIndex={0}>×</button>
 				)}
 			</div>
 			{isAdmin && showDiagnostics && (
@@ -760,7 +761,7 @@ export function ChatInterface({
 				</div>
 			)}
 			{/* Messages */}
-			<div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50">
+			<div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50" role="log" aria-live="polite">
 				{messages.map((message) => (
 					<div
 						key={message.id}
@@ -768,31 +769,34 @@ export function ChatInterface({
 					>
 						{message.isGolby && (
 							<div className="flex-shrink-0">
-								<GolbyIcon expression="happy" size="sm" />
+								<GolbyIcon expression="happy" size="sm" aria-label="Golby message icon" />
 							</div>
 						)}
-						<div className={`flex flex-col ${message.isGolby ? 'items-start' : 'items-end'}`}>
+						<div className={`flex flex-col ${message.isGolby ? 'items-start' : 'items-end'}`} tabIndex={0} aria-label={message.isGolby ? 'Golby message' : 'Your message'}>
 							<ChatBubble message={message.text} isGolby={message.isGolby} />
 							{message.isGolby && (
 								<div className="flex gap-2 mt-2">
 									<button 
-										className="text-gray-400 hover:text-green-600 transition-colors"
+										className="text-gray-400 hover:text-green-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400"
 										onClick={() => handleFeedback(message, 'thumbs_up')}
 										aria-label="This was helpful"
+										tabIndex={0}
 									>
 										<ThumbsUp className="w-4 h-4" />
 									</button>
 									<button 
-										className="text-gray-400 hover:text-red-600 transition-colors"
+										className="text-gray-400 hover:text-red-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
 										onClick={() => handleFeedback(message, 'thumbs_down')}
 										aria-label="This wasn't helpful"
+										tabIndex={0}
 									>
 										<ThumbsDown className="w-4 h-4" />
 									</button>
 									<button 
-										className="text-gray-400 hover:text-yellow-600 transition-colors"
+										className="text-gray-400 hover:text-yellow-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400"
 										onClick={() => handleFeedback(message, 'smile')}
 										aria-label="Rate with emoji"
+										tabIndex={0}
 									>
 										<Smile className="w-4 h-4" />
 									</button>
@@ -804,7 +808,7 @@ export function ChatInterface({
 				{isTyping && (
 					<div className="flex gap-3 justify-start">
 						<div className="flex-shrink-0">
-							<GolbyIcon expression="thinking" size="sm" />
+							<GolbyIcon expression="thinking" size="sm" aria-label="Golby is typing" />
 						</div>
 						<TypingIndicator />
 					</div>
@@ -845,6 +849,8 @@ export function ChatInterface({
 						handleSendMessage(inputValue);
 					}}
 					className="flex gap-2"
+					role="search"
+					aria-label="Send a message to Golby"
 				>
 					<input
 						type="text"
@@ -853,12 +859,14 @@ export function ChatInterface({
 						placeholder="Ask Golby anything..."
 						className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 						aria-label="Message input"
+						tabIndex={0}
 					/>
 					<button
 						type="submit"
 						disabled={!inputValue.trim()}
 						className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white p-2 rounded-full transition-colors disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500"
 						aria-label="Send message"
+						tabIndex={0}
 					>
 						<Send className="w-5 h-5" />
 					</button>
