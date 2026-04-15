@@ -1,32 +1,4 @@
-## Verification Snapshot (Latest)
 
-- Latest final Golby verification pass: connectivity preflight **PASS**, frontend build **PASS**, and demo journey **6/6 passed** (2026-04-14).
-- Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
-- Latest connectivity preflight (`npm run verify:connectivity`): full PASS across backend/frontend/map/CORS checks (2026-04-13).
-- Latest end-to-end demo journey: **6/6 passed** on canonical local topology (2026-04-13).
-- Historical lower totals in older session entries are retained intentionally as time-stamped snapshots.
-
-## Stage 5: Final Golby Verification Pass, Safe Artifact Reversion, and Documentation Synchronization Session (2026-04-14)
-
-### Implementation
-Executed a final Stage 5 verification closeout by running connectivity, build, and end-to-end Golby journey checks on live local services, then restoring generated runtime artifacts to preserve review clarity.
-
-### Functionality
-- Confirmed canonical split-origin runtime path remains healthy (`127.0.0.1:8001` backend and `127.0.0.1:8080` frontend).
-- Confirmed connectivity preflight passes all checks, including guest-session map wiring and CORS validation.
-- Confirmed Golby demo journey remains stable at **6/6** passed.
-- Confirmed runtime/evidence artifact cleanup leaves implementation scope focused and intentional.
-
-### Verification Evidence
-- ✅ `py backend/scripts/pre_demo_connectivity_check.py` passed with all checks green.
-- ✅ `npm run build:web` passed.
-- ✅ `node frontend/web/tests/demo/demo_journey.js --base-url http://127.0.0.1:8080 --api-base-url http://127.0.0.1:8001` passed **6/6**.
-- ✅ Transcript duplicate-heading pass reported `NO_DUPLICATE_STAGE_HEADINGS`.
-
-### Importance
-- Provides final verification confidence for Golby behavior and project wiring before documentation closeout.
-- Reduces review noise by separating generated artifacts from intentional source/documentation changes.
-- Keeps stage-tracking and project-history docs synchronized with verified runtime outcomes.
 
 ## Stage 5: Connectivity Hardening Completion, Safe Artifact Isolation, and Documentation Synchronization Session (2026-04-13)
 

@@ -1,82 +1,34 @@
-# Project Progress and Stage Summaries
 
-## Verification Snapshot (Latest)
+# CMPS 357 - Final Project - Group 3
 
-- Latest final Golby verification pass: connectivity preflight **PASS**, frontend build **PASS**, and demo journey **6/6 passed** on canonical local topology (2026-04-14).
-- Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
-- Latest connectivity preflight (`npm run verify:connectivity`): **PASS** for canonical base/prefix, backend root, readiness API, alerts API, forecast API, assistant user lookup, frontend index, frontend map API wiring, and CORS (2026-04-13).
-- Latest end-to-end demo journey: **6/6 passed** using split-origin local topology (`--base-url http://127.0.0.1:8080 --api-base-url http://127.0.0.1:8001`) (2026-04-13).
-- Widget/assistant feature-equivalence review completed and branding restoration validated with successful frontend build (`npm run build:web`) (2026-04-13).
-- SVG asset white-pixel removal completed for assistant icon transparency optimization (2026-04-13).
-- Historical 191/196 totals in session sections are preserved as point-in-time records from earlier runs.
+Due Date: May 6, 2026, 12:55 CST
 
-## Stage 5: Final Golby Verification Pass, Safe Artifact Reversion, and Documentation Synchronization Session (2026-04-14)
+This repository contains the code and documentation for Group 3's CMPS 357 final project. The primary objective is to build a meaningful extension of our CMPS 490 RiskRadar senior project with new web-facing capabilities and advanced decision-support features.
 
-### Implementation
-Completed a final Stage 5 verification and hygiene closeout by running the full Golby validation chain on live local services, reverting generated runtime artifacts, and synchronizing project documentation in chronological order.
+Our senior project focuses on developing **RiskRadar**, an environmental risk awareness platform that helps residents and travelers identify and manage potential environmental risks using data analytics.
 
-### Functionality
-- Confirmed canonical split-origin runtime behavior remains healthy for backend API (`127.0.0.1:8001`) and frontend PHP (`127.0.0.1:8080`).
-- Confirmed pre-demo connectivity checks still pass end-to-end, including map API wiring with guest-session setup and CORS.
-- Confirmed Golby assistant journey behavior remains stable with full **6/6** demo steps passing.
-- Reverted generated runtime artifacts (SQLite DB churn, pycache files, evidence snapshots/logs) so review scope remains intentional.
+Our goal for the CMPS 357 final project is to build a unique web-app extension with a distinct frontend interface while extending the platform with features such as personalized risk assessment, interactive mapping, and predictive/AI-supported insights.
 
-### Execution
-- Started backend service and frontend service on canonical ports.
-- Ran `py backend/scripts/pre_demo_connectivity_check.py` to full PASS.
-- Ran `npm run build:web` successfully.
-- Ran `node frontend/web/tests/demo/demo_journey.js --base-url http://127.0.0.1:8080 --api-base-url http://127.0.0.1:8001` to **6/6 passed**.
-- Stopped temporary local services and restored generated artifacts.
-- Ran transcript duplicate-heading pass and confirmed `NO_DUPLICATE_STAGE_HEADINGS`.
+---
 
-### Importance
-- Provides high-confidence final verification that Golby and wiring-critical paths remain operational.
-- Keeps repository history clean by excluding generated runtime/evidence churn from implementation review.
-- Maintains documentation governance by synchronizing progress, transcript, reflection, and authorship records.
+## Prerequisites
 
-## Stage 5: Connectivity Hardening Completion, Safe Artifact Isolation, and Documentation Synchronization Session (2026-04-13)
+Before you start, make sure you have these installed on your machine:
 
-### Implementation
-Completed the remaining wiring-hardening closeout tasks, including startup schema fail-fast, readiness verification flow, map-wiring preflight reliability fixes, and safe cleanup of runtime artifacts for review-ready repository state.
+| Tool        | Version | How to check         | How to install |
+|-------------|---------|----------------------|----------------|
+| **Python**  | 3.10+   | `python --version` or `py --version` | [python.org/downloads](https://www.python.org/downloads/) — check "Add to PATH" during install |
+| **Node.js** | 18+     | `node --version`     | [nodejs.org](https://nodejs.org/) — LTS version recommended |
+| **npm**     | 9+      | `npm --version`      | Comes with Node.js |
+| **Git**     | any     | `git --version`      | [git-scm.com](https://git-scm.com/) |
 
-### Functionality
-- Confirmed strict schema validation and readiness behavior are active in backend startup/runtime.
-- Confirmed pre-demo connectivity checks validate canonical wiring, including map API markers after guest-session setup.
-- Confirmed demo journey auth/session resilience and assistant-path checks pass in full split-origin local execution.
-- Isolated runtime/evidence artifacts with safety stashes so intentional code/docs changes remain review-focused.
+> **Windows users:** Use `py` instead of `python3`. If `py` doesn't work, reinstall Python from [python.org](https://www.python.org/downloads/) and check **"Add Python to PATH"** during installation.
 
-### Execution
-- Ran `npm run verify:connectivity` to full PASS.
-- Ran `node frontend/web/tests/demo/demo_journey.js --base-url http://127.0.0.1:8080 --api-base-url http://127.0.0.1:8001` to **6/6 passed**.
-- Performed transcript duplicate-heading pass and confirmed no duplicate Stage-session headings.
-- Synchronized top-level documentation set (README, STAGES, TODO, TRANSCRIPT, REFLECTION, AUTHORS, PROGRAM_EXECUTION, DEMO_RUNBOOK, USER_GUIDE).
+---
 
-### Importance
-- Closes the remaining frontend-backend wiring reliability gaps before demos.
-- Improves fail-fast behavior for schema drift and readiness regressions.
-- Keeps repository history and operational guidance aligned with verified runtime behavior.
+## Quick Start / Setup Guide
 
-## Stage 5: Golby Feature Verification and RiskRadar Branding Restoration Session (2026-04-13)
-
-### Implementation
-Completed a focused parity-and-branding session: confirmed widget and assistant page are feature-equivalent, then restored the intended RiskRadar globe mascot presentation in Golby UI rendering.
-
-### Functionality
-- Verified both assistant entry points share the same ChatInterface behavior and capability coverage.
-- Replaced placeholder Golby rendering with embedded `ai-assistant-reacting.svg` in `frontend/web/components/golby/GolbyIcon.tsx`.
-- Rebuilt facial overlay geometry to align with the globe asset coordinate system (495x468) rather than the previous 100x100 placeholder model.
-- Preserved and validated expression support across assistant visual states (happy, thinking, waving, winking, laughing, surprised, puzzled, excited).
-
-### Execution
-- Performed source-level comparison for widget and assistant page feature parity.
-- Refactored mascot rendering path in Golby icon component and adjusted overlay positioning.
-- Ran `npm run build:web` successfully and confirmed no TypeScript errors after branding restoration.
-- Synchronized top-level docs (TRANSCRIPT, REFLECTION, STAGES, TODO, AUTHORS, README) in Stage 5 chronological order.
-
-### Importance
-- Restores authentic RiskRadar visual identity across assistant UI surfaces.
-- Removes mismatch between mockup branding and live widget/page presentation.
-- Preserves functional stability while improving user trust and interface polish.
+...existing code...
 
 ## Stage 5: SVG Asset White-Pixel Removal and Documentation Synchronization Session (2026-04-13)
 
@@ -839,7 +791,86 @@ npm run verify:backend
 
 ---
 
+
 # Project Progress and Stage Summaries
+
+## Verification Snapshot (Latest)
+
+- Latest final Golby verification pass: connectivity preflight **PASS**, frontend build **PASS**, and demo journey **6/6 passed** on canonical local topology (2026-04-14).
+- Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
+- Latest connectivity preflight (`npm run verify:connectivity`): **PASS** for canonical base/prefix, backend root, readiness API, alerts API, forecast API, assistant user lookup, frontend index, frontend map API wiring, and CORS (2026-04-13).
+- Latest end-to-end demo journey: **6/6 passed** using split-origin local topology (`--base-url http://127.0.0.1:8080 --api-base-url http://127.0.0.1:8001`) (2026-04-13).
+- Widget/assistant feature-equivalence review completed and branding restoration validated with successful frontend build (`npm run build:web`) (2026-04-13).
+- SVG asset white-pixel removal completed for assistant icon transparency optimization (2026-04-13).
+- Historical 191/196 totals in session sections are preserved as point-in-time records from earlier runs.
+
+## Stage 5: Final Golby Verification Pass, Safe Artifact Reversion, and Documentation Synchronization Session (2026-04-14)
+
+### Implementation
+Completed a final Stage 5 verification and hygiene closeout by running the full Golby validation chain on live local services, reverting generated runtime artifacts, and synchronizing project documentation in chronological order.
+
+### Functionality
+- Confirmed canonical split-origin runtime behavior remains healthy for backend API (`127.0.0.1:8001`) and frontend PHP (`127.0.0.1:8080`).
+- Confirmed pre-demo connectivity checks still pass end-to-end, including map API wiring with guest-session setup and CORS.
+- Confirmed Golby assistant journey behavior remains stable with full **6/6** demo steps passing.
+- Reverted generated runtime artifacts (SQLite DB churn, pycache files, evidence snapshots/logs) so review scope remains intentional.
+
+### Execution
+- Started backend service and frontend service on canonical ports.
+- Ran `py backend/scripts/pre_demo_connectivity_check.py` to full PASS.
+- Ran `npm run build:web` successfully.
+- Ran `node frontend/web/tests/demo/demo_journey.js --base-url http://127.0.0.1:8080 --api-base-url http://127.0.0.1:8001` to **6/6 passed**.
+- Stopped temporary local services and restored generated artifacts.
+- Ran transcript duplicate-heading pass and confirmed `NO_DUPLICATE_STAGE_HEADINGS`.
+
+### Importance
+- Provides high-confidence final verification that Golby and wiring-critical paths remain operational.
+- Keeps repository history clean by excluding generated runtime/evidence churn from implementation review.
+- Maintains documentation governance by synchronizing progress, transcript, reflection, and authorship records.
+
+## Stage 5: Connectivity Hardening Completion, Safe Artifact Isolation, and Documentation Synchronization Session (2026-04-13)
+
+### Implementation
+Completed the remaining wiring-hardening closeout tasks, including startup schema fail-fast, readiness verification flow, map-wiring preflight reliability fixes, and safe cleanup of runtime artifacts for review-ready repository state.
+
+### Functionality
+- Confirmed strict schema validation and readiness behavior are active in backend startup/runtime.
+- Confirmed pre-demo connectivity checks validate canonical wiring, including map API markers after guest-session setup.
+- Confirmed demo journey auth/session resilience and assistant-path checks pass in full split-origin local execution.
+- Isolated runtime/evidence artifacts with safety stashes so intentional code/docs changes remain review-focused.
+
+### Execution
+- Ran `npm run verify:connectivity` to full PASS.
+- Ran `node frontend/web/tests/demo/demo_journey.js --base-url http://127.0.0.1:8080 --api-base-url http://127.0.0.1:8001` to **6/6 passed**.
+- Performed transcript duplicate-heading pass and confirmed no duplicate Stage-session headings.
+- Synchronized top-level documentation set (README, STAGES, TODO, TRANSCRIPT, REFLECTION, AUTHORS, PROGRAM_EXECUTION, DEMO_RUNBOOK, USER_GUIDE).
+
+### Importance
+- Closes the remaining frontend-backend wiring reliability gaps before demos.
+- Improves fail-fast behavior for schema drift and readiness regressions.
+- Keeps repository history and operational guidance aligned with verified runtime behavior.
+
+## Stage 5: Golby Feature Verification and RiskRadar Branding Restoration Session (2026-04-13)
+
+### Implementation
+Completed a focused parity-and-branding session: confirmed widget and assistant page are feature-equivalent, then restored the intended RiskRadar globe mascot presentation in Golby UI rendering.
+
+### Functionality
+- Verified both assistant entry points share the same ChatInterface behavior and capability coverage.
+- Replaced placeholder Golby rendering with embedded `ai-assistant-reacting.svg` in `frontend/web/components/golby/GolbyIcon.tsx`.
+- Rebuilt facial overlay geometry to align with the globe asset coordinate system (495x468) rather than the previous 100x100 placeholder model.
+- Preserved and validated expression support across assistant visual states (happy, thinking, waving, winking, laughing, surprised, puzzled, excited).
+
+### Execution
+- Performed source-level comparison for widget and assistant page feature parity.
+- Refactored mascot rendering path in Golby icon component and adjusted overlay positioning.
+- Ran `npm run build:web` successfully and confirmed no TypeScript errors after branding restoration.
+- Synchronized top-level docs (TRANSCRIPT, REFLECTION, STAGES, TODO, AUTHORS, README) in Stage 5 chronological order.
+
+### Importance
+- Restores authentic RiskRadar visual identity across assistant UI surfaces.
+- Removes mismatch between mockup branding and live widget/page presentation.
+- Preserves functional stability while improving user trust and interface polish.
 
 ## Stage 1: Web-App Extension (Completed)
 
