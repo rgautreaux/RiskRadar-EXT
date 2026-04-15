@@ -51,8 +51,14 @@ def _extract_path(obj: Any, path: str) -> Any:
         if "[" in segment:
             field, idx_str = segment.rstrip("]").split("[")
             obj = obj[field][int(idx_str)]
+        elif isinstance(obj, (list, tuple)) and segment.isdigit():
+            obj = obj[int(segment)]
         else:
-            obj = obj[segment]
+            # Support bare integer indices for list traversal (e.g. items_path: "1")
+            try:
+                obj = obj[int(segment)]
+            except (ValueError, TypeError):
+                obj = obj[segment]
     return obj
 
 
@@ -89,10 +95,11 @@ class GenericAPIScraper(BaseScraper):
         auth_cfg = cfg.get("auth", {})
         auth_type = auth_cfg.get("type", "none")
         if auth_type != "none":
-            key_value = os.environ.get(auth_cfg["env_var"], "")
+            env_var = auth_cfg["env_var"]
+            key_value = os.environ.get(env_var, "").strip() or str(getattr(settings, env_var, "")).strip()
             if not key_value:
                 raise RuntimeError(
-                    f"{self.source_name}: env var {auth_cfg['env_var']} not set"
+                    f"{self.source_name}: env var {env_var} not set"
                 )
             if auth_type == "query_param":
                 param_name = auth_cfg.get("param_name", "api_key")

@@ -13,12 +13,24 @@ interface User {
   created_at: string;
 }
 
+interface UserPrefsUpdate {
+  zip_code?: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  alert_types?: string[] | null;
+  notify_severity?: string | null;
+  device_token?: string | null;
+}
+
 interface AuthState {
   user: User | null;
   isLoading: boolean;
   isLoggedIn: boolean;
+  isDevUserMode: boolean;
+  toggleDevUserMode: () => void;
   login: (email: string, password: string) => Promise<void>;
   register: (displayName: string, email: string, password: string, zipCode?: string) => Promise<void>;
+  savePreferences: (updates: Partial<UserPrefsUpdate>) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -27,6 +39,23 @@ const AuthContext = createContext<AuthState | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDevUserMode, setIsDevUserMode] = useState(false);
+
+  const toggleDevUserMode = useCallback(() => {
+    setIsDevUserMode((prev) => !prev);
+  }, []);
+
+  const fakeUser: User = {
+    id: 999,
+    display_name: 'Dev Mock User',
+    email: 'dev@riskradar.local',
+    zip_code: '12345',
+    latitude: null,
+    longitude: null,
+    alert_types: null,
+    notify_severity: null,
+    created_at: new Date().toISOString()
+  };
 
   // Check for existing token on mount
   useEffect(() => {
@@ -76,6 +105,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [login],
   );
 
+  const savePreferences = useCallback(async (updates: Partial<UserPrefsUpdate>) => {
+    if (!user) {
+      throw new Error('No authenticated user');
+    }
+
+    const updatedUser = await apiFetch<User>(`/users/${user.id}/preferences`, {
+      method: 'PUT',
+      body: JSON.stringify(updates),
+    });
+    setUser(updatedUser);
+  }, [user]);
+
   const logout = useCallback(async () => {
     await removeToken();
     setUser(null);
@@ -84,11 +125,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   return (
     <AuthContext.Provider
       value={{
-        user,
+        user: isDevUserMode ? fakeUser : user,
         isLoading,
-        isLoggedIn: !!user,
+        isLoggedIn: isDevUserMode ? true : !!user,
+        isDevUserMode,
+        toggleDevUserMode,
         login,
         register,
+        savePreferences,
         logout,
       }}
     >

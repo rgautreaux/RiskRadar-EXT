@@ -1,7 +1,3 @@
-# Documentation Synchronization Note (Mar 23, 2026)
-
-This document is in sync with README.md, GROUP_PROGRESS_LOG, AUTHORS.md, and UI_UX_STYLING_PLAN.md as of Mar 23, 2026. All architecture, data flow, and implementation details reflect the current project state and major developments.
-
 # RiskRadar Architecture
 
 ---
@@ -167,7 +163,7 @@ Time ─────────────────────────
 2. **Normalization**: Each scraper normalizes raw data into a standard Alert schema, computes severity, and extracts coordinates.
 3. **Deduplication**: Alerts are deduplicated by `(source, source_id)` unique constraint before insertion.
 4. **Storage**: Processed data is persisted in **MySQL (MariaDB)** via **SQLAlchemy ORM** (`riskradar_db`).
-5. **Analysis**: The **OpenAI** or **Anthropic** LLM API generates daily digest summaries from recent alerts.
+5. **Analysis**: The LLM API generates daily digest summaries from recent alerts, with support for **OpenRouter**, **OpenAI**, **DeepSeek**, and **Anthropic** providers.
 6. **Presentation**: The **React Native (Expo)** mobile app fetches data from the FastAPI REST API.
 
 ---
@@ -194,3 +190,9 @@ For full schema documentation including table definitions, entity relationships,
 | Config | YAML + python-dotenv |
 | Testing | pytest + pytest-mock |
 | Frontend | React Native (Expo) |
+
+# Documentation Synchronization Note (Apr 2, 2026)
+
+All documentation, QA, and planning docs are synchronized and validated as of April 2, 2026. This includes README.md, ARCHITECTURE.md, AUTHORS.md, UI_UX_STYLING_PLAN.md, and all migration planning docs. All records reflect the current project state, including the completion of Rebecca's assigned UI/UX work and Phase 3 migration logging and monitoring hardening implementation. Backend/security lead review and sign-off for the Phase 3 handoff package remains an external approval gate before production execution.
+
+This document is in sync with README.md, GROUP_PROGRESS_LOG, AUTHORS.md, and UI_UX_STYLING_PLAN.md as of April 2, 2026. All architecture, data flow, and implementation details reflect the current project state and major developments.

@@ -36,6 +36,7 @@ build/
 .idea/tasks.xml
 .idea/dictionaries
 .idea/shelf
+.vscode/
 
 # OS files
 .DS_Store
@@ -55,6 +56,11 @@ node_modules/
 .coverage
 htmlcov/
 
+# Local SQLite artifacts
+*.db
+*.sqlite
+*.sqlite3
+
 # Environment files
 .env
 .env.*
@@ -69,3 +75,5 @@ Thumbs.db
 .vscode/
 *.swp
 
+# Development docs and notes
+.workspace_docs

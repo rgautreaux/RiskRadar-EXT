@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react';
-
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import {
+  Animated,
+  ImageSourcePropType,
   ScrollView,
   View,
   StyleSheet,
   ActivityIndicator,
   RefreshControl,
+  TouchableOpacity,
 } from 'react-native';
 
 
@@ -15,8 +17,74 @@ import { Colors, Spacing, Radius, Shadows } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { apiFetch } from '@/utils/api';
 import { RiskCard } from '@/components/risk-card';
+import { SectionHeader } from '@/components/section-header';
+import { HazardChip } from '@/components/hazard-chip';
+
+// ---------------------------------------------------------------------------
+// AnimatedAlertCard — isolated component so hooks are called at the top level
+// ---------------------------------------------------------------------------
+interface AnimatedAlertCardProps {
+  alert: AlertItem;
+  index: number;
+  iconSource: ImageSourcePropType;
+  getSeverityLevel: (severity: string) => 'low' | 'moderate' | 'high' | 'critical';
+}
+
+function AnimatedAlertCard({ alert, index, iconSource, getSeverityLevel }: AnimatedAlertCardProps) {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(20)).current;
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 220,
+      delay: 80 + index * 60,
+      useNativeDriver: true,
+    }).start();
+    Animated.timing(slideAnim, {
+      toValue: 0,
+      duration: 220,
+      delay: 80 + index * 60,
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim, slideAnim, index]);
+
+  const formatTime = (dateStr: string) => {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    if (diffMins < 60) return `${diffMins}m ago`;
+    const diffHrs = Math.floor(diffMins / 60);
+    if (diffHrs < 24) return `${diffHrs}h ago`;
+    const diffDays = Math.floor(diffHrs / 24);
+    return `${diffDays}d ago`;
+  };
+
+  return (
+    <Animated.View
+      style={{
+        opacity: fadeAnim,
+        transform: [{ translateY: slideAnim }],
+        marginBottom: Spacing.sm,
+      }}
+    >
+      <RiskCard
+        riskType={alert.alert_type}
+        title={alert.title}
+        severity={getSeverityLevel(alert.severity)}
+        iconSource={iconSource}
+        description={alert.description ?? `${alert.alert_type} alert from ${alert.source}`}
+        value={undefined}
+        unit={undefined}
+        onPress={undefined}
+        meta={formatTime(alert.fetched_at || alert.created_at)}
+      />
+    </Animated.View>
+  );
+}
 // Map alert_type or hazard type to icon asset
-const hazardIconMap: Record<string, any> = {
+const hazardIconMap: Record<string, ImageSourcePropType> = {
   weather: require('@/assets/icons/hazards/RiskRadar_Weather_Icon.png'),
   'air quality': require('@/assets/icons/hazards/RiskRadar_AirQuality_Icon.png'),
   airquality: require('@/assets/icons/hazards/RiskRadar_AirQuality_Icon.png'),
@@ -49,19 +117,34 @@ export default function AlertsScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [activeFilter, setActiveFilter] = useState<'all' | 'critical' | 'weather' | 'airquality'>('all');
+
+  const buildAlertsPath = useCallback((filter: 'all' | 'critical' | 'weather' | 'airquality') => {
+    const params = new URLSearchParams({ limit: '50' });
+
+    if (filter === 'critical') {
+      params.set('severity', 'critical');
+    } else if (filter === 'weather') {
+      params.set('alert_type', 'weather');
+    } else if (filter === 'airquality') {
+      params.set('alert_type', 'air_quality');
+    }
+
+    return `/alerts/?${params.toString()}`;
+  }, []);
 
   const fetchAlerts = useCallback(async () => {
     try {
       setError(null);
-      const data = await apiFetch<AlertItem[]>('/alerts/?limit=50');
+      const data = await apiFetch<AlertItem[]>(buildAlertsPath(activeFilter));
       setAlerts(data);
-    } catch (err: any) {
+    } catch {
       setError('Could not load alerts. Is the backend running?');
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [activeFilter, buildAlertsPath]);
 
   useEffect(() => {
     fetchAlerts();
@@ -92,17 +175,43 @@ export default function AlertsScreen() {
     }
   };
 
-  const formatTime = (dateStr: string) => {
-    const date = new Date(dateStr);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    if (diffMins < 60) return `${diffMins}m ago`;
-    const diffHrs = Math.floor(diffMins / 60);
-    if (diffHrs < 24) return `${diffHrs}h ago`;
-    const diffDays = Math.floor(diffHrs / 24);
-    return `${diffDays}d ago`;
+  const priorityRank = (severity: string) => {
+    switch (getSeverityLevel(severity)) {
+      case 'critical':
+        return 0;
+      case 'high':
+        return 1;
+      case 'moderate':
+        return 2;
+      default:
+        return 3;
+    }
   };
+
+  const filteredAlerts = useMemo(() => {
+    return [...alerts].sort((left, right) => {
+      const severityDiff = priorityRank(left.severity) - priorityRank(right.severity);
+      if (severityDiff !== 0) {
+        return severityDiff;
+      }
+
+      const leftTime = new Date(left.fetched_at || left.created_at).getTime();
+      const rightTime = new Date(right.fetched_at || right.created_at).getTime();
+      return rightTime - leftTime;
+    });
+  }, [alerts]);
+
+  // const formatTime = (dateStr: string) => {
+  //   const date = new Date(dateStr);
+  //   const now = new Date();
+  //   const diffMs = now.getTime() - date.getTime();
+  //   const diffMins = Math.floor(diffMs / 60000);
+  //   if (diffMins < 60) return `${diffMins}m ago`;
+  //   const diffHrs = Math.floor(diffMins / 60);
+  //   if (diffHrs < 24) return `${diffHrs}h ago`;
+  //   const diffDays = Math.floor(diffHrs / 24);
+  //   return `${diffDays}d ago`;
+  // };
 
   if (loading) {
     return (
@@ -116,15 +225,88 @@ export default function AlertsScreen() {
   }
 
 
+  // Example hazard chips (static for now, could be dynamic)
+  const hazardChips = [
+    { hazardType: 'weather', label: 'Weather', icon: hazardIconMap.weather },
+    { hazardType: 'airquality', label: 'Air Quality', icon: hazardIconMap.airquality },
+    { hazardType: 'pollen', label: 'Pollen', icon: hazardIconMap.pollen },
+    { hazardType: 'pollution', label: 'Pollution', icon: hazardIconMap.pollution },
+    { hazardType: 'earthquake', label: 'Earthquake', icon: hazardIconMap.earthquake },
+    { hazardType: 'flood', label: 'Flood', icon: hazardIconMap.flood },
+    { hazardType: 'wind', label: 'Wind', icon: hazardIconMap.wind },
+    { hazardType: 'fire', label: 'Fire', icon: hazardIconMap.fire },
+  ];
+
+  const filterChips = [
+    { key: 'all', label: 'All' },
+    { key: 'critical', label: 'Critical First' },
+    { key: 'weather', label: 'Weather' },
+    { key: 'airquality', label: 'Air Quality' },
+  ] as const;
+
   return (
     <ThemedView style={styles.container}>
-      {/* Header Section */}
-      <View style={styles.header}>
-        <ThemedText type="title" style={styles.headerTitle}>
-          Alerts
-        </ThemedText>
-        <ThemedText type="body" lightColor={palette.textSecondary} darkColor={palette.textSecondary}>
-          {alerts.length} active alert{alerts.length !== 1 ? 's' : ''}
+      {/* Branded Section Header */}
+      <SectionHeader
+        title="Alerts"
+        subtitle={`${filteredAlerts.length} active alert${filteredAlerts.length !== 1 ? 's' : ''}`}
+        style={styles.sectionHeader}
+      />
+
+      {/* Hazard Chips Row */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.hazardChipsRow}
+        style={{ marginBottom: Spacing.md }}
+      >
+        {hazardChips.map((chip) => (
+          <HazardChip
+            key={chip.hazardType}
+            hazardType={chip.hazardType}
+            label={chip.label}
+            iconSource={chip.icon}
+            isActive={false}
+            style={{ marginRight: Spacing.sm }}
+          />
+        ))}
+      </ScrollView>
+
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.filterChipsRow}
+        style={{ marginBottom: Spacing.sm }}
+      >
+        {filterChips.map((chip) => {
+          const isActive = activeFilter === chip.key;
+          return (
+            <TouchableOpacity
+              key={chip.key}
+              onPress={() => setActiveFilter(chip.key)}
+              style={[
+                styles.filterChip,
+                {
+                  backgroundColor: isActive ? palette.primary : palette.surfaceMuted,
+                  borderColor: isActive ? palette.primary : palette.border,
+                },
+              ]}
+            >
+              <ThemedText
+                type="meta"
+                lightColor={isActive ? palette.white : palette.textSecondary}
+                darkColor={isActive ? palette.white : palette.textSecondary}
+              >
+                {chip.label}
+              </ThemedText>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+
+      <View style={styles.priorityBanner}>
+        <ThemedText type="meta" lightColor={palette.textSecondary} darkColor={palette.textSecondary}>
+          Demo priority view: critical alerts and major hazards appear first when a filter is active.
         </ThemedText>
       </View>
 
@@ -157,9 +339,9 @@ export default function AlertsScreen() {
               </ThemedText>
             </View>
           </View>
-        ) : alerts.length > 0 ? (
+        ) : filteredAlerts.length > 0 ? (
           <View style={styles.alertsContainer}>
-            {alerts.map((alert) => {
+            {filteredAlerts.map((alert, i) => {
               // Map alert_type to icon asset
               const typeKey = (alert.alert_type || '').toLowerCase().replace(/[^a-z]/g, '');
               const iconSource =
@@ -167,17 +349,12 @@ export default function AlertsScreen() {
                 hazardIconMap[alert.alert_type?.toLowerCase()] ||
                 hazardIconMap.default;
               return (
-                <RiskCard
+                <AnimatedAlertCard
                   key={alert.id}
-                  riskType={alert.alert_type}
-                  title={alert.title}
-                  severity={getSeverityLevel(alert.severity)}
+                  alert={alert}
+                  index={i}
                   iconSource={iconSource}
-                  description={alert.description ?? `${alert.alert_type} alert from ${alert.source}`}
-                  value={undefined}
-                  unit={undefined}
-                  onPress={undefined}
-                  style={{ marginBottom: Spacing.sm }}
+                  getSeverityLevel={getSeverityLevel}
                 />
               );
             })}
@@ -193,7 +370,7 @@ export default function AlertsScreen() {
               darkColor={palette.textSecondary}
               style={styles.emptySubtitle}
             >
-              You're all set! Pull down to refresh.
+              You&apos;re all set! Pull down to refresh.
             </ThemedText>
           </View>
         )}
@@ -212,13 +389,37 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  header: {
-    paddingHorizontal: Spacing.md,
-    paddingTop: Spacing.lg,
-    paddingBottom: Spacing.sm,
+  sectionHeader: {
+    paddingBottom: 0,
   },
-  headerTitle: {
-    marginBottom: Spacing.xs,
+  hazardChipsRow: {
+    paddingHorizontal: Spacing.md,
+    paddingBottom: Spacing.sm,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  filterChipsRow: {
+    paddingHorizontal: Spacing.md,
+    paddingBottom: Spacing.xs,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  filterChip: {
+    marginRight: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 10,
+    borderRadius: Radius.pill,
+    borderWidth: 1,
+  },
+  priorityBanner: {
+    marginHorizontal: Spacing.md,
+    marginBottom: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: Radius.md,
+    backgroundColor: 'rgba(11, 95, 165, 0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(11, 95, 165, 0.18)',
   },
   scrollView: {
     flex: 1,

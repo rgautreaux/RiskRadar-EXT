@@ -1,86 +1,52 @@
----
 
-
-## Major Developments & Implementation Highlights (as of Mar 30, 2026)
-
-### 1. User Security Plan & Safe Migration
-- Comprehensive User Security Plan implemented (encryption, key management, audit logging planned)
-- All preparatory work (migration scripts, rollback, logging, monitoring, staging setup) completed in test/staging environments
-- Documentation-driven approach ensures all changes are safe, reversible, and fully auditable
-
-### 2. Automated Data Retention & Cleanup
-- Scheduled archive and deletion system keeps the database performant and compliant
-- Retention jobs (nightly/weekly) archive and delete old data, with full logging and dry-run safety
-- All retention logic, migrations, and tests are documented and validated
-
-### 3. End-to-End Testing & Validation
-- Full backend pytest suite (78/78 passing) covers API, database, scrapers, and retention logic
-- Integration tests ensure scraper-to-database pipeline is robust and reliable
-- CI/local pre-push checklist ensures code quality and reproducibility
-
-### 4. Frontend UI/UX & Wireframe Accuracy
-- Mobile app UI/UX plan finalized and mapped to wireframe assets
-- Implementation checklist and asset mapping ensure efficient, brand-accurate styling
-- All frontend components are structured for maintainability and scalability
-
-### 5. Documentation & Team Alignment
-- All major sessions and developments are logged in REBECCA-TRANSCRIPT.md and GROUP_PROGRESS_LOG
-- AUTHORS.md details each member's contributions and roles
-- README, TODO, and all top-level docs are kept in sync for auditability and onboarding
-
----
-
-## Implementation, Functionality, and Execution
-
-### Implementation
-- The backend is built with Python (FastAPI), using SQLAlchemy ORM and MariaDB/SQLite for data persistence.
-- The frontend is a React Native (Expo) mobile app, styled with a centralized theme token system and wireframe-accurate UI/UX.
-- Scrapers collect data from government APIs (NWS, AirNow, EPA, NASA FIRMS, USGS) and store alerts in the database.
-- AI-powered summaries are generated daily using LLM APIs (DeepSeek, OpenAI, Anthropic).
-- Automated data retention and cleanup jobs keep the database performant and compliant.
-- All major developments are documented and validated with end-to-end tests and integration coverage.
-
-### Functionality
-- Real-time environmental risk alerts and air quality data for US locations.
-- AI-generated daily digests and summaries for at-a-glance risk awareness.
-- User authentication, profile management, and notification preferences.
-- Mobile app with branded, wireframe-accurate UI, supporting both Light and Dark Mode.
-- Scheduled jobs for data scraping, retention, and cleanup.
-- Full test suite and CI-ready validation for backend and frontend.
-
-### Execution
-- All preparatory work is completed in test/staging environments before production rollout.
-- Documentation-driven approach ensures all changes are safe, reversible, and auditable.
-- Team roles and contributions are clearly defined in AUTHORS.md.
-- Progress and major sessions are logged in GROUP_PROGRESS_LOG and REBECCA-TRANSCRIPT.md.
-- All top-level documentation is kept in sync after each major session.
-
----
-
-## Importance of Major Developments
-
-- **Security:** User Security Plan ensures data protection, auditability, and compliance.
-- **Performance:** Automated retention and cleanup keep the system fast and scalable.
-- **Reliability:** End-to-end tests and integration coverage prevent regressions and ensure correctness.
-- **Usability:** Wireframe-accurate UI/UX delivers a polished, user-friendly experience.
-- **Transparency:** Comprehensive documentation and progress logs keep the team aligned and the project audit-ready.
-
----
-
-## Why These Developments Matter
-
-- **Security:** Ensures user data is protected, auditable, and compliant with best practices
-- **Performance:** Automated cleanup and retention keep the system fast and scalable
-- **Reliability:** End-to-end tests and integration coverage prevent regressions and ensure correctness
-- **Usability:** Wireframe-accurate UI/UX delivers a polished, user-friendly experience
-- **Transparency:** Comprehensive documentation and progress logs keep the team aligned and the project audit-ready
-
----
 # RiskRadar — Group 6 Senior Project
 
 Environmental risk monitoring mobile app with real-time alerts, air quality data, and AI-powered summaries.
 
 RiskRadar helps residents and travelers identify environmental risks by scraping government APIs (NWS weather, AirNow air quality, NASA wildfires, EPA pollution, USGS earthquakes), storing alerts in a database, and generating AI daily digests.
+
+---
+
+## Synchronization Notes (Chronological)
+
+### April 10, 2026 Synchronization Note
+
+- Critical backend regression coverage was expanded this session for location ingestion, local summaries, system trigger/health behavior, and user auth/notification paths.
+- Full backend validation completed in this session: 107 passed, 0 failed (warnings only).
+- Documentation, transcript, and progress-tracking records are synchronized around this validation state; backend/security lead sign-off remains the external non-code approval gate.
+
+---
+
+### April 11, 2026 Synchronization Note
+
+- GitHub merge blockers were resolved in this session: migration SQL indexability fix (`email_hmac` bounded type), Phase 3 migration prerequisite hardening (no broad schema bootstrap), strict migration test monkeypatching, and handoff metadata date alignment.
+- Branch conflict state was cleared by merging `main` into the active branch, followed by focused migration test verification (`6 passed`).
+- Demo-readiness implementation work was completed this session for presentation support paths.
+- `docs/PROJECT_DEMO.md` now tracks implemented demos, to-be-implemented demos, recommended screen order, fallback rules, and presenter notes.
+- Mobile demo flow improvements now include persisted demo settings, backend-driven alert filters, in-app backend health checks, and scrape-trigger summary output.
+- Backend alert preference behavior was hardened so explicit query filters override user defaults, and targeted backend API suites were revalidated.
+- Root command verification for users + alerts API tests completed green in this session (`40 passed, 0 failed`).
+- Migration verification reruns and monitoring checks were completed successfully in this session environment.
+- Full backend suite confirmation rerun is green: `159 passed, 3 skipped`.
+- Scraper/DB/summary regression checklist is now documented and validated in `docs/QA_CHECKLIST.md`.
+
+---
+
+### April 12, 2026 Synchronization Note
+
+- Completed the final pass for the web frontend visual-refresh plan in the template-based web UI (`backend/templates/*`, `backend/static/css/style.css`).
+- Implemented accessibility hardening in shared web templates: skip link + `main` landmark, ARIA labels/live regions, keyboard-visible focus states, and consistent error/success messaging patterns.
+- Aligned web visual styling with RiskRadar branding tokens while preserving backend route/API behavior.
+- Replaced remaining inline template presentation styles with reusable stylesheet classes to reduce drift and maintenance risk.
+- During final verification, a transient live external-data timeout was encountered and resolved by making live timeout/network transport failures skip-safe in `backend/tests/test_live_data_fetch.py`.
+- Final verification rerun for this session is green: full backend pytest suite `165 passed, 3 skipped`.
+- Coordination verification refresh updated backend baseline evidence to `172 passed, 3 skipped` after additional migration/schema safety tests landed.
+- Frontend static-check environment blocker was cleared (`npm install` in `frontend/RiskRadar`), and remaining lint/typecheck issues were documented as frontend-owner follow-ups (`app/main/weather-report.tsx`, `app/(tabs)/explore.tsx`).
+- Rebecca-safe coordination/documentation closeout tasks are complete; remaining open items are owner-dependent follow-ups.
+- Apr 12 follow-up (database safety implementation lane): added and validated `schema_drift_check.py`, unified `safety_gate.py`, registration plaintext-email hardening for new users, and legacy-login compatibility regression coverage.
+- Apr 12 follow-up verification: full backend pytest baseline advanced to `176 passed, 3 skipped` after safety-lane additions.
+- Apr 12 follow-up review prep: remaining local/unpushed work was split into categorized commits (security, DB safety commands/tests, migration evidence docs, top-level sync docs, frontend generated artifacts) and pushed to `origin/Rebecca-Gautreaux-Work-Branch` for clearer PR review.
+- Apr 12 documentation follow-up: added a full Mermaid ER `Database Schema` graph in `docs/DATA_MODEL.md` under `Key Relationships`, capturing all 13 tables, key PK/FK fields, and current FK relationship edges.
 
 ---
 
@@ -186,8 +152,8 @@ Then press:
 Team6Project/
 ├── .env.example              # Template for environment variables
 ├── .env                      # Your local config (not committed)
-│
 ├── backend/                  # Python FastAPI server
+
 │   ├── main.py               # App entry point
 │   ├── requirements.txt      # Python dependencies
 │   ├── riskradar.db          # SQLite database (auto-created)
@@ -277,6 +243,97 @@ Team6Project/
 
 ---
 
+## Project Stages & Progress (as of Apr 10, 2026)
+
+### Stage 1: Security & Migration
+- Comprehensive User Security Plan implemented (encryption, key management, audit logging planned)
+- All preparatory work (migration scripts, rollback, logging, monitoring, staging setup) completed in test/staging environments
+- Documentation-driven approach ensures all changes are safe, reversible, and fully auditable
+
+### Stage 2: Automated Data Retention & Cleanup
+- Scheduled archive and deletion system keeps the database performant and compliant
+- Retention jobs (nightly/weekly) archive and delete old data, with full logging and dry-run safety
+- All retention logic, migrations, and tests are documented and validated
+
+### Stage 3: End-to-End Testing & Validation
+- Full backend pytest suite is green in the latest Apr 11 verification pass (`159 passed, 3 skipped`) and covers API, database, scrapers, retention logic, and user registration/login regressions
+- Integration tests ensure scraper-to-database pipeline is robust and reliable
+- Backend smoke verification script now completes cleanly, including config-driven scraper loading and conditional summary generation when no LLM provider is configured
+- CI/local pre-push checklist ensures code quality and reproducibility
+
+### Stage 4: Frontend UI/UX & Wireframe Accuracy
+- Mobile app UI/UX plan finalized and mapped to wireframe assets
+- Implementation checklist and asset mapping ensure efficient, brand-accurate styling
+- All frontend components are structured for maintainability and scalability
+
+### Stage 5: Documentation & Team Alignment
+- All major sessions and developments are logged in REBECCA-TRANSCRIPT.md and GROUP_PROGRESS_LOG
+- AUTHORS.md details each member's contributions and roles
+- README, TODO, and top-level planning/tracking docs are kept synchronized for auditability and onboarding
+- Apr 10 update: migration verification evidence from this environment was recorded (targeted migration tests passed and migration script execution completed successfully), and the documentation bundle was refreshed in lockstep
+- Apr 10 update: Rebecca’s code-side implementation work is complete; the remaining dependency is backend/security lead sign-off, and the documentation bundle now reflects that boundary explicitly
+- Apr 2 update: Phase 3 security implementation evidence and backend/security review-request content are now documented and ready for lead sign-off workflow
+- Apr 2 update: backend pytest, frontend lint, and scraper smoke verification were rerun; the backend suite passed cleanly, frontend lint/typecheck completed cleanly, and the smoke script completed without summary-generation errors
+- Apr 2 follow-up: documentation sync records were refreshed again so the latest transcript, progress, reflection, TODO, sprint tracking, QA, and AUTHORS entries remain in lockstep
+- Apr 2 follow-up request: the newest transcript/progress/reflection/update pass is now recorded so the documentation audit trail reflects this session as well
+- Apr 12 update: database safety hardening implementation completed for this cycle, including connection pre-ping, migration preflight checks (tables/columns/indexes/foreign keys/orphans), operational index hardening, and FK integrity migration artifacts
+- Apr 12 update: backend write-path transaction guards were standardized in high-risk endpoints and validated with a full backend pass (`165 passed, 3 skipped`)
+
+---
+
+## Major Developments & Implementation Highlights (as of Apr 12, 2026)
+
+- All stage-specific progress notes and updates are now organized at the end of the README for clarity and auditability.
+- Top-level documentation (README, TODO, AUTHORS, GROUP_PROGRESS_LOG, REBECCA-TRANSCRIPT, REFLECTION) is synchronized and audit-ready.
+- Verbatim, word-for-word transcript of this session added to REBECCA-TRANSCRIPT.md in correct chronological order.
+- Duplicate transcript entries removed; all entries are unique and in order.
+- REFLECTION.md updated with a summary of this session, the rationale, and its impact on the project.
+- AUTHORS.md updated with each member’s contributions and roles in correct chronological order.
+- README.md expanded with sections on implementation, functionality, execution, and importance of major developments, all in correct chronological and stage order.
+- Phase 3 migration logging + monitoring implementation is complete with focused automated validation and monitoring tests; review handoff artifact prepared for backend/security leads.
+- April 2 verification pass confirmed backend pytest at 87/87, frontend lint/typecheck clean, and successful smoke execution of backend/test_scrape_and_summarize.py after registry/import and generic API extraction fixes.
+- The April 2 documentation follow-up added a fresh transcript entry and refreshed all audit-facing planning/progress docs without changing the verified code state.
+- The Apr 2 follow-up verification pass also refreshed the transcript/progress/reflection/TODO chain so the top-level records continue to match the validated codebase state.
+- The Apr 10 documentation pass preserved the same audit trail while making Rebecca’s remaining approval gate explicit.
+- The Apr 10 migration-verification sync pass recorded successful migration test/script results and propagated the session update across transcript, progress, reflection, TODO, AUTHORS, README, and sprint tracking.
+- The Apr 12 DB hardening pass implemented migration preflight enforcement (including index/FK prerequisites), transaction-safe endpoint writes, and additive integrity/index migrations with full backend verification (`165 passed, 3 skipped`).
+
+---
+
+## Implementation, Functionality, Execution, and Importance
+
+### Implementation
+- Backend: Python (FastAPI), SQLAlchemy ORM, MariaDB/SQLite
+- Frontend: React Native (Expo), centralized theme token system, wireframe-accurate UI/UX
+- Scrapers: Government APIs (NWS, AirNow, EPA, NASA FIRMS, USGS)
+- AI Summaries: LLM APIs (DeepSeek, OpenAI, Anthropic)
+- Data retention: Automated jobs for cleanup and compliance
+- All major developments validated with end-to-end tests and integration coverage
+
+### Functionality
+- Real-time environmental risk alerts and air quality data for US locations
+- AI-generated daily digests and summaries
+- User authentication, profile management, and notification preferences
+- Mobile app with branded, wireframe-accurate UI, Light/Dark Mode
+- Scheduled jobs for data scraping, retention, and cleanup
+- Full test suite and CI-ready validation for backend and frontend
+
+### Execution
+- All preparatory work completed in test/staging before production rollout
+- Documentation-driven approach ensures all changes are safe, reversible, and auditable
+- Team roles and contributions are clearly defined in AUTHORS.md
+- Progress and major sessions are logged in GROUP_PROGRESS_LOG and REBECCA-TRANSCRIPT.md
+- All top-level documentation is kept synchronized after each major session
+
+### Importance
+- **Security:** User Security Plan ensures data protection, auditability, and compliance
+- **Performance:** Automated retention and cleanup keep the system fast and scalable
+- **Reliability:** End-to-end tests and integration coverage prevent regressions and ensure correctness
+- **Usability:** Wireframe-accurate UI/UX delivers a polished, user-friendly experience
+- **Transparency:** Comprehensive documentation and progress logs keep the team aligned and the project audit-ready
+
+---
+
 ## API Endpoints
 
 ### Authentication (Public)
@@ -350,7 +407,7 @@ py -m pip install -r requirements.txt
 py -m pytest -q --tb=short
 ```
 
-Expected: `78 passed`. Tests use an in-memory database and mock all external APIs — no API keys needed.
+Expected: `87 passed`. Tests use an in-memory database and mock all external APIs — no API keys needed.
 
 ---
 
@@ -411,3 +468,122 @@ For more details, see:
 - [backend/scrapers/scheduler.py](backend/scrapers/scheduler.py)
 - [backend/db/retention.py](backend/db/retention.py)
 - [backend/db/models.py](backend/db/models.py)
+
+---
+
+## Project Stages & Progress
+
+### Stage 1: Security & Migration
+ - Comprehensive User Security Plan implemented (encryption, key management, audit logging planned)
+ - All preparatory work (migration scripts, rollback, logging, monitoring, staging setup) completed in test/staging environments
+ - Documentation-driven approach ensures all changes are safe, reversible, and fully auditable
+
+### Stage 2: Automated Data Retention & Cleanup
+ - Scheduled archive and deletion system keeps the database performant and compliant
+ - Retention jobs (nightly/weekly) archive and delete old data, with full logging and dry-run safety
+ - All retention logic, migrations, and tests are documented and validated
+
+### Stage 3: End-to-End Testing & Validation
+ Full backend pytest suite (87/87 passing) covers API, database, scrapers, and retention logic
+ - Integration tests ensure scraper-to-database pipeline is robust and reliable
+ Full backend pytest suite (87/87 passing) covers API, database, scrapers, and retention logic
+
+### Stage 4: Frontend UI/UX & Wireframe Accuracy
+ - Mobile app UI/UX plan finalized and mapped to wireframe assets
+ - Implementation checklist and asset mapping ensure efficient, brand-accurate styling
+ - All frontend components are structured for maintainability and scalability
+
+### Stage 5: Documentation & Team Alignment
+ - All major sessions and developments are logged in REBECCA-TRANSCRIPT.md and GROUP_PROGRESS_LOG
+ - AUTHORS.md details each member's contributions and roles
+ - README, TODO, and all top-level docs are kept in sync for auditability and onboarding
+
+---
+
+## How the Frontend Connects to the Backend
+
+```
+┌──────────────────────────┐
+│   React Native App       │
+│   (Expo on phone/web)    │
+└───────────┬──────────────┘
+            │  HTTP requests to http://<your-ip>:8000/api/v1/...
+            │  JWT token in Authorization header
+            │
+┌───────────▼──────────────┐
+│   FastAPI Backend        │
+│   (Python on your PC)    │
+├──────────────────────────┤
+│ /api/v1/users/login      │ → returns JWT token
+│ /api/v1/users/register   │ → creates account
+│ /api/v1/alerts           │ → list all alerts from DB
+│ /api/v1/location/alerts  │ → fetch fresh alerts for a zip code
+│ /api/v1/summaries/latest │ → latest AI summary
+│ /api/v1/health           │ → server status
+└───────────┬──────────────┘
+            │
+┌───────────▼──────────────┐
+│   SQLite Database        │
+│   (riskradar.db)         │
+└──────────────────────────┘
+```
+
+**Key connection files:**
+
+| File | What it does |
+|------|-------------|
+| `frontend/RiskRadar/constants/api.ts` | Builds the backend URL — auto-detects your PC's IP from Expo |
+| `frontend/RiskRadar/utils/api.ts` | `apiFetch()` helper — adds JWT token to every request |
+| `frontend/RiskRadar/contexts/auth-context.tsx` | Manages login/logout, stores JWT token |
+| `backend/auth/security.py` | Verifies passwords and JWT tokens |
+
+---
+
+## Major Developments & Implementation Highlights (as of Mar 30, 2026)
+
+### 1. User Security Plan & Safe Migration
+- Comprehensive User Security Plan implemented (encryption, key management, audit logging planned)
+- All preparatory work (migration scripts, rollback, logging, monitoring, staging setup) completed in test/staging environments
+- Documentation-driven approach ensures all changes are safe, reversible, and fully auditable
+
+### 2. Automated Data Retention & Cleanup
+- Scheduled archive and deletion system keeps the database performant and compliant
+- Retention jobs (nightly/weekly) archive and delete old data, with full logging and dry-run safety
+- All retention logic, migrations, and tests are documented and validated
+
+### 3. End-to-End Testing & Validation
+- Full backend pytest suite (87/87 passing) covers API, database, scrapers, and retention logic
+- Integration tests ensure scraper-to-database pipeline is robust and reliable
+- CI/local pre-push checklist ensures code quality and reproducibility
+
+### 4. Frontend UI/UX & Wireframe Accuracy
+- Mobile app UI/UX plan finalized and mapped to wireframe assets
+- Implementation checklist and asset mapping ensure efficient, brand-accurate styling
+- All frontend components are structured for maintainability and scalability
+
+### 5. Documentation & Team Alignment
+- All major sessions and developments are logged in REBECCA-TRANSCRIPT.md and GROUP_PROGRESS_LOG
+- AUTHORS.md details each member's contributions and roles
+- README, TODO, and all top-level docs are kept in sync for auditability and onboarding
+
+---
+
+## Importance of Major Developments
+
+- **Security:** User Security Plan ensures data protection, auditability, and compliance.
+- **Performance:** Automated retention and cleanup keep the system fast and scalable.
+- **Reliability:** End-to-end tests and integration coverage prevent regressions and ensure correctness.
+- **Usability:** Wireframe-accurate UI/UX delivers a polished, user-friendly experience.
+- **Transparency:** Comprehensive documentation and progress logs keep the team aligned and the project audit-ready.
+
+---
+
+## Why These Developments Matter
+
+- **Security:** Ensures user data is protected, auditable, and compliant with best practices
+- **Performance:** Automated cleanup and retention keep the system fast and scalable
+- **Reliability:** End-to-end tests and integration coverage prevent regressions and ensure correctness
+- **Usability:** Wireframe-accurate UI/UX delivers a polished, user-friendly experience
+- **Transparency:** Comprehensive documentation and progress logs keep the team aligned and the project audit-ready
+
+---

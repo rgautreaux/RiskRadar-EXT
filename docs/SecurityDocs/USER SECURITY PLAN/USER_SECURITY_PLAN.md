@@ -257,3 +257,47 @@ To ensure the integrity of the codebase and minimize risks during implementation
 By following these strategies, the team can avoid common pitfalls and ensure a smooth, secure transition to encrypted email and hashed password storage.
 ### Summary
 This plan provides a clear, actionable roadmap to secure user emails and passwords in RiskRadar, leveraging best practices and compliance insights from `/SecurityDocs`. It ensures user safety, privacy, and project integrity without disrupting current functionality.
+---
+
+## ⚠️ Phase 3+ Roadmap: Data Integrity & Database Normalization
+
+**After Phase 3-4 (Security Migration) completes**, the team will implement comprehensive **3NF Normalization** to further improve data consistency and integrity.
+
+### 📋 Related Document (Requires Lead Approval)
+
+- **[data_integrity_and_consistency_plan_draft.md](data_integrity_and_consistency_plan_draft.md)** ⭐ **REQUIRES APPROVAL**
+  - **Status:** DRAFT (pending Backend Lead & Security Lead sign-off)
+  - **Purpose:** Comprehensive plan for normalizing the database schema to Third Normal Form (3NF)
+  - **What it addresses:**
+    - 1NF violations: JSON denormalization (raw data, alert arrays, user preferences)
+    - 3NF violations: Transitive dependencies (geographic coordinates, lookup values)
+    - Schema typos: Fix misspelled table/column names
+  - **Timeline:** Begins post-Phase 4 completion (~mid-May 2026)
+  - **Approval Required From:**
+    - ✅ **Qui Huynh (Backend Lead)** – Code refactoring & API impact assessment
+    - ✅ **Noah Benoit (Security Lead)** – Compliance & data integrity validation
+  - **Key Highlights:**
+    - Phased approach during low-traffic windows
+    - Full rollback capability tested in staging
+    - Zero data loss through rigorous validation
+    - Maintains backward compatibility where feasible
+
+### How This Complements the Security Plan
+
+| Aspect | Security Plan (Phase 1-4) | Normalization Plan (Phase 5+) |
+|--------|---------------------------|--------------------------------|
+| **Focus** | User credentials protection | Data model consistency |
+| **Timeline** | Now (Mar-Apr 2026) | After security migration (May-Jun 2026) |
+| **Risk Level** | High (live user data) | Medium (schema changes, manageable in staging) |
+| **Dependencies** | Independent | Depends on Phase 4 completion |
+| **Scope** | Email encryption, password hashing | Schema normalization, typo fixes |
+
+### Next Steps (Phase 3-4 Milestone)
+
+Once Phase 3-4 (Security Migration) reaches **completion + 2-week post-deployment validation**:
+
+1. ✅ **Get Approvals:** Backend Lead & Security Lead review & sign off on normalization plan
+2. ✅ **Stage Setup:** Prepare staging environment for schema normalization testing
+3. ✅ **Test & Validate:** Run full normalization workflow in staging
+4. ✅ **Communicate:** Notify team of upcoming normalization timeline
+5. ✅ **Deploy:** Execute in production during low-traffic window
