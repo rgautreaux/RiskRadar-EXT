@@ -79,6 +79,9 @@ window.__RISKRADAR_FORECAST_API_PREFIX__ = <?php echo json_encode($forecastApiPr
     <div class="mt-4" style="color: var(--destructive); font-size: 13px;">
         <strong>Note:</strong> The static preview remains as a fallback visual until the live forecast panel has data.
     </div>
+
+<?php include __DIR__ . '/partials/risk_legend.php'; ?>
+    </div>
 </section>
 
 <?php rr_render_layout_end(); ?>
