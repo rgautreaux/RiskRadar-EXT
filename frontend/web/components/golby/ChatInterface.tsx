@@ -219,26 +219,63 @@ function reactionDelta(reaction: FeedbackReaction) {
 	return reactionToRating(reaction) - 3;
 }
 
-function classifyTopic(message: string): 'forecast' | 'alert' | 'risk' | 'joke' | 'greeting' | 'help' | 'general' {
-	if (message.includes('joke')) {
+function classifyTopic(message: string): 'forecast' | 'alert' | 'risk' | 'joke' | 'greeting' | 'help' | 'travel' | 'general' {
+	const lower = message.toLowerCase();
+	if (lower.includes('joke')) {
 		return 'joke';
 	}
-	if (message.includes('hello') || message.includes('hi')) {
+	if (lower.includes('hello') || lower.includes('hi')) {
 		return 'greeting';
 	}
-	if (message.includes('forecast') || message.includes('weather')) {
+	if (lower.includes('forecast') || lower.includes('weather')) {
 		return 'forecast';
 	}
-	if (message.includes('alert')) {
+	if (lower.includes('alert')) {
 		return 'alert';
 	}
-	if (message.includes('risk')) {
+	if (lower.includes('risk')) {
 		return 'risk';
 	}
-	if (message.includes('help')) {
+	if (lower.includes('help')) {
 		return 'help';
 	}
+	if (lower.match(/\b(travel|trip|packing|pack|prepare|preparation|luggage|suitcase|what should i bring|what to bring|checklist|advice)\b/)) {
+		return 'travel';
+	}
 	return 'general';
+}
+
+// Proactive travel/packing/preparation checklist generator
+function generateTravelChecklist(riskData?: any): string {
+	// Example: riskData could be air quality, weather, alerts, etc.
+	const baseChecklist = [
+		'Valid ID and travel documents',
+		'Phone and charger',
+		'Medications and health essentials',
+		'Reusable water bottle',
+		'Snacks',
+		'Weather-appropriate clothing',
+		'Personal hygiene items',
+		'Face mask (for air quality or crowded places)',
+		'Hand sanitizer',
+	];
+	let riskTips: string[] = [];
+	if (riskData) {
+		if (riskData.air_quality && riskData.air_quality === 'poor') {
+			riskTips.push('Pack extra face masks due to poor air quality.');
+		}
+		if (riskData.weather && riskData.weather === 'rain') {
+			riskTips.push('Bring a rain jacket or umbrella.');
+		}
+		if (riskData.weather && riskData.weather === 'hot') {
+			riskTips.push('Pack sunscreen and stay hydrated.');
+		}
+		if (riskData.alerts && riskData.alerts.includes('wildfire')) {
+			riskTips.push('Check for wildfire alerts and plan alternate routes.');
+		}
+		// Add more risk-based tips as needed
+	}
+	return `Here’s a travel preparation checklist for you:\n- ${baseChecklist.join('\n- ')}${riskTips.length ? '\n\nBased on current risks:\n- ' + riskTips.join('\n- ') : ''}`;
 }
 
 const GUARDED_PATTERNS: Array<{ category: GuardrailCategory; regex: RegExp }> = [
