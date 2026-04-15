@@ -20,7 +20,6 @@ function rr_render_layout_start(string $title, string $activePage): void
     $accessContext = function_exists('rr_access_context') ? rr_access_context() : 'anonymous';
     $isAnonymous = $accessContext === 'anonymous';
     $isGuest = $accessContext === 'guest';
-    $isAuthenticated = $accessContext === 'authenticated';
 
     $apiBase = 'http://127.0.0.1:8001';
     $apiPrefix = '/api/v1';
