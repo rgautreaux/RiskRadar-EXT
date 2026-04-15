@@ -1,8 +1,14 @@
 <?php
 
+
 require_once __DIR__ . '/../services/bootstrap.php';
 
-rr_require_feature_access();
+// Only allow authenticated users (not guests or anonymous) to access profile page
+if (rr_access_context() !== 'authenticated') {
+    rr_set_flash('warning', 'You must be signed in to access your profile.');
+    header('Location: login.php');
+    exit;
+}
 
 $flash = rr_get_flash();
 $preferencesErrors = [];
