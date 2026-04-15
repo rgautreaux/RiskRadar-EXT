@@ -2,6 +2,34 @@
 
 ## Session Reflections
 
+# Stage 5: OpenRouter Integration, Guest/Premium Model Routing, and Trip Packing Guide Feature Session (2026-04-15)
+Summary:
+- Migrated the LLM backend from a direct model call to OpenRouter by wiring `openai.OpenAI` with `base_url="https://openrouter.ai/api/v1"` and resolving the API key from the new `OPENROUTER_API_KEY` setting (with `LLM_API_KEY` as a fallback).
+- Added `LLM_MODEL_GUEST` and `LLM_MODEL_PREMIUM` fields to `backend/config/settings.py` so two different OpenRouter model slugs can be configured per user tier; both default to empty string and fall back to `LLM_MODEL` when unset.
+- Added `LLM_API_KEY` to `Settings` as a legacy fallback field referenced by `Summarizer._call_llm`.
+- Rewrote `Summarizer._resolve_model` to select the guest model for unauthenticated calls and the premium model for authenticated calls, with safe empty-string fallback to the default model in both paths.
+- Fixed `Summarizer._call_llm` return signature to a 3-tuple `(text, token_count, model_used)` and updated both callers — `generate_daily_digest` now unpacks all three values and writes the actual runtime model name to `Summary.model_used` instead of the static config value; `generate_breaking_summary` discards the extra values with `_, _`.
+- Added `import openai` that was missing from `summarizer.py`, which would have caused a `NameError` at first LLM call.
+- Added three missing prompt constants to `backend/llm/prompts.py`: `DAILY_DIGEST_SYSTEM` (nationwide daily briefing system prompt), `BREAKING_SYSTEM` (push-notification summary system prompt), and `BREAKING_USER` (single-alert user template) — all referenced by `summarizer.py` but absent from the file.
+- Added `generate_trip_packing_guide(city, state, zip_code, alerts, trip_date, is_premium)` method to `Summarizer`, using `TRIP_PACKING_SYSTEM`/`TRIP_PACKING_USER` and routing through `_resolve_model`; returns `(guide_markdown, model_used)` and falls back to the deterministic summary on LLM failure.
+- Created `backend/api/packing.py` with a `POST /api/v1/packing/guide` endpoint: resolves `is_premium` from the optional JWT user, queries active alerts for the destination city/state within a 72-hour window, and delegates to `generate_trip_packing_guide`.
+- Registered `packing_router` in `backend/api/router.py`.
+
+Why this was done:
+- The codebase referenced `openai.OpenAI` with an OpenRouter `base_url` but never imported `openai`, causing an immediate `NameError` at runtime.
+- `DAILY_DIGEST_SYSTEM`, `BREAKING_SYSTEM`, and `BREAKING_USER` were imported by `summarizer.py` but deleted from `prompts.py` during the prompt restructuring, causing an `ImportError` on module load that would break all LLM-backed endpoints.
+- `_call_llm` returned a 3-tuple but both callers unpacked only 2 values, causing a `ValueError` on every successful LLM response.
+- `generate_daily_digest` was writing the static config string to `model_used` instead of the actual model that processed the request, producing misleading audit records.
+- `LLM_MODEL_GUEST` and `LLM_MODEL_PREMIUM` were referenced in `_resolve_model` but absent from `Settings`, which would raise a `AttributeError` at startup with strict pydantic-settings validation.
+- The new `TRIP_PACKING_SYSTEM`/`TRIP_PACKING_USER` prompts had no wired endpoint or summarizer method, leaving the feature with prompts but no callable path.
+
+How this improved the project:
+- All LLM-related `ImportError`, `NameError`, `ValueError`, and `AttributeError` failures are eliminated; the backend now starts and serves LLM requests cleanly.
+- The OpenRouter migration enables model-agnostic routing — any model slug on OpenRouter can be configured without code changes.
+- Guest/premium model differentiation allows the team to serve a lighter, cheaper model to unauthenticated visitors while giving registered users access to a more capable model, improving both cost efficiency and user experience.
+- `Summary.model_used` now accurately records which model generated each digest, improving auditability and debugging capability.
+- The new `POST /api/v1/packing/guide` endpoint completes the trip packing guide feature end-to-end, making it callable from the frontend with automatic alert enrichment and tier-appropriate model selection.
+
 # Stage 5: OpenWeather Source Wiring and YAML Syntax Fix Session (2026-04-14)
 Summary:
 - Confirmed `OPENWEATHER_API_KEY` was declared in `backend/config/settings.py` but not referenced by any entry in `backend/config/sources.yaml`, leaving the key unwired with no data flowing from OpenWeather.
