@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 
 from auth.dependencies import get_optional_current_user
@@ -113,12 +113,71 @@ def _severity_weight(severity: str | None) -> float:
     return mapping.get((severity or "").lower(), 0.35)
 
 
+GUEST_DAILY_LIMIT = 10  # Should match frontend, or make configurable
+import time
+
+# Simple in-memory guest rate limit (per IP, per day)
+_guest_limit_cache = {}
+
+def _guest_limit_key(request: Request):
+    ip = request.client.host if request.client else 'unknown'
+    today = time.strftime('%Y-%m-%d', time.gmtime())
+    return f"{ip}:{today}"
+
+def _increment_guest_limit(request: Request):
+    key = _guest_limit_key(request)
+    count = _guest_limit_cache.get(key, 0) + 1
+    _guest_limit_cache[key] = count
+    return count
+
+def _get_guest_limit(request: Request):
+    key = _guest_limit_key(request)
+    return _guest_limit_cache.get(key, 0)
+
 @router.post("/respond", response_model=AssistantResponse)
 def respond(
     body: AssistantRequest,
     db: Session = Depends(get_db),
     current_user: User | None = Depends(get_optional_current_user),
+    request: Request = None,
 ):
+
+    # Guest daily limit enforcement
+    is_guest = current_user is None
+    if is_guest and request is not None:
+        if _get_guest_limit(request) >= GUEST_DAILY_LIMIT:
+            return AssistantResponse(
+                reply=(
+                    f"You have reached the daily limit for guest users ({GUEST_DAILY_LIMIT} messages per day). "
+                    "Create a free account to unlock unlimited chat and personalized features!"
+                ),
+                category="static",
+                used_live_data=False,
+                sources=["guest-limit"],
+            )
+        _increment_guest_limit(request)
+
+    # User-only feature lockout for guests (simple keyword-based)
+    personalized_keywords = [
+        'my risk', 'my score', 'my alerts', 'my profile', 'my preferences', 'my account',
+        'personalized', 'custom alert', 'my health', 'my recommendations'
+    ]
+    lower_msg = body.message.lower()
+    if is_guest and any(k in lower_msg for k in personalized_keywords):
+        return AssistantResponse(
+            reply=(
+                "This feature is only available to registered users.\n\nWhy register?\n"
+                "- Unlock personalized risk scores and recommendations\n"
+                "- Set up custom alerts for your area\n"
+                "- Save your preferences and health info\n"
+                "- Access your profile and account features\n\n"
+                "Sign in or create an account for full access!"
+            ),
+            category="static",
+            used_live_data=False,
+            sources=["guest-lockout"],
+        )
+
     guardrail_category = _detect_guardrail(body.message)
     if guardrail_category:
         return AssistantResponse(

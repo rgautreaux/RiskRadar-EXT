@@ -125,10 +125,46 @@ const DEFAULT_PROFILE: AssistantProfile = {
 	static: 0,
 };
 
+
 const PROFILE_STORAGE_KEY = 'golby-assistant-profile';
 const SESSION_STORAGE_KEY = 'golby-session-id';
 const FEEDBACK_COUNT_STORAGE_KEY = 'golby-feedback-count';
 const STYLE_BIAS_STORAGE_KEY = 'golby-style-bias';
+
+// Guest daily request limit
+const GUEST_DAILY_LIMIT = 10; // Adjustable as needed
+const GUEST_LIMIT_STORAGE_KEY = 'golby-guest-daily-count';
+const GUEST_LIMIT_DATE_KEY = 'golby-guest-daily-date';
+// Helper: Check if user is guest
+function isGuestUser(currentUserId?: number) {
+	return !currentUserId || currentUserId <= 0;
+}
+
+// Helper: Guest daily limit logic
+function getTodayISO() {
+	return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+}
+
+function getGuestDailyCount() {
+	if (typeof window === 'undefined') return 0;
+	const today = getTodayISO();
+	const storedDate = window.localStorage.getItem(GUEST_LIMIT_DATE_KEY);
+	if (storedDate !== today) {
+		window.localStorage.setItem(GUEST_LIMIT_DATE_KEY, today);
+		window.localStorage.setItem(GUEST_LIMIT_STORAGE_KEY, '0');
+		return 0;
+	}
+	const count = parseInt(window.localStorage.getItem(GUEST_LIMIT_STORAGE_KEY) || '0', 10);
+	return isNaN(count) ? 0 : count;
+}
+
+function incrementGuestDailyCount() {
+	if (typeof window === 'undefined') return;
+	const today = getTodayISO();
+	window.localStorage.setItem(GUEST_LIMIT_DATE_KEY, today);
+	const count = getGuestDailyCount() + 1;
+	window.localStorage.setItem(GUEST_LIMIT_STORAGE_KEY, String(count));
+}
 
 const PROFILE_CAP = 8;
 const PROFILE_DECAY = 0.9;
@@ -682,6 +718,29 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 
 	const handleSendMessage = async (text: string) => {
 		if (!text.trim()) return;
+		// Guest daily limit enforcement
+		if (isGuestUser(currentUserId)) {
+			const guestCount = getGuestDailyCount();
+			if (guestCount >= GUEST_DAILY_LIMIT) {
+				// Show limit message
+				const limitMsg: Message = {
+					id: createMessageId(),
+					text: `You've reached the daily limit for guest users (${GUEST_DAILY_LIMIT} messages per day).\n\nCreate a free account to unlock unlimited chat and personalized features!`,
+					isGolby: true,
+					timestamp: new Date(),
+					responseCategory: 'static',
+				};
+				setMessages((prev: Message[]) => [...prev, {
+					id: createMessageId(),
+					text: text,
+					isGolby: false,
+					timestamp: new Date()
+				}, limitMsg]);
+				setInputValue('');
+				return;
+			}
+			incrementGuestDailyCount();
+		}
 		// Add user message
 		const userMessage: Message = {
 			id: createMessageId(),
@@ -695,6 +754,43 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 		setIsTyping(true);
 		const response = await getGolbyResponse(text);
 		setIsTyping(false);
+		// Refined: handle backend lockout/limit responses and improve benefit messaging
+		let lockoutDetected = false;
+		let limitDetected = false;
+		if (isGuestUser(currentUserId)) {
+			// Detect backend lockout/limit responses
+			const respText = (response.text || '').toLowerCase();
+			if (respText.includes('only available to registered users') || (response.sources && response.sources.includes('guest-lockout'))) {
+				lockoutDetected = true;
+			}
+			if (respText.includes('reached the daily limit') || (response.sources && response.sources.includes('guest-limit'))) {
+				limitDetected = true;
+			}
+		}
+		if (lockoutDetected) {
+			const lockMsg: Message = {
+				id: createMessageId(),
+				text: `This feature is only available to registered users.\n\nWhy register?\n- Unlock personalized risk scores and recommendations\n- Set up custom alerts for your area\n- Save your preferences and health info\n- Access your profile and account features\n\n` +
+					`<a href='/login' class='text-blue-700 underline'>Sign In</a> or <a href='/register' class='text-blue-700 underline'>Create Account</a> for full access!`,
+				isGolby: true,
+				timestamp: new Date(),
+				responseCategory: 'static',
+			};
+			setMessages((prev: Message[]) => [...prev, lockMsg]);
+			return;
+		}
+		if (limitDetected) {
+			const limitMsg: Message = {
+				id: createMessageId(),
+				text: `You've reached the daily limit for guest users (${GUEST_DAILY_LIMIT} messages per day).\n\nCreate a free account to unlock unlimited chat and personalized features!\n\n` +
+					`<a href='/login' class='text-blue-700 underline'>Sign In</a> or <a href='/register' class='text-blue-700 underline'>Create Account</a>`,
+				isGolby: true,
+				timestamp: new Date(),
+				responseCategory: 'static',
+			};
+			setMessages((prev: Message[]) => [...prev, limitMsg]);
+			return;
+		}
 		const golbyMessage: Message = {
 			id: createMessageId(),
 			text: response.text,
