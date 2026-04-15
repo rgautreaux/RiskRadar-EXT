@@ -20,6 +20,7 @@ function rr_render_layout_start(string $title, string $activePage): void
     $accessContext = function_exists('rr_access_context') ? rr_access_context() : 'anonymous';
     $isAnonymous = $accessContext === 'anonymous';
     $isGuest = $accessContext === 'guest';
+    $isAuthenticated = $accessContext === 'authenticated';
 
     $apiBase = 'http://127.0.0.1:8001';
     $apiPrefix = '/api/v1';
@@ -68,6 +69,22 @@ function rr_render_layout_start(string $title, string $activePage): void
                     <a class="<?php echo $activePage === 'register' ? 'is-active' : ''; ?>" href="register.php">
                         <img src="assets/icons/profile.svg" alt="Register Icon" class="nav-icon"> Sign Up
                     </a>
+                    <?php elseif ($isGuest) : ?>
+                    <a class="<?php echo $activePage === 'dashboard' ? 'is-active' : ''; ?>" href="index.php">
+                        <img src="assets/icons/home-green.svg" alt="Dashboard Icon" class="nav-icon"> Dashboard
+                    </a>
+                    <a class="<?php echo $activePage === 'alerts' ? 'is-active' : ''; ?>" href="alerts.php">
+                        <img src="assets/icons/notification.svg" alt="Alerts Icon" class="nav-icon"> Alerts
+                    </a>
+                    <a class="<?php echo $activePage === 'summaries' ? 'is-active' : ''; ?>" href="summaries.php">
+                        <img src="assets/icons/chart.svg" alt="Summaries Icon" class="nav-icon"> Summaries
+                    </a>
+                    <a class="<?php echo $activePage === 'assistant' ? 'is-active' : ''; ?>" href="assistant.php">
+                        <img src="assets/icons/ai-assistant.svg" alt="Assistant Icon" class="nav-icon"> Assistant
+                    </a>
+                    <a class="<?php echo $activePage === 'login' ? 'is-active' : ''; ?>" href="login.php">
+                        <img src="assets/icons/profile.svg" alt="Login Icon" class="nav-icon"> Login
+                    </a>
                     <?php else : ?>
                     <a class="<?php echo $activePage === 'dashboard' ? 'is-active' : ''; ?>" href="index.php">
                         <img src="assets/icons/home-green.svg" alt="Dashboard Icon" class="nav-icon"> Dashboard
@@ -93,8 +110,8 @@ function rr_render_layout_start(string $title, string $activePage): void
                     <a class="<?php echo $activePage === 'assistant' ? 'is-active' : ''; ?>" href="assistant.php">
                         <img src="assets/icons/ai-assistant.svg" alt="Assistant Icon" class="nav-icon"> Assistant
                     </a>
-                    <a href="login.php">
-                        <img src="assets/icons/profile.svg" alt="Login Icon" class="nav-icon"><?php echo $isGuest ? ' Sign In' : ' Login'; ?>
+                    <a href="logout.php">
+                        <img src="assets/icons/profile.svg" alt="Logout Icon" class="nav-icon"> Logout
                     </a>
                     <?php endif; ?>
                 </nav>

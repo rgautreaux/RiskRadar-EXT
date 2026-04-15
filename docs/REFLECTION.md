@@ -2,6 +2,44 @@
 
 ## Session Reflections
 
+# Stage 5: Logout Tab and Sign-Out Flow Session (2026-04-15)
+Summary:
+- Confirmed no logout page or sign-out flow existed in the frontend — `rr_clear_session_cookie()` was defined in `security.php` but never called from any public-facing page, and the backend `POST /api/v1/auth/logout` endpoint had no corresponding frontend route.
+- Created `frontend/web/public/logout.php`: guards against direct access by unauthenticated visitors (redirects to `login.php`), calls `POST /api/v1/auth/logout` with the session cookie so the backend deletes its cookie, calls `rr_clear_session_cookie()` to expire the client-side cookie and clear guest-mode session state, sets a success flash message, and redirects to `login.php`.
+- Added a Logout link (`logout.php`) to the authenticated user nav branch in `frontend/web/components/layout.php`, positioned after the Assistant tab as the final nav item.
+- The Logout tab is rendered exclusively in the `else` (authenticated) branch — guests and anonymous users never see it.
+
+Why this was done:
+- Authenticated users had no in-app way to sign out; the only way to end a session was to manually clear cookies in the browser, which is not acceptable for a production-quality user experience.
+- The backend logout endpoint existed but was unreachable from the frontend, leaving it effectively dead code.
+- Without a guarded logout handler, a direct `GET /logout.php` request from an unauthenticated user could produce undefined behavior or errors.
+
+How this improved the project:
+- Users can now cleanly terminate their session from any page via the persistent nav bar, matching standard web application expectations.
+- The sign-out flow is two-sided: the backend cookie is cleared server-side via the API call and the browser cookie is expired client-side, ensuring no stale credentials persist after logout.
+- The guard at the top of `logout.php` prevents misuse by unauthenticated or guest users navigating directly to the URL.
+- The Logout tab placement at the end of the authenticated nav follows common UI conventions, making it easy to find without interfering with the primary navigation flow.
+
+# Stage 5: Role-Based Navigation Tab Differentiation Session (2026-04-15)
+Summary:
+- Identified that `frontend/web/components/layout.php` used a single `else` branch to render an identical full nav for both guest and authenticated users — guests were seeing Profile, Risk, Map, and Forecast tabs they should not have access to, and authenticated users were seeing an unnecessary Login link.
+- Added `$isAuthenticated = $accessContext === 'authenticated'` to the layout's access context resolution block for clarity, alongside the existing `$isAnonymous` and `$isGuest` variables.
+- Split the single `else` nav branch into `elseif ($isGuest)` and `else` (authenticated) branches.
+- Guest nav now shows: Dashboard, Alerts, Summaries, Assistant, Login.
+- Authenticated user nav now shows: Dashboard, Alerts, Summaries, Profile, Risk, Map, Forecast, Assistant.
+- Removed the trailing Login/"Sign In" link that was previously appended to the end of the full nav for all non-anonymous users; authenticated users no longer see a Login link.
+- Anonymous users (no session at all) are unchanged: Login and Sign Up only.
+
+Why this was done:
+- Guests were being shown tabs for pages that require an account (Profile, Risk, Map, Forecast), which could lead to redirect loops or confusing access-denied states when they navigated to those pages.
+- Authenticated users were shown a redundant Login link at the end of their nav bar, which had no useful purpose once a session was established.
+- Separating the nav by role makes the interface self-consistent: each user tier sees only the tabs relevant to their access level.
+
+How this improved the project:
+- Guests now see a clean, appropriately scoped navigation that guides them toward core read-only features and a Login prompt, improving first-impression UX and reducing confusion from dead-end links.
+- Authenticated users see a full-featured nav without irrelevant Login clutter, giving the logged-in experience a more polished, app-like feel.
+- The three-branch `if/elseif/else` structure in `layout.php` maps directly to the three access contexts from `rr_access_context()`, making future nav changes per-role straightforward and safe.
+
 # Stage 5: OpenRouter Integration, Guest/Premium Model Routing, and Trip Packing Guide Feature Session (2026-04-15)
 Summary:
 - Migrated the LLM backend from a direct model call to OpenRouter by wiring `openai.OpenAI` with `base_url="https://openrouter.ai/api/v1"` and resolving the API key from the new `OPENROUTER_API_KEY` setting (with `LLM_API_KEY` as a fallback).
