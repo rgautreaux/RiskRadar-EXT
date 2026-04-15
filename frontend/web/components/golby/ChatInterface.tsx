@@ -1,3 +1,24 @@
+// Simple sentiment detection (expandable)
+function detectSentiment(message: string): 'positive' | 'negative' | 'neutral' {
+	const lower = message.toLowerCase();
+	if (lower.match(/\b(thank(s| you)|great|awesome|love|amazing|good|happy|excited|yay|cool|helpful|appreciate)\b/)) {
+		return 'positive';
+	}
+	if (lower.match(/\b(sad|angry|upset|frustrated|bad|hate|annoyed|worried|scared|afraid|anxious|disappointed|unhappy|problem|issue|stuck|lost)\b/)) {
+		return 'negative';
+	}
+	return 'neutral';
+}
+
+function getSupportiveResponse(sentiment: 'positive' | 'negative' | 'neutral'): string | null {
+	if (sentiment === 'positive') {
+		return "I'm glad to hear that! 😊 If you have more questions or need help, just ask.";
+	}
+	if (sentiment === 'negative') {
+		return "I'm here for you. If something's not working or you feel stuck, let me know and I'll do my best to help!";
+	}
+	return null;
+}
 import React, { useState, useRef, useEffect } from 'react';
 import { fetchUserGuide, searchDocForAnswer } from './docSearch';
 import { fetchAssistantReply, fetchCurrentAlerts, fetchRiskOverlay, fetchForecast, fetchWeeklyFeedbackAnalytics, sendGolbyFeedback, syncGolbyStyleProfile } from './apiClient';
@@ -312,15 +333,16 @@ function getGuardrailResponse(category: GuardrailCategory): string {
 }
 
 function getOrderedCategories(topic: ReturnType<typeof classifyTopic>, profile: AssistantProfile, feedbackCount: number): ResponseCategory[] {
-	const candidateOrders: Record<typeof topic, ResponseCategory[]> = {
-		forecast: ['docs', 'page', 'live', 'static'],
-		alert: ['docs', 'page', 'live', 'static'],
-		risk: ['docs', 'page', 'live', 'static'],
-		joke: ['playful', 'static'],
-		greeting: ['playful', 'static'],
-		help: ['docs', 'static', 'page', 'live'],
-		general: ['docs', 'page', 'live', 'static'],
-	};
+	       const candidateOrders: Record<typeof topic, ResponseCategory[]> = {
+		       forecast: ['docs', 'page', 'live', 'static'],
+		       alert: ['docs', 'page', 'live', 'static'],
+		       risk: ['docs', 'page', 'live', 'static'],
+		       joke: ['playful', 'static'],
+		       greeting: ['playful', 'static'],
+		       help: ['docs', 'static', 'page', 'live'],
+		       travel: ['live', 'static', 'docs', 'page'],
+		       general: ['docs', 'page', 'live', 'static'],
+	       };
 
 	if (feedbackCount < MIN_FEEDBACK_TO_REORDER) {
 		return candidateOrders[topic];

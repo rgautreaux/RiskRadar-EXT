@@ -222,6 +222,7 @@ def _build_response(
     location: Optional[str],
     hours: int,
     user: Optional[User] = None,
+    detailed: bool = False
 ) -> MapRiskOverlayOut:
     now = datetime.now(timezone.utc)
     sensitivities = _build_sensitivities(user)
@@ -276,18 +277,6 @@ def _build_response(
         risk_alerts = [a for a in alerts if _alert_type_key(a) == risk_type]
         if risk_alerts:
             per_risk_forecasts[risk_type] = _forecast_points(base_score, risk_alerts, hours)
-    # Only include per_risk_forecasts if requested (detailed param)
-    import flask
-    detailed = False
-    try:
-        from fastapi import Request
-        import starlette.requests
-        request = starlette.requests.Request.scope.get('request') if hasattr(starlette.requests.Request, 'scope') else None
-        if request:
-            detailed = request.query_params.get('detailed', 'false').lower() == 'true'
-    except Exception:
-        # fallback for non-FastAPI context
-        detailed = False
     return MapRiskOverlayOut(
         risk_zones=risk_zones,
         region=region_value,
@@ -303,6 +292,7 @@ def _build_response(
     )
 
 
+
 @router.get("/personalized/{user_id}", response_model=MapRiskOverlayOut)
 def get_personalized_forecast(
     user_id: int,
@@ -310,6 +300,7 @@ def get_personalized_forecast(
     lon: Optional[float] = Query(None, description="Longitude for location-based forecast"),
     location: Optional[str] = Query(None, description="Location string (ZIP or City, State)"),
     hours: int = Query(48, ge=1, le=72, description="Forecast window in hours (default 48)"),
+    detailed: bool = Query(False, description="Include per-risk forecast breakdown"),
     db: Session = Depends(get_db),
 ):
     """Returns a personalized risk forecast for the next 24-48 hours for a given user and location."""
@@ -318,7 +309,8 @@ def get_personalized_forecast(
         raise HTTPException(status_code=404, detail="User not found")
 
     alerts = _query_alerts(db, lat, lon, location, hours)
-    return _build_response(alerts=alerts, lat=lat, lon=lon, location=location, hours=hours, user=user)
+    return _build_response(alerts=alerts, lat=lat, lon=lon, location=location, hours=hours, user=user, detailed=detailed)
+
 
 
 @router.get("", response_model=MapRiskOverlayOut)
@@ -327,8 +319,9 @@ def get_forecast(
     lon: Optional[float] = Query(None, description="Longitude for location-based forecast"),
     location: Optional[str] = Query(None, description="Location string (ZIP or City, State)"),
     hours: int = Query(48, ge=1, le=72, description="Forecast window in hours (default 48)"),
+    detailed: bool = Query(False, description="Include per-risk forecast breakdown"),
     db: Session = Depends(get_db),
 ):
     """Returns a risk forecast for the next 24-48 hours for a given location."""
     alerts = _query_alerts(db, lat, lon, location, hours)
-    return _build_response(alerts=alerts, lat=lat, lon=lon, location=location, hours=hours)
+    return _build_response(alerts=alerts, lat=lat, lon=lon, location=location, hours=hours, detailed=detailed)

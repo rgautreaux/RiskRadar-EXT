@@ -62,6 +62,7 @@
             <label>
                 <span>Device token</span>
                 <input type="text" name="device_token" maxlength="255" value="<?php echo e((string) ($preferencesForm['device_token'] ?? '')); ?>">
+                <small class="field-help">For advanced users: enter your device's push notification token if you want to receive alerts on this device. Leave blank if unsure.</small>
             </label>
             <fieldset>
                 <legend>Health sensitivities/preferences</legend>
