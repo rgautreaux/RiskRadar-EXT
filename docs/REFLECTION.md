@@ -1,3 +1,19 @@
+# Stage 5: Session-Based UserID/Profile Flow Migration, UI/UX Verification, and Documentation Handoff to Max (2026-04-15)
+Summary:
+- Migrated the profile page and related flows to a secure, session-based UserID system, removing manual UserID entry from the frontend and enforcing session-derived user context throughout the stack.
+- Improved checkbox grid alignment and added device token help text for clarity and usability.
+- Updated backend and frontend logic to enforce session-based user context for all profile operations.
+- Due to login issues, assigned all further manual UI/UX verification and documentation updates to Max in the project documentation (README.md, USER_GUIDE.md).
+
+Why this was done:
+- To improve security and usability by eliminating manual UserID entry and enforcing session-based authentication throughout the profile flow.
+- To clarify device token usage and improve the visual alignment of the checkbox grid for better user experience.
+- To ensure that further manual verification and documentation updates are completed despite access issues for the previous implementer.
+
+How this improved the project:
+- Reduced risk of user error and security issues by making UserID session-based and read-only in the UI.
+- Improved clarity and usability of the profile page for all users.
+- Ensured that all necessary manual verification and documentation updates are clearly assigned and tracked, maintaining project momentum and documentation quality.
 # CMPS 357 Final Project Reflection
 
 ## Session Reflections

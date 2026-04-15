@@ -61,10 +61,12 @@ The RiskRadar Web-Extension provides a comprehensive set of features accessible 
 ### Profile (Preferences)
 - **URL:** `/profile.php`
 - **Features:**
-   - Update user profile preferences by entering your numeric user ID.
+   - Update user profile preferences for the currently logged-in user (UserID is now session-based and read-only).
    - Set ZIP code, alert types, minimum severity, device token, and health sensitivities/preferences (asthma, COPD, allergies, heart, elderly, pregnant, children, immunocompromised).
    - Save preferences and receive a success message upon update.
    - Preferences are now used for personalized risk scoring, smart alerts, and forecast advice.
+
+**Note:** Manual entry of UserID is no longer possible; all profile updates are tied to the authenticated session user. Further manual UI/UX verification and documentation updates for this flow are assigned to Max due to current login issues for the previous implementer. Please document findings and update the project tracker accordingly.
 
 ### Risk Page
 - **URL:** `/risk.php`

@@ -288,6 +288,27 @@ Completed the Rebecca-safe frontend visual refresh pass using token-first and sh
 - Improves maintainability by centralizing map presentation styles into shared CSS.
 - Clarifies closeout accountability by explicitly assigning final manual validation/signoff to Max.
 
+
+## Stage 5: Session-Based UserID/Profile Flow, UI/UX Verification, and Documentation Handoff to Max (2026-04-13)
+
+### Implementation
+Migrated the profile page and related flows to a secure, session-based UserID system, removing manual UserID entry from the frontend and enforcing session-derived user context throughout the stack. Improved checkbox grid alignment and added device token help text for clarity. Due to login issues, further manual UI/UX verification and documentation updates are assigned to Max.
+
+### Functionality
+- UserID is now session-based and read-only in the profile UI; manual entry is no longer possible.
+- Profile updates and preferences are tied to the authenticated session user.
+- Checkbox grid alignment and device token help text improved for usability.
+- All backend and frontend logic updated to enforce session-based user context.
+
+### Pending Tasks (Assigned to Max)
+- Manually verify the updated profile UI and all related flows for correctness and usability.
+- Test session-based UserID enforcement and ensure no manual entry is possible.
+- Confirm checkbox grid alignment and device token help text render as intended on all supported browsers/devices.
+- Update all related documentation (README.md, USER_GUIDE.md, in-app help) to reflect the new session-based flow and UI changes.
+- Report any regressions or issues found during manual verification.
+
+**Note:** These tasks are assigned to Max due to current login/access issues for the previous implementer. Please document all findings and update the project tracker accordingly.
+
 ## Stage 5: Verified Map Closeout and Documentation Sync Session (2026-04-11)
 
 ### Implementation

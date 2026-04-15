@@ -1,4 +1,13 @@
-﻿
+﻿# Stage 5: Session-Based UserID/Profile Flow Migration, UI/UX Verification, and Documentation Handoff to Max (2026-04-15)
+
+Rebecca: The manual UserID entry in the profile UI is a security and usability risk. Please migrate the profile page and all related flows to a session-based UserID system, removing manual entry and enforcing session-derived user context throughout the stack. Also, improve checkbox grid alignment and add device token help text for clarity.
+
+GitHub Copilot: Migrated the profile page and related flows to a secure, session-based UserID system. Manual UserID entry is now removed from the frontend, and all profile updates are tied to the authenticated session user. Improved checkbox grid alignment and added device token help text. All backend and frontend logic now enforces session-based user context.
+
+Rebecca: I am unable to log in to verify the UI and test all flows. Assign further manual UI/UX verification and documentation updates to Max in the project documentation.
+
+GitHub Copilot: Added a new section to the README.md and USER_GUIDE.md assigning all further manual UI/UX verification and documentation updates for the session-based UserID/profile flow to Max, due to your login issues. All requested documentation handoff and assignment steps are complete.
+
 # RiskRadar Project Transcript
 
 ---

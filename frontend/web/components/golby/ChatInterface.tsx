@@ -1,3 +1,11 @@
+type GuardrailCategory = 'medical' | 'legal' | 'emergency' | 'unsafe';
+// Guardrail patterns for sensitive topics
+const GUARDED_PATTERNS: { regex: RegExp; category: GuardrailCategory }[] = [
+	{ regex: /\b(emergency|911|ambulance|fire|police|hospital|urgent|immediate danger|life[- ]?threatening)\b/i, category: 'emergency' },
+	{ regex: /\b(medical|diagnos(e|is|ed)|treatment|prescrib(e|ing|ed)|medicine|doctor|nurse|symptom|therapy|cure|remedy|health advice|pain|injury|illness|disease|sick|hospitalization|prescription)\b/i, category: 'medical' },
+	{ regex: /\b(legal|lawyer|attorney|court|sue|lawsuit|litigation|contract|will|testament|notary|legal advice|crime|criminal|arrest|jail|prison|sentence|parole|probation|divorce|custody|immigration|visa|citizenship)\b/i, category: 'legal' },
+	{ regex: /\b(hack|exploit|phish|malware|virus|attack|illegal|harm|violence|weapon|bomb|shoot|kill|suicide|self[- ]?harm|overdose|poison|abuse|threat|terror|credential|password|ssn|social security|credit card|bank account|account number)\b/i, category: 'unsafe' },
+];
 // Simple sentiment detection (expandable)
 function detectSentiment(message: string): 'positive' | 'negative' | 'neutral' {
 	const lower = message.toLowerCase();
@@ -8,7 +16,6 @@ function detectSentiment(message: string): 'positive' | 'negative' | 'neutral' {
 		return 'negative';
 	}
 	return 'neutral';
-}
 
 function getSupportiveResponse(sentiment: 'positive' | 'negative' | 'neutral'): string | null {
 	if (sentiment === 'positive') {
@@ -298,21 +305,143 @@ function generateTravelChecklist(riskData?: any): string {
        }
        return `Here’s a travel preparation checklist for you:\n- ${baseChecklist.join('\n- ')}${riskTips.length ? '\n\nBased on current risks:\n- ' + riskTips.join('\n- ') : ''}`;
 }
-
 export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageContext = 'unknown', isAdmin = false, currentUserId }: ChatInterfaceProps) {
-		return 'I cannot provide emergency-response instructions. If there is immediate danger, contact local emergency services and follow official local alerts.';
-	}
+		// Feedback handler for thumbs up/down/smile
+		const handleFeedback = async (message: Message, reaction: FeedbackReaction) => {
+			if (!message.isGolby) return;
+			const category = message.responseCategory || 'static';
+			const nextProfile = applyFeedback(assistantProfile, category, reaction);
+			const nextFeedbackCount = feedbackCount + 1;
+			const nextStyleBias = updateStyleBias(styleBias, reaction, message.text);
+			setAssistantProfile(nextProfile);
+			setFeedbackCount(nextFeedbackCount);
+			setStyleBias(nextStyleBias);
+			persistProfile(nextProfile);
+			persistNumber(FEEDBACK_COUNT_STORAGE_KEY, nextFeedbackCount);
+			persistNumber(STYLE_BIAS_STORAGE_KEY, nextStyleBias);
+			try {
+				await sendGolbyFeedback({
+					session_id: sessionIdRef.current,
+					message_id: message.id,
+					reaction,
+					rating: reactionToRating(reaction),
+					page_context: pageContext,
+					response_category: category,
+					response_text: message.text,
+				});
+				setRuntimeDiagnostics(null);
+			} catch {
+				setRuntimeDiagnostics('Feedback could not be synced right now. Local learning remains active.');
+			}
+			if (currentUserId) {
+				try {
+					await syncGolbyStyleProfile(currentUserId, nextProfile, nextFeedbackCount, nextStyleBias);
+					setRuntimeDiagnostics(null);
+				} catch {
+					setRuntimeDiagnostics('Profile sync is delayed. Changes will apply locally for this session.');
+				}
+			}
+		};
 
-	if (category === 'medical') {
-		return 'I can explain RiskRadar environmental data, but I cannot provide medical advice, diagnosis, or treatment guidance. Please consult a qualified healthcare professional.';
-	}
+		function detectGuardrailCategory(message: string): GuardrailCategory | null {
+			for (const item of GUARDED_PATTERNS) {
+				if (item.regex.test(message)) {
+					return item.category;
+				}
+			}
+			return null;
+		}
 
-	if (category === 'legal') {
-		return 'I cannot provide legal advice. Please consult a licensed attorney or official legal resources for legal questions.';
-	}
+		function getGuardrailResponse(category: GuardrailCategory): string {
+			if (category === 'emergency') {
+				return 'I cannot provide emergency-response instructions. If there is immediate danger, contact local emergency services and follow official local alerts.';
+			}
+			if (category === 'medical') {
+				return 'I can explain RiskRadar environmental data, but I cannot provide medical advice, diagnosis, or treatment guidance. Please consult a qualified healthcare professional.';
+			}
+			if (category === 'legal') {
+				return 'I cannot provide legal advice. Please consult a licensed attorney or official legal resources for legal questions.';
+			}
+			return 'I cannot help with harmful, illegal, or credential-related requests. I can still help interpret RiskRadar alerts, maps, and forecast data.';
+		}
+	const [messages, setMessages] = useState<Message[]>([
+		{
+			id: '1',
+			text: "Hey there! I'm Golby, your travel safety buddy. What can I help you discover today?",
+			isGolby: true,
+			timestamp: new Date(),
+			responseCategory: 'playful',
+		},
+	]);
+	const [inputValue, setInputValue] = useState('');
+	const [isTyping, setIsTyping] = useState(false);
+	const [userGuide, setUserGuide] = useState<string | null>(null);
+	const [assistantProfile, setAssistantProfile] = useState<AssistantProfile>(() => readStoredProfile());
+	const [feedbackCount, setFeedbackCount] = useState<number>(() => readStoredNumber(FEEDBACK_COUNT_STORAGE_KEY, 0));
+	const [styleBias, setStyleBias] = useState<number>(() => readStoredNumber(STYLE_BIAS_STORAGE_KEY, 0));
+	const [showDiagnostics, setShowDiagnostics] = useState(false);
+	const [runtimeDiagnostics, setRuntimeDiagnostics] = useState<string | null>(null);
+	const [weeklyAnalytics, setWeeklyAnalytics] = useState<WeeklyAnalyticsSummary | null>(null);
+	const [analyticsLoading, setAnalyticsLoading] = useState(false);
+	const [analyticsError, setAnalyticsError] = useState<string | null>(null);
+	const messagesEndRef = useRef<HTMLDivElement>(null);
+	const sessionIdRef = useRef(getSessionId());
 
-	return 'I cannot help with harmful, illegal, or credential-related requests. I can still help interpret RiskRadar alerts, maps, and forecast data.';
-}
+	useEffect(() => {
+		fetchUserGuide().then(setUserGuide).catch(() => setUserGuide(null));
+	}, []);
+
+	const scrollToBottom = () => {
+		messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+	};
+
+	useEffect(() => {
+		scrollToBottom();
+	}, [messages, isTyping]);
+
+	useEffect(() => {
+		persistProfile(assistantProfile);
+	}, [assistantProfile]);
+
+	useEffect(() => {
+		persistNumber(FEEDBACK_COUNT_STORAGE_KEY, feedbackCount);
+	}, [feedbackCount]);
+
+	useEffect(() => {
+		persistNumber(STYLE_BIAS_STORAGE_KEY, styleBias);
+	}, [styleBias]);
+
+	useEffect(() => {
+		if (!isAdmin) {
+			setShowDiagnostics(false);
+		}
+	}, [isAdmin]);
+
+	const refreshWeeklyAnalytics = async () => {
+		if (!isAdmin) {
+			setAnalyticsError('Admin access required to view analytics.');
+			setWeeklyAnalytics(null);
+			return;
+		}
+		setAnalyticsLoading(true);
+		setAnalyticsError(null);
+		try {
+			const analytics = await fetchWeeklyFeedbackAnalytics(7, sessionIdRef.current);
+			setWeeklyAnalytics(analytics);
+		} catch {
+			setAnalyticsError('Unable to load weekly analytics right now.');
+		} finally {
+			setAnalyticsLoading(false);
+		}
+	};
+
+	useEffect(() => {
+		if (showDiagnostics) {
+			refreshWeeklyAnalytics();
+		}
+	}, [showDiagnostics]);
+
+	// ...rest of ChatInterface body (handlers, getGolbyResponse, return JSX, etc.)
 
 function getOrderedCategories(topic: ReturnType<typeof classifyTopic>, profile: AssistantProfile, feedbackCount: number): ResponseCategory[] {
 	       const candidateOrders: Record<typeof topic, ResponseCategory[]> = {
@@ -393,87 +522,12 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 		return text;
 	}
 
-	       if (text.length < 160 && category !== 'playful') {
-		       return `${text} If you want, I can provide a deeper breakdown.`;
-	       }
+				if (text.length < 160 && !['playful', 'page', 'docs', 'live', 'static'].includes(category)) {
+					return `${text} If you want, I can provide a deeper breakdown.`;
+				}
+				return text;
 
-	return text;
-	const [messages, setMessages] = useState<Message[]>([
-		{
-			id: '1',
-			text: "Hey there! I'm Golby, your travel safety buddy. What can I help you discover today?",
-			isGolby: true,
-			timestamp: new Date(),
-			responseCategory: 'playful'
-		}
-	]);
-	const [inputValue, setInputValue] = useState('');
-	const [isTyping, setIsTyping] = useState(false);
-	const [userGuide, setUserGuide] = useState<string | null>(null);
-	const [assistantProfile, setAssistantProfile] = useState<AssistantProfile>(() => readStoredProfile());
-	const [feedbackCount, setFeedbackCount] = useState<number>(() => readStoredNumber(FEEDBACK_COUNT_STORAGE_KEY, 0));
-	const [styleBias, setStyleBias] = useState<number>(() => readStoredNumber(STYLE_BIAS_STORAGE_KEY, 0));
-	const [showDiagnostics, setShowDiagnostics] = useState(false);
-	const [runtimeDiagnostics, setRuntimeDiagnostics] = useState<string | null>(null);
-	const [weeklyAnalytics, setWeeklyAnalytics] = useState<WeeklyAnalyticsSummary | null>(null);
-	const [analyticsLoading, setAnalyticsLoading] = useState(false);
-	const [analyticsError, setAnalyticsError] = useState<string | null>(null);
-	const messagesEndRef = useRef<HTMLDivElement>(null);
-	const sessionIdRef = useRef(getSessionId());
-	// Fetch USER_GUIDE.md on mount
-	useEffect(() => {
-		fetchUserGuide().then(setUserGuide).catch(() => setUserGuide(null));
-	}, []);
-
-	const scrollToBottom = () => {
-		messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-	};
-
-	useEffect(() => {
-		scrollToBottom();
-	}, [messages, isTyping]);
-
-	useEffect(() => {
-		persistProfile(assistantProfile);
-	}, [assistantProfile]);
-
-	useEffect(() => {
-		persistNumber(FEEDBACK_COUNT_STORAGE_KEY, feedbackCount);
-	}, [feedbackCount]);
-
-	useEffect(() => {
-		persistNumber(STYLE_BIAS_STORAGE_KEY, styleBias);
-	}, [styleBias]);
-
-	useEffect(() => {
-		if (!isAdmin) {
-			setShowDiagnostics(false);
-		}
-	}, [isAdmin]);
-
-	const refreshWeeklyAnalytics = async () => {
-		if (!isAdmin) {
-			setAnalyticsError('Admin access required to view analytics.');
-			setWeeklyAnalytics(null);
-			return;
-		}
-		setAnalyticsLoading(true);
-		setAnalyticsError(null);
-		try {
-			const analytics = await fetchWeeklyFeedbackAnalytics(7, sessionIdRef.current);
-			setWeeklyAnalytics(analytics);
-		} catch {
-			setAnalyticsError('Unable to load weekly analytics right now.');
-		} finally {
-			setAnalyticsLoading(false);
-		}
-	};
-
-	useEffect(() => {
-		if (showDiagnostics) {
-			refreshWeeklyAnalytics();
-		}
-	}, [showDiagnostics]);
+	// ...existing code...
 
 
 
@@ -635,7 +689,7 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 			isGolby: false,
 			timestamp: new Date()
 		};
-		setMessages(prev => [...prev, userMessage]);
+		setMessages((prev: Message[]) => [...prev, userMessage]);
 		setInputValue('');
 		// Simulate Golby typing
 		setIsTyping(true);
@@ -648,7 +702,7 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 			timestamp: new Date(),
 			responseCategory: response.category,
 		};
-		setMessages(prev => [...prev, golbyMessage]);
+		setMessages((prev: Message[]) => [...prev, golbyMessage]);
 	};
 
 	const handleSuggestionClick = (suggestion: string) => {
@@ -666,7 +720,7 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 				</div>
 				{isAdmin && (
 					<button
-						onClick={() => setShowDiagnostics((current) => !current)}
+						onClick={() => setShowDiagnostics((current: boolean) => !current)}
 						className="text-blue-100 hover:text-white text-xs px-2 py-1 border border-blue-300/50 rounded-md transition focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400"
 						aria-label="Toggle diagnostics panel"
 						tabIndex={0}
@@ -739,7 +793,7 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 											</tr>
 										</thead>
 										<tbody>
-											{weeklyAnalytics.by_day.map((day) => (
+											{weeklyAnalytics.by_day.map((day: WeeklyAnalyticsPoint) => (
 												<tr key={day.date} className="border-t border-blue-50">
 													<td className="px-2 py-1">{day.date}</td>
 													<td className="px-2 py-1">{day.count}</td>
@@ -761,7 +815,7 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 			)}
 			{/* Messages */}
 			<div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50" role="log" aria-live="polite">
-				{messages.map((message) => (
+				{messages.map((message: Message) => (
 					<div
 						key={message.id}
 						className={`flex gap-3 ${message.isGolby ? 'justify-start' : 'justify-end'}`}
