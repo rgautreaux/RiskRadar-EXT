@@ -30,10 +30,11 @@ class Settings(BaseSettings):
     FIRECRAWL_API_KEY: str = ""
 
     # LLM
-    LLM_API_KEY: str = ""
-    LLM_PROVIDER: str = ""
-    LLM_MODEL: str = ""
-    LLM_MAX_TOKENS: int = 2048
+    OPENROUTER_API_KEY: str = ""
+    LLM_API_KEY: str = ""  # fallback key if OPENROUTER_API_KEY is not set
+    LLM_MODEL: str = "x-ai/grok-4.1-fast"
+    LLM_MODEL_GUEST: str = ""   # model for unauthenticated users (falls back to LLM_MODEL)
+    LLM_MODEL_PREMIUM: str = ""  # model for authenticated users (falls back to LLM_MODEL)
 
     # App Config
     DEFAULT_ZIP_CODE: str = "90001"

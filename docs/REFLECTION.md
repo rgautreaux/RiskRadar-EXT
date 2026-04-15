@@ -2,6 +2,93 @@
 
 ## Session Reflections
 
+# Stage 5: Login Page UI Refinements Session (2026-04-15)
+Summary:
+- Removed the ZIP code input field from the login form in `frontend/web/views/login.php` and removed the `zip_code` key from the `$loginForm` initialization array in `frontend/web/public/login.php`.
+- Identified that `login.php` was redirecting any non-anonymous user (including guests) to `index.php`, preventing the guest Login nav tab from working. Updated the access guard to call `rr_set_guest_mode(false)` when a guest visits `login.php`, clearing their session so they see the page in the same anonymous state as a first-time visitor.
+- Hid the Login and Sign Up nav tabs when `$activePage === 'login'` by adding that condition to the anonymous branch guard in `frontend/web/components/layout.php`.
+- Wrapped the entire `<nav>` element in `layout.php` with a `<?php if ($activePage !== 'login') : ?>` guard, hiding the full navigation bar on the login page.
+- Added `style="margin-top: 1.5rem;"` to the "Continue as Guest" form in `frontend/web/views/login.php` to create visual separation between the Sign In and Continue as Guest buttons.
+
+Why this was done:
+- The ZIP code field on the login form was unnecessary — login only requires email and password — and its presence created user confusion about whether it was required.
+- The guest Login tab linked to `login.php` but the page's access guard redirected guests away, making the tab non-functional.
+- Showing Login and Sign Up nav tabs while already on the login page added visual noise with no navigational value.
+- Showing any navigation bar on the login page was inconsistent with a clean, focused sign-in experience — the nav served no purpose before a session was established.
+- The Sign In and Continue as Guest buttons had no vertical spacing between them, making the two actions appear visually merged.
+
+How this improved the project:
+- The login form is now minimal and unambiguous — only email and password are prompted, matching what the backend actually requires.
+- Guests can now click the Login tab and land on the login page as expected, with their guest session cleanly ended so they can authenticate fresh.
+- The login page now renders without a navigation bar, giving it a focused, distraction-free layout consistent with standard authentication UI patterns.
+- The added margin between Sign In and Continue as Guest gives the two actions clear visual separation, making it easier for users to distinguish and choose between them.
+
+# Stage 5: Logout Tab and Sign-Out Flow Session (2026-04-15)
+Summary:
+- Confirmed no logout page or sign-out flow existed in the frontend — `rr_clear_session_cookie()` was defined in `security.php` but never called from any public-facing page, and the backend `POST /api/v1/auth/logout` endpoint had no corresponding frontend route.
+- Created `frontend/web/public/logout.php`: guards against direct access by unauthenticated visitors (redirects to `login.php`), calls `POST /api/v1/auth/logout` with the session cookie so the backend deletes its cookie, calls `rr_clear_session_cookie()` to expire the client-side cookie and clear guest-mode session state, sets a success flash message, and redirects to `login.php`.
+- Added a Logout link (`logout.php`) to the authenticated user nav branch in `frontend/web/components/layout.php`, positioned after the Assistant tab as the final nav item.
+- The Logout tab is rendered exclusively in the `else` (authenticated) branch — guests and anonymous users never see it.
+
+Why this was done:
+- Authenticated users had no in-app way to sign out; the only way to end a session was to manually clear cookies in the browser, which is not acceptable for a production-quality user experience.
+- The backend logout endpoint existed but was unreachable from the frontend, leaving it effectively dead code.
+- Without a guarded logout handler, a direct `GET /logout.php` request from an unauthenticated user could produce undefined behavior or errors.
+
+How this improved the project:
+- Users can now cleanly terminate their session from any page via the persistent nav bar, matching standard web application expectations.
+- The sign-out flow is two-sided: the backend cookie is cleared server-side via the API call and the browser cookie is expired client-side, ensuring no stale credentials persist after logout.
+- The guard at the top of `logout.php` prevents misuse by unauthenticated or guest users navigating directly to the URL.
+- The Logout tab placement at the end of the authenticated nav follows common UI conventions, making it easy to find without interfering with the primary navigation flow.
+
+# Stage 5: Role-Based Navigation Tab Differentiation Session (2026-04-15)
+Summary:
+- Identified that `frontend/web/components/layout.php` used a single `else` branch to render an identical full nav for both guest and authenticated users — guests were seeing Profile, Risk, Map, and Forecast tabs they should not have access to, and authenticated users were seeing an unnecessary Login link.
+- Added `$isAuthenticated = $accessContext === 'authenticated'` to the layout's access context resolution block for clarity, alongside the existing `$isAnonymous` and `$isGuest` variables.
+- Split the single `else` nav branch into `elseif ($isGuest)` and `else` (authenticated) branches.
+- Guest nav now shows: Dashboard, Alerts, Summaries, Assistant, Login.
+- Authenticated user nav now shows: Dashboard, Alerts, Summaries, Profile, Risk, Map, Forecast, Assistant.
+- Removed the trailing Login/"Sign In" link that was previously appended to the end of the full nav for all non-anonymous users; authenticated users no longer see a Login link.
+- Anonymous users (no session at all) are unchanged: Login and Sign Up only.
+
+Why this was done:
+- Guests were being shown tabs for pages that require an account (Profile, Risk, Map, Forecast), which could lead to redirect loops or confusing access-denied states when they navigated to those pages.
+- Authenticated users were shown a redundant Login link at the end of their nav bar, which had no useful purpose once a session was established.
+- Separating the nav by role makes the interface self-consistent: each user tier sees only the tabs relevant to their access level.
+
+How this improved the project:
+- Guests now see a clean, appropriately scoped navigation that guides them toward core read-only features and a Login prompt, improving first-impression UX and reducing confusion from dead-end links.
+- Authenticated users see a full-featured nav without irrelevant Login clutter, giving the logged-in experience a more polished, app-like feel.
+- The three-branch `if/elseif/else` structure in `layout.php` maps directly to the three access contexts from `rr_access_context()`, making future nav changes per-role straightforward and safe.
+
+# Stage 5: OpenRouter Integration, Guest/Premium Model Routing, and Trip Packing Guide Feature Session (2026-04-15)
+Summary:
+- Migrated the LLM backend from a direct model call to OpenRouter by wiring `openai.OpenAI` with `base_url="https://openrouter.ai/api/v1"` and resolving the API key from the new `OPENROUTER_API_KEY` setting (with `LLM_API_KEY` as a fallback).
+- Added `LLM_MODEL_GUEST` and `LLM_MODEL_PREMIUM` fields to `backend/config/settings.py` so two different OpenRouter model slugs can be configured per user tier; both default to empty string and fall back to `LLM_MODEL` when unset.
+- Added `LLM_API_KEY` to `Settings` as a legacy fallback field referenced by `Summarizer._call_llm`.
+- Rewrote `Summarizer._resolve_model` to select the guest model for unauthenticated calls and the premium model for authenticated calls, with safe empty-string fallback to the default model in both paths.
+- Fixed `Summarizer._call_llm` return signature to a 3-tuple `(text, token_count, model_used)` and updated both callers — `generate_daily_digest` now unpacks all three values and writes the actual runtime model name to `Summary.model_used` instead of the static config value; `generate_breaking_summary` discards the extra values with `_, _`.
+- Added `import openai` that was missing from `summarizer.py`, which would have caused a `NameError` at first LLM call.
+- Added three missing prompt constants to `backend/llm/prompts.py`: `DAILY_DIGEST_SYSTEM` (nationwide daily briefing system prompt), `BREAKING_SYSTEM` (push-notification summary system prompt), and `BREAKING_USER` (single-alert user template) — all referenced by `summarizer.py` but absent from the file.
+- Added `generate_trip_packing_guide(city, state, zip_code, alerts, trip_date, is_premium)` method to `Summarizer`, using `TRIP_PACKING_SYSTEM`/`TRIP_PACKING_USER` and routing through `_resolve_model`; returns `(guide_markdown, model_used)` and falls back to the deterministic summary on LLM failure.
+- Created `backend/api/packing.py` with a `POST /api/v1/packing/guide` endpoint: resolves `is_premium` from the optional JWT user, queries active alerts for the destination city/state within a 72-hour window, and delegates to `generate_trip_packing_guide`.
+- Registered `packing_router` in `backend/api/router.py`.
+
+Why this was done:
+- The codebase referenced `openai.OpenAI` with an OpenRouter `base_url` but never imported `openai`, causing an immediate `NameError` at runtime.
+- `DAILY_DIGEST_SYSTEM`, `BREAKING_SYSTEM`, and `BREAKING_USER` were imported by `summarizer.py` but deleted from `prompts.py` during the prompt restructuring, causing an `ImportError` on module load that would break all LLM-backed endpoints.
+- `_call_llm` returned a 3-tuple but both callers unpacked only 2 values, causing a `ValueError` on every successful LLM response.
+- `generate_daily_digest` was writing the static config string to `model_used` instead of the actual model that processed the request, producing misleading audit records.
+- `LLM_MODEL_GUEST` and `LLM_MODEL_PREMIUM` were referenced in `_resolve_model` but absent from `Settings`, which would raise a `AttributeError` at startup with strict pydantic-settings validation.
+- The new `TRIP_PACKING_SYSTEM`/`TRIP_PACKING_USER` prompts had no wired endpoint or summarizer method, leaving the feature with prompts but no callable path.
+
+How this improved the project:
+- All LLM-related `ImportError`, `NameError`, `ValueError`, and `AttributeError` failures are eliminated; the backend now starts and serves LLM requests cleanly.
+- The OpenRouter migration enables model-agnostic routing — any model slug on OpenRouter can be configured without code changes.
+- Guest/premium model differentiation allows the team to serve a lighter, cheaper model to unauthenticated visitors while giving registered users access to a more capable model, improving both cost efficiency and user experience.
+- `Summary.model_used` now accurately records which model generated each digest, improving auditability and debugging capability.
+- The new `POST /api/v1/packing/guide` endpoint completes the trip packing guide feature end-to-end, making it callable from the frontend with automatic alert enrichment and tier-appropriate model selection.
+
 # Stage 5: OpenWeather Source Wiring and YAML Syntax Fix Session (2026-04-14)
 Summary:
 - Confirmed `OPENWEATHER_API_KEY` was declared in `backend/config/settings.py` but not referenced by any entry in `backend/config/sources.yaml`, leaving the key unwired with no data flowing from OpenWeather.
