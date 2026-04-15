@@ -2,6 +2,29 @@
 
 ## Session Reflections
 
+# Stage 5: Login Page Redesign Session (2026-04-15)
+Summary:
+- Ran `/impeccable teach` to establish a project-wide design context: gathered brand personality (Clean · Confident · Civilian-friendly), emotional goal (prepared and informed), palette direction (Cream + Forest Green light mode, retiring coral as brand accent), font pair (Bricolage Grotesque headings + Atkinson Hyperlegible body), accessibility target (WCAG AAA), and Golby positioning (embedded helper). Wrote the synthesized context to `.impeccable.md` at the project root.
+- Replaced `frontend/web/views/login.php`'s centered card layout with an asymmetric two-column split: a 42% deep forest green brand panel (`oklch(0.38 0.115 148)`) carrying the headline "Know before you go.", environmental body copy, and a live data footer; a 58% warm cream form panel (`oklch(0.97 0.009 100)`) with left-aligned form fields, a primary sign-in button, and a ghost guest-access button separated by a visual divider.
+- Applied OKLCH color values throughout for perceptually uniform contrast ratios targeting WCAG AAA (7:1 for body text).
+- Added `aria-describedby` and `aria-invalid="true"` to error-state inputs, `role="alert"` to flash and error messages, and `:focus-visible` rings on all interactive elements.
+- Added a `prefers-reduced-motion` media query disabling transitions for users who have opted out of animation.
+- Added responsive breakpoints: single-column stacked layout at ≤820px (tablet), reduced padding and font sizes at ≤480px (mobile).
+- Loaded Bricolage Grotesque and Atkinson Hyperlegible Next via Google Fonts `@import` in a scoped `<style>` block within the view, leaving the global layout font stack unchanged.
+
+Why this was done:
+- The previous login form was a generic centered card with no brand identity, indistinguishable from a default web form and giving users no context about what they were signing into or why it mattered.
+- The coral/amber palette used throughout the app carried no environmental meaning; a forest green palette directly connects the visual language to the natural world the product monitors.
+- Space Grotesk and IBM Plex Mono (the previous fonts) are high-frequency defaults in AI-generated UIs; Bricolage Grotesque and Atkinson Hyperlegible produce a more distinctive and legible result, with Atkinson Hyperlegible specifically designed for maximum readability in support of the WCAG AAA target.
+- The login page lacked proper semantic accessibility wiring: no `id`/`for` label pairing on error fields, no `role="alert"` on flash messages, no `aria-invalid` signals for assistive technology.
+
+How this improved the project:
+- The login page now has a clear visual identity that orients users before they authenticate: the brand panel's headline and live data sources communicate the product's purpose and value in under five seconds.
+- The asymmetric split layout is distinctive and memorable — the deep green panel is immediately recognizable as belonging to an environmental platform rather than a generic SaaS tool.
+- WCAG AAA contrast and full keyboard/screen reader wiring bring the login page into compliance with the project's stated accessibility standard.
+- Scoping new fonts and styles to `.page-login` via a `<style>` block within the view keeps the change contained to the login page without disrupting the rest of the app's existing design system.
+- The ghost button hierarchy clearly separates the primary action (sign in with account) from the secondary action (continue as guest), reducing the chance a user accidentally continues as a guest when they intended to log in.
+
 # Stage 5: Login Page UI Refinements Session (2026-04-15)
 Summary:
 - Removed the ZIP code input field from the login form in `frontend/web/views/login.php` and removed the `zip_code` key from the `$loginForm` initialization array in `frontend/web/public/login.php`.
