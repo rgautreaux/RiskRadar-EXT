@@ -889,3 +889,21 @@ Why this was done:
 
 How this improved the project:
 - Improved UI implementation consistency and review confidence.
+
+# Stage 5: Per-Risk Forecast Feature Implementation, Testing Assignment, and Backend/Frontend Run Context Issue (2026-04-15)
+Summary:
+- Implemented per-risk forecast breakdown in the backend, adding a `detailed` query parameter and updating schema models for per-risk forecast output.
+- Updated frontend (PHP, JS, CSS) to render per-risk forecasts with icons and color-coding, ensuring accessibility and backward compatibility.
+- All backend and frontend files pass error checks, but encountered a backend run context issue due to relative imports.
+- Recommended running the backend as a package (`python -m backend.main`) to resolve import issues and ensure compatibility for all contributors.
+- Assigned all remaining integration testing, regression testing, accessibility/UX review, and documentation updates for the per-risk forecast feature to Max in the project TODO.md while Rebecca resolves the backend/frontend run context issue.
+
+Why this was done:
+- To provide users with clear, accessible, and informative per-risk forecasts, improving the Forecasts Page experience.
+- To ensure the backend and frontend are robust, maintainable, and compatible across different development environments.
+- To keep project momentum by assigning final testing and review tasks to Max while resolving technical blockers.
+
+How this improved the project:
+- Enhanced the clarity and usefulness of the Forecasts Page for all users.
+- Improved backend code quality and reliability by enforcing best practices for imports and package structure.
+- Maintained project progress and documentation quality by clearly assigning outstanding tasks and recording all developments in project history.

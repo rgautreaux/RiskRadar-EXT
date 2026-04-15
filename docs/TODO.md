@@ -1,4 +1,3 @@
-
 # RiskRadar CMPS 357 Execution TODO Tracker
 
 This document tracks implementation tasks, verification, and stage-specific follow-up in chronological order.
