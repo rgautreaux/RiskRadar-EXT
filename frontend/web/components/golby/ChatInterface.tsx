@@ -268,56 +268,38 @@ function classifyTopic(message: string): 'forecast' | 'alert' | 'risk' | 'joke' 
 
 // Proactive travel/packing/preparation checklist generator
 function generateTravelChecklist(riskData?: any): string {
-	// Example: riskData could be air quality, weather, alerts, etc.
-	const baseChecklist = [
-		'Valid ID and travel documents',
-		'Phone and charger',
-		'Medications and health essentials',
-		'Reusable water bottle',
-		'Snacks',
-		'Weather-appropriate clothing',
-		'Personal hygiene items',
-		'Face mask (for air quality or crowded places)',
-		'Hand sanitizer',
-	];
-	let riskTips: string[] = [];
-	if (riskData) {
-		if (riskData.air_quality && riskData.air_quality === 'poor') {
-			riskTips.push('Pack extra face masks due to poor air quality.');
-		}
-		if (riskData.weather && riskData.weather === 'rain') {
-			riskTips.push('Bring a rain jacket or umbrella.');
-		}
-		if (riskData.weather && riskData.weather === 'hot') {
-			riskTips.push('Pack sunscreen and stay hydrated.');
-		}
-		if (riskData.alerts && riskData.alerts.includes('wildfire')) {
-			riskTips.push('Check for wildfire alerts and plan alternate routes.');
-		}
-		// Add more risk-based tips as needed
-	}
-	return `Here’s a travel preparation checklist for you:\n- ${baseChecklist.join('\n- ')}${riskTips.length ? '\n\nBased on current risks:\n- ' + riskTips.join('\n- ') : ''}`;
+       // Example: riskData could be air quality, weather, alerts, etc.
+       const baseChecklist = [
+	       'Valid ID and travel documents',
+	       'Phone and charger',
+	       'Medications and health essentials',
+	       'Reusable water bottle',
+	       'Snacks',
+	       'Weather-appropriate clothing',
+	       'Personal hygiene items',
+	       'Face mask (for air quality or crowded places)',
+	       'Hand sanitizer',
+       ];
+       let riskTips: string[] = [];
+       if (riskData) {
+	       if (riskData.air_quality && riskData.air_quality === 'poor') {
+		       riskTips.push('Pack extra face masks due to poor air quality.');
+	       }
+	       if (riskData.weather && riskData.weather === 'rain') {
+		       riskTips.push('Bring a rain jacket or umbrella.');
+	       }
+	       if (riskData.weather && riskData.weather === 'hot') {
+		       riskTips.push('Pack sunscreen and stay hydrated.');
+	       }
+	       if (riskData.alerts && riskData.alerts.includes('wildfire')) {
+		       riskTips.push('Check for wildfire alerts and plan alternate routes.');
+	       }
+	       // Add more risk-based tips as needed
+       }
+       return `Here’s a travel preparation checklist for you:\n- ${baseChecklist.join('\n- ')}${riskTips.length ? '\n\nBased on current risks:\n- ' + riskTips.join('\n- ') : ''}`;
 }
 
-const GUARDED_PATTERNS: Array<{ category: GuardrailCategory; regex: RegExp }> = [
-	{ category: 'medical', regex: /\b(diagnose|diagnosis|prescription|dosage|dose|medication|treatment|medical advice)\b/i },
-	{ category: 'legal', regex: /\b(legal advice|lawsuit|sue|liability|attorney|lawyer|court)\b/i },
-	{ category: 'emergency', regex: /\b(call 911|emergency|evacuate now|life[- ]?threatening|immediate danger)\b/i },
-	{ category: 'unsafe', regex: /\b(hack|bypass|exploit|steal|weapon|harm|violence|password|secret key|token)\b/i },
-];
-
-function detectGuardrailCategory(message: string): GuardrailCategory | null {
-	for (const item of GUARDED_PATTERNS) {
-		if (item.regex.test(message)) {
-			return item.category;
-		}
-	}
-
-	return null;
-}
-
-function getGuardrailResponse(category: GuardrailCategory): string {
-	if (category === 'emergency') {
+export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageContext = 'unknown', isAdmin = false, currentUserId }: ChatInterfaceProps) {
 		return 'I cannot provide emergency-response instructions. If there is immediate danger, contact local emergency services and follow official local alerts.';
 	}
 
@@ -411,20 +393,11 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 		return text;
 	}
 
-	if (text.length < 160 && category !== 'playful') {
-		return `${text} If you want, I can provide a deeper breakdown.`;
-	}
+	       if (text.length < 160 && category !== 'playful') {
+		       return `${text} If you want, I can provide a deeper breakdown.`;
+	       }
 
 	return text;
-}
-
-export function ChatInterface({
-	suggestions = defaultSuggestions,
-	onClose,
-	pageContext = 'unknown',
-	isAdmin = false,
-	currentUserId,
-}: ChatInterfaceProps) {
 	const [messages, setMessages] = useState<Message[]>([
 		{
 			id: '1',
@@ -651,39 +624,7 @@ export function ChatInterface({
 			}
 		}
 
-		return withStyle(golbyResponses['default'], 'static');
-		persistProfile(nextProfile);
-		setFeedbackCount(nextFeedbackCount);
-		persistNumber(FEEDBACK_COUNT_STORAGE_KEY, nextFeedbackCount);
-		setStyleBias(nextStyleBias);
-		persistNumber(STYLE_BIAS_STORAGE_KEY, nextStyleBias);
 
-		try {
-			await sendGolbyFeedback({
-				session_id: sessionIdRef.current,
-				message_id: message.id,
-				reaction,
-				rating: reactionToRating(reaction),
-				page_context: pageContext,
-				response_category: category,
-				response_text: message.text,
-			});
-			setRuntimeDiagnostics(null);
-		} catch {
-			setRuntimeDiagnostics('Feedback could not be synced right now. Local learning remains active.');
-			// Keep the local learning loop working even if the backend call fails.
-		}
-
-		if (currentUserId) {
-			try {
-				await syncGolbyStyleProfile(currentUserId, nextProfile, nextFeedbackCount, nextStyleBias);
-				setRuntimeDiagnostics(null);
-			} catch {
-				setRuntimeDiagnostics('Profile sync is delayed. Changes will apply locally for this session.');
-				// Keep local learning responsive even if profile sync fails.
-			}
-		}
-	};
 
 	const handleSendMessage = async (text: string) => {
 		if (!text.trim()) return;

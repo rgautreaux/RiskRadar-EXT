@@ -1,16 +1,16 @@
 from collections import Counter
 from datetime import datetime, timedelta, timezone
 from math import atan2, cos, radians, sin, sqrt
-from typing import Any, Optional
+from typing import Optional
 
 import json
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
-from db.database import get_db
-from db.models import Alert, User
-from schemas.risk_score import ForecastPoint, MapRiskOverlayOut, MapRiskZone
-from services.risk_scoring import RiskFactors, UserSensitivities, compute_risk_score
+from ..db.database import get_db
+from ..db.models import Alert, User
+from ..schemas.risk_score import ForecastPoint, MapRiskOverlayOut, MapRiskZone
+from ..services.risk_scoring import RiskFactors, UserSensitivities, compute_risk_score
 
 router = APIRouter(prefix="/forecast", tags=["Forecast"])
 FORECAST_STEP_HOURS = 6
@@ -42,7 +42,17 @@ def _parse_datetime(value: Optional[str]) -> Optional[datetime]:
         return None
 
     if isinstance(value, datetime):
-        return value.replace(tzinfo=timezone.utc) if value.tzinfo is None else value
+        # Defensive: Only call replace if value is a datetime instance
+        try:
+            if value.tzinfo is None:
+                return datetime(
+                    value.year, value.month, value.day,
+                    value.hour, value.minute, value.second, value.microsecond,
+                    tzinfo=timezone.utc
+                )
+            return value
+        except Exception:
+            return value
 
     cleaned = value.strip().replace("Z", "+00:00")
     try:
@@ -272,7 +282,7 @@ def _build_response(
     region_value = location or (f"{lat},{lon}" if lat is not None and lon is not None else "all")
 
     # Per-risk forecast breakdown (optional)
-    per_risk_forecasts = {}
+    per_risk_forecasts: dict[str, list[ForecastPoint]] = {}
     for risk_type in ["weather", "air_quality", "wildfire", "flood", "earthquake", "pollen", "pollution"]:
         risk_alerts = [a for a in alerts if _alert_type_key(a) == risk_type]
         if risk_alerts:
@@ -288,7 +298,7 @@ def _build_response(
         summary=summary,
         baseline_risk_score=round(base_score, 2),
         personalized=user is not None,
-        per_risk_forecasts=per_risk_forecasts if detailed else None,
+        per_risk_forecasts=per_risk_forecasts if detailed and per_risk_forecasts else None,
     )
 
 
