@@ -26,6 +26,8 @@ class MapRiskOverlayOut(BaseModel):
     generated_at: str
     forecast_hours: int | None = None
     forecast_points: list[ForecastPoint] = Field(default_factory=list)
+    # Optional: per-risk-type forecast breakdown, e.g. {"weather": [...], "pollen": [...], ...}
+    per_risk_forecasts: dict[str, list[ForecastPoint]] | None = None
     confidence: float | None = None
     trend: str | None = None
     summary: str | None = None
