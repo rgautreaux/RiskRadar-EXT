@@ -2,6 +2,28 @@
 
 ## Session Reflections
 
+# Stage 5: Alert Detail Page Redesign Session (2026-04-16)
+Summary:
+- Invoked `/impeccable craft redesign alert_detail.php view` to perform a full redesign of the alert detail view using the established project design context from `.impeccable.md`.
+- Updated `frontend/web/components/layout.php` to replace the Google Fonts import — removed Space Grotesk and IBM Plex Mono (both on the impeccable reflex-rejection list) and added Bricolage Grotesque, Atkinson Hyperlegible Next, and Geist Mono, applying the font pair specified in the project design context project-wide.
+- Updated `frontend/web/public/assets/app.css` to set the body font-family to Atkinson Hyperlegible Next and replaced all four IBM Plex Mono references with Geist Mono.
+- Rewrote `frontend/web/views/alert_detail.php` with a scoped `.ad-*` CSS system implementing a triage-ordered layout: animated forest green back-navigation link; two-column header (Bricolage Grotesque title + severity block with OKLCH semantic color tokens for high/medium/low); three-column quick-facts strip (Location, Event window, Source) with Geist Mono labels; Atkinson Hyperlegible description body at 70ch max-width; collapsible `<details>/<summary>` technical metadata grid with tabular-nums Geist Mono values.
+- Applied OKLCH color tokens throughout (`oklch(0.52 0.15 148)` forest green accent, OKLCH-based red/amber/green severity tokens) with no border-left accent stripes, no gradient text, and no glassmorphism, conforming to all impeccable absolute bans.
+- Added responsive breakpoints at 700px (stacked header, inline severity pill, single-column facts strip) and 420px (single-column metadata grid).
+- Added a PHP `match` expression to map raw severity strings (including `critical`, `extreme`, `moderate`) to the three severity CSS variant classes.
+
+Why this was done:
+- The existing alert detail view was a generic flat panel with a small severity pill and a uniform metadata grid — it gave users no visual hierarchy and required reading every field to find critical decision-relevant information, violating the project's core principle of "scannable in under 10 seconds."
+- Space Grotesk and IBM Plex Mono, the fonts previously loaded by the global layout shell, are both on the impeccable reflex-rejection list and are high-frequency defaults in AI-generated UIs; Bricolage Grotesque and Atkinson Hyperlegible Next are the fonts explicitly specified in `.impeccable.md` for this project and had never been applied to the global shell.
+- The previous color scheme retained the coral/amber palette that the design context established in the Login Page Redesign session specifically retired in favor of forest green as the brand accent.
+
+How this improved the project:
+- The redesigned alert detail page now leads with the most critical decision-relevant information — severity (large, color-coded), location, and event window — before presenting supporting details, matching the users' stated job-to-be-done of assessing risk in under 10 seconds.
+- Updating the global font stack in `layout.php` and `app.css` applies the correct project fonts consistently across all pages, not just the alert detail view, closing the gap between the design context and the live interface.
+- The scoped `.ad-*` CSS system avoids modifying any shared component classes, so the redesign is fully isolated and introduces no regression risk for other views.
+- The collapsible technical metadata section gives power users access to audit-relevant IDs and timestamps without forcing that information into the primary visual hierarchy for all users.
+- The severity block uses semantically meaningful OKLCH colors (red/amber/green) that are universally understood, calm in tone at lower saturations, and meet WCAG contrast requirements against their respective background tints.
+
 # Stage 5: Login Page Redesign Session (2026-04-15)
 Summary:
 - Ran `/impeccable teach` to establish a project-wide design context: gathered brand personality (Clean · Confident · Civilian-friendly), emotional goal (prepared and informed), palette direction (Cream + Forest Green light mode, retiring coral as brand accent), font pair (Bricolage Grotesque headings + Atkinson Hyperlegible body), accessibility target (WCAG AAA), and Golby positioning (embedded helper). Wrote the synthesized context to `.impeccable.md` at the project root.

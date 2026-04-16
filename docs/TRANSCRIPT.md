@@ -1,4 +1,16 @@
-﻿# Stage 5: Login Page Redesign Session (2026-04-15)
+﻿# Stage 5: Alert Detail Page Redesign Session (2026-04-16)
+
+Max: /impeccable craft redesign alert_detail.php view
+
+Claude Code: Ran the impeccable post-update cleanup script (no deprecated files found). Read `.impeccable.md` to load the established project design context: Clean · Confident · Civilian-friendly brand; Cream + Forest Green palette; Bricolage Grotesque headings, Atkinson Hyperlegible body, Geist Mono for technical data; WCAG AAA baseline; primary user job-to-be-done of "tell me if it's safe, how risky it is, and what I should do in under 10 seconds." Read `frontend/web/views/alert_detail.php` (the existing flat panel layout using `.panel`, `.card-heading`, `.metadata-grid`), `frontend/web/public/alert_detail.php` (the controller), `frontend/web/components/layout.php` (the global shell, loading Space Grotesk + IBM Plex Mono via Google Fonts), `frontend/web/public/assets/app.css` (global design tokens and component styles), and `frontend/web/public/assets/theme_tokens.css` (OKLCH-based theme tokens). Read the impeccable craft and typography reference files. Designed a triage-ordered layout: back navigation → two-column header (title + severity block) → three-column quick-facts strip (location, event window, source) → description section → collapsible technical metadata.
+
+Claude Code: Updated `frontend/web/components/layout.php` to replace the Google Fonts link — swapped Space Grotesk and IBM Plex Mono for Bricolage Grotesque, Atkinson Hyperlegible Next, and Geist Mono project-wide, consistent with the design context established in `.impeccable.md`. Updated `frontend/web/public/assets/app.css` to change the body `font-family` from `'Space Grotesk'` to `'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible'` and replaced all four `'IBM Plex Mono'` references with `'Geist Mono'`. Rewrote `frontend/web/views/alert_detail.php` with a scoped `.ad-*` CSS system and new semantic HTML structure: (1) an animated back-arrow link in forest green (`oklch(0.52 0.15 148)`); (2) a two-column header panel — left side holds green-tinted source/type chips and a large Bricolage Grotesque title, right side holds a severity block with a colored background, bordered container, and large severity word (red/amber/green using OKLCH semantic tokens, no border-left stripes); (3) a three-column quick-facts strip (Location, Event window, Source) with Geist Mono labels and bold values, separated by 1px hairline dividers; (4) a description section with Atkinson Hyperlegible body text at max-width 70ch and 1.72 line-height; (5) a collapsible `<details>/<summary>` technical metadata section with an auto-fill grid of Geist Mono key/value pairs. Added a PHP `match` expression to map raw severity strings to the three CSS variant classes (`ad-sev-high`, `ad-sev-medium`, `ad-sev-low`). Added responsive breakpoints at 700px (stacked header, horizontal severity pill, single-column facts) and 420px (single-column metadata grid).
+
+Max: Document these changes into REFLECTION.md and TRANSCRIPT.md using the format of the previous entries.
+
+Claude Code: Added this session's verbatim transcript entry to TRANSCRIPT.md and a matching reflection summary entry to REFLECTION.md, both prepended at the top in chronological Stage 5 order consistent with existing formatting.
+
+# Stage 5: Login Page Redesign Session (2026-04-15)
 
 Max: I want to establish a design system for the project and redesign the login page to match it.
 
