@@ -1,3 +1,15 @@
+from fastapi import Body
+
+# --- Onboarding Tutorial Completion Endpoint ---
+@router.post("/{user_id}/onboarding", response_model=UserOut)
+def complete_onboarding(user_id: int, completed: bool = Body(..., embed=True), db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    user.has_completed_onboarding = completed
+    db.commit()
+    db.refresh(user)
+    return _serialize_user(user, db)
 import json
 import logging
 from collections import defaultdict
@@ -151,6 +163,7 @@ def _serialize_user(user: User, db: Session | None = None) -> UserOut:
         health_conditions=serialized_health_conditions,
         assistant_style_profile=user.assistant_style_profile,
         created_at=user.created_at,
+        has_completed_onboarding=bool(getattr(user, 'has_completed_onboarding', False)),
     )
 
 

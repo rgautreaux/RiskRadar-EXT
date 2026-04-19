@@ -42,6 +42,16 @@ class RiskFactor(BaseModel):
     description: str
 
 
+
+class RiskScoreBreakdownOut(BaseModel):
+    alert_id: int
+    risk_score: float
+    risk_level: str
+    distance_km: float
+    factor_scores: dict[str, float]
+    formula: str
+    weights: dict[str, float]
+
 class RiskScoreOut(BaseModel):
     user_id: int
     overall_score: float

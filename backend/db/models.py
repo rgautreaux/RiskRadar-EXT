@@ -116,6 +116,9 @@ class User(Base):
     created_at = Column(Text, nullable=False, default=_now)
     updated_at = Column(Text, nullable=False, default=_now, onupdate=_now)
 
+    # Onboarding tutorial completion flag
+    has_completed_onboarding = Column(Boolean, nullable=False, default=False)
+
     alert_preferences = relationship(
         "UserAlertPreference",
         cascade="all, delete-orphan",
