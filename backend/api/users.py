@@ -177,16 +177,15 @@ def register_user(body: UserCreate, db: Session = Depends(get_db)):
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
-    user = User(
-        display_name=body.display_name,
-        email=normalized_email,
-        email_lookup_hash=hash_email(normalized_email),
-        password_hash=password_hash(body.password),
-        is_admin=False,
-        zip_code=body.zip_code,
-        alert_types=json.dumps(["all"]),
-        assistant_style_profile=default_profile_json(),
-    )
+    user = User()
+    setattr(user, 'display_name', body.display_name)
+    setattr(user, 'email', normalized_email)
+    setattr(user, 'email_lookup_hash', hash_email(normalized_email))
+    setattr(user, 'password_hash', password_hash(body.password))
+    setattr(user, 'is_admin', False)
+    setattr(user, 'zip_code', body.zip_code)
+    setattr(user, 'alert_types', json.dumps(["all"]))
+    setattr(user, 'assistant_style_profile', default_profile_json())
     db.add(user)
     db.flush()
     _sync_user_alert_preferences(db, user, ["all"])
@@ -202,25 +201,25 @@ def update_preferences(user_id: int, body: UserPrefsUpdate, db: Session = Depend
         raise HTTPException(status_code=404, detail="User not found")
 
     if body.zip_code is not None:
-        user.zip_code = body.zip_code
+        setattr(user, 'zip_code', body.zip_code)
     if body.latitude is not None:
-        user.latitude = body.latitude
+        setattr(user, 'latitude', body.latitude)
     if body.longitude is not None:
-        user.longitude = body.longitude
+        setattr(user, 'longitude', body.longitude)
     if body.alert_types is not None:
         normalized_alert_types = _normalize_alert_types(body.alert_types)
-        user.alert_types = json.dumps(normalized_alert_types)
+        setattr(user, 'alert_types', json.dumps(normalized_alert_types))
         _sync_user_alert_preferences(db, user, normalized_alert_types)
     if body.notify_severity is not None:
-        user.notify_severity = body.notify_severity
+        setattr(user, 'notify_severity', body.notify_severity)
     if body.device_token is not None:
-        user.device_token = body.device_token
+        setattr(user, 'device_token', body.device_token)
     if body.health_conditions is not None:
         normalized_health_conditions = _normalize_health_conditions(body.health_conditions)
-        user.health_conditions = json.dumps(normalized_health_conditions)
+        setattr(user, 'health_conditions', json.dumps(normalized_health_conditions))
         _sync_user_health_conditions(db, user, normalized_health_conditions)
     if body.assistant_style_profile is not None:
-        user.assistant_style_profile = json.dumps(body.assistant_style_profile)
+        setattr(user, 'assistant_style_profile', json.dumps(body.assistant_style_profile))
 
     db.commit()
     db.refresh(user)

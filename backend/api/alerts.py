@@ -96,8 +96,8 @@ def list_alerts(
 @router.get("/stats", response_model=AlertStats)
 def alert_stats(db: Session = Depends(get_db)):
     total = db.query(Alert).count()
-    by_type = dict(db.query(Alert.alert_type, sqlalchemy.func.count()).group_by(Alert.alert_type).all())
-    by_severity = dict(db.query(Alert.severity, sqlalchemy.func.count()).group_by(Alert.severity).all())
+    by_type = dict(db.query(Alert.alert_type, sqlalchemy.sql.func.count(Alert.id)).group_by(Alert.alert_type).all())
+    by_severity = dict(db.query(Alert.severity, sqlalchemy.sql.func.count(Alert.id)).group_by(Alert.severity).all())
     return AlertStats(total=total or 0, by_type=by_type, by_severity=by_severity)
 
 
