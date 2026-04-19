@@ -107,14 +107,12 @@ def compute_alert_risk_breakdown(alert: Alert, user: User, radius_km: float = MA
         "weights": explain_alert_risk_formula()["weights"],
     }
 
+
 import json
-import math
 from datetime import datetime, timezone
-
 from sqlalchemy.orm import Session
-
-from db.models import Alert, User
-from scoring import (
+from ..db.models import Alert, User
+from . import (
     haversine_km,
     CONDITION_ALERT_MAP,
     MAX_RADIUS_KM,
@@ -217,7 +215,7 @@ def prioritize_alerts(
     user_lon = user.longitude
 
     if user_lat is None or user_lon is None:
-        return _empty_result(user.id, reason="User location not set")
+        return _empty_result(user.id)
 
     # Parse user health conditions
     raw_conditions = user.health_conditions or "[]"
@@ -368,7 +366,7 @@ def _level_from_priority(score: float) -> str:
     return "low"
 
 
-def _empty_result(user_id: int, reason: str = "") -> dict:
+def _empty_result(user_id: int) -> dict:
     return {
         "user_id": user_id,
         "total_nearby": 0,
