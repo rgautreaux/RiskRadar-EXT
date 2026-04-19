@@ -1,20 +1,8 @@
-from fastapi import Body
-
-# --- Onboarding Tutorial Completion Endpoint ---
-@router.post("/{user_id}/onboarding", response_model=UserOut)
-def complete_onboarding(user_id: int, completed: bool = Body(..., embed=True), db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    user.has_completed_onboarding = completed
-    db.commit()
-    db.refresh(user)
-    return _serialize_user(user, db)
 import json
 import logging
 from collections import defaultdict
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.orm import Session
 
 from auth.security import decrypt_email, hash_email, normalize_email, password_hash, validate_password_strength
@@ -26,6 +14,17 @@ from services.assistant_personality import default_profile_json
 router = APIRouter(prefix="/users", tags=["Users"])
 LOGGER = logging.getLogger(__name__)
 _FALLBACK_COUNTERS: dict[str, int] = defaultdict(int)
+
+# --- Onboarding Tutorial Completion Endpoint ---
+@router.post("/{user_id}/onboarding", response_model=UserOut)
+def complete_onboarding(user_id: int, completed: bool = Body(..., embed=True), db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    setattr(user, 'has_completed_onboarding', completed)
+    db.commit()
+    db.refresh(user)
+    return _serialize_user(user, db)
 
 
 def _record_fallback(event_name: str, user_id: int):
@@ -121,48 +120,48 @@ def _sync_user_health_conditions(db: Session, user: User, condition_keys: list[s
 
 
 def _serialize_user(user: User, db: Session | None = None) -> UserOut:
-    alert_types = _parse_alert_types_json(user.alert_types)
+    alert_types = _parse_alert_types_json(getattr(user, 'alert_types', None))
     if db is not None and not alert_types:
         pref_rows = (
             db.query(UserAlertPreference)
-            .filter(UserAlertPreference.user_id == user.id)
+            .filter(UserAlertPreference.user_id == getattr(user, 'id', None))
             .order_by(UserAlertPreference.alert_type.asc())
             .all()
         )
         alert_types = [row.alert_type for row in pref_rows]
         if alert_types:
-            _record_fallback("user.alert_types.relational_fallback", int(user.id))
+            _record_fallback("user.alert_types.relational_fallback", int(getattr(user, 'id', 0)))
 
-    health_conditions = _parse_health_conditions_json(user.health_conditions)
+    health_conditions = _parse_health_conditions_json(getattr(user, 'health_conditions', None))
     if db is not None and not health_conditions:
         condition_rows = (
             db.query(UserHealthCondition)
-            .filter(UserHealthCondition.user_id == user.id)
+            .filter(UserHealthCondition.user_id == getattr(user, 'id', None))
             .order_by(UserHealthCondition.condition_key.asc())
             .all()
         )
         health_conditions = [row.condition_key for row in condition_rows]
         if health_conditions:
-            _record_fallback("user.health_conditions.relational_fallback", int(user.id))
+            _record_fallback("user.health_conditions.relational_fallback", int(getattr(user, 'id', 0)))
 
-    serialized_alert_types = json.dumps(alert_types) if alert_types else user.alert_types
+    serialized_alert_types = json.dumps(alert_types) if alert_types else getattr(user, 'alert_types', None)
     serialized_health_conditions = (
-        json.dumps(health_conditions) if health_conditions else user.health_conditions
+        json.dumps(health_conditions) if health_conditions else getattr(user, 'health_conditions', None)
     )
 
     return UserOut(
-        id=user.id,
-        display_name=user.display_name,
-        email=decrypt_email(user.email) if user.email else None,
-        is_admin=bool(user.is_admin),
-        zip_code=user.zip_code,
-        latitude=user.latitude,
-        longitude=user.longitude,
+        id=getattr(user, 'id', None),
+        display_name=getattr(user, 'display_name', None),
+        email=decrypt_email(getattr(user, 'email', None)) if getattr(user, 'email', None) else None,
+        is_admin=bool(getattr(user, 'is_admin', False)),
+        zip_code=getattr(user, 'zip_code', None),
+        latitude=getattr(user, 'latitude', None),
+        longitude=getattr(user, 'longitude', None),
         alert_types=serialized_alert_types,
-        notify_severity=user.notify_severity,
+        notify_severity=getattr(user, 'notify_severity', None),
         health_conditions=serialized_health_conditions,
-        assistant_style_profile=user.assistant_style_profile,
-        created_at=user.created_at,
+        assistant_style_profile=getattr(user, 'assistant_style_profile', None),
+        created_at=getattr(user, 'created_at', None),
         has_completed_onboarding=bool(getattr(user, 'has_completed_onboarding', False)),
     )
 
