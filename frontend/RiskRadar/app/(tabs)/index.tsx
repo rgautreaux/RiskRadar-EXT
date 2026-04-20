@@ -19,10 +19,12 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, Redirect, useLocalSearchParams } from 'expo-router';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/contexts/auth-context';
+import { useCurrentLocation } from '@/contexts/location-context';
 import { apiFetch } from '@/utils/api';
 import { StateView } from '@/components/ui/state-view';
 
@@ -35,10 +37,25 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 const EASE_OUT_QUART = Easing.bezier(0.25, 1, 0.5, 1);
 const EASE_OUT_EXPO = Easing.bezier(0.16, 1, 0.3, 1);
 
-interface AlertStats {
-  total: number;
-  by_type: Record<string, number>;
-  by_severity: Record<string, number>;
+interface AirQualityData {
+  aqi: number;
+  category: string;
+  pollutant: string;
+  observed_at: string;
+  area: string;
+}
+
+interface PollenType {
+  name: string;
+  category: string;
+  value: number;
+}
+
+interface PollenData {
+  overall: string;
+  overall_value: number;
+  types: PollenType[];
+  observed_at: string;
 }
 
 interface Summary {
@@ -141,6 +158,23 @@ function FadeInView({
   );
 }
 
+/** HeroRise — subtle scale-in from 0.98 that runs alongside the inner FadeInView
+ *  for a layered "settling into place" feel on the weather hero. */
+function HeroRise({ children, reducedMotion }: { children: React.ReactNode; reducedMotion: boolean }) {
+  const scale = useRef(new Animated.Value(reducedMotion ? 1 : 0.98)).current;
+  useEffect(() => {
+    if (reducedMotion) return;
+    Animated.timing(scale, {
+      toValue: 1,
+      duration: 520,
+      delay: 80,
+      easing: EASE_OUT_QUART,
+      useNativeDriver: true,
+    }).start();
+  }, [reducedMotion, scale]);
+  return <Animated.View style={{ transform: [{ scale }] }}>{children}</Animated.View>;
+}
+
 /** CountUp — animates a number counting up to its target value */
 function CountUp({
   to,
@@ -184,45 +218,256 @@ function CountUp({
   return <Text style={style}>{value}{suffix}</Text>;
 }
 
-/** Animated width bar — for the temp range in 10-day forecast */
+/** Animated temperature range bar — shows low→high span within a normalized 0..1 track.
+ *  The fill grows outward from `startFraction` as `progress` animates 0→1,
+ *  giving a layered reveal after the row itself slides in.
+ *  `todayMarker` (0..1) optionally draws a small dot — used on the "Today" row. */
 function TempBar({
-  fraction,
+  startFraction,
+  endFraction,
   delay = 0,
   palette,
   reducedMotion = false,
+  todayMarker,
 }: {
-  fraction: number; // 0..1
+  startFraction: number; // 0..1, normalized low position
+  endFraction: number;   // 0..1, normalized high position
   delay?: number;
   palette: typeof Colors.light | typeof Colors.dark;
   reducedMotion?: boolean;
+  todayMarker?: number;  // 0..1, optional dot position
 }) {
-  const progress = useRef(new Animated.Value(reducedMotion ? fraction : 0)).current;
+  const progress = useRef(new Animated.Value(reducedMotion ? 1 : 0)).current;
+  const markerOpacity = useRef(new Animated.Value(reducedMotion ? 1 : 0)).current;
 
   useEffect(() => {
     if (reducedMotion) {
-      progress.setValue(fraction);
+      progress.setValue(1);
+      markerOpacity.setValue(1);
       return;
     }
     const timer = setTimeout(() => {
       Animated.timing(progress, {
-        toValue: fraction,
+        toValue: 1,
         duration: 600,
         easing: EASE_OUT_EXPO,
-        useNativeDriver: false, // width animation
+        useNativeDriver: false, // width + left animations
+      }).start();
+      Animated.timing(markerOpacity, {
+        toValue: 1,
+        duration: 320,
+        delay: 280,
+        easing: EASE_OUT_QUART,
+        useNativeDriver: true,
       }).start();
     }, delay);
     return () => clearTimeout(timer);
-  }, [fraction, delay, reducedMotion, progress]);
+  }, [delay, reducedMotion, progress, markerOpacity]);
 
+  // Bar expands from startFraction outward. At progress=0, it's a zero-width line at startFraction.
+  // At progress=1, it spans startFraction..endFraction.
+  const span = Math.max(0, endFraction - startFraction);
   const widthInterp = progress.interpolate({
     inputRange: [0, 1],
-    outputRange: ['0%', '100%'],
+    outputRange: ['0%', `${span * 100}%`],
   });
 
   return (
-    <View style={{ flex: 1, height: 4, backgroundColor: palette.border, borderRadius: 2, maxWidth: 100, overflow: 'hidden' }}>
-      <Animated.View style={{ height: 4, width: widthInterp, backgroundColor: palette.primary, borderRadius: 2 }} />
+    <View style={{ flex: 1, height: 6, backgroundColor: palette.surfaceMuted, borderRadius: 3, maxWidth: 120, overflow: 'hidden', position: 'relative' }}>
+      <Animated.View
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: `${startFraction * 100}%`,
+          height: 6,
+          width: widthInterp,
+          borderRadius: 3,
+          overflow: 'hidden',
+        }}
+      >
+        <LinearGradient
+          colors={[palette.primary, palette.success]}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={{ flex: 1, borderRadius: 3 }}
+        />
+      </Animated.View>
+      {typeof todayMarker === 'number' && (
+        <Animated.View
+          style={{
+            position: 'absolute',
+            top: -1,
+            left: `${todayMarker * 100}%`,
+            width: 8,
+            height: 8,
+            borderRadius: 4,
+            backgroundColor: palette.white,
+            borderWidth: 1.5,
+            borderColor: palette.primary,
+            marginLeft: -4, // center the dot on the marker position
+            opacity: markerOpacity,
+          }}
+        />
+      )}
     </View>
+  );
+}
+
+/** Synthesize an 8-slot hourly forecast from the current day's high/low.
+ *  We don't have real hourly data from the backend — we approximate using a
+ *  sine curve that peaks mid-afternoon (3 PM) and troughs pre-dawn (5 AM).
+ *  Slots: Now, +2h, +4h, +6h, +8h, +12h, +16h, +24h. */
+interface HourlySlot {
+  label: string;          // "Now", "2 PM", etc.
+  hour: number;           // 0..23
+  temp: number;           // rounded °F
+  weatherMain: string;
+  isNow: boolean;
+}
+function synthesizeHourlyForecast(today: ForecastDay, tomorrow?: ForecastDay): HourlySlot[] {
+  const now = new Date();
+  const currentHour = now.getHours();
+  const offsets = [0, 2, 4, 6, 8, 12, 16, 24];
+
+  const todayAvg = (today.high_temp + today.low_temp) / 2;
+  const todayAmp = (today.high_temp - today.low_temp) / 2;
+  const tomorrowAvg = tomorrow ? (tomorrow.high_temp + tomorrow.low_temp) / 2 : todayAvg;
+  const tomorrowAmp = tomorrow ? (tomorrow.high_temp - tomorrow.low_temp) / 2 : todayAmp;
+
+  // sin peaks at hour 15 (3 PM), troughs at hour 1 (before dawn the day curves wrap)
+  // temp(h) = avg + amp * sin((h - 9) * π / 12)
+  const tempAtHour = (absoluteHour: number, avg: number, amp: number): number => {
+    const h = ((absoluteHour % 24) + 24) % 24;
+    return avg + amp * Math.sin(((h - 9) * Math.PI) / 12);
+  };
+
+  return offsets.map((offset, i) => {
+    const targetHour = currentHour + offset;
+    const dayIndex = Math.floor(targetHour / 24);
+    const hourOfDay = ((targetHour % 24) + 24) % 24;
+    const useTomorrow = dayIndex >= 1 && tomorrow;
+    const avg = useTomorrow ? tomorrowAvg : todayAvg;
+    const amp = useTomorrow ? tomorrowAmp : todayAmp;
+    const temp = tempAtHour(targetHour, avg, amp);
+
+    let label: string;
+    if (i === 0) {
+      label = 'Now';
+    } else if (hourOfDay === 0) {
+      label = '12 AM';
+    } else if (hourOfDay === 12) {
+      label = '12 PM';
+    } else if (hourOfDay < 12) {
+      label = `${hourOfDay} AM`;
+    } else {
+      label = `${hourOfDay - 12} PM`;
+    }
+
+    return {
+      label,
+      hour: hourOfDay,
+      temp: Math.round(temp),
+      weatherMain: useTomorrow ? tomorrow!.weather_main : today.weather_main,
+      isNow: i === 0,
+    };
+  });
+}
+
+/** Horizontal hourly forecast row — iOS-Weather-style: time / icon / temp per slot. */
+function HourlyForecastRow({
+  slots,
+  palette,
+  baseDelay,
+  reducedMotion,
+}: {
+  slots: HourlySlot[];
+  palette: typeof Colors.light | typeof Colors.dark;
+  baseDelay: number;
+  reducedMotion: boolean;
+}) {
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 14, gap: 6 }}
+    >
+      {slots.map((slot, i) => (
+        <HourlySlotCell
+          key={`${slot.label}-${i}`}
+          slot={slot}
+          palette={palette}
+          delay={baseDelay + i * 40}
+          reducedMotion={reducedMotion}
+        />
+      ))}
+    </ScrollView>
+  );
+}
+
+function HourlySlotCell({
+  slot,
+  palette,
+  delay,
+  reducedMotion,
+}: {
+  slot: HourlySlot;
+  palette: typeof Colors.light | typeof Colors.dark;
+  delay: number;
+  reducedMotion: boolean;
+}) {
+  const opacity = useRef(new Animated.Value(reducedMotion ? 1 : 0)).current;
+  const translateX = useRef(new Animated.Value(reducedMotion ? 0 : 10)).current;
+
+  useEffect(() => {
+    if (reducedMotion) return;
+    const timer = setTimeout(() => {
+      Animated.parallel([
+        Animated.timing(opacity, { toValue: 1, duration: 360, easing: EASE_OUT_QUART, useNativeDriver: true }),
+        Animated.timing(translateX, { toValue: 0, duration: 360, easing: EASE_OUT_QUART, useNativeDriver: true }),
+      ]).start();
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [delay, reducedMotion, opacity, translateX]);
+
+  return (
+    <Animated.View
+      accessible
+      accessibilityLabel={`${slot.label}, ${slot.temp} degrees, ${slot.weatherMain.toLowerCase()}`}
+      style={{
+        opacity,
+        transform: [{ translateX }],
+        width: 60,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingVertical: 8,
+        gap: 10,
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 13,
+          fontWeight: slot.isNow ? '700' : '500',
+          color: slot.isNow ? palette.text : palette.textSecondary,
+          letterSpacing: 0.2,
+        }}
+      >
+        {slot.label}
+      </Text>
+      <Ionicons
+        name={weatherIcon(slot.weatherMain)}
+        size={22}
+        color={slot.isNow ? palette.primary : palette.text}
+      />
+      <Text
+        style={{
+          fontSize: 17,
+          fontWeight: slot.isNow ? '700' : '600',
+          color: slot.isNow ? palette.primary : palette.text,
+        }}
+      >
+        {slot.temp}°
+      </Text>
+    </Animated.View>
   );
 }
 
@@ -237,24 +482,84 @@ function weatherIcon(main: string): keyof typeof Ionicons.glyphMap {
   return 'partly-sunny-outline';
 }
 
+// ── Air & Allergens category → color mapping ─────────────────────────
+// AQI scale per EPA: 0–50 Good, 51–100 Moderate, 101–150 USG,
+// 151–200 Unhealthy, 201–300 Very Unhealthy, 301+ Hazardous
+
+type Palette = typeof Colors.light;
+
+function aqiPillBg(aqi: number, palette: Palette): string {
+  if (aqi <= 50) return palette.secondary; // soft sage for Good
+  if (aqi <= 100) return '#FEF3C7'; // cream-amber for Moderate
+  if (aqi <= 150) return '#FED7AA'; // peach for Unhealthy for Sensitive
+  return '#FECACA'; // soft red for Unhealthy+
+}
+
+function aqiPillColor(aqi: number, palette: Palette): string {
+  if (aqi <= 50) return palette.success;
+  if (aqi <= 100) return palette.warning;
+  if (aqi <= 150) return '#B45309';
+  return palette.danger;
+}
+
+function pollenPillBg(category: string, palette: Palette): string {
+  const c = category.toLowerCase();
+  if (c === 'none' || c === 'very low' || c === 'low') return palette.secondary;
+  if (c === 'moderate') return '#FEF3C7';
+  if (c === 'high') return '#FED7AA';
+  if (c === 'very high') return '#FECACA';
+  return palette.surfaceMuted;
+}
+
+function pollenPillColor(category: string, palette: Palette): string {
+  const c = category.toLowerCase();
+  if (c === 'none' || c === 'very low' || c === 'low') return palette.success;
+  if (c === 'moderate') return palette.warning;
+  if (c === 'high') return '#B45309';
+  if (c === 'very high') return palette.danger;
+  return palette.textSecondary;
+}
+
+function airAllergenTip(
+  air: AirQualityData | null,
+  pollen: PollenData | null,
+): string | null {
+  const aqiElevated = air && air.aqi > 100;
+  const pollenElevated = pollen && ['High', 'Very High'].includes(pollen.overall);
+
+  if (aqiElevated && pollenElevated) {
+    return 'Air quality and pollen levels are elevated. Consider limiting outdoor activity, especially for sensitive travelers.';
+  }
+  if (aqiElevated) {
+    return 'Air quality is worse than usual. Those with respiratory conditions should limit prolonged outdoor exertion.';
+  }
+  if (pollenElevated) {
+    return 'Pollen levels are elevated. Travelers with allergies may want to take precautions before heading out.';
+  }
+  return null;
+}
+
 export default function HomeScreen() {
   const router = useRouter();
   const scheme = useColorScheme() ?? 'light';
   const palette = Colors[scheme];
   const styles = getStyles(palette);
   const { user, isLoggedIn, isGuest } = useAuth();
+  const { setCurrentLocation } = useCurrentLocation();
   const params = useLocalSearchParams();
   const incomingQuery = Array.isArray(params.q) ? params.q[0] : params.q;
   const [searchQuery, setSearchQuery] = useState(user?.zip_code ?? '');
   const [suggestions, setSuggestions] = useState<AutocompleteResult[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [stats, setStats] = useState<AlertStats | null>(null);
   const [summary, setSummary] = useState<Summary | null>(null);
   const [summaryExpanded, setSummaryExpanded] = useState(false);
-  const [loadingStats, setLoadingStats] = useState(true);
   const [loadingSummary, setLoadingSummary] = useState(true);
-  const [errorStats, setErrorStats] = useState<string | null>(null);
   const [errorSummary, setErrorSummary] = useState<string | null>(null);
+
+  // Air & Allergens
+  const [airQuality, setAirQuality] = useState<AirQualityData | null>(null);
+  const [pollen, setPollen] = useState<PollenData | null>(null);
+  const [loadingAirAllergens, setLoadingAirAllergens] = useState(false);
 
   // In-page weather state
   const [locationInfo, setLocationInfo] = useState<LocationInfo | null>(null);
@@ -306,6 +611,13 @@ export default function HomeScreen() {
 
   const shouldRedirect = !isLoggedIn && !isGuest;
   const autocompleteTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Epoch counters guard against out-of-order async responses.
+  // If user types "Houston, Te" then "Houston, Texas" fast, a slow-resolving
+  // "Te" response (which returns Delaware) must NOT overwrite the newer
+  // "Texas" response. Each async call captures the current epoch; if it
+  // doesn't match the latest by the time it resolves, the result is dropped.
+  const autocompleteEpoch = useRef(0);
+  const weatherQueryEpoch = useRef(0);
 
   useEffect(() => {
     if (user?.zip_code) setSearchQuery(user.zip_code);
@@ -332,18 +644,24 @@ export default function HomeScreen() {
     const isZip = /^\d+$/.test(text);
     if (!isZip && text.length >= 2) {
       autocompleteTimeout.current = setTimeout(async () => {
+        const myEpoch = ++autocompleteEpoch.current;
         try {
           const data = await apiFetch<AutocompleteResult[]>(
             `/location/autocomplete?q=${encodeURIComponent(text)}`
           );
+          // Drop stale results — a newer keystroke has already superseded this request
+          if (myEpoch !== autocompleteEpoch.current) return;
           setSuggestions(data);
           setShowSuggestions(data.length > 0);
         } catch {
+          if (myEpoch !== autocompleteEpoch.current) return;
           setSuggestions([]);
           setShowSuggestions(false);
         }
       }, 300);
     } else {
+      // Bump epoch so any in-flight request is abandoned
+      ++autocompleteEpoch.current;
       setSuggestions([]);
       setShowSuggestions(false);
     }
@@ -353,6 +671,9 @@ export default function HomeScreen() {
   const loadWeatherForQuery = async (query: string) => {
     const trimmed = query.trim();
     if (trimmed.length < 2) return;
+    // Bump epoch — this call is now the authoritative one; any earlier in-flight
+    // request will see its stored epoch mismatch on resolve and drop its result.
+    const myEpoch = ++weatherQueryEpoch.current;
     setLoadingWeather(true);
     setWeatherError(null);
 
@@ -371,13 +692,28 @@ export default function HomeScreen() {
         resolvedZip = searchResult.zip_code;
       }
 
+      // After the first async await — check we're still the current query
+      if (myEpoch !== weatherQueryEpoch.current) return;
+
       setLocationInfo(locInfo);
+
+      // Share the resolved location with other tabs (Alerts, etc.)
+      if (locInfo && resolvedZip) {
+        setCurrentLocation({
+          zipCode: resolvedZip,
+          city: locInfo.city,
+          state: locInfo.state,
+          latitude: locInfo.latitude,
+          longitude: locInfo.longitude,
+        });
+      }
 
       // Kick off a location-specific AI summary refresh alongside weather/alerts
       setLoadingSummary(true);
       setErrorSummary(null);
+      setLoadingAirAllergens(true);
 
-      const [alertsData, forecastData, summaryData] = await Promise.all([
+      const [alertsData, forecastData, summaryData, aqiData, pollenData] = await Promise.all([
         resolvedZip
           ? apiFetch<AlertItem[]>(`/location/alerts?zip_code=${resolvedZip}`).catch(() => [])
           : Promise.resolve([]),
@@ -387,21 +723,45 @@ export default function HomeScreen() {
         resolvedZip
           ? apiFetch<Summary | null>(`/summaries/generate/local?zip_code=${resolvedZip}`, { method: 'POST' }).catch(() => null)
           : Promise.resolve(null),
+        resolvedZip
+          ? apiFetch<AirQualityData>(`/location/aqi?zip_code=${resolvedZip}`).catch(() => null)
+          : Promise.resolve(null),
+        resolvedZip
+          ? apiFetch<PollenData>(`/location/pollen?zip_code=${resolvedZip}`).catch(() => null)
+          : Promise.resolve(null),
       ]);
 
-      setAlerts(alertsData ?? []);
+      // Final epoch check — if another query was issued while our Promise.all was in-flight, drop these results
+      if (myEpoch !== weatherQueryEpoch.current) return;
+
+      // Filter out air_quality and pollen — those have a dedicated "Air & Allergens" card.
+      // Active Alerts is now reserved for real NWS severe-weather warnings.
+      setAlerts(
+        (alertsData ?? []).filter(
+          a => a.alert_type !== 'air_quality' && a.alert_type !== 'pollen',
+        ),
+      );
       setForecast(forecastData ?? []);
       setSummary(summaryData); // always update — null means no alerts/summary for this area
       setSummaryExpanded(false); // collapse when location changes
       setLoadingSummary(false);
+      setAirQuality(aqiData);
+      setPollen(pollenData);
+      setLoadingAirAllergens(false);
     } catch {
+      if (myEpoch !== weatherQueryEpoch.current) return;
       setWeatherError(`Could not find location for "${trimmed}". Try a different city or zip code.`);
       setLocationInfo(null);
       setForecast([]);
       setAlerts([]);
+      setAirQuality(null);
+      setPollen(null);
       setLoadingSummary(false);
+      setLoadingAirAllergens(false);
     } finally {
-      setLoadingWeather(false);
+      // Only clear the loading flag if we're still the latest query — otherwise a
+      // stale .finally could flicker loading off while the newer query is still fetching.
+      if (myEpoch === weatherQueryEpoch.current) setLoadingWeather(false);
     }
   };
 
@@ -513,16 +873,6 @@ export default function HomeScreen() {
 
     (async () => {
       try {
-        setErrorStats(null);
-        const data = await apiFetch<AlertStats>('/alerts/stats');
-        setStats(data);
-      } catch {
-        setErrorStats('Failed to load risk assessment data');
-      } finally { setLoadingStats(false); }
-    })();
-
-    (async () => {
-      try {
         setErrorSummary(null);
         const data = await apiFetch<Summary | null>('/summaries/latest');
         setSummary(data);
@@ -568,7 +918,7 @@ export default function HomeScreen() {
   const tempMax = forecast.length ? Math.max(...forecast.map(d => d.high_temp)) : 0;
   const tempSpan = Math.max(1, tempMax - tempMin);
 
-  const summaryNeedsToggle = (summary?.content?.length ?? 0) > 140;
+  const summaryNeedsToggle = (summary?.content?.length ?? 0) > 160;
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -677,49 +1027,60 @@ export default function HomeScreen() {
 
           {hasWeather && (
             <>
-              {/* Weather Hero */}
-              <FadeInView delay={80} duration={520} distance={12} reducedMotion={reducedMotion} style={styles.weatherHero}>
-                <View style={styles.heroLocationRow}>
-                  <Text style={styles.heroLocation} numberOfLines={1}>
-                    {locationInfo ? `${locationInfo.city}, ${locationInfo.state}` : searchQuery}
-                  </Text>
-                  {locationInfo && (
-                    <Animated.View style={{ transform: [{ scale: saveScale }] }}>
-                      <TouchableOpacity
-                        style={styles.saveButton}
-                        onPress={handleToggleSave}
-                        disabled={savingLocation}
-                        activeOpacity={0.7}
-                        accessibilityRole="button"
-                        accessibilityLabel={currentSaved ? 'Remove from saved locations' : 'Save this location'}
-                        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                      >
-                        <Ionicons
-                          name={currentSaved ? 'bookmark' : 'bookmark-outline'}
-                          size={22}
-                          color={currentSaved ? palette.primary : palette.textSecondary}
-                        />
-                      </TouchableOpacity>
-                    </Animated.View>
-                  )}
-                </View>
-                {today && (
-                  <>
-                    <View style={styles.heroTempRow}>
-                      <CountUp
-                        to={Math.round(today.high_temp)}
-                        style={styles.heroTemp}
-                        reducedMotion={reducedMotion}
-                      />
-                      <Text style={styles.heroDegree}>°</Text>
+              {/* Weather Hero — subtle sage-to-cream gradient backdrop, iOS-Weather-adjacent proportions */}
+              <View style={styles.weatherHeroWrap}>
+                <LinearGradient
+                  colors={[palette.secondary, palette.surface]}
+                  start={{ x: 0.5, y: 0 }}
+                  end={{ x: 0.5, y: 1 }}
+                  style={styles.weatherHeroBackdrop}
+                  pointerEvents="none"
+                />
+                <HeroRise reducedMotion={reducedMotion}>
+                  <FadeInView delay={80} duration={520} distance={12} reducedMotion={reducedMotion} style={styles.weatherHero}>
+                    <View style={styles.heroLocationRow}>
+                      <Text style={styles.heroLocation} numberOfLines={1}>
+                        {locationInfo ? `${locationInfo.city}, ${locationInfo.state}` : searchQuery}
+                      </Text>
+                      {locationInfo && (
+                        <Animated.View style={{ transform: [{ scale: saveScale }] }}>
+                          <TouchableOpacity
+                            style={styles.saveButton}
+                            onPress={handleToggleSave}
+                            disabled={savingLocation}
+                            activeOpacity={0.7}
+                            accessibilityRole="button"
+                            accessibilityLabel={currentSaved ? 'Remove from saved locations' : 'Save this location'}
+                            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                          >
+                            <Ionicons
+                              name={currentSaved ? 'bookmark' : 'bookmark-outline'}
+                              size={22}
+                              color={currentSaved ? palette.primary : palette.textSecondary}
+                            />
+                          </TouchableOpacity>
+                        </Animated.View>
+                      )}
                     </View>
-                    <Text style={styles.heroDesc}>{today.description}</Text>
-                    <Text style={styles.heroHiLo}>
-                      H:{Math.round(today.high_temp)}°   L:{Math.round(today.low_temp)}°
-                    </Text>
-                  </>
-                )}
-              </FadeInView>
+                    {today && (
+                      <>
+                        <View style={styles.heroTempRow}>
+                          <CountUp
+                            to={Math.round(today.high_temp)}
+                            style={styles.heroTemp}
+                            reducedMotion={reducedMotion}
+                          />
+                          <Text style={styles.heroDegree}>°</Text>
+                        </View>
+                        <Text style={styles.heroDesc}>{today.description}</Text>
+                        <Text style={styles.heroHiLo}>
+                          H:{Math.round(today.high_temp)}°  •  L:{Math.round(today.low_temp)}°
+                        </Text>
+                      </>
+                    )}
+                  </FadeInView>
+                </HeroRise>
+              </View>
 
               {/* Today's Highlights strip — humidity / wind / precip */}
               {today && (
@@ -744,19 +1105,40 @@ export default function HomeScreen() {
                 </FadeInView>
               )}
 
-              {/* 10-Day Forecast */}
+              {/* Hourly Forecast — synthesized 8-slot row (not from a true hourly source) */}
+              {today && (
+                <FadeInView delay={260} duration={460} reducedMotion={reducedMotion} style={styles.forecastCard}>
+                  <Text style={[styles.forecastHeader, styles.forecastHeaderTight]}>Hourly Forecast</Text>
+                  <Text style={styles.forecastSubheader}>Estimated from daily range</Text>
+                  <HourlyForecastRow
+                    slots={synthesizeHourlyForecast(today, forecast[1])}
+                    palette={palette}
+                    baseDelay={300}
+                    reducedMotion={reducedMotion}
+                  />
+                </FadeInView>
+              )}
+
+              {/* 10-Day Forecast — rows slide in, then the temp range bars animate in on top */}
               {forecast.length > 1 && (
-                <FadeInView delay={280} duration={480} reducedMotion={reducedMotion} style={styles.forecastCard}>
-                  <Text style={styles.forecastHeader}>10-Day Forecast</Text>
+                <FadeInView delay={420} duration={480} reducedMotion={reducedMotion} style={styles.forecastCard}>
+                  <Text style={styles.forecastHeader}>{forecast.length}-Day Forecast</Text>
                   {forecast.map((day, i) => {
                     const lowFraction = (day.low_temp - tempMin) / tempSpan;
                     const highFraction = (day.high_temp - tempMin) / tempSpan;
-                    const barWidth = Math.max(0.12, highFraction - lowFraction);
-                    const barOffset = lowFraction;
+                    // Enforce a readable minimum span so extremely narrow ranges still show a bar
+                    const rawSpan = highFraction - lowFraction;
+                    const endFraction = rawSpan < 0.12
+                      ? Math.min(1, lowFraction + 0.12)
+                      : highFraction;
+                    const rowDelay = 460 + i * 45;
+                    const barDelay = rowDelay + 200; // bar fills AFTER the row slides in
+                    // "Today" row: draw a dot at the current (high) temp within the day's range
+                    const todayMarker = i === 0 ? endFraction : undefined;
                     return (
                       <FadeInView
                         key={day.date}
-                        delay={340 + i * 45}
+                        delay={rowDelay}
                         duration={360}
                         distance={8}
                         reducedMotion={reducedMotion}
@@ -777,18 +1159,14 @@ export default function HomeScreen() {
                             )}
                           </View>
                           <Text style={styles.forecastLow}>{Math.round(day.low_temp)}°</Text>
-                          <View style={styles.tempTrack}>
-                            <View
-                              style={[
-                                styles.tempRange,
-                                {
-                                  left: `${barOffset * 100}%`,
-                                  width: `${barWidth * 100}%`,
-                                  backgroundColor: palette.primary,
-                                },
-                              ]}
-                            />
-                          </View>
+                          <TempBar
+                            startFraction={lowFraction}
+                            endFraction={endFraction}
+                            delay={barDelay}
+                            palette={palette}
+                            reducedMotion={reducedMotion}
+                            todayMarker={todayMarker}
+                          />
                           <Text style={styles.forecastHigh}>{Math.round(day.high_temp)}°</Text>
                         </View>
                       </FadeInView>
@@ -799,7 +1177,7 @@ export default function HomeScreen() {
 
               {/* Location Alerts */}
               {alerts.length > 0 && (
-                <FadeInView delay={420} duration={420} reducedMotion={reducedMotion} style={styles.card}>
+                <FadeInView delay={540} duration={420} reducedMotion={reducedMotion} style={styles.card}>
                   <View style={styles.cardHeader}>
                     <View style={[styles.cardIconBox, { backgroundColor: '#FEE2E2' }]}>
                       <Ionicons name="warning-outline" size={22} color={palette.danger} />
@@ -828,12 +1206,12 @@ export default function HomeScreen() {
         </Animated.View>
 
         {/* Latest Summary Card with Show More/Less */}
-        <FadeInView delay={520} reducedMotion={reducedMotion} style={styles.card}>
+        <FadeInView delay={620} reducedMotion={reducedMotion} style={styles.card}>
           <View style={styles.cardHeader}>
             <View style={styles.cardIconBox}>
               <Ionicons name="sparkles-outline" size={22} color={palette.primary} />
             </View>
-            <Text style={styles.cardTitle}>AI Summary</Text>
+            <Text style={styles.cardTitle}>Today's Briefing</Text>
           </View>
 
           <StateView
@@ -859,9 +1237,17 @@ export default function HomeScreen() {
           >
             <View style={styles.summaryBox}>
               {summary?.title && <Text style={styles.summaryTitle}>{summary.title}</Text>}
+              {/*
+                Key-based remount forces React Native to drop the cached Text
+                measurement when the expanded state flips — this is the fix for
+                the Android bug where numberOfLines={undefined} failed to
+                re-expand a previously clipped <Text>. numberOfLines={0} means
+                "no limit" and is more reliable than undefined.
+              */}
               <Text
+                key={summaryExpanded ? 'expanded' : 'collapsed'}
                 style={styles.summaryText}
-                numberOfLines={summaryExpanded ? undefined : 3}
+                numberOfLines={summaryExpanded ? 0 : 3}
               >
                 {summary?.content}
               </Text>
@@ -873,7 +1259,7 @@ export default function HomeScreen() {
                 <TouchableOpacity
                   style={styles.toggleButton}
                   onPress={toggleSummary}
-                  activeOpacity={0.7}
+                  activeOpacity={0.6}
                   accessibilityRole="button"
                   accessibilityLabel={summaryExpanded ? 'Show less' : 'Show more'}
                 >
@@ -889,49 +1275,75 @@ export default function HomeScreen() {
           </StateView>
         </FadeInView>
 
-        {/* Risk Assessment Card */}
-        <FadeInView delay={600} reducedMotion={reducedMotion} style={styles.card}>
+        {/* Air & Allergens Card */}
+        <FadeInView delay={700} reducedMotion={reducedMotion} style={styles.card}>
           <View style={styles.cardHeader}>
-            <View style={[styles.cardIconBox, { backgroundColor: '#FEE2E2' }]}>
-              <Ionicons name="warning-outline" size={22} color={palette.danger} />
+            <View style={[styles.cardIconBox, { backgroundColor: palette.secondary }]}>
+              <Ionicons name="leaf-outline" size={22} color={palette.primary} />
             </View>
-            <Text style={styles.cardTitle}>Risk Assessment</Text>
+            <Text style={styles.cardTitle}>Air & Allergens</Text>
           </View>
 
-          <StateView
-            state={loadingStats ? 'loading' : errorStats ? 'error' : stats ? 'success' : 'empty'}
-            loadingText="Loading risk data..."
-            emptyText="No risk data available"
-            emptyIcon="stats-chart-outline"
-            errorText={errorStats || 'Failed to load risk data'}
-            onRetry={() => {
-              setLoadingStats(true);
-              setErrorStats(null);
-              (async () => {
-                try {
-                  const data = await apiFetch<AlertStats>('/alerts/stats');
-                  setStats(data);
-                } catch {
-                  setErrorStats('Failed to load risk assessment data');
-                } finally {
-                  setLoadingStats(false);
-                }
-              })();
-            }}
-          >
-            <View style={styles.statsContainer}>
-              <View style={styles.statRow}>
-                <Text style={styles.statLabel}>Total Active Alerts</Text>
-                <Text style={styles.statValue}>{stats?.total}</Text>
-              </View>
-              {stats && Object.entries(stats.by_severity).map(([severity, count]) => (
-                <View key={severity} style={styles.statRow}>
-                  <Text style={styles.statLabel}>{severity}</Text>
-                  <Text style={styles.statValue}>{count}</Text>
-                </View>
-              ))}
+          {loadingAirAllergens ? (
+            <View style={styles.airLoadingWrap}>
+              <Text style={styles.airLoadingText}>Checking air quality…</Text>
             </View>
-          </StateView>
+          ) : !airQuality && !pollen ? (
+            <View style={styles.airEmptyWrap}>
+              <Ionicons name="cloud-offline-outline" size={28} color={palette.textTertiary} />
+              <Text style={styles.airEmptyText}>No air or pollen data for this area.</Text>
+            </View>
+          ) : (
+            <>
+              <View style={styles.airGrid}>
+                {/* AQI Tile */}
+                <View style={styles.airTile}>
+                  <Text style={styles.airTileLabel}>Air Quality</Text>
+                  {airQuality ? (
+                    <>
+                      <Text style={styles.airTileValue}>{airQuality.aqi}</Text>
+                      <View style={[styles.airPill, { backgroundColor: aqiPillBg(airQuality.aqi, palette) }]}>
+                        <Text style={[styles.airPillText, { color: aqiPillColor(airQuality.aqi, palette) }]}>
+                          {airQuality.category}
+                        </Text>
+                      </View>
+                      <Text style={styles.airTileMeta}>{airQuality.pollutant}</Text>
+                    </>
+                  ) : (
+                    <Text style={styles.airTileUnavailable}>Unavailable</Text>
+                  )}
+                </View>
+
+                {/* Pollen Tile */}
+                <View style={styles.airTile}>
+                  <Text style={styles.airTileLabel}>Pollen</Text>
+                  {pollen ? (
+                    <>
+                      <Text style={styles.airTileValue}>{pollen.overall_value}<Text style={styles.airTileValueDim}>/5</Text></Text>
+                      <View style={[styles.airPill, { backgroundColor: pollenPillBg(pollen.overall, palette) }]}>
+                        <Text style={[styles.airPillText, { color: pollenPillColor(pollen.overall, palette) }]}>
+                          {pollen.overall}
+                        </Text>
+                      </View>
+                      <Text style={styles.airTileMeta} numberOfLines={1}>
+                        {pollen.types.map(t => `${t.name}: ${t.category}`).join(' · ')}
+                      </Text>
+                    </>
+                  ) : (
+                    <Text style={styles.airTileUnavailable}>Unavailable</Text>
+                  )}
+                </View>
+              </View>
+
+              {/* Contextual tip — only when elevated */}
+              {airAllergenTip(airQuality, pollen) && (
+                <View style={styles.airTipWrap}>
+                  <Ionicons name="information-circle-outline" size={16} color={palette.primary} style={{ marginTop: 1 }} />
+                  <Text style={styles.airTipText}>{airAllergenTip(airQuality, pollen)}</Text>
+                </View>
+              )}
+            </>
+          )}
         </FadeInView>
       </ScrollView>
     </SafeAreaView>
@@ -996,9 +1408,22 @@ function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
     weatherPlaceholder: {
       paddingVertical: 40, alignItems: 'center',
     },
+    // Wraps the hero so the gradient backdrop can bleed to the scroll container's
+    // horizontal edges — the negative margins offset scrollContent's padding: 24.
+    weatherHeroWrap: {
+      position: 'relative',
+      marginHorizontal: -24,
+      paddingHorizontal: 24,
+      marginBottom: 12,
+      overflow: 'hidden',
+    },
+    weatherHeroBackdrop: {
+      ...StyleSheet.absoluteFillObject,
+      opacity: 0.7,
+    },
     weatherHero: {
       alignItems: 'center',
-      paddingTop: 8,
+      paddingTop: 12,
       paddingBottom: 28,
     },
     heroLocationRow: {
@@ -1020,7 +1445,7 @@ function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
     },
     heroTempRow: {
       flexDirection: 'row', alignItems: 'flex-start',
-      marginTop: 4,
+      marginTop: 4, marginBottom: 4,
     },
     heroTemp: {
       fontSize: 96, fontWeight: '100',
@@ -1033,10 +1458,11 @@ function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
     },
     heroDesc: {
       fontSize: 17, color: palette.textSecondary,
-      textTransform: 'capitalize', marginTop: -4,
+      textTransform: 'capitalize', marginTop: 2,
     },
     heroHiLo: {
       fontSize: 15, fontWeight: '600', color: palette.text, marginTop: 8,
+      letterSpacing: 0.2,
     },
 
     // ── Today's Highlights ──
@@ -1083,6 +1509,17 @@ function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
       paddingHorizontal: 16,
       paddingTop: 14, paddingBottom: 8,
     },
+    // Tightens header bottom-padding when a subheader follows
+    forecastHeaderTight: {
+      paddingBottom: 2,
+    },
+    // Honesty label: hourly temps are synthesized from today's high/low, not a real hourly feed
+    forecastSubheader: {
+      fontSize: 10, fontWeight: '400',
+      color: palette.textTertiary,
+      paddingHorizontal: 16,
+      paddingBottom: 8,
+    },
     forecastRow: {
       flexDirection: 'row', alignItems: 'center',
       paddingVertical: 14, paddingHorizontal: 16,
@@ -1103,15 +1540,6 @@ function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
       fontSize: 15, fontWeight: '600', color: palette.text,
       width: 32, textAlign: 'right',
     },
-    tempTrack: {
-      flex: 1, height: 5, backgroundColor: palette.surfaceMuted,
-      borderRadius: 2.5, position: 'relative', overflow: 'hidden',
-      maxWidth: 120,
-    },
-    tempRange: {
-      position: 'absolute', top: 0, height: 5, borderRadius: 2.5,
-    },
-
     // ── Cards (AI Summary, Risk Assessment, Alerts) ──
     card: {
       backgroundColor: palette.card, borderRadius: 24, padding: 20, marginBottom: 20,
@@ -1130,19 +1558,23 @@ function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
     summaryText: { fontSize: 14, lineHeight: 22, color: palette.textSecondary },
     summaryMeta: { fontSize: 12, color: palette.textSecondary, marginTop: 8 },
 
-    // ── Show More / Show Less toggle ──
+    // ── Show More / Show Less toggle — full-width bottom strip, iOS "see more" affordance ──
     toggleButton: {
       marginTop: 12,
-      flexDirection: 'row', alignItems: 'center',
-      alignSelf: 'flex-start',
-      gap: 4,
-      paddingVertical: 6, paddingHorizontal: 10,
-      borderRadius: 8,
-      backgroundColor: palette.card,
-      borderWidth: 1, borderColor: palette.border,
+      marginHorizontal: -16, // cancel summaryBox padding so the border spans edge-to-edge
+      marginBottom: -16,
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 6,
+      borderTopWidth: 1,
+      borderTopColor: palette.border,
     },
     toggleButtonText: {
-      fontSize: 13, fontWeight: '600', color: palette.primary,
+      fontSize: 14, fontWeight: '600', color: palette.primary,
+      letterSpacing: 0.2,
     },
 
     // ── Alert rows ──
@@ -1154,12 +1586,89 @@ function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
     alertRowText: { flex: 1 },
     alertTitle: { fontSize: 14, fontWeight: '600', color: palette.text },
     alertMeta: { fontSize: 12, color: palette.textSecondary, marginTop: 2, textTransform: 'capitalize' },
-    statsContainer: { backgroundColor: palette.surfaceMuted, borderRadius: 16, padding: 16 },
-    statRow: {
-      flexDirection: 'row', justifyContent: 'space-between',
-      paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: palette.border,
+    // Air & Allergens card styles
+    airGrid: {
+      flexDirection: 'row',
+      gap: 12,
     },
-    statLabel: { fontSize: 14, color: palette.textSecondary, textTransform: 'capitalize' },
-    statValue: { fontSize: 14, fontWeight: '700', color: palette.text },
+    airTile: {
+      flex: 1,
+      backgroundColor: palette.surfaceMuted,
+      borderRadius: 16,
+      padding: 16,
+      minHeight: 130,
+    },
+    airTileLabel: {
+      fontSize: 12,
+      fontWeight: '600',
+      color: palette.textSecondary,
+      textTransform: 'uppercase',
+      letterSpacing: 0.6,
+    },
+    airTileValue: {
+      fontSize: 34,
+      fontWeight: '300',
+      color: palette.text,
+      marginTop: 6,
+      letterSpacing: -0.5,
+    },
+    airTileValueDim: {
+      fontSize: 20,
+      color: palette.textTertiary,
+      fontWeight: '400',
+    },
+    airPill: {
+      alignSelf: 'flex-start',
+      paddingHorizontal: 10,
+      paddingVertical: 3,
+      borderRadius: 999,
+      marginTop: 4,
+    },
+    airPillText: {
+      fontSize: 12,
+      fontWeight: '600',
+    },
+    airTileMeta: {
+      fontSize: 11,
+      color: palette.textTertiary,
+      marginTop: 8,
+    },
+    airTileUnavailable: {
+      fontSize: 14,
+      color: palette.textTertiary,
+      marginTop: 12,
+      fontStyle: 'italic',
+    },
+    airLoadingWrap: {
+      paddingVertical: 32,
+      alignItems: 'center',
+    },
+    airLoadingText: {
+      fontSize: 14,
+      color: palette.textSecondary,
+    },
+    airEmptyWrap: {
+      paddingVertical: 24,
+      alignItems: 'center',
+      gap: 8,
+    },
+    airEmptyText: {
+      fontSize: 13,
+      color: palette.textTertiary,
+    },
+    airTipWrap: {
+      flexDirection: 'row',
+      gap: 8,
+      marginTop: 14,
+      padding: 12,
+      borderRadius: 12,
+      backgroundColor: palette.secondary,
+    },
+    airTipText: {
+      flex: 1,
+      fontSize: 13,
+      lineHeight: 18,
+      color: palette.text,
+    },
   });
 }

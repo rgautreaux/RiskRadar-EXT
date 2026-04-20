@@ -254,9 +254,9 @@ export default function WeatherReport() {
             </FadeInView>
           )}
 
-          {/* AI Summary */}
+          {/* Traveler Briefing */}
           <FadeInView delay={300} style={styles.section}>
-            <Text style={styles.sectionTitle}>AI Summary</Text>
+            <Text style={styles.sectionTitle}>Today&apos;s Briefing</Text>
             <View style={styles.summaryCard}>
               {summary ? (
                 <>
