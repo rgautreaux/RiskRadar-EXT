@@ -16,8 +16,8 @@ window.__RISKRADAR_API_BASE__ = <?php echo json_encode(rtrim(rr_api_url($config,
 <script type="module" src="/assets/assistant-welcome.js" defer></script>
 
 <noscript>
-  <div style="padding: 2rem; text-align: center; color: #9f1239;">
-    <p><em>Golby requires JavaScript to run. Enable JavaScript and reload this page.</em></p>
+  <div style="padding: 3rem 2rem; color: oklch(0.46 0.016 148); font-family: system-ui, sans-serif; max-width: 40ch;">
+    <p style="margin: 0;">Golby requires JavaScript. Enable it in your browser settings and reload to continue.</p>
   </div>
 </noscript>
 

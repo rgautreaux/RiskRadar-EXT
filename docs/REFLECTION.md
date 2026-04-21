@@ -2,6 +2,47 @@
 
 ## Session Reflections
 
+# Stage 5: ChatInterface TypeScript Error Fix Session (2026-04-21)
+Summary:
+- Removed a redundant `&& category !== 'playful'` condition from `formatResponseForStyle` in `frontend/web/components/golby/ChatInterface.tsx` line 356. After the early return on line 341 (`if (style === 'balanced' || category === 'playful')`), TypeScript narrows `category` to `Exclude<ResponseCategory, 'playful'>`, making the condition always `true` — a TypeScript unnecessary-condition error.
+- Removed the unused `React` default import from line 1 of `ChatInterface.tsx`, resolving a TS6133 hint. The file uses only named hooks (`useState`, `useRef`, `useEffect`) from `'react'` and does not require the `React` namespace under the modern JSX transform.
+
+Why this was done:
+- TypeScript's control flow analysis correctly identified `category !== 'playful'` as redundant after the prior early return, producing a compiler error that blocked clean compilation.
+- The `React` default import was declared but never read under the modern JSX transform, producing a TS6133 unused-variable hint surfaced by the IDE diagnostic hook after the first edit.
+
+How this improved the project:
+- Both diagnostics in `ChatInterface.tsx` are now resolved, giving the file a clean TypeScript compilation state with no errors or hints.
+- Removing the redundant condition simplifies the `formatResponseForStyle` guard and makes the control flow easier to read — the `if (text.length < 160)` branch now clearly applies only to the remaining `'detailed'` style case without a spurious second condition.
+- Dropping the unused `React` import aligns with the project's modern JSX transform setup and removes a stale import that could mislead future readers.
+
+# Stage 5: Golby Assistant Page Redesign Session (2026-04-21)
+Summary:
+- Invoked `/impeccable craft Redesign the 'assistant.php' view located in /frontend/web/views. Keep all current functionality.` to perform a full visual redesign of the Golby assistant page using the established project design context from `.impeccable.md`.
+- Added an OKLCH brand token system to `frontend/web/src/golby-widget.css` (fourteen CSS custom properties covering accent, background, surface, text, and border values, all tinted to hue 148 — forest green) and added all component CSS classes replacing the blue/teal Tailwind class strings throughout the Golby component tree.
+- Rewrote `frontend/web/components/golby/PageWelcome.tsx` with an editorial two-column grid layout: left column has a small-caps badge, a Bricolage Grotesque headline ("Ask Golby anything about your route."), Atkinson Hyperlegible sub-copy, three plain-prose capability bullets with OKLCH forest green dot pseudo-elements, and a solid "Start a conversation →" CTA; right column has the Golby waving SVG inside a warm cream circle. All animations use `useReducedMotion()` and exponential easing; no emoji, no teal speech bubble, no "Hi I'm Golby!" centered intro.
+- Simplified `frontend/web/components/golby/PageChat.tsx`: removed the outer duplicate "Chat with Golby" header (which shadowed `ChatInterface`'s own header containing the same title, back button, and admin panel), replaced the slate/teal gradient background with the `.golby-page-chat` cream class, and introduced a `fullPage` prop passed to `ChatInterface`.
+- Updated `frontend/web/components/golby/ChatInterface.tsx`: added `fullPage?: boolean` prop (defaults `false` for backward compatibility with the floating widget); when `true`, removes the `max-h-[600px]` constraint and fills viewport height instead; replaced all blue gradient/gray class strings in the JSX with brand CSS classes — forest green header, warm cream message area, brand-styled suggestion pills, rectangular input, forest green send button; back/close button shows `←` in full-page mode and `×` in widget mode with correct `aria-label` in both cases. All logic untouched: feedback, adaptive response profile, admin diagnostics panel, analytics table, guardrails, session management.
+- Updated `frontend/web/components/golby/ChatBubble.tsx`: replaced `bg-gradient-to-br from-blue-500 to-blue-600` with `.golby-bubble-golby` (white surface, subtle border, dark text) and `.golby-bubble-user` (forest green background, inverse text).
+- Updated `frontend/web/components/golby/TypingIndicator.tsx`: replaced blue gradient container with `.golby-typing-indicator` (white surface, subtle border matching Golby bubbles) and white dots with `.golby-typing-dot` (forest green, opacity-animated).
+- Updated the noscript fallback in `frontend/web/views/assistant.php` to use brand-toned inline styles and plain language.
+- Ran `npm run build:web` — clean build, 2143 modules transformed, no warnings or errors.
+
+Why this was done:
+- The existing assistant page used a teal and blue palette throughout (`from-teal-500 to-teal-600`, `from-blue-600 to-blue-700`, `bg-gradient-to-br from-blue-500 to-blue-600`) — entirely misaligned with the forest green brand accent established in `.impeccable.md` and applied to every other page in the app.
+- The `PageWelcome` layout (centered emoji speech-bubble, "Hi I'm Golby!" large heading, emoji tip cards, rounded "Get Started ✨" button) is a textbook instance of the generic AI chatbot intro pattern — identical to hundreds of AI products and directly at odds with the project's "Clean · Confident · Civilian-friendly" brand personality and the impeccable absolute bans on decorative elements and gradient-heavy UI.
+- `PageChat` was rendering its own "Chat with Golby" heading and back button, while `ChatInterface` rendered the same heading again immediately below — users saw two stacked "Chat with Golby" titles on the assistant page, a clear layout bug.
+- The `max-h-[600px]` constraint on `ChatInterface` is appropriate for the floating widget (which is compact by design) but made no sense on the full-page assistant route, cutting off the chat area far below the available viewport height.
+- The blue-gradient `ChatBubble` for Golby's messages and the blue-gradient `TypingIndicator` were inconsistent with the brand palette on every other page.
+
+How this improved the project:
+- The welcome screen now has a clear point of view: editorial, left-aligned, no gimmicks. It communicates what Golby does ("ask anything about your route") and why it matters (live RiskRadar data, confidence in decisions) in the same calm authoritative tone as the rest of the app.
+- The two-column layout with Golby in a cream circle on the right gives the character a deliberate visual home without centering or dominating the screen — consistent with the "embedded intelligence, never takes over" design principle in `.impeccable.md`.
+- The chat interface now fills the full viewport on the assistant page, giving users the space a full-page chat warrants, while the floating widget retains its compact 600px cap unchanged (backward compatible via `fullPage` defaulting to `false`).
+- Removing the duplicate header from `PageChat` eliminates a real visual bug and simplifies the component hierarchy — `ChatInterface` is now the single source of truth for the chat header, both in the full-page view and the widget.
+- All six brand CSS classes in the redesign (`golby-bubble-golby`, `golby-bubble-user`, `golby-chat-header`, `golby-messages-area`, `golby-typing-indicator`, `golby-typing-dot`) are scoped to the `.golby-*` namespace, so the redesign introduces no regression risk to any other page or component.
+- The OKLCH token system (`--golby-accent`, `--golby-bg`, `--golby-text`, etc.) gives the Golby component tree a coherent, maintainable color API aligned with the same perceptual color model used in the rest of the app's design system.
+
 # Stage 5: Alert Detail Page Redesign Session (2026-04-16)
 Summary:
 - Invoked `/impeccable craft redesign alert_detail.php view` to perform a full redesign of the alert detail view using the established project design context from `.impeccable.md`.
