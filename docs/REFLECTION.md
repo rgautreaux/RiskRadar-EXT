@@ -2,6 +2,33 @@
 
 ## Session Reflections
 
+# Stage 5: Dashboard Redesign Session (2026-04-21)
+Summary:
+- Invoked `/impeccable craft Redesign the dashboard.php view for the frontend while preserving key functionality.` to perform a full visual redesign of the main dashboard using the established project design context from `.impeccable.md`.
+- Ran `/shape` to produce a confirmed design brief before any code was written, establishing: a Status Declaration hero with a dynamic plain-language headline, a horizontal stat strip replacing the three-card grid, a 3:2 column content layout, clickable alert rows, a tooltip on "Loaded Alerts", teaching empty states, and forest green action links.
+- Rewrote `frontend/web/views/dashboard.php`: replaced the static h1 with a PHP conditional headline ("X alerts active" / "1 alert active" / "You're clear"); replaced `.stat-card` boxes with a single `.dash-stat-strip` panel (three cells divided by `::before` hairline rules, not boxed cards); replaced `.alert-row` `<article>` elements with `<a class="dash-alert-entry">` links routing to `alert_detail.php?id=`; removed the `.panel-feature` distinction — both content panels are now plain `.panel`; added a CSS tooltip on "Loaded Alerts" with `aria-describedby` and `role="tooltip"`; replaced generic empty states with teaching copy; replaced `.content-action` links with `.dash-action` forest green arrows.
+- Appended a `/* Dashboard — Status Declaration Redesign */` section to `frontend/web/public/assets/app.css` with all `dash-*` classes: hero layout with OKLCH green-tinted background, Bricolage Grotesque stat headline at 2.5rem, green-tinted stat boxes, CSS tooltip with keyboard accessibility, stat strip with `overflow: hidden` and separator rules, alert log with hover-underline interaction on titles (no layout-property animation), summary briefing-note layout with Geist Mono meta line. Applied `font-variant-numeric: tabular-nums` to all numeric stat values.
+- Scoped `.page-dashboard .content-grid` to a 3:2 column ratio giving the alerts panel more visual weight than the summary panel.
+- Scoped `.page-dashboard .topnav a.is-active` to forest green (`oklch(0.49 0.14 150)` gradient) replacing the global coral/amber active pill — first page in the app to use the retired green brand accent in navigation.
+- Added responsive breakpoints: hero collapses to single-column at 960px, stat strip goes 2-column with third cell spanning full width, content-grid stacks; at 640px all multi-column layouts go single-column with border-top separators replacing vertical `::before` rules.
+
+Why this was done:
+- The previous dashboard used a static heading ("Desktop-first environmental awareness.") that conveyed no situational information — users still had to read and count the stats below to understand the current risk picture, violating the project's core principle of "scannable in under 10 seconds."
+- The three `.stat-card` boxes with coral/amber/teal gradients were a textbook hero-metric layout template (big number + gradient accent + supporting text per card) — one of the explicit anti-patterns in the impeccable guidelines — and used the coral brand accent that the design context established as retired.
+- Alert rows in the original dashboard were `<article>` elements with no link, making them dead-end previews despite an alert detail page existing at `alert_detail.php?id=`.
+- "Loaded Alerts" displayed a bare integer with no explanation, which was confusing to non-technical users who couldn't distinguish it from the Total Alerts count.
+- The `.panel-feature` class on the summary panel created a visual distinction between the two content panels with no meaningful purpose, adding inconsistency without added clarity.
+- The generic empty states ("No alerts are available from the backend right now.") told users the system had a problem rather than teaching them about normal state behavior.
+
+How this improved the project:
+- The dynamic headline ("12 alerts active" / "You're clear") delivers the primary user job-to-be-done — current risk status — as the first piece of information users read, without requiring any scrolling or counting.
+- The stat strip reads as a cohesive supporting brief rather than three competing metric cards, keeping visual weight subordinate to the headline and content panels.
+- Alert rows are now full anchor elements linking to individual alert detail pages, closing the previously broken navigation path between the dashboard preview and the full alert record.
+- The tooltip on "Loaded Alerts" clarifies the distinction between total backend count and the request-limited fetch count without cluttering the label for users who already understand the difference. It is keyboard accessible via `tabindex="0"` and uses `aria-describedby` for screen readers.
+- Scoping the green active nav pill to `.page-dashboard` advances the forest green brand direction without touching the nav styles on other pages, making the dashboard the first page where the retired coral accent is fully replaced.
+- All new styles use the `dash-*` prefix — zero collision risk with existing shared classes, and no regression exposure for other views.
+- OKLCH is used throughout for all new color values (green tints, tooltip backgrounds, action link colors, nav active state), consistent with the color reference's guidance on perceptually uniform palettes.
+
 # Stage 5: ChatInterface TypeScript Error Fix Session (2026-04-21)
 Summary:
 - Removed a redundant `&& category !== 'playful'` condition from `formatResponseForStyle` in `frontend/web/components/golby/ChatInterface.tsx` line 356. After the early return on line 341 (`if (style === 'balanced' || category === 'playful')`), TypeScript narrows `category` to `Exclude<ResponseCategory, 'playful'>`, making the condition always `true` — a TypeScript unnecessary-condition error.
