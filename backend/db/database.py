@@ -1,13 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-try:
-    from ..config.settings import settings  # Package/module context
-except (ImportError, ValueError):
-    try:
-        from config.settings import settings  # Script context
-    except ImportError:
-        from backend.config.settings import settings  # Fallback for direct backend run
+
+from config.settings import settings  # Always use absolute import for scripts and app
 
 database_url = str(settings.DATABASE_URL).strip()
 DATABASE_URL = database_url or f"sqlite:///{str(settings.DB_PATH)}"
