@@ -40,7 +40,7 @@ class UserOut(BaseModel):
     notify_severity: str | None = None
     health_conditions: str | None = None
     assistant_style_profile: str | None = None
-    created_at: datetime | str
+    created_at: datetime
     has_completed_onboarding: bool = False
 
     model_config = ConfigDict(from_attributes=True)
