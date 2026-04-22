@@ -5,9 +5,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 class Settings(BaseSettings):
-        pythonpath: str = ""
-
     model_config = SettingsConfigDict(extra="allow")
+
     pythonpath: str = ""
     # Database
     DATABASE_URL: str = ""

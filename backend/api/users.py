@@ -6,7 +6,7 @@ from typing import Any, List, Dict
 from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.orm import Session
 
-from auth.security import decrypt_email, hash_email, normalize_email, password_hash, validate_password_strength
+import auth.security
 from db.database import get_db
 from db.models import User, UserAlertPreference, UserHealthCondition
 from schemas.user import UserCreate, UserPrefsUpdate, UserOut
@@ -161,7 +161,7 @@ def _serialize_user(user: User, db: Session | None = None) -> UserOut:
     return UserOut(
         id=user_data['id'],
         display_name=user_data.get('display_name'),
-        email=decrypt_email(user_data['email']) if user_data.get('email') else None,
+        email=auth.security.decrypt_email(user_data['email']) if user_data.get('email') else None,
         is_admin=bool(user_data.get('is_admin', False)),
         zip_code=user_data.get('zip_code'),
         latitude=user_data.get('latitude'),
@@ -176,20 +176,20 @@ def _serialize_user(user: User, db: Session | None = None) -> UserOut:
 
 @router.post("/register", response_model=UserOut)
 def register_user(body: UserCreate, db: Session = Depends(get_db)):
-    normalized_email = normalize_email(str(body.email))
-    password_ok, password_error = validate_password_strength(body.password)
+    normalized_email = auth.security.normalize_email(str(body.email))
+    password_ok, password_error = auth.security.validate_password_strength(body.password)
     if not password_ok:
         raise HTTPException(status_code=400, detail=password_error)
 
-    existing = db.query(User).filter(User.email_lookup_hash == hash_email(normalized_email)).first()
+    existing = db.query(User).filter(User.email_lookup_hash == auth.security.hash_email(normalized_email)).first()
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
     user = User()
     setattr(user, 'display_name', body.display_name)
     setattr(user, 'email', normalized_email)
-    setattr(user, 'email_lookup_hash', hash_email(normalized_email))
-    setattr(user, 'password_hash', password_hash(body.password))
+    setattr(user, 'email_lookup_hash', auth.security.hash_email(normalized_email))
+    setattr(user, 'password_hash', auth.security.password_hash(body.password))
     setattr(user, 'is_admin', False)
     setattr(user, 'zip_code', body.zip_code)
     setattr(user, 'alert_types', json.dumps(["all"]))
