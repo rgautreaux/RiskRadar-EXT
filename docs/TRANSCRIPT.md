@@ -1,4 +1,132 @@
-﻿# Using Claude to try to resolve LOGIN/SIGNUP AND DATABASE ISSUES
+﻿# Using Chat to try to resolve LOGIN/SIGNUP AND DATABASE ISSUES
+
+https://chatgpt.com/share/69e8f6df-9e60-83ea-bf6d-dda29cc7880c
+
+This is the link to the repository I am working from:  https://github.com/School-of-Computing-and-Informatics/cmps-357-sp26-final-project-cmps357-team-3.git
+
+My branch is "__Rebecca-Gautreaux-NEW__", and I have been having many issues with being able to access and manually test the web app. I am the only one experiencing this issue and need help to resolve them, so I can continue working on this assignment.  The main issues so far are as follows:
+
+* When trying to log into an existing account or create a new one, the app would not allow me to and said the backend was not running when it was
+* Currently, the backend and frontend will not run at all
+* When I open the admin panel for the Database, it is empty on my side when it is not for my teammates
+
+Analyze all code, documentation, and contents of this project and provide exact resolutions to these cited problems within this branch so that I can continue to contribute to this project. (The previous attempts to resolve these errors are documented in the TRANSCRIPT.md file under:
+
+
+markdown
+# LOGIN/SIGNUP AND DATABASE ISSUE RESOLUTION ATTEMPTS (PLEASE HELP)
+
+
+
+This is the result of trying to start the backend from the project root:
+
+(.venv) PS C:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3> uvicorn backend.main:app --reload --port 8002                                                                                                                   
+INFO:     Will watch for changes in these directories: ['C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3']
+INFO:     Uvicorn running on http://127.0.0.1:8002 (Press CTRL+C to quit)
+INFO:     Started reloader process [40588] using WatchFiles
+Process SpawnProcess-1:
+Traceback (most recent call last):
+  File "C:\Users\rebec\AppData\Local\Python\pythoncore-3.14-64\Lib\multiprocessing\process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "C:\Users\rebec\AppData\Local\Python\pythoncore-3.14-64\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\.venv\Lib\site-packages\uvicorn\_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+    ~~~~~~^^^^^^^^^^^^^^^^^
+  File "c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\.venv\Lib\site-packages\uvicorn\server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Users\rebec\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\runners.py", line 204, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\rebec\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\runners.py", line 127, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\rebec\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\.venv\Lib\site-packages\uvicorn\server.py", line 79, in serve
+    await self._serve(sockets)
+  File "c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\.venv\Lib\site-packages\uvicorn\server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\.venv\Lib\site-packages\uvicorn\config.py", line 441, in load
+    self.loaded_app = import_from_string(self.app)
+                      ~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\.venv\Lib\site-packages\uvicorn\importer.py", line 22, in import_from_string
+    raise exc from None
+  File "c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\.venv\Lib\site-packages\uvicorn\importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "C:\Users\rebec\AppData\Local\Python\pythoncore-3.14-64\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "C:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\backend\main.py", line 9, in <module>
+    from config.settings import settings
+ModuleNotFoundError: No module named 'config'
+
+
+This is the result of trying to start the backend from its directory:
+
+(.venv) PS C:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3> cd backend                      
+(.venv) PS C:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\backend> uvicorn backend.main:app --reload --port 8002                                                                                                           
+INFO:     Will watch for changes in these directories: ['C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\backend']
+INFO:     Uvicorn running on http://127.0.0.1:8002 (Press CTRL+C to quit)
+INFO:     Started reloader process [29520] using WatchFiles
+Process SpawnProcess-1:
+Traceback (most recent call last):
+  File "C:\Users\rebec\AppData\Local\Python\pythoncore-3.14-64\Lib\multiprocessing\process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "C:\Users\rebec\AppData\Local\Python\pythoncore-3.14-64\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\.venv\Lib\site-packages\uvicorn\_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+    ~~~~~~^^^^^^^^^^^^^^^^^
+  File "c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\.venv\Lib\site-packages\uvicorn\server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Users\rebec\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\runners.py", line 204, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\rebec\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\runners.py", line 127, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\rebec\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\.venv\Lib\site-packages\uvicorn\server.py", line 79, in serve
+    await self._serve(sockets)
+  File "c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\.venv\Lib\site-packages\uvicorn\server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\.venv\Lib\site-packages\uvicorn\config.py", line 441, in load
+    self.loaded_app = import_from_string(self.app)
+                      ~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\.venv\Lib\site-packages\uvicorn\importer.py", line 22, in import_from_string
+    raise exc from None
+  File "c:\Users\rebec\OneDrive\Documents\GitHub\cmps-357-sp26-final-project-cmps357-team-3\.venv\Lib\site-packages\uvicorn\importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "C:\Users\rebec\AppData\Local\Python\pythoncore-3.14-64\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1314, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1335, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'backend'
+
+
+# Using Claude to try to resolve LOGIN/SIGNUP AND DATABASE ISSUES
 
 https://claude.ai/share/3d8b491d-6b89-4e90-977b-bf6dd616fdf6
 
