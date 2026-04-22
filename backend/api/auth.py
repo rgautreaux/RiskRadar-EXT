@@ -7,9 +7,9 @@ from auth.dependencies import get_current_user
 from auth.security import SESSION_COOKIE_NAME, create_session_token, hash_email, normalize_email, verify_password
 from db.database import get_db
 from db.models import User
-from schemas.auth import AuthLoginRequest, AuthSessionOut
-from schemas.user import UserOut
-from api.users import _serialize_user
+from backend.schemas.auth import AuthLoginRequest, AuthSessionOut
+from backend.schemas.user import UserOut
+from backend.api.users import _serialize_user
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 

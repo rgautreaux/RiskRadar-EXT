@@ -1,6 +1,7 @@
 ﻿# Using Chat to try to resolve LOGIN/SIGNUP AND DATABASE ISSUES
 
 https://chatgpt.com/share/69e8f6df-9e60-83ea-bf6d-dda29cc7880c
+https://chatgpt.com/share/69e8f6df-9e60-83ea-bf6d-dda29cc7880c
 
 This is the link to the repository I am working from:  https://github.com/School-of-Computing-and-Informatics/cmps-357-sp26-final-project-cmps357-team-3.git
 
