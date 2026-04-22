@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from auth.dependencies import get_optional_current_user
 from db.database import get_db
 from db.models import Alert, User
-from schemas.assistant import AssistantRequest, AssistantResponse
+from backend.schemas.assistant import AssistantRequest, AssistantResponse
 from services.assistant_personality import (
     apply_style_directive,
     parse_profile,
