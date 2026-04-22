@@ -9,8 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from config.settings import settings
 from db.init_db import init_database
 from scrapers.scheduler import start_scheduler
-from api.router import api_router
-
+from .api.router import api_router
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
 
 
@@ -53,10 +52,11 @@ if "http://127.0.0.1:8080" not in allowed_origins and "http://localhost:8080" no
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    allow_credentials=True,
 )
+
 
 app.include_router(api_router)
 
