@@ -86,9 +86,9 @@ AIRNOW_API_KEY=your-airnow-key
 ### 3. Start the Backend
 
 ```bash
+python -m pip install -r backend/requirements.txt
 cd backend
-py -m pip install -r requirements.txt
-py -m uvicorn main:app --host 0.0.0.0 --port 8001
+python -m uvicorn main:app --app-dir .. --host 0.0.0.0 --port 8001
 ```
 
 You should see:
