@@ -1,12 +1,37 @@
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+
+
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+import sqlalchemy
 from datetime import datetime
-from db.database import get_db
-from db.models import Alert, User
-from schemas.alert import AlertOut, AlertStats, PrioritizedAlertListOut, MapAlertListOut
-from scoring.prioritization import prioritize_alerts as build_prioritized_alerts
+from ..db.database import get_db
+from ..db.models import Alert, User
+from ..schemas.alert import AlertOut, AlertStats, PrioritizedAlertListOut, MapAlertListOut
+from ..scoring.prioritization import (
+    prioritize_alerts as build_prioritized_alerts,
+    compute_alert_risk_breakdown,
+    explain_alert_risk_formula,
+)
+
+# Stage 4: Risk Score Formula Explanation Endpoint
+@router.get("/risk_formula", response_model=dict)
+def get_risk_formula():
+    """Return a human-readable explanation of the risk scoring formula."""
+    return explain_alert_risk_formula()
+
+# Stage 4: Per-Alert Risk Score Breakdown Endpoint
+@router.get("/risk_breakdown/{alert_id}/{user_id}", response_model=dict)
+def get_alert_risk_breakdown(alert_id: int, user_id: int, db: Session = Depends(get_db)):
+    """Return a detailed risk score breakdown for a single alert and user."""
+    alert = db.query(Alert).filter(Alert.id == alert_id).first()
+    user = db.query(User).filter(User.id == user_id).first()
+    if not alert or not user:
+        raise HTTPException(status_code=404, detail="Alert or user not found")
+    breakdown = compute_alert_risk_breakdown(alert, user)
+    if not breakdown:
+        raise HTTPException(status_code=400, detail="Cannot compute risk breakdown (missing location or out of range)")
+    return breakdown
 
 router = APIRouter(prefix="/alerts", tags=["Alerts"])
 
@@ -70,9 +95,9 @@ def list_alerts(
 
 @router.get("/stats", response_model=AlertStats)
 def alert_stats(db: Session = Depends(get_db)):
-    total = db.query(func.count(Alert.id)).scalar()
-    by_type = dict(db.query(Alert.alert_type, func.count(Alert.id)).group_by(Alert.alert_type).all())
-    by_severity = dict(db.query(Alert.severity, func.count(Alert.id)).group_by(Alert.severity).all())
+    total = db.query(Alert).count()
+    by_type = dict(db.query(Alert.alert_type, sqlalchemy.sql.func.count(Alert.id)).group_by(Alert.alert_type).all())
+    by_severity = dict(db.query(Alert.severity, sqlalchemy.sql.func.count(Alert.id)).group_by(Alert.severity).all())
     return AlertStats(total=total or 0, by_type=by_type, by_severity=by_severity)
 
 

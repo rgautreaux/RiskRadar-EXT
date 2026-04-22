@@ -1,23 +1,9 @@
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
 
-class UserCreate(BaseModel):
-    display_name: str
-    email: EmailStr
-    password: str
-    zip_code: Optional[str] = None
 
-
-class UserPrefsUpdate(BaseModel):
-    zip_code: Optional[str] = None
-    latitude: Optional[float] = None
-    longitude: Optional[float] = None
-    alert_types: Optional[list[str]] = None
-    notify_severity: Optional[str] = None
-    device_token: Optional[str] = None
-    health_conditions: Optional[list[str]] = None
-    assistant_style_profile: Optional[dict] = None
+    # ...existing code...
 
 
 class UserAdminUpdate(BaseModel):
@@ -37,5 +23,7 @@ class UserOut(BaseModel):
     health_conditions: Optional[str] = None
     assistant_style_profile: Optional[str] = None
     created_at: str
+
+    has_completed_onboarding: bool = False
 
     model_config = ConfigDict(from_attributes=True)

@@ -3,7 +3,7 @@ import logging
 from collections import defaultdict
 from typing import Any, List, Dict
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.orm import Session
 
 from auth.security import decrypt_email, hash_email, normalize_email, password_hash, validate_password_strength
@@ -15,6 +15,17 @@ from services.assistant_personality import default_profile_json
 router = APIRouter(prefix="/users", tags=["Users"])
 LOGGER = logging.getLogger(__name__)
 _FALLBACK_COUNTERS: dict[str, int] = defaultdict(int)
+
+# --- Onboarding Tutorial Completion Endpoint ---
+@router.post("/{user_id}/onboarding", response_model=UserOut)
+def complete_onboarding(user_id: int, completed: bool = Body(..., embed=True), db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    setattr(user, 'has_completed_onboarding', completed)
+    db.commit()
+    db.refresh(user)
+    return _serialize_user(user, db)
 
 
 def _record_fallback(event_name: str, user_id: int):
@@ -174,16 +185,15 @@ def register_user(body: UserCreate, db: Session = Depends(get_db)):
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
-    user = User(
-        display_name=body.display_name,
-        email=normalized_email,
-        email_lookup_hash=hash_email(normalized_email),
-        password_hash=password_hash(body.password),
-        is_admin=False,
-        zip_code=body.zip_code,
-        alert_types=json.dumps(["all"]),
-        assistant_style_profile=default_profile_json(),
-    )
+    user = User()
+    setattr(user, 'display_name', body.display_name)
+    setattr(user, 'email', normalized_email)
+    setattr(user, 'email_lookup_hash', hash_email(normalized_email))
+    setattr(user, 'password_hash', password_hash(body.password))
+    setattr(user, 'is_admin', False)
+    setattr(user, 'zip_code', body.zip_code)
+    setattr(user, 'alert_types', json.dumps(["all"]))
+    setattr(user, 'assistant_style_profile', default_profile_json())
     db.add(user)
     db.flush()
     _sync_user_alert_preferences(db, user, ["all"])
@@ -211,6 +221,7 @@ def update_preferences(user_id: int, body: UserPrefsUpdate, db: Session = Depend
     if body.alert_types is not None:
         normalized_alert_types = _normalize_alert_types(body.alert_types)
         setattr(user, 'alert_types', json.dumps(normalized_alert_types))
+        setattr(user, 'alert_types', json.dumps(normalized_alert_types))
         _sync_user_alert_preferences(db, user, normalized_alert_types)
         changed_fields.append('alert_types')
     if body.notify_severity is not None:
@@ -221,6 +232,7 @@ def update_preferences(user_id: int, body: UserPrefsUpdate, db: Session = Depend
         changed_fields.append('device_token')
     if body.health_conditions is not None:
         normalized_health_conditions = _normalize_health_conditions(body.health_conditions)
+        setattr(user, 'health_conditions', json.dumps(normalized_health_conditions))
         setattr(user, 'health_conditions', json.dumps(normalized_health_conditions))
         _sync_user_health_conditions(db, user, normalized_health_conditions)
         changed_fields.append('health_conditions')
