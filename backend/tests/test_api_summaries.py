@@ -80,7 +80,7 @@ class TestSummaryAlertIds:
 
 class TestGenerateSummary:
     def test_generate_with_alerts(self, test_client, sample_alerts):
-        mock_return = ("## Daily Digest\nTest summary content.", 100)
+        mock_return = ("## Daily Digest\nTest summary content.", 100, "gpt-4o-mini")
         with patch("llm.summarizer.Summarizer._call_llm", return_value=mock_return):
             resp = test_client.post("/api/v1/summaries/generate")
         assert resp.status_code == 200
