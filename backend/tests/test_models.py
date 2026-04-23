@@ -83,7 +83,7 @@ class TestSummaryModel:
         from unittest.mock import patch
         from llm.summarizer import Summarizer
 
-        with patch.object(Summarizer, "_call_llm", return_value=("## Digest\nBody", 42)):
+        with patch.object(Summarizer, "_call_llm", return_value=("## Digest\nBody", 42, "gpt-4o-mini")):
             summary = Summarizer().generate_daily_digest(db_session)
 
         assert summary is not None

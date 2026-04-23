@@ -30,15 +30,10 @@
                 <input type="password" name="password" minlength="8" autocomplete="current-password" required>
                 <?php if (isset($loginErrors['password'])) : ?><small class="field-error"><?php echo e($loginErrors['password']); ?></small><?php endif; ?>
             </label>
-            <label>
-                <span>ZIP code <small>(optional)</small></span>
-                <input type="text" name="zip_code" inputmode="numeric" maxlength="5" autocomplete="postal-code" value="<?php echo e((string) ($loginForm['zip_code'] ?? '')); ?>">
-                <?php if (isset($loginErrors['zip_code'])) : ?><small class="field-error"><?php echo e($loginErrors['zip_code']); ?></small><?php endif; ?>
-            </label>
             <button class="button-primary" type="submit">Sign in</button>
         </form>
 
-        <form method="post" action="login.php" class="form-stack">
+        <form method="post" action="login.php" class="form-stack" style="margin-top: 1.5rem;">
             <input type="hidden" name="csrf_token" value="<?php echo e(rr_csrf_token()); ?>">
             <button class="button-primary" type="submit" name="action" value="guest">Continue as Guest</button>
         </form>
