@@ -2,7 +2,7 @@ import React from 'react';
 import { FloatingWidget } from './FloatingWidget';
 import { ChatInterface } from './ChatInterface';
 import { WelcomeTab } from './WelcomeTab';
-import { fetchCurrentUser } from './apiClient';
+import { fetchCurrentUser, completeOnboarding } from './apiClient';
 import { detectCurrentPage } from './pageContext';
 
 const WELCOME_SEEN_KEY = 'golby-welcome-seen';
@@ -16,13 +16,6 @@ export function GolbyAssistantWidget() {
   const [isAdmin, setIsAdmin] = React.useState(false);
 
   React.useEffect(() => {
-    try {
-      const hasSeen = window.sessionStorage.getItem(WELCOME_SEEN_KEY) === 'true';
-      setWelcomeSeen(hasSeen);
-    } catch {
-      setWelcomeSeen(false);
-    }
-
     const detectedPage = detectCurrentPage();
     setPageContext(detectedPage);
 
@@ -32,12 +25,10 @@ export function GolbyAssistantWidget() {
     }
 
     const mount = document.getElementById('riskradar-ai-assistant-widget');
-
     const parsedCurrentUserId = Number(mount?.dataset.currentUserId ?? mount?.dataset.adminUserId);
     if (Number.isFinite(parsedCurrentUserId) && parsedCurrentUserId > 0) {
       setCurrentUserId(parsedCurrentUserId);
     }
-
     setIsAdmin(mount?.dataset.isAdmin === 'true');
 
     fetchCurrentUser()
@@ -45,11 +36,19 @@ export function GolbyAssistantWidget() {
         if (currentUser?.id && Number.isFinite(Number(currentUser.id))) {
           setCurrentUserId(Number(currentUser.id));
         }
-
         setIsAdmin(Boolean(currentUser?.is_admin));
+        // Only show onboarding if backend says not completed
+        if (currentUser?.has_completed_onboarding === false) {
+          setShowWelcome(true);
+          setWelcomeSeen(false);
+        } else {
+          setShowWelcome(false);
+          setWelcomeSeen(true);
+        }
       })
       .catch(() => {
-        // Keep the server-rendered session state if the current user lookup fails.
+        setShowWelcome(false);
+        setWelcomeSeen(true);
       });
   }, []);
 
@@ -58,7 +57,7 @@ export function GolbyAssistantWidget() {
     setShowWelcome(!welcomeSeen);
   }, [welcomeSeen]);
 
-  const handleGetStarted = React.useCallback(() => {
+  const handleGetStarted = React.useCallback(async () => {
     setShowWelcome(false);
     setWelcomeSeen(true);
     try {
@@ -66,7 +65,14 @@ export function GolbyAssistantWidget() {
     } catch {
       // Ignore storage issues and keep chat usable.
     }
-  }, []);
+    if (currentUserId) {
+      try {
+        await completeOnboarding(currentUserId);
+      } catch {
+        // Ignore backend errors for onboarding completion
+      }
+    }
+  }, [currentUserId]);
 
   const handleClose = React.useCallback(() => {
     setOpen(false);

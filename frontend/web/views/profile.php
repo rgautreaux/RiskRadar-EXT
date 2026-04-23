@@ -1,4 +1,7 @@
+
 <?php rr_render_layout_start('Profile', 'profile'); ?>
+
+<?php $isGuest = (function_exists('rr_access_context') && rr_access_context() === 'guest'); ?>
 
 <section class="page-heading">
     <div>
@@ -16,7 +19,88 @@
     <?php rr_render_message($preferencesResult['message']); ?>
 <?php endif; ?>
 
+
 <section class="panel">
+    <?php if ($isGuest): ?>
+        <div class="locked-overlay">
+            <div class="locked-message">
+                <span class="locked-icon" aria-hidden="true">🔒</span>
+                <strong>User-Only Feature</strong>
+                <p>You’re currently exploring as a guest.<br>Sign in or create a free account to unlock profile management, health preferences, and more!</p>
+                <div class="locked-actions">
+                    <a href="login.php" class="button-secondary">Sign In to Unlock</a>
+                    <a href="register.php" class="button-primary">Create Account</a>
+                </div>
+            </div>
+        </div>
+        <form class="form-stack locked" onsubmit="showLockoutPopup(); return false;" aria-disabled="true">
+            <div class="readonly-userid">
+                <span>User ID</span>
+                <span class="userid-value" style="font-family:monospace;font-weight:bold;"> 
+                    <em>Guest</em>
+                </span>
+                <small class="field-help">Sign in to get your unique User ID for personalized features.</small>
+            </div>
+            <label>
+                <span>ZIP code</span>
+                <input type="text" name="zip_code" inputmode="numeric" maxlength="5" value="" disabled>
+            </label>
+            <fieldset>
+                <legend>Alert types</legend>
+                <div class="checkbox-grid">
+                    <?php foreach (rr_allowed_alert_types() as $alertType) : ?>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="alert_types[]" value="<?php echo e($alertType); ?>" disabled>
+                            <span><?php echo e($alertType); ?></span>
+                        </label>
+                    <?php endforeach; ?>
+                </div>
+            </fieldset>
+            <label>
+                <span>Minimum severity</span>
+                <select name="notify_severity" disabled>
+                    <option value="">No preference</option>
+                    <?php foreach (rr_allowed_severities() as $severity) : ?>
+                        <option value="<?php echo e($severity); ?>"><?php echo e(ucfirst($severity)); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </label>
+            <label>
+                <span>Device token</span>
+                <input type="text" name="device_token" maxlength="255" value="" disabled>
+                <small class="field-help">Sign in to enable device notifications.</small>
+            </label>
+            <fieldset>
+                <legend>Health sensitivities/preferences</legend>
+                <div class="checkbox-grid">
+                    <?php
+                    $healthConditions = [
+                        'asthma' => 'Asthma',
+                        'copd' => 'COPD',
+                        'allergies' => 'Allergies',
+                        'heart' => 'Heart Disease',
+                        'elderly' => 'Elderly',
+                        'pregnant' => 'Pregnant',
+                        'children' => 'Children',
+                        'immunocompromised' => 'Immunocompromised',
+                    ];
+                    ?>
+                    <?php foreach ($healthConditions as $key => $label) : ?>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="health_conditions[]" value="<?php echo e($key); ?>" disabled>
+                            <span><?php echo e($label); ?></span>
+                        </label>
+                    <?php endforeach; ?>
+                </div>
+            </fieldset>
+            <button class="button-primary" type="submit" disabled>Save preferences</button>
+        </form>
+        <script>
+        function showLockoutPopup() {
+            alert('Sign in or create an account to unlock profile management, health preferences, and more!');
+        }
+        </script>
+    <?php else: ?>
         <div class="panel-header">
             <div>
                 <p class="eyebrow">Write path</p>
@@ -26,11 +110,13 @@
         <form method="post" action="profile.php" class="form-stack">
             <input type="hidden" name="csrf_token" value="<?php echo e(rr_csrf_token()); ?>">
             <input type="hidden" name="action" value="preferences">
-            <label>
+            <div class="readonly-userid">
                 <span>User ID</span>
-                <input type="number" name="user_id" min="1" value="<?php echo e((string) ($preferencesForm['user_id'] ?: '')); ?>" required>
-                <?php if (isset($preferencesErrors['user_id'])) : ?><small class="field-error"><?php echo e($preferencesErrors['user_id']); ?></small><?php endif; ?>
-            </label>
+                <span class="userid-value" style="font-family:monospace;font-weight:bold;"> 
+                    <?php echo isset($currentUser) ? e((string)$currentUser['id']) : '<em>Unknown</em>'; ?>
+                </span>
+                <small class="field-help">This is your unique User ID. Use it for features that require UserID entry (e.g., Risk Scoring).</small>
+            </div>
             <label>
                 <span>ZIP code</span>
                 <input type="text" name="zip_code" inputmode="numeric" maxlength="5" value="<?php echo e((string) ($preferencesForm['zip_code'] ?? '')); ?>">
@@ -60,6 +146,7 @@
             <label>
                 <span>Device token</span>
                 <input type="text" name="device_token" maxlength="255" value="<?php echo e((string) ($preferencesForm['device_token'] ?? '')); ?>">
+                <small class="field-help">For advanced users: enter your device's push notification token if you want to receive alerts on this device. Leave blank if unsure.</small>
             </label>
             <fieldset>
                 <legend>Health sensitivities/preferences</legend>
@@ -95,6 +182,7 @@
                 <p>Stored alert types: <?php echo e(implode(', ', rr_parse_alert_types($preferencesResult['data']['alert_types'])) ?: 'None'); ?></p>
             </div>
         <?php endif; ?>
+    <?php endif; ?>
 </section>
 
 <?php rr_render_layout_end(); ?>

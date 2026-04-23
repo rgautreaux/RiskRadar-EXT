@@ -1,32 +1,118 @@
-"""Smart Alert Prioritization System for RiskRadar.
 
-Computes a per-alert priority score (0-100) for a given user, combining:
-  - Distance from user      (35% weight)
-  - Alert severity           (30% weight)
-  - User health sensitivity  (25% weight)
-  - Recency / freshness      (10% weight)
+"""
+RiskRadar Alert Risk Scoring & Ranking System
+------------------------------------------------
+This module computes a transparent, user-facing risk/priority score (0-100) for each alert, combining:
+    - Distance from user      (35% weight)
+    - Alert severity          (30% weight)
+    - User health sensitivity (25% weight)
+    - Recency / freshness     (10% weight)
 
 Priority levels (urgency thresholds):
-  - High:   70-100
-  - Medium: 40-69
-  - Low:    0-39
+    - High:   70-100
+    - Medium: 40-69
+    - Low:    0-39
 
 Tie-breaking order (deterministic):
-  1. Priority score descending
-  2. Severity rank descending  (critical > high > moderate > low)
-  3. Distance ascending        (closer first)
-  4. Fetched-at descending     (newest first)
-  5. Alert ID ascending        (stable fallback)
+    1. Priority score descending
+    2. Severity rank descending  (critical > high > moderate > low)
+    3. Distance ascending        (closer first)
+    4. Fetched-at descending     (newest first)
+    5. Alert ID ascending        (stable fallback)
+
+The formula and factor breakdown are exposed for user transparency and explainability.
 """
+# ---------------------------------------------------------------------------
+# Public API
+# ---------------------------------------------------------------------------
+
+def explain_alert_risk_formula():
+    """
+    Returns a human-readable explanation of the risk scoring formula and weights.
+    """
+    return {
+        "formula": (
+            "Risk Score = 0.35 * DistanceScore + 0.30 * SeverityScore + "
+            "0.25 * SensitivityScore + 0.10 * RecencyScore"
+        ),
+        "weights": {
+            "distance": DISTANCE_WEIGHT,
+            "severity": SEVERITY_WEIGHT,
+            "sensitivity": SENSITIVITY_WEIGHT,
+            "recency": RECENCY_WEIGHT,
+        },
+        "factors": {
+            "distance": "How close the alert is to the user (closer = higher risk)",
+            "severity": "How severe the alert is (critical > high > moderate > low)",
+            "sensitivity": "Whether the alert type matches the user's health conditions",
+            "recency": "How recent the alert is (newer = higher risk)",
+        },
+        "priority_levels": {
+            "high": "70-100",
+            "medium": "40-69",
+            "low": "0-39",
+        },
+    }
+
+def compute_alert_risk_breakdown(alert: Alert, user: User, radius_km: float = MAX_RADIUS_KM) -> dict | None:
+    """
+    Compute a detailed risk score breakdown for a single alert and user.
+    Returns a dict with each factor's score, the overall score, and level.
+    """
+    if (
+        user.latitude is None
+        or user.longitude is None
+        or alert.latitude is None
+        or alert.longitude is None
+    ):
+        return None
+
+    dist = haversine_km(user.latitude, user.longitude, alert.latitude, alert.longitude)
+    if dist > radius_km:
+        return None
+
+    raw_conditions = user.health_conditions or "[]"
+    try:
+        user_conditions = json.loads(raw_conditions)
+    except (json.JSONDecodeError, TypeError):
+        user_conditions = []
+
+    dist_score = _distance_priority(dist, radius_km)
+    sev_score = _severity_priority(alert.severity)
+    sens_score = _sensitivity_priority(user_conditions, alert.alert_type)
+    rec_score = _recency_priority(alert.fetched_at)
+
+    risk_score = round(
+        DISTANCE_WEIGHT * dist_score
+        + SEVERITY_WEIGHT * sev_score
+        + SENSITIVITY_WEIGHT * sens_score
+        + RECENCY_WEIGHT * rec_score,
+        1,
+    )
+    risk_score = min(100.0, max(0.0, risk_score))
+    risk_level = _level_from_priority(risk_score)
+
+    return {
+        "alert_id": alert.id,
+        "risk_score": risk_score,
+        "risk_level": risk_level,
+        "distance_km": round(dist, 2),
+        "factor_scores": {
+            "distance": round(dist_score, 1),
+            "severity": round(sev_score, 1),
+            "sensitivity": round(sens_score, 1),
+            "recency": round(rec_score, 1),
+        },
+        "formula": explain_alert_risk_formula()["formula"],
+        "weights": explain_alert_risk_formula()["weights"],
+    }
+
 
 import json
-import math
 from datetime import datetime, timezone
-
 from sqlalchemy.orm import Session
-
-from db.models import Alert, User
-from scoring import (
+from ..db.models import Alert, User
+from . import (
     haversine_km,
     CONDITION_ALERT_MAP,
     MAX_RADIUS_KM,
@@ -129,7 +215,7 @@ def prioritize_alerts(
     user_lon = user.longitude
 
     if user_lat is None or user_lon is None:
-        return _empty_result(user.id, reason="User location not set")
+        return _empty_result(user.id)
 
     # Parse user health conditions
     raw_conditions = user.health_conditions or "[]"
@@ -280,7 +366,7 @@ def _level_from_priority(score: float) -> str:
     return "low"
 
 
-def _empty_result(user_id: int, reason: str = "") -> dict:
+def _empty_result(user_id: int) -> dict:
     return {
         "user_id": user_id,
         "total_nearby": 0,

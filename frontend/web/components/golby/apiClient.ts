@@ -1,3 +1,14 @@
+// Mark onboarding as completed for the user
+export async function completeOnboarding(userId: number) {
+  const res = await fetch(buildApiUrl(`/users/${userId}/onboarding`), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ completed: true }),
+  });
+  if (!res.ok) throw new Error('Failed to update onboarding state');
+  return await res.json();
+}
 // Utility to fetch live data from backend APIs for Golby
 
 export type GolbyFeedbackReaction = 'thumbs_up' | 'thumbs_down' | 'smile';

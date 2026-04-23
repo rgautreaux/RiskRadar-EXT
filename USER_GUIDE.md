@@ -61,10 +61,12 @@ The RiskRadar Web-Extension provides a comprehensive set of features accessible 
 ### Profile (Preferences)
 - **URL:** `/profile.php`
 - **Features:**
-   - Update user profile preferences by entering your numeric user ID.
+   - Update user profile preferences for the currently logged-in user (UserID is now session-based and read-only).
    - Set ZIP code, alert types, minimum severity, device token, and health sensitivities/preferences (asthma, COPD, allergies, heart, elderly, pregnant, children, immunocompromised).
    - Save preferences and receive a success message upon update.
    - Preferences are now used for personalized risk scoring, smart alerts, and forecast advice.
+
+**Note:** Manual entry of UserID is no longer possible; all profile updates are tied to the authenticated session user. Further manual UI/UX verification and documentation updates for this flow are assigned to Max due to current login issues for the previous implementer. Please document findings and update the project tracker accordingly.
 
 ### Risk Page
 - **URL:** `/risk.php`
@@ -471,6 +473,39 @@ Implementation highlights:
 - **Database Models**: [backend/db/models.py](../backend/db/models.py) — SQLAlchemy ORM with all required fields
 
 See [DEMO_FEATURES_BY_STAGE.md](./docs/DEMO_FEATURES_BY_STAGE.md) for full code-to-feature mapping.
+
+---
+
+## Risk Scoring, Alert Ranking, and Personalization (Stage 4+)
+
+### Risk Scoring Formula
+- Every alert and user now receives a transparent risk score (0-100) based on:
+  - Distance from user (35%)
+  - Alert severity (30%)
+  - User health sensitivity (25%)
+  - Recency/freshness (10%)
+- The formula and factor breakdown are visible in the UI (see alert details and smart alerts pages).
+- Users can view a detailed breakdown of how each factor contributed to their risk score for any alert.
+
+### Alert Ranking
+- Alerts are ranked for each user by combining risk score, relevance, and severity.
+- The smart alerts page shows prioritized alerts, with a breakdown of the factors for each alert.
+- Tie-breaking is deterministic: priority score, severity, distance, recency, then alert ID.
+
+### Personalization & User Preferences
+- Users can update their location, health conditions, and alert preferences in the Profile page.
+- These preferences directly affect risk scores and alert rankings.
+- Guest users see generic results; registered users get personalized risk and alert ranking.
+
+### How to Use
+- Go to the Profile page to update your preferences.
+- Visit the Smart Alerts page to see your personalized alert ranking and risk breakdown.
+- Click any alert to view its detailed risk score and an explanation of the formula.
+- Use the help/info tooltips to understand how your risk is calculated.
+
+### Accessibility & Transparency
+- All risk scoring and ranking logic is fully documented and visible to users.
+- Explanations are available in the UI and in this guide for transparency and trust.
 
 ---
 

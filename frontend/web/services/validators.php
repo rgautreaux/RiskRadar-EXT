@@ -184,7 +184,6 @@ function rr_validate_preferences(array $post): array
     $healthConditions = array_values(array_unique($healthConditions));
 
     $data = [
-        'user_id' => filter_var($post['user_id'] ?? null, FILTER_VALIDATE_INT),
         'zip_code' => trim((string) ($post['zip_code'] ?? '')),
         'alert_types' => $alertTypes,
         'notify_severity' => trim((string) ($post['notify_severity'] ?? '')),
@@ -192,10 +191,6 @@ function rr_validate_preferences(array $post): array
         'health_conditions' => $healthConditions,
     ];
     $errors = [];
-
-    if (!$data['user_id'] || $data['user_id'] < 1) {
-        $errors['user_id'] = 'Enter a valid user ID.';
-    }
 
     if ($data['zip_code'] !== '' && !preg_match('/^\d{5}$/', $data['zip_code'])) {
         $errors['zip_code'] = 'ZIP code must be a 5-digit US ZIP code.';

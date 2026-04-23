@@ -29,7 +29,7 @@ function rr_render_layout_start(string $title, string $activePage): void
         $apiPrefix = '/' . trim((string) ($globalConfig['api']['prefix'] ?? $apiPrefix), '/');
     }
 
-    $shouldRenderGolbyWidget = $activePage !== 'login';
+    $shouldRenderGolbyWidget = $activePage !== 'login' && $activePage !== 'register';
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -124,7 +124,7 @@ function rr_render_layout_start(string $title, string $activePage): void
 function rr_render_layout_end(): void
 {
     $activePage = (string) ($GLOBALS['rr_layout_active_page'] ?? 'unknown');
-    $shouldRenderGolbyWidget = $activePage !== 'login';
+    $shouldRenderGolbyWidget = $activePage !== 'login' && $activePage !== 'register';
 
     ?>
             </main>

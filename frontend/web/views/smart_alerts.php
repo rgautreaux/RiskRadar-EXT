@@ -1,4 +1,7 @@
+
 <?php rr_render_layout_start('Smart Alerts', 'smart_alerts'); ?>
+
+<?php $isGuest = (function_exists('rr_access_context') && rr_access_context() === 'guest'); ?>
 
 <section class="page-heading">
     <div>
@@ -8,22 +11,57 @@
     <p>Alerts ranked by personalized priority using distance, severity, health sensitivity, and recency. Enter a user ID to see results tailored to that user's location and health profile.</p>
 </section>
 
+
 <section class="panel">
-    <form class="filter-grid" method="get" action="smart_alerts.php">
-        <label>
-            <span>User ID</span>
-            <input type="number" name="user_id" min="1" max="999999" value="<?php echo e((string) $userId); ?>" required placeholder="1">
-        </label>
-        <label>
-            <span>Radius (km)</span>
-            <input type="number" name="radius_km" min="1" max="500" value="<?php echo e((string) $radiusKm); ?>">
-        </label>
-        <label>
-            <span>Limit</span>
-            <input type="number" name="limit" min="1" max="200" value="<?php echo e((string) $limit); ?>">
-        </label>
-        <button class="button-primary" type="submit">Load prioritized alerts</button>
-    </form>
+    <?php if ($isGuest): ?>
+        <div class="locked-overlay">
+            <div class="locked-message">
+                <span class="locked-icon" aria-hidden="true">🔒</span>
+                <strong>User-Only Feature</strong>
+                <p>You’re currently exploring as a guest.<br>Sign in or create a free account to unlock smart alerts, personalized risk scores, and more!</p>
+                <div class="locked-actions">
+                    <a href="login.php" class="button-secondary">Sign In to Unlock</a>
+                    <a href="register.php" class="button-primary">Create Account</a>
+                </div>
+            </div>
+        </div>
+        <form class="filter-grid locked" onsubmit="showLockoutPopup(); return false;" aria-disabled="true">
+            <label>
+                <span>User ID</span>
+                <input type="number" name="user_id" min="1" max="999999" value="" disabled placeholder="1">
+            </label>
+            <label>
+                <span>Radius (km)</span>
+                <input type="number" name="radius_km" min="1" max="500" value="" disabled>
+            </label>
+            <label>
+                <span>Limit</span>
+                <input type="number" name="limit" min="1" max="200" value="" disabled>
+            </label>
+            <button class="button-primary" type="submit" disabled>Load prioritized alerts</button>
+        </form>
+        <script>
+        function showLockoutPopup() {
+            alert('Sign in or create an account to unlock smart alerts, personalized risk scores, and more!');
+        }
+        </script>
+    <?php else: ?>
+        <form class="filter-grid" method="get" action="smart_alerts.php">
+            <label>
+                <span>User ID</span>
+                <input type="number" name="user_id" min="1" max="999999" value="<?php echo e((string) $userId); ?>" required placeholder="1">
+            </label>
+            <label>
+                <span>Radius (km)</span>
+                <input type="number" name="radius_km" min="1" max="500" value="<?php echo e((string) $radiusKm); ?>">
+            </label>
+            <label>
+                <span>Limit</span>
+                <input type="number" name="limit" min="1" max="200" value="<?php echo e((string) $limit); ?>">
+            </label>
+            <button class="button-primary" type="submit">Load prioritized alerts</button>
+        </form>
+    <?php endif; ?>
 </section>
 
 <?php if ($userId <= 0) : ?>
