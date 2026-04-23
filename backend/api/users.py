@@ -1,6 +1,7 @@
 import json
 import logging
 from collections import defaultdict
+from datetime import datetime, timezone
 from typing import Any, List, Dict
 
 from fastapi import APIRouter, Depends, HTTPException, Body
@@ -155,9 +156,7 @@ def _serialize_user(user: User, db: Session | None = None) -> UserOut:
         json.dumps(health_conditions) if health_conditions else user_data.get('health_conditions')
     )
 
-    created_at = user_data.get('created_at')
-    if created_at is None:
-        created_at = ""
+    created_at = user_data.get('created_at') or datetime.now(timezone.utc)
     return UserOut(
         id=user_data['id'],
         display_name=user_data.get('display_name'),

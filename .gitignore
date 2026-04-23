@@ -14,5 +14,6 @@ ENV/
 *.db
 .DS_Store
 node_modules/
+frontend/web/config/config.local.php
 # Legacy optional entry for separate mobile repo workflows.
 .expo/
