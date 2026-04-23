@@ -33,6 +33,10 @@ export const BrandPalette = {
   secondary: '#E8F0E4',
   warning: '#E09F3E',
   danger: '#C1413D',
+  // Soft tint of `danger`, used as a background for alert-card icon boxes.
+  // Paired with `danger` foreground for a warm-but-not-alarming signal that
+  // keeps us in the "calm over alarm" lane (see .impeccable.md).
+  dangerSoft: '#FEE2E2',
   surface: '#FAF8F5',
   surfaceMuted: '#F0EDE8',
   border: '#D5CFC5',
@@ -57,6 +61,7 @@ const themeColors = {
   surfaceMuted: BrandPalette.surfaceMuted,
   border: BrandPalette.border,
   danger: BrandPalette.danger,
+  dangerSoft: BrandPalette.dangerSoft,
   warning: BrandPalette.warning,
   success: BrandPalette.success,
   shadow: BrandPalette.shadow,

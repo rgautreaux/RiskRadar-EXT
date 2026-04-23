@@ -10,8 +10,6 @@ import {
   Platform,
   StatusBar,
   Animated,
-  Easing,
-  ViewStyle,
   AccessibilityInfo,
   LayoutAnimation,
   UIManager,
@@ -27,15 +25,32 @@ import { useAuth } from '@/contexts/auth-context';
 import { useCurrentLocation } from '@/contexts/location-context';
 import { apiFetch } from '@/utils/api';
 import { StateView } from '@/components/ui/state-view';
+import {
+  EASE_OUT_QUART,
+  EASE_OUT_EXPO,
+  FadeInView,
+  HeroRise,
+  CountUp,
+} from '@/components/motion/animations';
+import { TempBar } from '@/components/weather/temp-bar';
+import {
+  HourlyForecastRow,
+  synthesizeHourlyForecast,
+} from '@/components/weather/hourly-forecast-row';
+import { weatherIcon } from '@/components/weather/weather-icon';
+import {
+  aqiPillBg,
+  aqiPillColor,
+  pollenPillBg,
+  pollenPillColor,
+  airAllergenTip,
+} from '@/components/air-allergens/pill-palette';
+import { LoadingBee } from '@/components/motion/loading-bee';
 
 // Enable LayoutAnimation on Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
-
-// Refined easing curves — ease-out-quart for natural deceleration
-const EASE_OUT_QUART = Easing.bezier(0.25, 1, 0.5, 1);
-const EASE_OUT_EXPO = Easing.bezier(0.16, 1, 0.3, 1);
 
 interface AirQualityData {
   aqi: number;
@@ -117,426 +132,23 @@ interface SavedDestination {
 
 const DEMO_SETTINGS_KEY = 'riskradar_demo_settings';
 
-/** FadeInView — entrance animation (fade + subtle slide), respects reduced motion */
-function FadeInView({
-  delay = 0,
-  duration = 450,
-  distance = 18,
-  children,
-  style,
-  reducedMotion = false,
-}: {
-  delay?: number;
-  duration?: number;
-  distance?: number;
-  children: React.ReactNode;
-  style?: ViewStyle | ViewStyle[];
-  reducedMotion?: boolean;
-}) {
-  const opacity = useRef(new Animated.Value(reducedMotion ? 1 : 0)).current;
-  const translateY = useRef(new Animated.Value(reducedMotion ? 0 : distance)).current;
-
-  useEffect(() => {
-    if (reducedMotion) return;
-    const timer = setTimeout(() => {
-      Animated.parallel([
-        Animated.timing(opacity, {
-          toValue: 1, duration, easing: EASE_OUT_QUART, useNativeDriver: true,
-        }),
-        Animated.timing(translateY, {
-          toValue: 0, duration, easing: EASE_OUT_QUART, useNativeDriver: true,
-        }),
-      ]).start();
-    }, delay);
-    return () => clearTimeout(timer);
-  }, [delay, duration, reducedMotion, opacity, translateY]);
-
-  return (
-    <Animated.View style={[style, { opacity, transform: [{ translateY }] }]}>
-      {children}
-    </Animated.View>
-  );
-}
-
-/** HeroRise — subtle scale-in from 0.98 that runs alongside the inner FadeInView
- *  for a layered "settling into place" feel on the weather hero. */
-function HeroRise({ children, reducedMotion }: { children: React.ReactNode; reducedMotion: boolean }) {
-  const scale = useRef(new Animated.Value(reducedMotion ? 1 : 0.98)).current;
-  useEffect(() => {
-    if (reducedMotion) return;
-    Animated.timing(scale, {
-      toValue: 1,
-      duration: 520,
-      delay: 80,
-      easing: EASE_OUT_QUART,
-      useNativeDriver: true,
-    }).start();
-  }, [reducedMotion, scale]);
-  return <Animated.View style={{ transform: [{ scale }] }}>{children}</Animated.View>;
-}
-
-/** CountUp — animates a number counting up to its target value */
-function CountUp({
-  to,
-  duration = 700,
-  suffix = '',
-  style,
-  reducedMotion = false,
-}: {
-  to: number;
-  duration?: number;
-  suffix?: string;
-  style?: any;
-  reducedMotion?: boolean;
-}) {
-  const [value, setValue] = useState(reducedMotion ? to : 0);
-
-  useEffect(() => {
-    if (reducedMotion) {
-      setValue(to);
-      return;
-    }
-    const startVal = 0;
-    const start = Date.now();
-    const tick = () => {
-      const elapsed = Date.now() - start;
-      const t = Math.min(1, elapsed / duration);
-      // ease-out-expo
-      const eased = 1 - Math.pow(2, -10 * t);
-      const current = Math.round(startVal + (to - startVal) * eased);
-      setValue(current);
-      if (t < 1) {
-        requestAnimationFrame(tick);
-      } else {
-        setValue(to);
-      }
-    };
-    const raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [to, duration, reducedMotion]);
-
-  return <Text style={style}>{value}{suffix}</Text>;
-}
-
-/** Animated temperature range bar — shows low→high span within a normalized 0..1 track.
- *  The fill grows outward from `startFraction` as `progress` animates 0→1,
- *  giving a layered reveal after the row itself slides in.
- *  `todayMarker` (0..1) optionally draws a small dot — used on the "Today" row. */
-function TempBar({
-  startFraction,
-  endFraction,
-  delay = 0,
-  palette,
-  reducedMotion = false,
-  todayMarker,
-}: {
-  startFraction: number; // 0..1, normalized low position
-  endFraction: number;   // 0..1, normalized high position
-  delay?: number;
-  palette: typeof Colors.light | typeof Colors.dark;
-  reducedMotion?: boolean;
-  todayMarker?: number;  // 0..1, optional dot position
-}) {
-  const progress = useRef(new Animated.Value(reducedMotion ? 1 : 0)).current;
-  const markerOpacity = useRef(new Animated.Value(reducedMotion ? 1 : 0)).current;
-
-  useEffect(() => {
-    if (reducedMotion) {
-      progress.setValue(1);
-      markerOpacity.setValue(1);
-      return;
-    }
-    const timer = setTimeout(() => {
-      Animated.timing(progress, {
-        toValue: 1,
-        duration: 600,
-        easing: EASE_OUT_EXPO,
-        useNativeDriver: false, // width + left animations
-      }).start();
-      Animated.timing(markerOpacity, {
-        toValue: 1,
-        duration: 320,
-        delay: 280,
-        easing: EASE_OUT_QUART,
-        useNativeDriver: true,
-      }).start();
-    }, delay);
-    return () => clearTimeout(timer);
-  }, [delay, reducedMotion, progress, markerOpacity]);
-
-  // Bar expands from startFraction outward. At progress=0, it's a zero-width line at startFraction.
-  // At progress=1, it spans startFraction..endFraction.
-  const span = Math.max(0, endFraction - startFraction);
-  const widthInterp = progress.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0%', `${span * 100}%`],
-  });
-
-  return (
-    <View style={{ flex: 1, height: 6, backgroundColor: palette.surfaceMuted, borderRadius: 3, maxWidth: 120, overflow: 'hidden', position: 'relative' }}>
-      <Animated.View
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: `${startFraction * 100}%`,
-          height: 6,
-          width: widthInterp,
-          borderRadius: 3,
-          overflow: 'hidden',
-        }}
-      >
-        <LinearGradient
-          colors={[palette.primary, palette.success]}
-          start={{ x: 0, y: 0.5 }}
-          end={{ x: 1, y: 0.5 }}
-          style={{ flex: 1, borderRadius: 3 }}
-        />
-      </Animated.View>
-      {typeof todayMarker === 'number' && (
-        <Animated.View
-          style={{
-            position: 'absolute',
-            top: -1,
-            left: `${todayMarker * 100}%`,
-            width: 8,
-            height: 8,
-            borderRadius: 4,
-            backgroundColor: palette.white,
-            borderWidth: 1.5,
-            borderColor: palette.primary,
-            marginLeft: -4, // center the dot on the marker position
-            opacity: markerOpacity,
-          }}
-        />
-      )}
-    </View>
-  );
-}
-
-/** Synthesize an 8-slot hourly forecast from the current day's high/low.
- *  We don't have real hourly data from the backend — we approximate using a
- *  sine curve that peaks mid-afternoon (3 PM) and troughs pre-dawn (5 AM).
- *  Slots: Now, +2h, +4h, +6h, +8h, +12h, +16h, +24h. */
-interface HourlySlot {
-  label: string;          // "Now", "2 PM", etc.
-  hour: number;           // 0..23
-  temp: number;           // rounded °F
-  weatherMain: string;
-  isNow: boolean;
-}
-function synthesizeHourlyForecast(today: ForecastDay, tomorrow?: ForecastDay): HourlySlot[] {
-  const now = new Date();
-  const currentHour = now.getHours();
-  const offsets = [0, 2, 4, 6, 8, 12, 16, 24];
-
-  const todayAvg = (today.high_temp + today.low_temp) / 2;
-  const todayAmp = (today.high_temp - today.low_temp) / 2;
-  const tomorrowAvg = tomorrow ? (tomorrow.high_temp + tomorrow.low_temp) / 2 : todayAvg;
-  const tomorrowAmp = tomorrow ? (tomorrow.high_temp - tomorrow.low_temp) / 2 : todayAmp;
-
-  // sin peaks at hour 15 (3 PM), troughs at hour 1 (before dawn the day curves wrap)
-  // temp(h) = avg + amp * sin((h - 9) * π / 12)
-  const tempAtHour = (absoluteHour: number, avg: number, amp: number): number => {
-    const h = ((absoluteHour % 24) + 24) % 24;
-    return avg + amp * Math.sin(((h - 9) * Math.PI) / 12);
-  };
-
-  return offsets.map((offset, i) => {
-    const targetHour = currentHour + offset;
-    const dayIndex = Math.floor(targetHour / 24);
-    const hourOfDay = ((targetHour % 24) + 24) % 24;
-    const useTomorrow = dayIndex >= 1 && tomorrow;
-    const avg = useTomorrow ? tomorrowAvg : todayAvg;
-    const amp = useTomorrow ? tomorrowAmp : todayAmp;
-    const temp = tempAtHour(targetHour, avg, amp);
-
-    let label: string;
-    if (i === 0) {
-      label = 'Now';
-    } else if (hourOfDay === 0) {
-      label = '12 AM';
-    } else if (hourOfDay === 12) {
-      label = '12 PM';
-    } else if (hourOfDay < 12) {
-      label = `${hourOfDay} AM`;
-    } else {
-      label = `${hourOfDay - 12} PM`;
-    }
-
-    return {
-      label,
-      hour: hourOfDay,
-      temp: Math.round(temp),
-      weatherMain: useTomorrow ? tomorrow!.weather_main : today.weather_main,
-      isNow: i === 0,
-    };
-  });
-}
-
-/** Horizontal hourly forecast row — iOS-Weather-style: time / icon / temp per slot. */
-function HourlyForecastRow({
-  slots,
-  palette,
-  baseDelay,
-  reducedMotion,
-}: {
-  slots: HourlySlot[];
-  palette: typeof Colors.light | typeof Colors.dark;
-  baseDelay: number;
-  reducedMotion: boolean;
-}) {
-  return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 14, gap: 6 }}
-    >
-      {slots.map((slot, i) => (
-        <HourlySlotCell
-          key={`${slot.label}-${i}`}
-          slot={slot}
-          palette={palette}
-          delay={baseDelay + i * 40}
-          reducedMotion={reducedMotion}
-        />
-      ))}
-    </ScrollView>
-  );
-}
-
-function HourlySlotCell({
-  slot,
-  palette,
-  delay,
-  reducedMotion,
-}: {
-  slot: HourlySlot;
-  palette: typeof Colors.light | typeof Colors.dark;
-  delay: number;
-  reducedMotion: boolean;
-}) {
-  const opacity = useRef(new Animated.Value(reducedMotion ? 1 : 0)).current;
-  const translateX = useRef(new Animated.Value(reducedMotion ? 0 : 10)).current;
-
-  useEffect(() => {
-    if (reducedMotion) return;
-    const timer = setTimeout(() => {
-      Animated.parallel([
-        Animated.timing(opacity, { toValue: 1, duration: 360, easing: EASE_OUT_QUART, useNativeDriver: true }),
-        Animated.timing(translateX, { toValue: 0, duration: 360, easing: EASE_OUT_QUART, useNativeDriver: true }),
-      ]).start();
-    }, delay);
-    return () => clearTimeout(timer);
-  }, [delay, reducedMotion, opacity, translateX]);
-
-  return (
-    <Animated.View
-      accessible
-      accessibilityLabel={`${slot.label}, ${slot.temp} degrees, ${slot.weatherMain.toLowerCase()}`}
-      style={{
-        opacity,
-        transform: [{ translateX }],
-        width: 60,
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingVertical: 8,
-        gap: 10,
-      }}
-    >
-      <Text
-        style={{
-          fontSize: 13,
-          fontWeight: slot.isNow ? '700' : '500',
-          color: slot.isNow ? palette.text : palette.textSecondary,
-          letterSpacing: 0.2,
-        }}
-      >
-        {slot.label}
-      </Text>
-      <Ionicons
-        name={weatherIcon(slot.weatherMain)}
-        size={22}
-        color={slot.isNow ? palette.primary : palette.text}
-      />
-      <Text
-        style={{
-          fontSize: 17,
-          fontWeight: slot.isNow ? '700' : '600',
-          color: slot.isNow ? palette.primary : palette.text,
-        }}
-      >
-        {slot.temp}°
-      </Text>
-    </Animated.View>
-  );
-}
-
-function weatherIcon(main: string): keyof typeof Ionicons.glyphMap {
-  const m = main.toLowerCase();
-  if (m.includes('thunder')) return 'thunderstorm-outline';
-  if (m.includes('drizzle') || m.includes('rain')) return 'rainy-outline';
-  if (m.includes('snow')) return 'snow-outline';
-  if (m.includes('cloud')) return 'cloudy-outline';
-  if (m.includes('clear')) return 'sunny-outline';
-  if (['mist', 'smoke', 'haze', 'fog'].some(w => m.includes(w))) return 'water-outline';
-  return 'partly-sunny-outline';
-}
-
-// ── Air & Allergens category → color mapping ─────────────────────────
-// AQI scale per EPA: 0–50 Good, 51–100 Moderate, 101–150 USG,
-// 151–200 Unhealthy, 201–300 Very Unhealthy, 301+ Hazardous
-
-type Palette = typeof Colors.light;
-
-function aqiPillBg(aqi: number, palette: Palette): string {
-  if (aqi <= 50) return palette.secondary; // soft sage for Good
-  if (aqi <= 100) return '#FEF3C7'; // cream-amber for Moderate
-  if (aqi <= 150) return '#FED7AA'; // peach for Unhealthy for Sensitive
-  return '#FECACA'; // soft red for Unhealthy+
-}
-
-function aqiPillColor(aqi: number, palette: Palette): string {
-  if (aqi <= 50) return palette.success;
-  if (aqi <= 100) return palette.warning;
-  if (aqi <= 150) return '#B45309';
-  return palette.danger;
-}
-
-function pollenPillBg(category: string, palette: Palette): string {
-  const c = category.toLowerCase();
-  if (c === 'none' || c === 'very low' || c === 'low') return palette.secondary;
-  if (c === 'moderate') return '#FEF3C7';
-  if (c === 'high') return '#FED7AA';
-  if (c === 'very high') return '#FECACA';
-  return palette.surfaceMuted;
-}
-
-function pollenPillColor(category: string, palette: Palette): string {
-  const c = category.toLowerCase();
-  if (c === 'none' || c === 'very low' || c === 'low') return palette.success;
-  if (c === 'moderate') return palette.warning;
-  if (c === 'high') return '#B45309';
-  if (c === 'very high') return palette.danger;
-  return palette.textSecondary;
-}
-
-function airAllergenTip(
-  air: AirQualityData | null,
-  pollen: PollenData | null,
-): string | null {
-  const aqiElevated = air && air.aqi > 100;
-  const pollenElevated = pollen && ['High', 'Very High'].includes(pollen.overall);
-
-  if (aqiElevated && pollenElevated) {
-    return 'Air quality and pollen levels are elevated. Consider limiting outdoor activity, especially for sensitive travelers.';
+/**
+ * Short relative timestamp for meta lines like "Generated 15 min ago".
+ *
+ * The summary cache TTL is 1 hour, so the user almost always sees a figure in
+ * minutes. Precise time beats a bare date here because freshness — not
+ * calendar date — is what tells them whether to trust the briefing.
+ */
+function relativeTimeShort(iso: string): string {
+  const d = new Date(iso);
+  const diffMin = (Date.now() - d.getTime()) / 60000;
+  if (diffMin < 1) return 'just now';
+  if (diffMin < 60) return `${Math.round(diffMin)} min ago`;
+  if (diffMin < 24 * 60) {
+    const hours = Math.round(diffMin / 60);
+    return `${hours} hour${hours === 1 ? '' : 's'} ago`;
   }
-  if (aqiElevated) {
-    return 'Air quality is worse than usual. Those with respiratory conditions should limit prolonged outdoor exertion.';
-  }
-  if (pollenElevated) {
-    return 'Pollen levels are elevated. Travelers with allergies may want to take precautions before heading out.';
-  }
-  return null;
+  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 }
 
 export default function HomeScreen() {
@@ -922,7 +534,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle={scheme === 'dark' ? 'light-content' : 'dark-content'} backgroundColor={palette.background} />
+      <StatusBar barStyle="dark-content" backgroundColor={palette.background} />
 
       {/* Header */}
       <View style={styles.header}>
@@ -975,7 +587,13 @@ export default function HomeScreen() {
                 onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
               />
               {searchQuery.length > 0 && (
-                <TouchableOpacity onPress={() => { setSearchQuery(''); setSuggestions([]); setShowSuggestions(false); }}>
+                <TouchableOpacity
+                  onPress={() => { setSearchQuery(''); setSuggestions([]); setShowSuggestions(false); }}
+                  activeOpacity={0.6}
+                  accessibilityRole="button"
+                  accessibilityLabel="Clear search"
+                  hitSlop={{ top: 8, right: 8, bottom: 8, left: 8 }}
+                >
                   <Ionicons name="close-circle" size={20} color={palette.textSecondary} />
                 </TouchableOpacity>
               )}
@@ -1002,6 +620,8 @@ export default function HomeScreen() {
                   ]}
                   onPress={() => selectSuggestion(item)}
                   activeOpacity={0.6}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Search for ${item.label}`}
                 >
                   <Ionicons name="location" size={16} color={palette.primary} style={{ marginRight: 10 }} />
                   <Text style={styles.suggestionText}>{item.label}</Text>
@@ -1027,7 +647,9 @@ export default function HomeScreen() {
 
           {hasWeather && (
             <>
-              {/* Weather Hero — subtle sage-to-cream gradient backdrop, iOS-Weather-adjacent proportions */}
+              {/* Weather Hero — subtle sage-to-cream gradient backdrop, iOS-Weather-adjacent proportions.
+                  Save button floats in the top-right corner so it doesn't compete with the city name for
+                  visual weight in the centered headline row. */}
               <View style={styles.weatherHeroWrap}>
                 <LinearGradient
                   colors={[palette.secondary, palette.surface]}
@@ -1036,32 +658,30 @@ export default function HomeScreen() {
                   style={styles.weatherHeroBackdrop}
                   pointerEvents="none"
                 />
+                {locationInfo && (
+                  <Animated.View style={[styles.saveButtonFloating, { transform: [{ scale: saveScale }] }]}>
+                    <TouchableOpacity
+                      style={styles.saveButton}
+                      onPress={handleToggleSave}
+                      disabled={savingLocation}
+                      activeOpacity={0.7}
+                      accessibilityRole="button"
+                      accessibilityLabel={currentSaved ? 'Remove from saved locations' : 'Save this location'}
+                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                    >
+                      <Ionicons
+                        name={currentSaved ? 'bookmark' : 'bookmark-outline'}
+                        size={22}
+                        color={currentSaved ? palette.primary : palette.textSecondary}
+                      />
+                    </TouchableOpacity>
+                  </Animated.View>
+                )}
                 <HeroRise reducedMotion={reducedMotion}>
                   <FadeInView delay={80} duration={520} distance={12} reducedMotion={reducedMotion} style={styles.weatherHero}>
-                    <View style={styles.heroLocationRow}>
-                      <Text style={styles.heroLocation} numberOfLines={1}>
-                        {locationInfo ? `${locationInfo.city}, ${locationInfo.state}` : searchQuery}
-                      </Text>
-                      {locationInfo && (
-                        <Animated.View style={{ transform: [{ scale: saveScale }] }}>
-                          <TouchableOpacity
-                            style={styles.saveButton}
-                            onPress={handleToggleSave}
-                            disabled={savingLocation}
-                            activeOpacity={0.7}
-                            accessibilityRole="button"
-                            accessibilityLabel={currentSaved ? 'Remove from saved locations' : 'Save this location'}
-                            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                          >
-                            <Ionicons
-                              name={currentSaved ? 'bookmark' : 'bookmark-outline'}
-                              size={22}
-                              color={currentSaved ? palette.primary : palette.textSecondary}
-                            />
-                          </TouchableOpacity>
-                        </Animated.View>
-                      )}
-                    </View>
+                    <Text style={styles.heroLocation} numberOfLines={1}>
+                      {locationInfo ? `${locationInfo.city}, ${locationInfo.state}` : searchQuery}
+                    </Text>
                     {today && (
                       <>
                         <View style={styles.heroTempRow}>
@@ -1082,9 +702,90 @@ export default function HomeScreen() {
                 </HeroRise>
               </View>
 
+              {/* Today's Briefing — pulled up right under the hero so the AI summary is the
+                  second thing the user sees, matching the iOS-Weather-style "hero + briefing"
+                  rhythm. Delay 180 sits just after the hero's 80ms entrance so it feels
+                  deliberately chained rather than late. */}
+              <FadeInView delay={180} reducedMotion={reducedMotion} style={styles.card}>
+                <View style={styles.cardHeader}>
+                  <View style={styles.cardIconBox}>
+                    <Ionicons name="sparkles-outline" size={22} color={palette.primary} />
+                  </View>
+                  <Text style={styles.cardTitle}>Today's Briefing</Text>
+                </View>
+
+                {loadingSummary ? (
+                  // Flying-bee loading state. Signals "the system is working on it"
+                  // without the alarm of a frantic spinner. Sits inside the
+                  // summaryBox shell so the user previews where content will appear.
+                  <View style={styles.summaryBox}>
+                    <LoadingBee reducedMotion={reducedMotion} palette={palette} />
+                  </View>
+                ) : (
+                  <StateView
+                    state={errorSummary ? 'error' : summary ? 'success' : 'empty'}
+                    emptyText="No summaries available yet"
+                    emptyIcon="document-outline"
+                    errorText={errorSummary || 'Failed to load summary'}
+                    onRetry={() => {
+                      setLoadingSummary(true);
+                      setErrorSummary(null);
+                      (async () => {
+                        try {
+                          const data = await apiFetch<Summary | null>('/summaries/latest');
+                          setSummary(data);
+                        } catch {
+                          setErrorSummary('Failed to load latest summary');
+                        } finally {
+                          setLoadingSummary(false);
+                        }
+                      })();
+                    }}
+                  >
+                    <View style={styles.summaryBox}>
+                      {summary?.title && <Text style={styles.summaryTitle}>{summary.title}</Text>}
+                      {/*
+                        Key-based remount forces React Native to drop the cached Text
+                        measurement when the expanded state flips — this is the fix for
+                        the Android bug where numberOfLines={undefined} failed to
+                        re-expand a previously clipped <Text>. numberOfLines={0} means
+                        "no limit" and is more reliable than undefined.
+                      */}
+                      <Text
+                        key={summaryExpanded ? 'expanded' : 'collapsed'}
+                        style={styles.summaryText}
+                        numberOfLines={summaryExpanded ? 0 : 3}
+                      >
+                        {summary?.content}
+                      </Text>
+                      <Text style={styles.summaryMeta}>
+                        {summary ? `Updated ${relativeTimeShort(summary.generated_at)}` : ''}
+                      </Text>
+
+                      {summaryNeedsToggle && (
+                        <TouchableOpacity
+                          style={styles.toggleButton}
+                          onPress={toggleSummary}
+                          activeOpacity={0.6}
+                          accessibilityRole="button"
+                          accessibilityLabel={summaryExpanded ? 'Show less' : 'Show more'}
+                        >
+                          <Text style={styles.toggleButtonText}>
+                            {summaryExpanded ? 'Show less' : 'Show more'}
+                          </Text>
+                          <Animated.View style={{ transform: [{ rotate: chevronRotate }] }}>
+                            <Ionicons name="chevron-down" size={16} color={palette.primary} />
+                          </Animated.View>
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                  </StateView>
+                )}
+              </FadeInView>
+
               {/* Today's Highlights strip — humidity / wind / precip */}
               {today && (
-                <FadeInView delay={180} duration={480} reducedMotion={reducedMotion} style={styles.highlightsCard}>
+                <FadeInView delay={280} duration={480} reducedMotion={reducedMotion} style={styles.highlightsCard}>
                   <View style={styles.highlightItem}>
                     <Ionicons name="water-outline" size={20} color={palette.primary} />
                     <Text style={styles.highlightValue}>{today.humidity}%</Text>
@@ -1107,7 +808,7 @@ export default function HomeScreen() {
 
               {/* Hourly Forecast — synthesized 8-slot row (not from a true hourly source) */}
               {today && (
-                <FadeInView delay={260} duration={460} reducedMotion={reducedMotion} style={styles.forecastCard}>
+                <FadeInView delay={380} duration={460} reducedMotion={reducedMotion} style={styles.forecastCard}>
                   <Text style={[styles.forecastHeader, styles.forecastHeaderTight]}>Hourly Forecast</Text>
                   <Text style={styles.forecastSubheader}>Estimated from daily range</Text>
                   <HourlyForecastRow
@@ -1121,7 +822,7 @@ export default function HomeScreen() {
 
               {/* 10-Day Forecast — rows slide in, then the temp range bars animate in on top */}
               {forecast.length > 1 && (
-                <FadeInView delay={420} duration={480} reducedMotion={reducedMotion} style={styles.forecastCard}>
+                <FadeInView delay={500} duration={480} reducedMotion={reducedMotion} style={styles.forecastCard}>
                   <Text style={styles.forecastHeader}>{forecast.length}-Day Forecast</Text>
                   {forecast.map((day, i) => {
                     const lowFraction = (day.low_temp - tempMin) / tempSpan;
@@ -1131,7 +832,7 @@ export default function HomeScreen() {
                     const endFraction = rawSpan < 0.12
                       ? Math.min(1, lowFraction + 0.12)
                       : highFraction;
-                    const rowDelay = 460 + i * 45;
+                    const rowDelay = 540 + i * 45;
                     const barDelay = rowDelay + 200; // bar fills AFTER the row slides in
                     // "Today" row: draw a dot at the current (high) temp within the day's range
                     const todayMarker = i === 0 ? endFraction : undefined;
@@ -1177,9 +878,9 @@ export default function HomeScreen() {
 
               {/* Location Alerts */}
               {alerts.length > 0 && (
-                <FadeInView delay={540} duration={420} reducedMotion={reducedMotion} style={styles.card}>
+                <FadeInView delay={620} duration={420} reducedMotion={reducedMotion} style={styles.card}>
                   <View style={styles.cardHeader}>
-                    <View style={[styles.cardIconBox, { backgroundColor: '#FEE2E2' }]}>
+                    <View style={[styles.cardIconBox, { backgroundColor: palette.dangerSoft }]}>
                       <Ionicons name="warning-outline" size={22} color={palette.danger} />
                     </View>
                     <Text style={styles.cardTitle}>Active Alerts</Text>
@@ -1205,80 +906,10 @@ export default function HomeScreen() {
           )}
         </Animated.View>
 
-        {/* Latest Summary Card with Show More/Less */}
-        <FadeInView delay={620} reducedMotion={reducedMotion} style={styles.card}>
-          <View style={styles.cardHeader}>
-            <View style={styles.cardIconBox}>
-              <Ionicons name="sparkles-outline" size={22} color={palette.primary} />
-            </View>
-            <Text style={styles.cardTitle}>Today's Briefing</Text>
-          </View>
-
-          <StateView
-            state={loadingSummary ? 'loading' : errorSummary ? 'error' : summary ? 'success' : 'empty'}
-            loadingText="Loading summary..."
-            emptyText="No summaries available yet"
-            emptyIcon="document-outline"
-            errorText={errorSummary || 'Failed to load summary'}
-            onRetry={() => {
-              setLoadingSummary(true);
-              setErrorSummary(null);
-              (async () => {
-                try {
-                  const data = await apiFetch<Summary | null>('/summaries/latest');
-                  setSummary(data);
-                } catch {
-                  setErrorSummary('Failed to load latest summary');
-                } finally {
-                  setLoadingSummary(false);
-                }
-              })();
-            }}
-          >
-            <View style={styles.summaryBox}>
-              {summary?.title && <Text style={styles.summaryTitle}>{summary.title}</Text>}
-              {/*
-                Key-based remount forces React Native to drop the cached Text
-                measurement when the expanded state flips — this is the fix for
-                the Android bug where numberOfLines={undefined} failed to
-                re-expand a previously clipped <Text>. numberOfLines={0} means
-                "no limit" and is more reliable than undefined.
-              */}
-              <Text
-                key={summaryExpanded ? 'expanded' : 'collapsed'}
-                style={styles.summaryText}
-                numberOfLines={summaryExpanded ? 0 : 3}
-              >
-                {summary?.content}
-              </Text>
-              <Text style={styles.summaryMeta}>
-                Generated {summary ? new Date(summary.generated_at).toLocaleDateString() : ''}
-              </Text>
-
-              {summaryNeedsToggle && (
-                <TouchableOpacity
-                  style={styles.toggleButton}
-                  onPress={toggleSummary}
-                  activeOpacity={0.6}
-                  accessibilityRole="button"
-                  accessibilityLabel={summaryExpanded ? 'Show less' : 'Show more'}
-                >
-                  <Text style={styles.toggleButtonText}>
-                    {summaryExpanded ? 'Show less' : 'Show more'}
-                  </Text>
-                  <Animated.View style={{ transform: [{ rotate: chevronRotate }] }}>
-                    <Ionicons name="chevron-down" size={16} color={palette.primary} />
-                  </Animated.View>
-                </TouchableOpacity>
-              )}
-            </View>
-          </StateView>
-        </FadeInView>
-
         {/* Air & Allergens Card */}
         <FadeInView delay={700} reducedMotion={reducedMotion} style={styles.card}>
           <View style={styles.cardHeader}>
-            <View style={[styles.cardIconBox, { backgroundColor: palette.secondary }]}>
+            <View style={styles.cardIconBox}>
               <Ionicons name="leaf-outline" size={22} color={palette.primary} />
             </View>
             <Text style={styles.cardTitle}>Air & Allergens</Text>
@@ -1426,22 +1057,36 @@ function getStyles(palette: typeof Colors.light | typeof Colors.dark) {
       paddingTop: 12,
       paddingBottom: 28,
     },
-    heroLocationRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: 10,
-    },
     heroLocation: {
       fontSize: 32, fontWeight: '300',
       color: palette.text, letterSpacing: 0.2,
-      maxWidth: '78%',
+      textAlign: 'center',
+      // Leave room on both sides so long city+state strings don't collide with
+      // the absolutely-positioned save button in the top-right corner.
+      paddingHorizontal: 48,
+    },
+    // Floats in the top-right corner of weatherHeroWrap. Pulled out of the
+    // heroLocationRow so the city name can be the sole visual anchor of the
+    // headline row — matches the iOS-Weather reference where secondary
+    // actions live at the edges, not crowded against the headline.
+    saveButtonFloating: {
+      position: 'absolute',
+      top: 14,
+      right: 20,
+      zIndex: 2,
     },
     saveButton: {
-      width: 36, height: 36,
-      borderRadius: 18,
+      width: 40, height: 40,
+      borderRadius: 20,
       alignItems: 'center', justifyContent: 'center',
-      backgroundColor: palette.surfaceMuted,
+      backgroundColor: palette.card,
+      // Light shadow so the button visually lifts off the sage gradient
+      // without needing a border (which would feel heavy at this size).
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.08,
+      shadowRadius: 4,
+      elevation: 2,
     },
     heroTempRow: {
       flexDirection: 'row', alignItems: 'flex-start',
