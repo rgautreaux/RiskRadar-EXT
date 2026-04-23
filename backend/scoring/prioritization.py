@@ -1,3 +1,4 @@
+
 """
 RiskRadar Alert Risk Scoring & Ranking System
 ------------------------------------------------
@@ -21,21 +22,6 @@ Tie-breaking order (deterministic):
 
 The formula and factor breakdown are exposed for user transparency and explainability.
 """
-
-import json
-from datetime import datetime, timezone
-
-from sqlalchemy.orm import Session
-
-from db.models import Alert, User
-
-from . import (
-    haversine_km,
-    CONDITION_ALERT_MAP,
-    MAX_RADIUS_KM,
-    SEVERITY_SCORES,
-)
-
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
@@ -120,6 +106,18 @@ def compute_alert_risk_breakdown(alert: Alert, user: User, radius_km: float = MA
         "formula": explain_alert_risk_formula()["formula"],
         "weights": explain_alert_risk_formula()["weights"],
     }
+
+
+import json
+from datetime import datetime, timezone
+from sqlalchemy.orm import Session
+from ..db.models import Alert, User
+from . import (
+    haversine_km,
+    CONDITION_ALERT_MAP,
+    MAX_RADIUS_KM,
+    SEVERITY_SCORES,
+)
 
 # ---------------------------------------------------------------------------
 # Weights

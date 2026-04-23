@@ -7,7 +7,7 @@ import { ChatBubble } from './ChatBubble';
 import { TypingIndicator } from './TypingIndicator';
 import { Send, ThumbsUp, ThumbsDown, Smile } from 'lucide-react';
 
-type GuardrailCategory = 'medical' | 'legal' | 'emergency' | 'unsafe';
+type GuardrailCategory = 'medical' | 'legal' | 'emergency' | 'unsafe'; 
 // Guardrail patterns for sensitive topics
 const GUARDED_PATTERNS: { regex: RegExp; category: GuardrailCategory }[] = [
 	{ regex: /\b(emergency|911|ambulance|fire|police|hospital|urgent|immediate danger|life[- ]?threatening)\b/i, category: 'emergency' },
@@ -25,6 +25,7 @@ function detectSentiment(message: string): 'positive' | 'negative' | 'neutral' {
 		return 'negative';
 	}
 	return 'neutral';
+//
 
 function getSupportiveResponse(sentiment: 'positive' | 'negative' | 'neutral'): string | null {
 	if (sentiment === 'positive') {
@@ -34,11 +35,13 @@ function getSupportiveResponse(sentiment: 'positive' | 'negative' | 'neutral'): 
 		return "I'm here for you. If something's not working or you feel stuck, let me know and I'll do my best to help!";
 	}
 	return null;
-}
+//
+
 
 type ResponseCategory = 'docs' | 'page' | 'live' | 'playful' | 'static';
 type FeedbackReaction = 'thumbs_up' | 'thumbs_down' | 'smile';
-type GuardrailCategory = 'medical' | 'legal' | 'emergency' | 'unsafe';
+
+
 
 interface AssistantProfile {
 	docs: number;
@@ -46,7 +49,7 @@ interface AssistantProfile {
 	live: number;
 	playful: number;
 	static: number;
-}
+//
 
 interface Message {
 	id: string;
@@ -342,6 +345,9 @@ function generateTravelChecklist(riskData?: any): string {
        }
        return `Here’s a travel preparation checklist for you:\n- ${baseChecklist.join('\n- ')}${riskTips.length ? '\n\nBased on current risks:\n- ' + riskTips.join('\n- ') : ''}`;
 }
+
+
+// Move export to top-level, outside of any other function or block
 export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageContext = 'unknown', isAdmin = false, currentUserId }: ChatInterfaceProps) {
 		// Feedback handler for thumbs up/down/smile
 		const handleFeedback = async (message: Message, reaction: FeedbackReaction) => {
@@ -480,6 +486,7 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 
 	// ...rest of ChatInterface body (handlers, getGolbyResponse, return JSX, etc.)
 
+	
 function getOrderedCategories(topic: ReturnType<typeof classifyTopic>, profile: AssistantProfile, feedbackCount: number): ResponseCategory[] {
 	       const candidateOrders: Record<typeof topic, ResponseCategory[]> = {
 		       forecast: ['docs', 'page', 'live', 'static'],
@@ -713,11 +720,11 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 				}
 				return withStyle(golbyResponses['default'], 'static');
 			}
-		}
+		};
 
+			// End of getGolbyResponse
 
-
-	const handleSendMessage = async (text: string) => {
+			const handleSendMessage = async (text: string) => {
 		if (!text.trim()) return;
 		// Guest daily limit enforcement
 		if (isGuestUser(currentUserId)) {
@@ -761,10 +768,10 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 		if (isGuestUser(currentUserId)) {
 			// Detect backend lockout/limit responses
 			const respText = (response.text || '').toLowerCase();
-			if (respText.includes('only available to registered users') || (response.sources && response.sources.includes('guest-lockout'))) {
+			if (respText.includes('only available to registered users')) {
 				lockoutDetected = true;
 			}
-			if (respText.includes('reached the daily limit') || (response.sources && response.sources.includes('guest-limit'))) {
+			if (respText.includes('reached the daily limit')) {
 				limitDetected = true;
 			}
 		}
@@ -1022,6 +1029,7 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 					</button>
 				</form>
 			</div>
-		</div>
+		   </div>
 	);
+}
 }

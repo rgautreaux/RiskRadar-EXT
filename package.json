@@ -3,7 +3,7 @@
     "build:web": "vite build --config frontend/web/vite.config.mjs",
     "build:web:watch": "vite build --watch --config frontend/web/vite.config.mjs",
     "dev:web": "vite --config frontend/web/vite.config.mjs",
-    "backend:run": "cd backend && python -m uvicorn main:app --app-dir .. --host 0.0.0.0 --port 8001",
+    "backend:run": "cd backend && python -m uvicorn main:app --host 0.0.0.0 --port 8001",
     "backend:test": "cd backend && python -m pytest",
     "backend:check": "npm run backend:test && npm run verify:backend",
     "verify:backend": "node backend/scripts/run_full_verification.mjs",
