@@ -1,31 +1,3 @@
-type GuardrailCategory = 'medical' | 'legal' | 'emergency' | 'unsafe';
-// Guardrail patterns for sensitive topics
-const GUARDED_PATTERNS: { regex: RegExp; category: GuardrailCategory }[] = [
-	{ regex: /\b(emergency|911|ambulance|fire|police|hospital|urgent|immediate danger|life[- ]?threatening)\b/i, category: 'emergency' },
-	{ regex: /\b(medical|diagnos(e|is|ed)|treatment|prescrib(e|ing|ed)|medicine|doctor|nurse|symptom|therapy|cure|remedy|health advice|pain|injury|illness|disease|sick|hospitalization|prescription)\b/i, category: 'medical' },
-	{ regex: /\b(legal|lawyer|attorney|court|sue|lawsuit|litigation|contract|will|testament|notary|legal advice|crime|criminal|arrest|jail|prison|sentence|parole|probation|divorce|custody|immigration|visa|citizenship)\b/i, category: 'legal' },
-	{ regex: /\b(hack|exploit|phish|malware|virus|attack|illegal|harm|violence|weapon|bomb|shoot|kill|suicide|self[- ]?harm|overdose|poison|abuse|threat|terror|credential|password|ssn|social security|credit card|bank account|account number)\b/i, category: 'unsafe' },
-];
-// Simple sentiment detection (expandable)
-function detectSentiment(message: string): 'positive' | 'negative' | 'neutral' {
-	const lower = message.toLowerCase();
-	if (lower.match(/\b(thank(s| you)|great|awesome|love|amazing|good|happy|excited|yay|cool|helpful|appreciate)\b/)) {
-		return 'positive';
-	}
-	if (lower.match(/\b(sad|angry|upset|frustrated|bad|hate|annoyed|worried|scared|afraid|anxious|disappointed|unhappy|problem|issue|stuck|lost)\b/)) {
-		return 'negative';
-	}
-	return 'neutral';
-
-function getSupportiveResponse(sentiment: 'positive' | 'negative' | 'neutral'): string | null {
-	if (sentiment === 'positive') {
-		return "I'm glad to hear that! 😊 If you have more questions or need help, just ask.";
-	}
-	if (sentiment === 'negative') {
-		return "I'm here for you. If something's not working or you feel stuck, let me know and I'll do my best to help!";
-	}
-	return null;
-}
 import React, { useState, useRef, useEffect } from 'react';
 import { fetchUserGuide, searchDocForAnswer } from './docSearch';
 import { fetchAssistantReply, fetchCurrentAlerts, fetchRiskOverlay, fetchForecast, fetchWeeklyFeedbackAnalytics, sendGolbyFeedback, syncGolbyStyleProfile } from './apiClient';
@@ -38,6 +10,36 @@ import { Send, ThumbsUp, ThumbsDown, Smile } from 'lucide-react';
 type ResponseCategory = 'docs' | 'page' | 'live' | 'playful' | 'static';
 type FeedbackReaction = 'thumbs_up' | 'thumbs_down' | 'smile';
 type GuardrailCategory = 'medical' | 'legal' | 'emergency' | 'unsafe';
+
+// Guardrail patterns for sensitive topics
+const GUARDED_PATTERNS: { regex: RegExp; category: GuardrailCategory }[] = [
+	{ regex: /\b(emergency|911|ambulance|fire|police|hospital|urgent|immediate danger|life[- ]?threatening)\b/i, category: 'emergency' },
+	{ regex: /\b(medical|diagnos(e|is|ed)|treatment|prescrib(e|ing|ed)|medicine|doctor|nurse|symptom|therapy|cure|remedy|health advice|pain|injury|illness|disease|sick|hospitalization|prescription)\b/i, category: 'medical' },
+	{ regex: /\b(legal|lawyer|attorney|court|sue|lawsuit|litigation|contract|will|testament|notary|legal advice|crime|criminal|arrest|jail|prison|sentence|parole|probation|divorce|custody|immigration|visa|citizenship)\b/i, category: 'legal' },
+	{ regex: /\b(hack|exploit|phish|malware|virus|attack|illegal|harm|violence|weapon|bomb|shoot|kill|suicide|self[- ]?harm|overdose|poison|abuse|threat|terror|credential|password|ssn|social security|credit card|bank account|account number)\b/i, category: 'unsafe' },
+];
+
+// Simple sentiment detection (expandable)
+function detectSentiment(message: string): 'positive' | 'negative' | 'neutral' {
+	const lower = message.toLowerCase();
+	if (lower.match(/\b(thank(s| you)|great|awesome|love|amazing|good|happy|excited|yay|cool|helpful|appreciate)\b/)) {
+		return 'positive';
+	}
+	if (lower.match(/\b(sad|angry|upset|frustrated|bad|hate|annoyed|worried|scared|afraid|anxious|disappointed|unhappy|problem|issue|stuck|lost)\b/)) {
+		return 'negative';
+	}
+	return 'neutral';
+}
+
+function getSupportiveResponse(sentiment: 'positive' | 'negative' | 'neutral'): string | null {
+	if (sentiment === 'positive') {
+		return "I'm glad to hear that! 😊 If you have more questions or need help, just ask.";
+	}
+	if (sentiment === 'negative') {
+		return "I'm here for you. If something's not working or you feel stuck, let me know and I'll do my best to help!";
+	}
+	return null;
+}
 
 interface AssistantProfile {
 	docs: number;
@@ -93,8 +95,8 @@ const golbyJokes = [
 	"What do you call dangerous precipitation? A rain of terror! ☔️",
 	"Why did the sun go to school? To get a little brighter! ☀️",
 	"How do hurricanes see? With one eye! 🌀",
-	"Why don’t mountains get cold in the winter? They wear snowcaps! 🏔️",
-	"What’s a snowman’s favorite snack? Ice Krispies! ⛄️",
+	"Why don't mountains get cold in the winter? They wear snowcaps! 🏔️",
+	"What's a snowman's favorite snack? Ice Krispies! ⛄️",
 	"Why did the bicycle fall over on its trip? It was two-tired! 🚲",
 	"Why did the traveler bring a ladder to the bar? Because they heard the drinks were on the house! 🍹",
 	"Why did the airplane get sent to its room? For having a bad altitude! ✈️",
@@ -107,7 +109,7 @@ const golbyGreetings = [
 	"Hey there! Ready to explore some environmental insights? 🌍",
 	"Hello, traveler! Where are you headed today? 🧳",
 	"Greetings, explorer! Need a weather update or a fun fact? ☀️",
-	"Welcome back! Let’s make your journey safe and fun. 🚦",
+	"Welcome back! Let's make your journey safe and fun. 🚦",
 	"Hey! Golby here, your trusty travel buddy. How can I assist? 🐟",
 	"Hi! Want a forecast, a risk check, or just a good laugh? 😄"
 ];
@@ -125,24 +127,22 @@ const DEFAULT_PROFILE: AssistantProfile = {
 	static: 0,
 };
 
-
 const PROFILE_STORAGE_KEY = 'golby-assistant-profile';
 const SESSION_STORAGE_KEY = 'golby-session-id';
 const FEEDBACK_COUNT_STORAGE_KEY = 'golby-feedback-count';
 const STYLE_BIAS_STORAGE_KEY = 'golby-style-bias';
 
 // Guest daily request limit
-const GUEST_DAILY_LIMIT = 10; // Adjustable as needed
+const GUEST_DAILY_LIMIT = 10;
 const GUEST_LIMIT_STORAGE_KEY = 'golby-guest-daily-count';
 const GUEST_LIMIT_DATE_KEY = 'golby-guest-daily-date';
-// Helper: Check if user is guest
+
 function isGuestUser(currentUserId?: number) {
 	return !currentUserId || currentUserId <= 0;
 }
 
-// Helper: Guest daily limit logic
 function getTodayISO() {
-	return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+	return new Date().toISOString().slice(0, 10);
 }
 
 function getGuestDailyCount() {
@@ -181,7 +181,6 @@ function createMessageId() {
 	if (typeof window !== 'undefined' && window.crypto?.randomUUID) {
 		return window.crypto.randomUUID();
 	}
-
 	return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
@@ -189,13 +188,11 @@ function readStoredProfile(): AssistantProfile {
 	if (typeof window === 'undefined') {
 		return { ...DEFAULT_PROFILE };
 	}
-
 	try {
 		const rawProfile = window.localStorage.getItem(PROFILE_STORAGE_KEY);
 		if (!rawProfile) {
 			return { ...DEFAULT_PROFILE };
 		}
-
 		return { ...DEFAULT_PROFILE, ...JSON.parse(rawProfile) };
 	} catch {
 		return { ...DEFAULT_PROFILE };
@@ -206,7 +203,6 @@ function persistProfile(profile: AssistantProfile) {
 	if (typeof window === 'undefined') {
 		return;
 	}
-
 	try {
 		window.localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
 	} catch {
@@ -218,18 +214,15 @@ function readStoredNumber(key: string, fallback: number) {
 	if (typeof window === 'undefined') {
 		return fallback;
 	}
-
 	try {
 		const rawValue = window.localStorage.getItem(key);
 		if (!rawValue) {
 			return fallback;
 		}
-
 		const parsed = Number(rawValue);
 		if (Number.isNaN(parsed)) {
 			return fallback;
 		}
-
 		return parsed;
 	} catch {
 		return fallback;
@@ -240,7 +233,6 @@ function persistNumber(key: string, value: number) {
 	if (typeof window === 'undefined') {
 		return;
 	}
-
 	try {
 		window.localStorage.setItem(key, String(value));
 	} catch {
@@ -252,13 +244,11 @@ function getSessionId() {
 	if (typeof window === 'undefined') {
 		return 'server-session';
 	}
-
 	try {
 		const existing = window.localStorage.getItem(SESSION_STORAGE_KEY);
 		if (existing) {
 			return existing;
 		}
-
 		const sessionId = createMessageId();
 		window.localStorage.setItem(SESSION_STORAGE_KEY, sessionId);
 		return sessionId;
@@ -285,121 +275,157 @@ function reactionDelta(reaction: FeedbackReaction) {
 
 function classifyTopic(message: string): 'forecast' | 'alert' | 'risk' | 'joke' | 'greeting' | 'help' | 'travel' | 'general' {
 	const lower = message.toLowerCase();
-	if (lower.includes('joke')) {
-		return 'joke';
-	}
-	if (lower.includes('hello') || lower.includes('hi')) {
-		return 'greeting';
-	}
-	if (lower.includes('forecast') || lower.includes('weather')) {
-		return 'forecast';
-	}
-	if (lower.includes('alert')) {
-		return 'alert';
-	}
-	if (lower.includes('risk')) {
-		return 'risk';
-	}
-	if (lower.includes('help')) {
-		return 'help';
-	}
+	if (lower.includes('joke')) return 'joke';
+	if (lower.includes('hello') || lower.includes('hi')) return 'greeting';
+	if (lower.includes('forecast') || lower.includes('weather')) return 'forecast';
+	if (lower.includes('alert')) return 'alert';
+	if (lower.includes('risk')) return 'risk';
+	if (lower.includes('help')) return 'help';
 	if (lower.match(/\b(travel|trip|packing|pack|prepare|preparation|luggage|suitcase|what should i bring|what to bring|checklist|advice)\b/)) {
 		return 'travel';
 	}
 	return 'general';
 }
 
-// Proactive travel/packing/preparation checklist generator
 function generateTravelChecklist(riskData?: any): string {
-       // Example: riskData could be air quality, weather, alerts, etc.
-       const baseChecklist = [
-	       'Valid ID and travel documents',
-	       'Phone and charger',
-	       'Medications and health essentials',
-	       'Reusable water bottle',
-	       'Snacks',
-	       'Weather-appropriate clothing',
-	       'Personal hygiene items',
-	       'Face mask (for air quality or crowded places)',
-	       'Hand sanitizer',
-       ];
-       let riskTips: string[] = [];
-       if (riskData) {
-	       if (riskData.air_quality && riskData.air_quality === 'poor') {
-		       riskTips.push('Pack extra face masks due to poor air quality.');
-	       }
-	       if (riskData.weather && riskData.weather === 'rain') {
-		       riskTips.push('Bring a rain jacket or umbrella.');
-	       }
-	       if (riskData.weather && riskData.weather === 'hot') {
-		       riskTips.push('Pack sunscreen and stay hydrated.');
-	       }
-	       if (riskData.alerts && riskData.alerts.includes('wildfire')) {
-		       riskTips.push('Check for wildfire alerts and plan alternate routes.');
-	       }
-	       // Add more risk-based tips as needed
-       }
-       return `Here’s a travel preparation checklist for you:\n- ${baseChecklist.join('\n- ')}${riskTips.length ? '\n\nBased on current risks:\n- ' + riskTips.join('\n- ') : ''}`;
+	const baseChecklist = [
+		'Valid ID and travel documents',
+		'Phone and charger',
+		'Medications and health essentials',
+		'Reusable water bottle',
+		'Snacks',
+		'Weather-appropriate clothing',
+		'Personal hygiene items',
+		'Face mask (for air quality or crowded places)',
+		'Hand sanitizer',
+	];
+	const riskTips: string[] = [];
+	if (riskData) {
+		if (riskData.air_quality && riskData.air_quality === 'poor') {
+			riskTips.push('Pack extra face masks due to poor air quality.');
+		}
+		if (riskData.weather && riskData.weather === 'rain') {
+			riskTips.push('Bring a rain jacket or umbrella.');
+		}
+		if (riskData.weather && riskData.weather === 'hot') {
+			riskTips.push('Pack sunscreen and stay hydrated.');
+		}
+		if (riskData.alerts && riskData.alerts.includes('wildfire')) {
+			riskTips.push('Check for wildfire alerts and plan alternate routes.');
+		}
+	}
+	return `Here's a travel preparation checklist for you:\n- ${baseChecklist.join('\n- ')}${riskTips.length ? '\n\nBased on current risks:\n- ' + riskTips.join('\n- ') : ''}`;
 }
+
+function detectGuardrailCategory(message: string): GuardrailCategory | null {
+	for (const item of GUARDED_PATTERNS) {
+		if (item.regex.test(message)) {
+			return item.category;
+		}
+	}
+	return null;
+}
+
+function getGuardrailResponse(category: GuardrailCategory): string {
+	if (category === 'emergency') {
+		return 'I cannot provide emergency-response instructions. If there is immediate danger, contact local emergency services and follow official local alerts.';
+	}
+	if (category === 'medical') {
+		return 'I can explain RiskRadar environmental data, but I cannot provide medical advice, diagnosis, or treatment guidance. Please consult a qualified healthcare professional.';
+	}
+	if (category === 'legal') {
+		return 'I cannot provide legal advice. Please consult a licensed attorney or official legal resources for legal questions.';
+	}
+	return 'I cannot help with harmful, illegal, or credential-related requests. I can still help interpret RiskRadar alerts, maps, and forecast data.';
+}
+
+function getOrderedCategories(topic: ReturnType<typeof classifyTopic>, profile: AssistantProfile, feedbackCount: number): ResponseCategory[] {
+	const candidateOrders: Record<typeof topic, ResponseCategory[]> = {
+		forecast: ['docs', 'page', 'live', 'static'],
+		alert: ['docs', 'page', 'live', 'static'],
+		risk: ['docs', 'page', 'live', 'static'],
+		joke: ['playful', 'static'],
+		greeting: ['playful', 'static'],
+		help: ['docs', 'static', 'page', 'live'],
+		travel: ['live', 'static', 'docs', 'page'],
+		general: ['docs', 'page', 'live', 'static'],
+	};
+
+	if (feedbackCount < MIN_FEEDBACK_TO_REORDER) {
+		return candidateOrders[topic];
+	}
+
+	return candidateOrders[topic]
+		.slice()
+		.sort((left, right) => {
+			const scoreDelta = profile[right] - profile[left];
+			if (scoreDelta !== 0) {
+				return scoreDelta;
+			}
+			return candidateOrders[topic].indexOf(left) - candidateOrders[topic].indexOf(right);
+		});
+}
+
+function applyFeedback(profile: AssistantProfile, category: ResponseCategory, reaction: FeedbackReaction) {
+	const nextProfile: AssistantProfile = {
+		docs: clamp(profile.docs * PROFILE_DECAY, -PROFILE_CAP, PROFILE_CAP),
+		page: clamp(profile.page * PROFILE_DECAY, -PROFILE_CAP, PROFILE_CAP),
+		live: clamp(profile.live * PROFILE_DECAY, -PROFILE_CAP, PROFILE_CAP),
+		playful: clamp(profile.playful * PROFILE_DECAY, -PROFILE_CAP, PROFILE_CAP),
+		static: clamp(profile.static * PROFILE_DECAY, -PROFILE_CAP, PROFILE_CAP),
+	};
+	nextProfile[category] = clamp(nextProfile[category] + reactionDelta(reaction), -PROFILE_CAP, PROFILE_CAP);
+	return nextProfile;
+}
+
+function updateStyleBias(currentStyleBias: number, reaction: FeedbackReaction, messageText: string) {
+	const delta = reactionDelta(reaction);
+	const isLongResponse = messageText.length > 180 || messageText.includes('\n');
+	const styleDelta = isLongResponse ? delta : -delta;
+	return clamp(currentStyleBias + styleDelta, -PROFILE_CAP, PROFILE_CAP);
+}
+
+function getResponseStyle(feedbackCount: number, styleBias: number): ResponseStyle {
+	if (feedbackCount < MIN_FEEDBACK_TO_STYLE_SHIFT) {
+		return 'balanced';
+	}
+	if (styleBias <= -2) {
+		return 'concise';
+	}
+	if (styleBias >= 2) {
+		return 'detailed';
+	}
+	return 'balanced';
+}
+
+function formatResponseForStyle(text: string, style: ResponseStyle, category: ResponseCategory) {
+	if (style === 'balanced' || category === 'playful') {
+		return text;
+	}
+	if (style === 'concise') {
+		if (text.includes('\n')) {
+			const lines = text.split('\n').filter(Boolean);
+			return lines.slice(0, 2).join('\n');
+		}
+		if (text.length > 180) {
+			return `${text.slice(0, 177)}...`;
+		}
+		return text;
+	}
+	if (text.length < 160 && !['playful', 'page', 'docs', 'live', 'static'].includes(category)) {
+		return `${text} If you want, I can provide a deeper breakdown.`;
+	}
+	return text;
+}
+
+// Response type that includes optional sources from the backend
+interface GolbyResponse {
+	text: string;
+	category: ResponseCategory;
+	sources?: string[];
+}
+
 export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageContext = 'unknown', isAdmin = false, currentUserId }: ChatInterfaceProps) {
-		// Feedback handler for thumbs up/down/smile
-		const handleFeedback = async (message: Message, reaction: FeedbackReaction) => {
-			if (!message.isGolby) return;
-			const category = message.responseCategory || 'static';
-			const nextProfile = applyFeedback(assistantProfile, category, reaction);
-			const nextFeedbackCount = feedbackCount + 1;
-			const nextStyleBias = updateStyleBias(styleBias, reaction, message.text);
-			setAssistantProfile(nextProfile);
-			setFeedbackCount(nextFeedbackCount);
-			setStyleBias(nextStyleBias);
-			persistProfile(nextProfile);
-			persistNumber(FEEDBACK_COUNT_STORAGE_KEY, nextFeedbackCount);
-			persistNumber(STYLE_BIAS_STORAGE_KEY, nextStyleBias);
-			try {
-				await sendGolbyFeedback({
-					session_id: sessionIdRef.current,
-					message_id: message.id,
-					reaction,
-					rating: reactionToRating(reaction),
-					page_context: pageContext,
-					response_category: category,
-					response_text: message.text,
-				});
-				setRuntimeDiagnostics(null);
-			} catch {
-				setRuntimeDiagnostics('Feedback could not be synced right now. Local learning remains active.');
-			}
-			if (currentUserId) {
-				try {
-					await syncGolbyStyleProfile(currentUserId, nextProfile, nextFeedbackCount, nextStyleBias);
-					setRuntimeDiagnostics(null);
-				} catch {
-					setRuntimeDiagnostics('Profile sync is delayed. Changes will apply locally for this session.');
-				}
-			}
-		};
-
-		function detectGuardrailCategory(message: string): GuardrailCategory | null {
-			for (const item of GUARDED_PATTERNS) {
-				if (item.regex.test(message)) {
-					return item.category;
-				}
-			}
-			return null;
-		}
-
-		function getGuardrailResponse(category: GuardrailCategory): string {
-			if (category === 'emergency') {
-				return 'I cannot provide emergency-response instructions. If there is immediate danger, contact local emergency services and follow official local alerts.';
-			}
-			if (category === 'medical') {
-				return 'I can explain RiskRadar environmental data, but I cannot provide medical advice, diagnosis, or treatment guidance. Please consult a qualified healthcare professional.';
-			}
-			if (category === 'legal') {
-				return 'I cannot provide legal advice. Please consult a licensed attorney or official legal resources for legal questions.';
-			}
-			return 'I cannot help with harmful, illegal, or credential-related requests. I can still help interpret RiskRadar alerts, maps, and forecast data.';
-		}
 	const [messages, setMessages] = useState<Message[]>([
 		{
 			id: '1',
@@ -409,6 +435,7 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 			responseCategory: 'playful',
 		},
 	]);
+
 	const [inputValue, setInputValue] = useState('');
 	const [isTyping, setIsTyping] = useState(false);
 	const [userGuide, setUserGuide] = useState<string | null>(null);
@@ -477,99 +504,46 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 		}
 	}, [showDiagnostics]);
 
-	// ...rest of ChatInterface body (handlers, getGolbyResponse, return JSX, etc.)
+	// Feedback handler for thumbs up/down/smile
+	const handleFeedback = async (message: Message, reaction: FeedbackReaction) => {
+		if (!message.isGolby) return;
+		const category = message.responseCategory || 'static';
+		const nextProfile = applyFeedback(assistantProfile, category, reaction);
+		const nextFeedbackCount = feedbackCount + 1;
+		const nextStyleBias = updateStyleBias(styleBias, reaction, message.text);
+		setAssistantProfile(nextProfile);
+		setFeedbackCount(nextFeedbackCount);
+		setStyleBias(nextStyleBias);
+		persistProfile(nextProfile);
+		persistNumber(FEEDBACK_COUNT_STORAGE_KEY, nextFeedbackCount);
+		persistNumber(STYLE_BIAS_STORAGE_KEY, nextStyleBias);
+		try {
+			await sendGolbyFeedback({
+				session_id: sessionIdRef.current,
+				message_id: message.id,
+				reaction,
+				rating: reactionToRating(reaction),
+				page_context: pageContext,
+				response_category: category,
+				response_text: message.text,
+			});
+			setRuntimeDiagnostics(null);
+		} catch {
+			setRuntimeDiagnostics('Feedback could not be synced right now. Local learning remains active.');
+		}
 
-function getOrderedCategories(topic: ReturnType<typeof classifyTopic>, profile: AssistantProfile, feedbackCount: number): ResponseCategory[] {
-	       const candidateOrders: Record<typeof topic, ResponseCategory[]> = {
-		       forecast: ['docs', 'page', 'live', 'static'],
-		       alert: ['docs', 'page', 'live', 'static'],
-		       risk: ['docs', 'page', 'live', 'static'],
-		       joke: ['playful', 'static'],
-		       greeting: ['playful', 'static'],
-		       help: ['docs', 'static', 'page', 'live'],
-		       travel: ['live', 'static', 'docs', 'page'],
-		       general: ['docs', 'page', 'live', 'static'],
-	       };
-
-	if (feedbackCount < MIN_FEEDBACK_TO_REORDER) {
-		return candidateOrders[topic];
-	}
-
-	return candidateOrders[topic]
-		.slice()
-		.sort((left, right) => {
-			const scoreDelta = profile[right] - profile[left];
-			if (scoreDelta !== 0) {
-				return scoreDelta;
+		if (currentUserId) {
+			try {
+				await syncGolbyStyleProfile(currentUserId, nextProfile, nextFeedbackCount, nextStyleBias);
+				setRuntimeDiagnostics(null);
+			} catch {
+				setRuntimeDiagnostics('Profile sync is delayed. Changes will apply locally for this session.');
 			}
-
-			return candidateOrders[topic].indexOf(left) - candidateOrders[topic].indexOf(right);
-		});
-}
-
-function applyFeedback(profile: AssistantProfile, category: ResponseCategory, reaction: FeedbackReaction) {
-	const nextProfile: AssistantProfile = {
-		docs: clamp(profile.docs * PROFILE_DECAY, -PROFILE_CAP, PROFILE_CAP),
-		page: clamp(profile.page * PROFILE_DECAY, -PROFILE_CAP, PROFILE_CAP),
-		live: clamp(profile.live * PROFILE_DECAY, -PROFILE_CAP, PROFILE_CAP),
-		playful: clamp(profile.playful * PROFILE_DECAY, -PROFILE_CAP, PROFILE_CAP),
-		static: clamp(profile.static * PROFILE_DECAY, -PROFILE_CAP, PROFILE_CAP),
+		}
 	};
-	nextProfile[category] = clamp(nextProfile[category] + reactionDelta(reaction), -PROFILE_CAP, PROFILE_CAP);
-	return nextProfile;
-}
-
-function updateStyleBias(currentStyleBias: number, reaction: FeedbackReaction, messageText: string) {
-	const delta = reactionDelta(reaction);
-	const isLongResponse = messageText.length > 180 || messageText.includes('\n');
-	const styleDelta = isLongResponse ? delta : -delta;
-	return clamp(currentStyleBias + styleDelta, -PROFILE_CAP, PROFILE_CAP);
-}
-
-function getResponseStyle(feedbackCount: number, styleBias: number): ResponseStyle {
-	if (feedbackCount < MIN_FEEDBACK_TO_STYLE_SHIFT) {
-		return 'balanced';
-	}
-
-	if (styleBias <= -2) {
-		return 'concise';
-	}
-
-	if (styleBias >= 2) {
-		return 'detailed';
-	}
-
-	return 'balanced';
-}
-
-function formatResponseForStyle(text: string, style: ResponseStyle, category: ResponseCategory) {
-	if (style === 'balanced' || category === 'playful') {
-		return text;
-	}
-
-	if (style === 'concise') {
-		if (text.includes('\n')) {
-			const lines = text.split('\n').filter(Boolean);
-			return lines.slice(0, 2).join('\n');
-		}
-		if (text.length > 180) {
-			return `${text.slice(0, 177)}...`;
-		}
-		return text;
-	}
-
-				if (text.length < 160 && !['playful', 'page', 'docs', 'live', 'static'].includes(category)) {
-					return `${text} If you want, I can provide a deeper breakdown.`;
-				}
-				return text;
-
-	// ...existing code...
-
-
-
 
 	// Async: Try to answer from docs, page context, live data, and then fallback to static.
-	const getGolbyResponse = async (userMessage: string): Promise<{ text: string; category: ResponseCategory }> => {
+	const getGolbyResponse = async (userMessage: string): Promise<GolbyResponse> => {
 		const lowerMessage = userMessage.toLowerCase();
 		const guardrailCategory = detectGuardrailCategory(lowerMessage);
 		if (guardrailCategory) {
@@ -600,6 +574,7 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 				return {
 					text: backendReply.reply,
 					category: mappedCategory,
+					sources: backendReply.sources,
 				};
 			}
 		} catch {
@@ -610,7 +585,7 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 		const topic = classifyTopic(lowerMessage);
 		const orderedCategories = getOrderedCategories(topic, assistantProfile, feedbackCount);
 		const preferredStyle = getResponseStyle(feedbackCount, styleBias);
-		const withStyle = (text: string, category: ResponseCategory) => ({
+		const withStyle = (text: string, category: ResponseCategory): GolbyResponse => ({
 			text: formatResponseForStyle(text, preferredStyle, category),
 			category,
 		});
@@ -649,8 +624,6 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 			if (category === 'live') {
 				// Proactive travel/packing/preparation advice
 				if (topic === 'travel') {
-					// Optionally, fetch live risk data here for more dynamic advice
-					// For now, use static example
 					return withStyle(generateTravelChecklist(), 'live');
 				}
 				try {
@@ -714,7 +687,8 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 			}
 		}
 
-
+		return withStyle(golbyResponses['default'], 'static');
+	};
 
 	const handleSendMessage = async (text: string) => {
 		if (!text.trim()) return;
@@ -722,7 +696,6 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 		if (isGuestUser(currentUserId)) {
 			const guestCount = getGuestDailyCount();
 			if (guestCount >= GUEST_DAILY_LIMIT) {
-				// Show limit message
 				const limitMsg: Message = {
 					id: createMessageId(),
 					text: `You've reached the daily limit for guest users (${GUEST_DAILY_LIMIT} messages per day).\n\nCreate a free account to unlock unlimited chat and personalized features!`,
@@ -750,15 +723,13 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 		};
 		setMessages((prev: Message[]) => [...prev, userMessage]);
 		setInputValue('');
-		// Simulate Golby typing
 		setIsTyping(true);
 		const response = await getGolbyResponse(text);
 		setIsTyping(false);
-		// Refined: handle backend lockout/limit responses and improve benefit messaging
+
 		let lockoutDetected = false;
 		let limitDetected = false;
 		if (isGuestUser(currentUserId)) {
-			// Detect backend lockout/limit responses
 			const respText = (response.text || '').toLowerCase();
 			if (respText.includes('only available to registered users') || (response.sources && response.sources.includes('guest-lockout'))) {
 				lockoutDetected = true;
@@ -925,7 +896,7 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 							<ChatBubble message={message.text} isGolby={message.isGolby} />
 							{message.isGolby && (
 								<div className="flex gap-2 mt-2">
-									<button 
+									<button
 										className="text-gray-400 hover:text-green-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400"
 										onClick={() => handleFeedback(message, 'thumbs_up')}
 										aria-label="This was helpful"
@@ -933,7 +904,7 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 									>
 										<ThumbsUp className="w-4 h-4" />
 									</button>
-									<button 
+									<button
 										className="text-gray-400 hover:text-red-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
 										onClick={() => handleFeedback(message, 'thumbs_down')}
 										aria-label="This wasn't helpful"
@@ -941,7 +912,7 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 									>
 										<ThumbsDown className="w-4 h-4" />
 									</button>
-									<button 
+									<button
 										className="text-gray-400 hover:text-yellow-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400"
 										onClick={() => handleFeedback(message, 'smile')}
 										aria-label="Rate with emoji"
@@ -966,7 +937,7 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 			</div>
 			{/* Quick Suggestions */}
 			{messages.length === 1 && (
-				<motion.div 
+				<motion.div
 					initial={{ opacity: 0, y: 10 }}
 					animate={{ opacity: 1, y: 0 }}
 					className="px-6 py-3 bg-white border-t border-gray-200"
@@ -992,7 +963,7 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 			)}
 			{/* Input */}
 			<div className="bg-white px-6 py-4 border-t border-gray-200">
-				<form 
+				<form
 					onSubmit={(e) => {
 						e.preventDefault();
 						handleSendMessage(inputValue);
