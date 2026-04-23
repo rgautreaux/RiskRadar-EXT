@@ -1,3 +1,5 @@
+"""API router aggregating all versioned route modules."""
+
 from fastapi import APIRouter
 from backend.api.auth import router as auth_router
 from backend.api.health import router as health_router
@@ -16,7 +18,6 @@ api_router.include_router(auth_router)
 api_router.include_router(assistant_router)
 api_router.include_router(alerts_router)
 api_router.include_router(feedback_router)
-api_router.include_router(packing_router)
 api_router.include_router(risk_router)
 api_router.include_router(summaries_router)
 api_router.include_router(users_router)
