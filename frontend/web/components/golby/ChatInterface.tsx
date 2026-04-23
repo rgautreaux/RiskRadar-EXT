@@ -1,3 +1,12 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { fetchUserGuide, searchDocForAnswer } from './docSearch';
+import { fetchAssistantReply, fetchCurrentAlerts, fetchRiskOverlay, fetchForecast, fetchWeeklyFeedbackAnalytics, sendGolbyFeedback, syncGolbyStyleProfile } from './apiClient';
+import { motion } from 'framer-motion';
+import { GolbyIcon } from './GolbyIcon';
+import { ChatBubble } from './ChatBubble';
+import { TypingIndicator } from './TypingIndicator';
+import { Send, ThumbsUp, ThumbsDown, Smile } from 'lucide-react';
+
 type GuardrailCategory = 'medical' | 'legal' | 'emergency' | 'unsafe';
 // Guardrail patterns for sensitive topics
 const GUARDED_PATTERNS: { regex: RegExp; category: GuardrailCategory }[] = [
@@ -26,14 +35,6 @@ function getSupportiveResponse(sentiment: 'positive' | 'negative' | 'neutral'): 
 	}
 	return null;
 }
-import React, { useState, useRef, useEffect } from 'react';
-import { fetchUserGuide, searchDocForAnswer } from './docSearch';
-import { fetchAssistantReply, fetchCurrentAlerts, fetchRiskOverlay, fetchForecast, fetchWeeklyFeedbackAnalytics, sendGolbyFeedback, syncGolbyStyleProfile } from './apiClient';
-import { motion } from 'framer-motion';
-import { GolbyIcon } from './GolbyIcon';
-import { ChatBubble } from './ChatBubble';
-import { TypingIndicator } from './TypingIndicator';
-import { Send, ThumbsUp, ThumbsDown, Smile } from 'lucide-react';
 
 type ResponseCategory = 'docs' | 'page' | 'live' | 'playful' | 'static';
 type FeedbackReaction = 'thumbs_up' | 'thumbs_down' | 'smile';
