@@ -10,14 +10,11 @@
 - PostgreSQL
 
 ## Major Features Planned
-- RiskRadar Web is a web-based extension of the RiskRadar mobile app, designed to help users
-- Building on the existing app's ability to aggregate weather, air quality, and pollution alerts, the
-- Alert Prioritization System that analyze environmental data and compute individualized risk
-- Core Capabilities: The completed system will include a web-based dashboard displaying
-- asthma, pollen, heat) and view prioritized alerts with explanations. The app will integrate with
-- Time-Permitting Features: Predictive risk forecasting, an interactive geographic risk map, and
-- personalized analytics, and explainable scoring logic.
-- Web Dashboard A centralized interface displaying the user's risk score, ranked alerts, risk
+- Build a web dashboard that aggregates weather, air-quality, and pollution inputs into a single personalized risk view.
+- Implement an alert prioritization engine that ranks environmental hazards by user profile factors such as asthma sensitivity, pollen response, and heat risk.
+- Show explainable scoring details so users can understand why each alert was ranked and what inputs drove the score.
+- Add mapped and historical views of risk trends, with predictive forecasting as a stretch feature when core functionality is complete.
+
 
 ## Data Structures / Algorithms Proposed
 - graph
