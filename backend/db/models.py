@@ -201,6 +201,23 @@ def _secure_user_email(target: User) -> None:
     target.email_lookup_hash = hash_email(normalized_email)
 
 
+# Explicitly exported so Pylance does not report the event-listener functions
+# as unused (the @event.listens_for decorator registers them at import time).
+__all__ = [
+    "Base",
+    "Alert",
+    "Summary",
+    "SummaryAlertLink",
+    "Feedback",
+    "User",
+    "UserAlertPreference",
+    "UserHealthCondition",
+    "ScrapeLog",
+    "_user_before_insert",
+    "_user_before_update",
+]
+
+
 @event.listens_for(User, "before_insert")
 def _user_before_insert(_mapper: Any, _connection: Any, target: User) -> None:
     """SQLAlchemy before_insert hook: encrypt email prior to INSERT."""
