@@ -23,3 +23,9 @@
 ## Overall Completion Estimate
 - Estimated completion: 86%
 - Basis: aligned against updated proposal major features and current repository code/docs status as of 2026-04-24.
+
+## Recent Changes Since Last Checkpoint Update
+- Merged `main` into `grading` via commit `27a22d8`, incorporating 43 upstream commits that landed after the grading branch split.
+- Updated proposal wording to explicitly capture data structures and algorithm usage (`c531cdf`).
+- Refined contribution analysis and contributor weighting logic (`696de27`, `19c9545`) to better align grading-facing documentation with current repository history.
+- No regressions were identified in the previously marked complete core features.

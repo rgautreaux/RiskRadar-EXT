@@ -12,3 +12,12 @@
 ## Notes on Attribution
 - Contribution percentages are estimated from git commit history and line-change totals across all branches.
 - Some commits may use inconsistent author names/emails, which can split attribution across aliases.
+
+## Recent Activity Since Last Contributor Update
+- `grading` now includes merged upstream `main` history through `27a22d8`, which materially increased recent activity counts.
+- Most active contributors in commits since the last contributor-file refresh (`ea0cf0e`):
+	- `rgautreaux`: 31 commits
+	- `Nicholas Lipari, PhD`: 6 commits
+	- `Rebecca Gautreaux` (combined aliases): 9 commits
+	- `copilot-swe-agent[bot]`: 3 commits
+- Attribution note: `Rebecca Gautreaux` appears under multiple git identity strings and should be interpreted as one contributor.
