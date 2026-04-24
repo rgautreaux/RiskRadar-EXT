@@ -17,7 +17,9 @@
 
 
 ## Data Structures / Algorithms Proposed
-- graph
-- stack
-- forecast
-- ranking
+- A user profile object and preference map store triggers like asthma, pollen sensitivity, and heat tolerance to parameterize risk calculations.
+- Time-series arrays store hourly and daily environmental inputs so the system can compute trend-aware risk instead of one-point snapshots.
+- A weighted scoring algorithm combines weather, air-quality, and pollution signals into a single personalized risk score.
+- Priority sorting ranks alerts by score and recency so the most relevant hazards appear first on the dashboard.
+- If forecasting is enabled, rolling-window smoothing is used to estimate near-future risk for map and trend views.
+
