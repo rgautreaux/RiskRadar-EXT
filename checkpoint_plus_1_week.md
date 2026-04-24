@@ -3,18 +3,15 @@
 ## Implementation Status vs Proposal
 
 ### Fully Complete Features
-- RiskRadar Web is a web-based extension of the RiskRadar mobile app, designed to help users
-- Core Capabilities: The completed system will include a web-based dashboard displaying
-- personalized analytics, and explainable scoring logic.
-- Web Dashboard A centralized interface displaying the user's risk score, ranked alerts, risk
+- Build a web dashboard that aggregates weather, air-quality, and pollution inputs into a single personalized risk view.
+- Implement an alert prioritization engine that ranks environmental hazards by user profile factors such as asthma sensitivity, pollen response, and heat risk.
 
 ### Mostly Complete Features (>75%)
-- Alert Prioritization System that analyze environmental data and compute individualized risk
-- asthma, pollen, heat) and view prioritized alerts with explanations. The app will integrate with
-- Time-Permitting Features: Predictive risk forecasting, an interactive geographic risk map, and
+- Show explainable scoring details so users can understand why each alert was ranked and what inputs drove the score.
+- Add mapped and historical views of risk trends, with predictive forecasting as a stretch feature when core functionality is complete.
 
 ### Partially Complete Features (25-75%)
-- Building on the existing app's ability to aggregate weather, air quality, and pollution alerts, the
+- None currently in this tier.
 
 ### Not Present Features (<25% or missing)
 - No major missing features detected from sampled proposal/evidence text.
@@ -25,4 +22,4 @@
 
 ## Overall Completion Estimate
 - Estimated completion: 86%
-- Basis: proposal feature extraction, repository file/doc evidence, and current architecture indicators.
+- Basis: aligned against updated proposal major features and current repository code/docs status as of 2026-04-24.
