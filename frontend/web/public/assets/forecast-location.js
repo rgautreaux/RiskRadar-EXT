@@ -178,6 +178,39 @@ function renderForecast(data, locationLabel) {
         `<div style="margin-top:0.35rem; font-size:0.95rem; color: var(--muted-foreground);">Updated: ${escapeHtml(data.generated_at || '')}</div>`,
     ].join('');
 
+    // Per-risk forecast rendering
+    let perRiskMarkup = '';
+    if (data.per_risk_forecasts && typeof data.per_risk_forecasts === 'object') {
+        perRiskMarkup = '<div class="per-risk-forecast-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1.2rem;">';
+        const riskTypeMeta = {
+            weather: { icon: '/assets/illustrations/weather.svg', label: 'Weather', class: 'icon-bg-weather' },
+            air_quality: { icon: '/assets/illustrations/air-quality.svg', label: 'Air Quality', class: 'icon-bg-aqi' },
+            wildfire: { icon: '/assets/illustrations/fire.svg', label: 'Wildfire', class: 'icon-bg-wildfire' },
+            flood: { icon: '/assets/illustrations/flood.svg', label: 'Flood', class: 'icon-bg-extreme' },
+            earthquake: { icon: '/assets/illustrations/earthquake.svg', label: 'Earthquake', class: 'icon-bg-earthquake' },
+            pollen: { icon: '/assets/illustrations/pollen.svg', label: 'Pollen', class: 'icon-bg-risk-medium' },
+            pollution: { icon: '/assets/illustrations/pollution.svg', label: 'Pollution', class: 'icon-bg-pollution' },
+        };
+        for (const [riskType, forecastList] of Object.entries(data.per_risk_forecasts)) {
+            const meta = riskTypeMeta[riskType] || { icon: '', label: riskType, class: '' };
+            const first = forecastList && forecastList.length ? forecastList[0] : null;
+            const riskLevel = first ? escapeHtml(first.risk_level) : 'N/A';
+            const trend = forecastList && forecastList.length > 1 ? (first.risk_score < forecastList[forecastList.length-1].risk_score ? 'increasing' : (first.risk_score > forecastList[forecastList.length-1].risk_score ? 'decreasing' : 'steady')) : 'steady';
+            const confidence = first && typeof first.confidence === 'number' ? `${Math.round(first.confidence * 100)}%` : 'N/A';
+            perRiskMarkup += `
+                <article class="panel" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid var(--border); border-radius: 14px; background: var(--card);">
+                    <span class="icon-slot ${meta.class}" aria-label="${escapeHtml(meta.label)}" style="display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%;"><img src="${meta.icon}" alt="${escapeHtml(meta.label)}" style="width: 28px; height: 28px;" /></span>
+                    <div style="flex:1;">
+                        <div style="font-size: 1.1rem; font-weight: 700; color: var(--primary);">${escapeHtml(meta.label)}</div>
+                        <div style="font-size: 0.98rem; color: var(--muted-foreground); margin-top: 0.1rem;">${riskLevel} risk, ${confidence} confidence</div>
+                        <div style="font-size: 0.95rem; color: var(--muted-foreground); margin-top: 0.1rem;">Trend: ${escapeHtml(trend.charAt(0).toUpperCase() + trend.slice(1))}</div>
+                    </div>
+                </article>
+            `;
+        }
+        perRiskMarkup += '</div>';
+    }
+
     const confidence = typeof data.confidence === 'number' ? `${Math.round(data.confidence * 100)}%` : 'N/A';
     const trend = data.trend ? data.trend.charAt(0).toUpperCase() + data.trend.slice(1) : 'Steady';
     const forecastHours = data.forecast_hours || 48;
@@ -200,6 +233,7 @@ function renderForecast(data, locationLabel) {
     const pointListMarkup = points.length > 0 ? renderPointList(points) : '';
 
     results.innerHTML = `
+        ${perRiskMarkup}
         <div class="forecast-summary-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem; margin-top: 1rem;">
             ${cardMarkup}
         </div>

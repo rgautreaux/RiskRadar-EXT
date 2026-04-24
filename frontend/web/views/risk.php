@@ -1,4 +1,7 @@
+
 <?php rr_render_layout_start('Risk Score', 'risk'); ?>
+
+<?php $isGuest = (function_exists('rr_access_context') && rr_access_context() === 'guest'); ?>
 
 <section class="page-heading">
     <div>
@@ -8,18 +11,46 @@
     <p>Your personalized environmental risk score based on proximity, severity, health sensitivity, and alert density. Enter your user ID to see results.</p>
 </section>
 
+
 <section class="panel">
-    <form class="filter-grid" method="get" action="risk.php">
-        <label>
-            <span>User ID</span>
-            <input type="number" name="user_id" min="1" max="999999" value="<?php echo e((string) $userId); ?>" required placeholder="1">
-        </label>
-        <label>
-            <span>Radius (km)</span>
-            <input type="number" name="radius_km" min="1" max="500" value="<?php echo e((string) $radiusKm); ?>">
-        </label>
-        <button class="button-primary" type="submit">Calculate risk score</button>
-    </form>
+    <?php if ($isGuest): ?>
+        <div class="locked-overlay">
+            <div class="locked-message">
+                <span class="locked-icon" aria-hidden="true">🔒</span>
+                <strong>This feature is for registered users only</strong>
+                <p>Sign in or create an account to access personalized risk scoring.</p>
+                <a href="login.php" class="button-secondary">Sign In / Register</a>
+            </div>
+        </div>
+        <form class="filter-grid locked" onsubmit="showLockoutPopup(); return false;" aria-disabled="true">
+            <label>
+                <span>User ID</span>
+                <input type="number" name="user_id" min="1" max="999999" value="" disabled placeholder="1">
+            </label>
+            <label>
+                <span>Radius (km)</span>
+                <input type="number" name="radius_km" min="1" max="500" value="" disabled>
+            </label>
+            <button class="button-primary" type="submit" disabled>Calculate risk score</button>
+        </form>
+        <script>
+        function showLockoutPopup() {
+            alert('Personalized risk scoring is only available to registered users. Please sign in or create an account.');
+        }
+        </script>
+    <?php else: ?>
+        <form class="filter-grid" method="get" action="risk.php">
+            <label>
+                <span>User ID</span>
+                <input type="number" name="user_id" min="1" max="999999" value="<?php echo e((string) $userId); ?>" required placeholder="1">
+            </label>
+            <label>
+                <span>Radius (km)</span>
+                <input type="number" name="radius_km" min="1" max="500" value="<?php echo e((string) $radiusKm); ?>">
+            </label>
+            <button class="button-primary" type="submit">Calculate risk score</button>
+        </form>
+    <?php endif; ?>
 </section>
 
 <?php if ($userId <= 0) : ?>

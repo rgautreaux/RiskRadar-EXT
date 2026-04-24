@@ -34,14 +34,26 @@ class AlertStats(BaseModel):
     by_severity: dict[str, int]
 
 
+
 class PriorityFactors(BaseModel):
+    """
+    Factor scores (0-100) contributing to the alert's priority/risk score.
+    - distance: Proximity to user (closer = higher)
+    - severity: Severity of the alert
+    - sensitivity: User health sensitivity to this alert type
+    - recency: How recent the alert is
+    """
     distance: float
     severity: float
     sensitivity: float
     recency: float
 
 
+
 class PrioritizedAlertOut(BaseModel):
+    """
+    Alert with computed priority/risk score and factor breakdown for user transparency.
+    """
     alert_id: int
     source: str
     source_id: Optional[str] = None

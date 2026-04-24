@@ -1,19 +1,40 @@
 <?php
 
+
 require_once __DIR__ . '/../services/bootstrap.php';
 
-rr_require_feature_access();
+// Only allow authenticated users (not guests or anonymous) to access profile page
+if (rr_access_context() !== 'authenticated') {
+    rr_set_flash('warning', 'You must be signed in to access your profile.');
+    header('Location: login.php');
+    exit;
+}
 
 $flash = rr_get_flash();
 $preferencesErrors = [];
 $preferencesResult = null;
+
+$currentUser = null;
 $preferencesForm = [
-    'user_id' => null,
     'zip_code' => '',
     'alert_types' => [],
     'notify_severity' => '',
     'device_token' => '',
+    'health_conditions' => [],
 ];
+
+// Fetch current user from session (API call)
+$userResult = rr_fetch_current_user($config);
+if ($userResult['ok'] && is_array($userResult['data'])) {
+    $currentUser = $userResult['data'];
+    // Pre-fill form with user data
+    $preferencesForm['zip_code'] = $currentUser['zip_code'] ?? '';
+    $preferencesForm['alert_types'] = is_array($currentUser['alert_types']) ? $currentUser['alert_types'] : [];
+    $preferencesForm['notify_severity'] = $currentUser['notify_severity'] ?? '';
+    $preferencesForm['device_token'] = $currentUser['device_token'] ?? '';
+    $preferencesForm['health_conditions'] = is_array($currentUser['health_conditions']) ? $currentUser['health_conditions'] : [];
+}
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = trim((string) ($_POST['action'] ?? ''));
@@ -29,10 +50,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    if ($action === 'preferences') {
+    if ($action === 'preferences' && $currentUser) {
         [$preferencesForm, $preferencesErrors] = rr_validate_preferences($_POST);
         if (!$preferencesErrors) {
-            $userId = (int) $preferencesForm['user_id'];
+            $userId = (int) $currentUser['id'];
             $preferencesPayload = [
                 'zip_code' => $preferencesForm['zip_code'],
                 'alert_types' => $preferencesForm['alert_types'],

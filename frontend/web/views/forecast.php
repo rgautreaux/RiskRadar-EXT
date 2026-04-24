@@ -19,14 +19,42 @@ window.__RISKRADAR_FORECAST_API_PREFIX__ = <?php echo json_encode($forecastApiPr
     <p class="muted">This page will surface 24-48 hour environmental risk forecasts and confidence/trend visuals.</p>
 </section>
 
+
+<?php $isGuest = (function_exists('rr_access_context') && rr_access_context() === 'guest'); ?>
 <section class="panel" style="background: var(--card); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 1.5rem; max-width: 700px; margin: 0 auto 2rem auto;">
-    <form id="forecast-location-form" class="flex items-center gap-2" style="margin-bottom: 0.5rem;">
-        <input id="forecast-location-input" type="text" placeholder="Enter ZIP or City, State" style="flex:1; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--muted); font-size: 1rem;" />
-        <button type="submit" style="padding: 0.5rem 1rem; border-radius: 6px; background: var(--primary); color: #fff; border: none; font-weight: 600;">Go</button>
-        <button type="button" id="use-my-location-btn" style="padding: 0.5rem 1rem; border-radius: 6px; background: var(--accent); color: var(--primary); border: none; font-weight: 600;">Use My Location</button>
-    </form>
-    <div id="forecast-location-status" style="font-size: 0.95rem; color: var(--muted-foreground); margin-bottom: 0.5rem;"></div>
-    <div id="forecast-results" aria-live="polite"></div>
+    <?php if ($isGuest): ?>
+        <div class="locked-overlay">
+            <div class="locked-message">
+                <span class="locked-icon" aria-hidden="true">🔒</span>
+                <strong>User-Only Feature</strong>
+                <p>You’re currently exploring as a guest.<br>Sign in or create a free account to unlock personalized forecasts, smart alerts, and more!</p>
+                <div class="locked-actions">
+                    <a href="login.php" class="button-secondary">Sign In to Unlock</a>
+                    <a href="register.php" class="button-primary">Create Account</a>
+                </div>
+            </div>
+        </div>
+        <form id="forecast-location-form" class="flex items-center gap-2 locked" onsubmit="showLockoutPopup(); return false;" aria-disabled="true" style="margin-bottom: 0.5rem;">
+            <input id="forecast-location-input" type="text" placeholder="Enter ZIP or City, State" style="flex:1; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--muted); font-size: 1rem;" disabled />
+            <button type="submit" style="padding: 0.5rem 1rem; border-radius: 6px; background: var(--primary); color: #fff; border: none; font-weight: 600;" disabled>Go</button>
+            <button type="button" id="use-my-location-btn" style="padding: 0.5rem 1rem; border-radius: 6px; background: var(--accent); color: var(--primary); border: none; font-weight: 600;" disabled>Use My Location</button>
+        </form>
+        <div id="forecast-location-status" style="font-size: 0.95rem; color: var(--muted-foreground); margin-bottom: 0.5rem;"></div>
+        <div id="forecast-results" aria-live="polite"></div>
+        <script>
+        function showLockoutPopup() {
+            alert('Sign in or create an account to unlock personalized forecasts, smart alerts, and more!');
+        }
+        </script>
+    <?php else: ?>
+        <form id="forecast-location-form" class="flex items-center gap-2" style="margin-bottom: 0.5rem;">
+            <input id="forecast-location-input" type="text" placeholder="Enter ZIP or City, State" style="flex:1; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--muted); font-size: 1rem;" />
+            <button type="submit" style="padding: 0.5rem 1rem; border-radius: 6px; background: var(--primary); color: #fff; border: none; font-weight: 600;">Go</button>
+            <button type="button" id="use-my-location-btn" style="padding: 0.5rem 1rem; border-radius: 6px; background: var(--accent); color: var(--primary); border: none; font-weight: 600;">Use My Location</button>
+        </form>
+        <div id="forecast-location-status" style="font-size: 0.95rem; color: var(--muted-foreground); margin-bottom: 0.5rem;"></div>
+        <div id="forecast-results" aria-live="polite"></div>
+    <?php endif; ?>
 </section>
 
 
@@ -78,6 +106,9 @@ window.__RISKRADAR_FORECAST_API_PREFIX__ = <?php echo json_encode($forecastApiPr
     </div>
     <div class="mt-4" style="color: var(--destructive); font-size: 13px;">
         <strong>Note:</strong> The static preview remains as a fallback visual until the live forecast panel has data.
+    </div>
+
+<?php include __DIR__ . '/partials/risk_legend.php'; ?>
     </div>
 </section>
 

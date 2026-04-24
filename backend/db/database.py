@@ -1,7 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-from config.settings import settings
+
+from backend.config.settings import settings  # Always use absolute import for scripts and app
 
 database_url = str(settings.DATABASE_URL).strip()
 DATABASE_URL = database_url or f"sqlite:///{str(settings.DB_PATH)}"

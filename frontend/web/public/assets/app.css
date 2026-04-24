@@ -693,13 +693,24 @@ fieldset {
 }
 
 .checkbox-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px 24px;
+    align-items: start;
 }
 
 .checkbox-item {
     display: flex;
     align-items: center;
     gap: 8px;
+    min-height: 32px;
+    padding: 2px 0;
+}
+
+@media (max-width: 640px) {
+    .checkbox-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .button-primary {

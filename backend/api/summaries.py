@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from db.database import get_db
 from db.models import Summary, SummaryAlertLink
-from schemas.summary import SummaryAlertIdsOut, SummaryOut
+from backend.schemas.summary import SummaryAlertIdsOut, SummaryOut
 
 router = APIRouter(prefix="/summaries", tags=["Summaries"])
 LOGGER = logging.getLogger(__name__)
