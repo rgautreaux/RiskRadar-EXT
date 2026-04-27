@@ -21,11 +21,11 @@
 - Implemented/visible but not explicit in proposal text: Node.js, Python, PHP, FastAPI, AI/ML
 
 ## Overall Completion Estimate
-- Estimated completion: 86%
-- Basis: aligned against updated proposal major features and current repository code/docs status as of 2026-04-24.
+- Estimated completion: 90%
+- Basis: aligned against updated proposal major features and repository changes through `main` commit `93b1e26` on 2026-04-27, including backend error-fix integration and onboarding/readiness improvements.
 
 ## Recent Changes Since Last Checkpoint Update
-- Merged `main` into `grading` via commit `27a22d8`, incorporating 43 upstream commits that landed after the grading branch split.
-- Updated proposal wording to explicitly capture data structures and algorithm usage (`c531cdf`).
-- Refined contribution analysis and contributor weighting logic (`696de27`, `19c9545`) to better align grading-facing documentation with current repository history.
-- No regressions were identified in the previously marked complete core features.
+- Pulled in backend stabilization fixes from `main` through PR #57 (`93b1e26`) and commit `55a32e6`, addressing health endpoint wiring, router registration, model consistency, and test configuration issues.
+- Added/updated migration and schema assets (Alembic baseline plus SQL migration), supporting more reliable database setup and onboarding consistency.
+- Expanded frontend and assistant integration artifacts (Golby onboarding docs/tests and related UI/service updates), improving user onboarding flow and integration readiness.
+- Core implemented features remain intact, with recent work concentrated on reliability, integration quality, and setup consistency rather than feature rollback.
