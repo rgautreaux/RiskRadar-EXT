@@ -16,6 +16,41 @@ class TestAssistantRespond:
         assert data["used_live_data"] is False
         assert "cannot provide medical advice" in data["reply"].lower()
 
+        def test_guest_daily_limit_and_lockout(self, test_client):
+            """Guests should be locked out after exceeding daily chat limit."""
+            limit = 10  # Should match GUEST_DAILY_LIMIT in backend/api/assistant.py
+            last_reply = None
+            for i in range(limit):
+                resp = test_client.post(
+                    "/api/v1/assistant/respond",
+                    json={"message": f"test message {i+1}"},
+                )
+                assert resp.status_code == 200
+                data = resp.json()
+                last_reply = data["reply"]
+                assert "daily limit" not in last_reply  # Should not hit limit yet
+
+            # The next request should trigger the lockout
+            resp = test_client.post(
+                "/api/v1/assistant/respond",
+                json={"message": "should trigger lockout"},
+            )
+            assert resp.status_code == 200
+            data = resp.json()
+            assert "daily limit" in data["reply"].lower()
+            assert data["category"] == "fallback"
+            assert "guest-limit" in data["sources"]
+
+        def test_registered_user_not_limited(self, test_client, sample_user):
+            """Registered users should not be affected by guest daily limit."""
+            for i in range(15):
+                resp = test_client.post(
+                    "/api/v1/assistant/respond",
+                    json={"message": f"user message {i+1}", "user_id": sample_user.id},
+                )
+                assert resp.status_code == 200
+                data = resp.json()
+                assert "daily limit" not in data["reply"].lower()
     def test_live_forecast_summary_response(self, test_client, sample_alerts):
         assert sample_alerts
         resp = test_client.post(

@@ -138,13 +138,13 @@ def _get_guest_limit(request: Request) -> int:
     return _guest_limit_cache.get(key, 0)
 
 
-@router.post("/respond", response_model=AssistantResponse)
+@router.post("/respond", response_model=AssistantResponse, response_model_exclude_unset=True)
 def respond(
     body: AssistantRequest,
     db: Session = Depends(get_db),
     current_user: Optional[User] = Depends(get_optional_current_user),
-    request: Optional[Request] = None,
-) -> AssistantResponse:
+    request: Request = None,
+) -> Any:
 
     # Guest daily limit enforcement
     is_guest = current_user is None

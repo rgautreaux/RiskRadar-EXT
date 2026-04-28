@@ -14,6 +14,8 @@ from ..scoring.prioritization import (
     explain_alert_risk_formula,
 )
 
+router = APIRouter(prefix="/alerts", tags=["Alerts"])
+
 # Stage 4: Risk Score Formula Explanation Endpoint
 @router.get("/risk_formula", response_model=dict)
 def get_risk_formula():
@@ -32,8 +34,6 @@ def get_alert_risk_breakdown(alert_id: int, user_id: int, db: Session = Depends(
     if not breakdown:
         raise HTTPException(status_code=400, detail="Cannot compute risk breakdown (missing location or out of range)")
     return breakdown
-
-router = APIRouter(prefix="/alerts", tags=["Alerts"])
 
 # Stage 3: Map Alerts Endpoint
 @router.get("/map", response_model=MapAlertListOut)

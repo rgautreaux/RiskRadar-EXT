@@ -1,4 +1,7 @@
 
+# --- Import MAX_RADIUS_KM first to avoid NameError in default args ---
+from . import MAX_RADIUS_KM
+
 """
 RiskRadar Alert Risk Scoring & Ranking System
 ------------------------------------------------
@@ -115,7 +118,6 @@ from ..db.models import Alert, User
 from . import (
     haversine_km,
     CONDITION_ALERT_MAP,
-    MAX_RADIUS_KM,
     SEVERITY_SCORES,
 )
 
