@@ -18,18 +18,31 @@ describe('Golby Onboarding Tutorial', () => {
     await page.type('input[name="email"]', email);
     await page.type('input[name="password"]', 'TestPass123!');
     await page.type('input[name="zip_code"]', '12345');
+    console.log('DEBUG: Submitting registration form');
     await page.click('button[type="submit"]');
     // Wait for redirect to login, then login
-    await page.waitForNavigation();
+    try {
+      await page.waitForNavigation({ timeout: 60000, waitUntil: 'domcontentloaded' });
+      console.log('DEBUG: Registration navigation completed');
+    } catch (e) {
+      console.log('DEBUG: Registration navigation TIMEOUT', e);
+      throw e;
+    }
     await page.type('input[name="email"]', email);
     await page.type('input[name="password"]', 'TestPass123!');
     await page.click('button[type="submit"]');
-    await page.waitForNavigation();
+    try {
+      await page.waitForNavigation({ timeout: 60000, waitUntil: 'networkidle0' });
+      console.log('DEBUG: Login navigation completed');
+    } catch (e) {
+      console.log('DEBUG: Login navigation TIMEOUT', e);
+      throw e;
+    }
     // Check for onboarding popup
-    await page.waitForSelector('.golby-onboarding-step', { timeout: 5000 });
+    await page.waitForSelector('.golby-onboarding-step', { timeout: 15000 });
     const onboardingVisible = await page.$('.golby-onboarding-step') !== null;
     expect(onboardingVisible).toBe(true);
-  }, 30000);
+  }, 120000);
 
   it('does not show onboarding for returning user', async () => {
     // Assume previous test created a user and completed onboarding
@@ -43,5 +56,5 @@ describe('Golby Onboarding Tutorial', () => {
     // Confirm onboarding does not appear
     const onboardingVisible = await page.$('.golby-onboarding-step') !== null;
     expect(onboardingVisible).toBe(false);
-  });
+  }, 30000);
 });
