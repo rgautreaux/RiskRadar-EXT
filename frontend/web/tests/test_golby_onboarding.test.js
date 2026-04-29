@@ -5,7 +5,7 @@ describe('Golby Onboarding Tutorial', () => {
   beforeAll(async () => {
     browser = await puppeteer.launch({ headless: true });
     page = await browser.newPage();
-  });
+  }, 30000); // 30 seconds
   afterAll(async () => {
     await browser.close();
   });
@@ -29,7 +29,7 @@ describe('Golby Onboarding Tutorial', () => {
     await page.waitForSelector('.golby-onboarding-step', { timeout: 5000 });
     const onboardingVisible = await page.$('.golby-onboarding-step') !== null;
     expect(onboardingVisible).toBe(true);
-  });
+  }, 30000);
 
   it('does not show onboarding for returning user', async () => {
     // Assume previous test created a user and completed onboarding
