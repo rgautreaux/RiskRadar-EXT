@@ -18,13 +18,13 @@ router = APIRouter(prefix="/alerts", tags=["Alerts"])
 
 # Stage 4: Risk Score Formula Explanation Endpoint
 @router.get("/risk_formula", response_model=dict)
-def get_risk_formula():
+def get_risk_formula() -> dict[str, str | dict | list | float]:
     """Return a human-readable explanation of the risk scoring formula."""
     return explain_alert_risk_formula()
 
 # Stage 4: Per-Alert Risk Score Breakdown Endpoint
 @router.get("/risk_breakdown/{alert_id}/{user_id}", response_model=dict)
-def get_alert_risk_breakdown(alert_id: int, user_id: int, db: Session = Depends(get_db)):
+def get_alert_risk_breakdown(alert_id: int, user_id: int, db: Session = Depends(get_db)) -> dict:
     """Return a detailed risk score breakdown for a single alert and user."""
     alert = db.query(Alert).filter(Alert.id == alert_id).first()
     user = db.query(User).filter(User.id == user_id).first()
@@ -67,10 +67,12 @@ def map_alerts(
             pass  # Ignore invalid bbox
     alerts = q.order_by(Alert.fetched_at.desc()).limit(500).all()
     region_val = region or "all"
+    # Convert Alert to AlertOut for Pydantic validation
+    alert_outs = [AlertOut.model_validate(a) for a in alerts]
     return MapAlertListOut(
-        alerts=alerts,
+        alerts=alert_outs,
         region=region_val,
-        generated_at=datetime.utcnow().isoformat() + "Z",
+        generated_at=datetime.now(datetime.timezone.utc).isoformat(),
     )
 
 
@@ -96,8 +98,9 @@ def list_alerts(
 @router.get("/stats", response_model=AlertStats)
 def alert_stats(db: Session = Depends(get_db)):
     total = db.query(Alert).count()
-    by_type = dict(db.query(Alert.alert_type, sqlalchemy.sql.func.count(Alert.id)).group_by(Alert.alert_type).all())
-    by_severity = dict(db.query(Alert.severity, sqlalchemy.sql.func.count(Alert.id)).group_by(Alert.severity).all())
+    # Use .label to avoid bytes keys and ensure correct unpacking
+    by_type = {k: v for k, v in db.query(Alert.alert_type, sqlalchemy.func.count(Alert.id)).group_by(Alert.alert_type).all()}
+    by_severity = {k: v for k, v in db.query(Alert.severity, sqlalchemy.func.count(Alert.id)).group_by(Alert.severity).all()}
     return AlertStats(total=total or 0, by_type=by_type, by_severity=by_severity)
 
 
@@ -107,7 +110,7 @@ def prioritized_alerts(
     radius_km: float = Query(default=150.0, ge=1.0, le=500.0),
     limit: int = Query(default=50, ge=1, le=200),
     db: Session = Depends(get_db),
-):
+) -> PrioritizedAlertListOut:
     """Return alerts ranked by personalized priority for the given user.
 
     Combines distance, severity, user health sensitivity, and alert recency
@@ -117,7 +120,13 @@ def prioritized_alerts(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    return build_prioritized_alerts(user, db, radius_km=radius_km, limit=limit)
+    result = build_prioritized_alerts(user, db, radius_km=radius_km, limit=limit)
+    # Convert alerts to PrioritizedAlertOut for Pydantic validation
+    result["alerts"] = [
+        # If already PrioritizedAlertOut, skip; else, convert
+        a if isinstance(a, dict) and "priority_score" in a else a.dict() for a in result["alerts"]
+    ]
+    return PrioritizedAlertListOut(**result)
 
 
 @router.get("/{alert_id}", response_model=AlertOut)

@@ -170,6 +170,7 @@ def _serialize_user(user: User, db: Session | None = None) -> UserOut:
         health_conditions=serialized_health_conditions,
         assistant_style_profile=user_data.get('assistant_style_profile'),
         created_at=created_at,
+        has_completed_onboarding=user_data.get('has_completed_onboarding', False),
     )
 
 

@@ -139,11 +139,14 @@ def _get_guest_limit(request: Request) -> int:
 
 
 @router.post("/respond", response_model=AssistantResponse, response_model_exclude_unset=True)
+
+from fastapi import Request as FastAPIRequest
+
 def respond(
     body: AssistantRequest,
     db: Session = Depends(get_db),
     current_user: Optional[User] = Depends(get_optional_current_user),
-    request: Request = None,
+    request: Optional[FastAPIRequest] = None,
 ) -> Any:
 
     # Guest daily limit enforcement
