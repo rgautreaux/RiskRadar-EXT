@@ -14,7 +14,6 @@ function normalizeApiConfig() {
         return { base: cleanedBase, prefix };
     }
 
-    // Safe fallback for same-origin development when no explicit API config is injected.
     return {
         base: window.location.origin,
         prefix,
@@ -104,7 +103,7 @@ function buildForecastUrl(params) {
 async function loadForecastForCoordinates(lat, lon) {
     const status = document.getElementById('forecast-location-status');
     if (status) {
-        status.textContent = `Loading forecast for your location (${lat.toFixed(2)}, ${lon.toFixed(2)})...`;
+        status.textContent = `Loading forecast for your location (${lat.toFixed(2)}, ${lon.toFixed(2)})…`;
     }
 
     const requestId = ++forecastState.currentRequestId;
@@ -128,7 +127,7 @@ async function loadForecastForCoordinates(lat, lon) {
 async function loadForecastForLocation(location) {
     const status = document.getElementById('forecast-location-status');
     if (status) {
-        status.textContent = `Loading forecast for ${location}...`;
+        status.textContent = `Loading forecast for ${location}…`;
     }
 
     const requestId = ++forecastState.currentRequestId;
@@ -153,13 +152,11 @@ function renderForecast(data, locationLabel) {
     const status = document.getElementById('forecast-location-status');
     const results = document.getElementById('forecast-results');
 
-    if (!results || !status) {
-        return;
-    }
+    if (!results || !status) return;
 
     if (!data) {
         status.textContent = `No forecast data available for ${locationLabel}.`;
-        results.innerHTML = '';
+        results.innerHTML = renderNoDataState();
         return;
     }
 
@@ -168,92 +165,143 @@ function renderForecast(data, locationLabel) {
 
     if (points.length === 0 && zones.length === 0) {
         status.textContent = `No forecast data available for ${locationLabel}.`;
-        results.innerHTML = '';
+        results.innerHTML = renderNoDataState();
         return;
     }
 
-    status.innerHTML = [
-        `<strong>${escapeHtml(data.personalized ? 'Personalized forecast' : 'Forecast')}</strong> for ${escapeHtml(locationLabel)}`,
-        data.summary ? `<div style="margin-top:0.35rem;">${escapeHtml(data.summary)}</div>` : '',
-        `<div style="margin-top:0.35rem; font-size:0.95rem; color: var(--muted-foreground);">Updated: ${escapeHtml(data.generated_at || '')}</div>`,
-    ].join('');
+    const typeLabel = data.personalized ? 'Personalized' : 'Forecast';
+    const summaryStr = data.summary ? ` — ${escapeHtml(data.summary)}` : '';
+    const updatedStr = data.generated_at
+        ? `<span class="fc-status-time">Updated ${escapeHtml(data.generated_at)}</span>`
+        : '';
 
-    const confidence = typeof data.confidence === 'number' ? `${Math.round(data.confidence * 100)}%` : 'N/A';
+    status.innerHTML = `<span class="fc-status-badge">${escapeHtml(typeLabel)}</span><strong>${escapeHtml(locationLabel)}</strong>${summaryStr}${updatedStr}`;
+
+    const confidence = typeof data.confidence === 'number' ? `${Math.round(data.confidence * 100)}%` : '—';
     const trend = data.trend ? data.trend.charAt(0).toUpperCase() + data.trend.slice(1) : 'Steady';
     const forecastHours = data.forecast_hours || 48;
+    const baselineRisk = typeof data.baseline_risk_score === 'number' ? data.baseline_risk_score.toFixed(1) : '—';
 
-    const cards = [
-        { label: 'Confidence', value: confidence },
-        { label: 'Trend', value: trend },
-        { label: 'Window', value: `${forecastHours}h` },
-        { label: 'Baseline risk', value: typeof data.baseline_risk_score === 'number' ? `${data.baseline_risk_score.toFixed(1)}` : 'N/A' },
-    ];
-
-    const cardMarkup = cards.map(card => `
-        <article class="panel" style="padding: 1rem; border: 1px solid var(--border); border-radius: 14px; background: var(--card);">
-            <div style="font-size: 0.85rem; color: var(--muted-foreground);">${escapeHtml(card.label)}</div>
-            <div style="font-size: 1.35rem; font-weight: 700; color: var(--primary); margin-top: 0.25rem;">${escapeHtml(card.value)}</div>
-        </article>
-    `).join('');
-
-    const chartMarkup = points.length > 0 ? renderTimeline(points) : renderZoneFallback(zones);
-    const pointListMarkup = points.length > 0 ? renderPointList(points) : '';
-
-    results.innerHTML = `
-        <div class="forecast-summary-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem; margin-top: 1rem;">
-            ${cardMarkup}
+    const statsHtml = `
+        <div class="fc-stat-strip">
+            <div class="fc-stat-cell">
+                <p class="fc-stat-label">Confidence</p>
+                <p class="fc-stat-value">${escapeHtml(confidence)}</p>
+            </div>
+            <div class="fc-stat-cell">
+                <p class="fc-stat-label">Trend</p>
+                <p class="fc-stat-value">${escapeHtml(trend)}</p>
+            </div>
+            <div class="fc-stat-cell">
+                <p class="fc-stat-label">Window</p>
+                <p class="fc-stat-value">${escapeHtml(String(forecastHours))}h</p>
+            </div>
+            <div class="fc-stat-cell">
+                <p class="fc-stat-label">Baseline</p>
+                <p class="fc-stat-value">${escapeHtml(baselineRisk)}</p>
+            </div>
         </div>
-        <div style="margin-top: 1rem;">${chartMarkup}</div>
-        ${pointListMarkup}
+    `;
+
+    const chartHtml = points.length > 0 ? renderTimeline(points) : renderZoneFallback(zones);
+    const pointListHtml = points.length > 0 ? renderPointList(points) : '';
+
+    results.innerHTML = statsHtml + chartHtml + pointListHtml;
+}
+
+function renderNoDataState() {
+    return `
+        <div class="fc-empty-state">
+            <div class="fc-empty-icon" aria-hidden="true">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+            </div>
+            <p class="fc-empty-title">No forecast data available</p>
+            <p class="fc-empty-body">Try a different location, or check back when new data is available.</p>
+        </div>
     `;
 }
 
+function riskColor(level) {
+    if (level === 'high')     return '#c23b2a';
+    if (level === 'moderate') return '#b07300';
+    return '#3d7a52';
+}
+
 function renderTimeline(points) {
-    const maxScore = Math.max(100, ...points.map(point => point.risk_score || 0));
-    const minScore = Math.min(0, ...points.map(point => point.risk_score || 0));
-    const width = 620;
-    const height = 240;
-    const leftPad = 48;
-    const bottomPad = 38;
-    const topPad = 24;
-    const usableWidth = width - leftPad - 22;
-    const usableHeight = height - topPad - bottomPad;
+    const maxScore = Math.max(100, ...points.map(p => p.risk_score || 0));
+    const minScore = Math.min(0, ...points.map(p => p.risk_score || 0));
 
-    const xStep = points.length > 1 ? usableWidth / (points.length - 1) : usableWidth;
-    const coords = points.map((point, index) => {
-        const x = leftPad + index * xStep;
-        const normalized = (point.risk_score - minScore) / Math.max(maxScore - minScore, 1);
-        const y = topPad + usableHeight - normalized * usableHeight;
-        return { x, y, point };
-    });
+    const W = 620, H = 200, padL = 44, padB = 36, padT = 20, padR = 16;
+    const cW = W - padL - padR;
+    const cH = H - padT - padB;
+    const xStep = points.length > 1 ? cW / (points.length - 1) : cW;
 
-    const line = coords.map(coord => `${coord.x},${coord.y}`).join(' ');
-    const area = [`${coords[0].x},${topPad + usableHeight}`, ...coords.map(coord => `${coord.x},${coord.y}`), `${coords[coords.length - 1].x},${topPad + usableHeight}`].join(' ');
+    const toX = i => padL + i * xStep;
+    const toY = score => {
+        const norm = (score - minScore) / Math.max(maxScore - minScore, 1);
+        return padT + cH - norm * cH;
+    };
 
-    const labels = points.map((point, index) => {
-        const x = leftPad + index * xStep;
-        const label = point.hour_offset === 0 ? 'Now' : `+${point.hour_offset}h`;
-        return `<text x="${x}" y="${height - 10}" text-anchor="middle" font-size="11" fill="var(--muted-foreground)">${escapeHtml(label)}</text>`;
+    const coords = points.map((p, i) => ({
+        x: toX(i),
+        y: toY(p.risk_score || 0),
+        point: p,
+    }));
+
+    const linePoints = coords.map(c => `${c.x.toFixed(1)},${c.y.toFixed(1)}`).join(' ');
+    const areaPoints = [
+        `${coords[0].x.toFixed(1)},${(padT + cH).toFixed(1)}`,
+        ...coords.map(c => `${c.x.toFixed(1)},${c.y.toFixed(1)}`),
+        `${coords[coords.length - 1].x.toFixed(1)},${(padT + cH).toFixed(1)}`,
+    ].join(' ');
+
+    const gridLines = [25, 50, 75].map(pct => {
+        const y = toY(pct).toFixed(1);
+        return `
+            <line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#33485d" stroke-width="1" stroke-dasharray="3 5" opacity="0.13"/>
+            <text x="${padL - 7}" y="${(parseFloat(y) + 4).toFixed(0)}" font-size="10" fill="#33485d" opacity="0.45" text-anchor="end" font-family="'Geist Mono', monospace">${pct}</text>
+        `;
     }).join('');
 
-    const markers = coords.map(coord => {
-        const color = coord.point.risk_level === 'high' ? '#d64545' : coord.point.risk_level === 'moderate' ? '#f4a261' : '#4caf7a';
-        return `<circle cx="${coord.x}" cy="${coord.y}" r="5.5" fill="${color}" />`;
+    const skip = points.length > 8 ? 2 : 1;
+    const timeLabels = points.map((p, i) => {
+        if (i % skip !== 0 && i !== points.length - 1) return '';
+        const label = p.hour_offset === 0 ? 'Now' : `+${p.hour_offset}h`;
+        return `<text x="${toX(i).toFixed(1)}" y="${H - 6}" text-anchor="middle" font-size="10" fill="#33485d" opacity="0.52" font-family="'Geist Mono', monospace">${escapeHtml(label)}</text>`;
+    }).join('');
+
+    const dots = coords.map(c => {
+        const color = riskColor(c.point.risk_level);
+        return `<circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="4.5" fill="${color}" stroke="#fff5e6" stroke-width="2"/>`;
     }).join('');
 
     return `
-        <section class="panel" style="padding: 1rem; background: var(--accent); border: 1px solid var(--border); border-radius: 16px;">
-            <div style="font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">Forecast Timeline</div>
-            <svg width="100%" viewBox="0 0 ${width} ${height}" role="img" aria-label="Forecast timeline chart">
-                <line x1="${leftPad}" y1="${topPad + usableHeight}" x2="${width - 16}" y2="${topPad + usableHeight}" stroke="var(--muted)" stroke-width="1.5" />
-                <line x1="${leftPad}" y1="${topPad}" x2="${leftPad}" y2="${topPad + usableHeight}" stroke="var(--muted)" stroke-width="1.5" />
-                <polygon points="${area}" fill="var(--chart-1)" fill-opacity="0.18"></polygon>
-                <polyline points="${line}" fill="none" stroke="var(--primary)" stroke-width="3"></polyline>
-                ${markers}
-                <text x="10" y="${topPad + 10}" font-size="11" fill="var(--muted-foreground)">${escapeHtml(String(maxScore.toFixed(0)))}</text>
-                <text x="10" y="${topPad + usableHeight}" font-size="11" fill="var(--muted-foreground)">${escapeHtml(String(minScore.toFixed(0)))}</text>
-                ${labels}
+        <section class="fc-chart-section">
+            <p class="fc-section-label">Forecast Timeline</p>
+            <svg width="100%" viewBox="0 0 ${W} ${H}" role="img" aria-label="48-hour risk forecast timeline">
+                ${gridLines}
+                <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT + cH}" stroke="#33485d" stroke-width="1" opacity="0.18"/>
+                <line x1="${padL}" y1="${padT + cH}" x2="${W - padR}" y2="${padT + cH}" stroke="#33485d" stroke-width="1" opacity="0.18"/>
+                <polygon points="${areaPoints}" fill="#3d7a52" fill-opacity="0.1"/>
+                <polyline points="${linePoints}" fill="none" stroke="#3d7a52" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                ${dots}
+                ${timeLabels}
             </svg>
+            <div class="fc-chart-legend">
+                <span class="fc-legend-item">
+                    <span class="fc-legend-dot" style="background:#c23b2a;"></span>High
+                </span>
+                <span class="fc-legend-item">
+                    <span class="fc-legend-dot" style="background:#b07300;"></span>Moderate
+                </span>
+                <span class="fc-legend-item">
+                    <span class="fc-legend-dot" style="background:#3d7a52;"></span>Low
+                </span>
+            </div>
         </section>
     `;
 }
@@ -262,39 +310,46 @@ function renderZoneFallback(zones) {
     const counts = zones.reduce(
         (acc, zone) => {
             const level = zone.risk_level || 'low';
-            if (acc[level] !== undefined) {
-                acc[level] += 1;
-            }
+            if (acc[level] !== undefined) acc[level] += 1;
             return acc;
         },
         { high: 0, moderate: 0, low: 0 },
     );
 
     return `
-        <section class="panel" style="padding: 1rem; border: 1px solid var(--border); border-radius: 16px; background: var(--accent);">
-            <div style="font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">Regional Risk Breakdown</div>
-            <p style="margin: 0; color: var(--muted-foreground);">No forecast timeline points were returned, so the current active alerts are summarized instead.</p>
-            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.75rem;">
-                <span class="badge">High: ${counts.high}</span>
-                <span class="badge">Moderate: ${counts.moderate}</span>
-                <span class="badge">Low: ${counts.low}</span>
+        <section class="fc-zone-section">
+            <p class="fc-section-label">Regional Risk Breakdown</p>
+            <p class="fc-zone-desc">No timeline points were returned. Showing a summary of current active alerts instead.</p>
+            <div class="fc-zone-pills">
+                <span class="fc-zone-pill fc-risk-high">${counts.high} High</span>
+                <span class="fc-zone-pill fc-risk-moderate">${counts.moderate} Moderate</span>
+                <span class="fc-zone-pill fc-risk-low">${counts.low} Low</span>
             </div>
         </section>
     `;
 }
 
 function renderPointList(points) {
-    const items = points.map(point => `
-        <li style="display: flex; justify-content: space-between; gap: 1rem; padding: 0.65rem 0; border-bottom: 1px solid var(--border);">
-            <span><strong>+${point.hour_offset}h</strong>${point.dominant_type ? ` - ${escapeHtml(point.dominant_type.replace(/_/g, ' '))}` : ''}</span>
-            <span>${escapeHtml(point.risk_level)} risk, ${escapeHtml(point.risk_score.toFixed(1))}/100, ${escapeHtml(Math.round(point.confidence * 100).toString())}% confidence</span>
-        </li>
-    `).join('');
+    const items = points.map(point => {
+        const level = point.risk_level || 'low';
+        const badgeClass = level === 'high' ? 'fc-risk-high' : level === 'moderate' ? 'fc-risk-moderate' : 'fc-risk-low';
+        const label = point.hour_offset === 0 ? 'Now' : `+${point.hour_offset}h`;
+        const typeStr = point.dominant_type ? point.dominant_type.replace(/_/g, ' ') : 'mixed';
+        const score = typeof point.risk_score === 'number' ? `${point.risk_score.toFixed(1)}/100` : '';
+        return `
+            <li class="fc-point-item">
+                <span class="fc-point-hour">${escapeHtml(label)}</span>
+                <span class="fc-point-type">${escapeHtml(typeStr)}</span>
+                <span class="fc-point-score">${escapeHtml(score)}</span>
+                <span class="fc-risk-badge ${badgeClass}">${escapeHtml(level)}</span>
+            </li>
+        `;
+    }).join('');
 
     return `
-        <section class="panel" style="margin-top: 1rem; padding: 1rem; border: 1px solid var(--border); border-radius: 16px; background: var(--card);">
-            <div style="font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">Forecast Points</div>
-            <ul style="list-style: none; padding: 0; margin: 0;">${items}</ul>
+        <section class="fc-points-section">
+            <p class="fc-section-label">Hourly Breakdown</p>
+            <ul class="fc-point-list">${items}</ul>
         </section>
     `;
 }
