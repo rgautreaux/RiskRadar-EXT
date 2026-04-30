@@ -1,10 +1,12 @@
 
 
 
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-import sqlalchemy
-from datetime import datetime
+ 
+from datetime import datetime, timezone
+from typing import Any
 from ..db.database import get_db
 from ..db.models import Alert, User
 from ..schemas.alert import AlertOut, AlertStats, PrioritizedAlertListOut, MapAlertListOut
@@ -17,14 +19,16 @@ from ..scoring.prioritization import (
 router = APIRouter(prefix="/alerts", tags=["Alerts"])
 
 # Stage 4: Risk Score Formula Explanation Endpoint
+from typing import Any, Dict
+
 @router.get("/risk_formula", response_model=dict)
-def get_risk_formula() -> dict[str, str | dict | list | float]:
+def get_risk_formula() -> dict[str, Any]:
     """Return a human-readable explanation of the risk scoring formula."""
     return explain_alert_risk_formula()
 
 # Stage 4: Per-Alert Risk Score Breakdown Endpoint
 @router.get("/risk_breakdown/{alert_id}/{user_id}", response_model=dict)
-def get_alert_risk_breakdown(alert_id: int, user_id: int, db: Session = Depends(get_db)) -> dict:
+def get_alert_risk_breakdown(alert_id: int, user_id: int, db: Session = Depends(get_db)) -> dict[str, Any]:
     """Return a detailed risk score breakdown for a single alert and user."""
     alert = db.query(Alert).filter(Alert.id == alert_id).first()
     user = db.query(User).filter(User.id == user_id).first()
@@ -72,7 +76,7 @@ def map_alerts(
     return MapAlertListOut(
         alerts=alert_outs,
         region=region_val,
-        generated_at=datetime.now(datetime.timezone.utc).isoformat(),
+        generated_at=datetime.now(timezone.utc).isoformat(),
     )
 
 
@@ -96,11 +100,16 @@ def list_alerts(
 
 
 @router.get("/stats", response_model=AlertStats)
-def alert_stats(db: Session = Depends(get_db)):
+def alert_stats(db: Session = Depends(get_db)) -> AlertStats:
     total = db.query(Alert).count()
-    # Use .label to avoid bytes keys and ensure correct unpacking
-    by_type = {k: v for k, v in db.query(Alert.alert_type, sqlalchemy.func.count(Alert.id)).group_by(Alert.alert_type).all()}
-    by_severity = {k: v for k, v in db.query(Alert.severity, sqlalchemy.func.count(Alert.id)).group_by(Alert.severity).all()}
+    by_type: dict[str, int] = {}
+    for alert_type, in db.query(Alert.alert_type).distinct():
+        count = db.query(Alert).filter(Alert.alert_type == alert_type).count()
+        by_type[str(alert_type)] = int(count)
+    by_severity: dict[str, int] = {}
+    for severity, in db.query(Alert.severity).distinct():
+        count = db.query(Alert).filter(Alert.severity == severity).count()
+        by_severity[str(severity)] = int(count)
     return AlertStats(total=total or 0, by_type=by_type, by_severity=by_severity)
 
 
@@ -120,13 +129,25 @@ def prioritized_alerts(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    result = build_prioritized_alerts(user, db, radius_km=radius_km, limit=limit)
-    # Convert alerts to PrioritizedAlertOut for Pydantic validation
-    result["alerts"] = [
-        # If already PrioritizedAlertOut, skip; else, convert
-        a if isinstance(a, dict) and "priority_score" in a else a.dict() for a in result["alerts"]
-    ]
-    return PrioritizedAlertListOut(**result)
+    result: dict[str, Any] = build_prioritized_alerts(user, db, radius_km=radius_km, limit=limit)
+    alerts = result.get("alerts", [])
+    # Convert dicts to PrioritizedAlertOut
+    from ..schemas.alert import PrioritizedAlertOut, PriorityFactors
+    alert_objs = []
+    for a in alerts:
+        if isinstance(a, dict):
+            pf = a.get("priority_factors")
+            if pf and not isinstance(pf, PriorityFactors):
+                a["priority_factors"] = PriorityFactors(**pf)
+            alert_objs.append(PrioritizedAlertOut(**a))
+        else:
+            alert_objs.append(a)
+    return PrioritizedAlertListOut(
+        user_id=int(result.get("user_id", user_id)),
+        total_nearby=int(result.get("total_nearby", len(alert_objs))),
+        alerts=alert_objs,
+        computed_at=str(result.get("computed_at", datetime.now(timezone.utc).isoformat())),
+    )
 
 
 @router.get("/{alert_id}", response_model=AlertOut)
