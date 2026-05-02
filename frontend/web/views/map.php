@@ -1,631 +1,1088 @@
-
-</section>
-<!-- Toast/Snackbar for user feedback -->
-<div class="map-toast" id="toast" aria-live="polite"></div>
-
-<style>
-/* Responsive map container and controls */
-#risk-map-container {
-    width: 100%;
-    height: 480px;
-    max-width: 1000px;
-    margin: 0 auto 24px auto;
-    background: linear-gradient(160deg, rgba(255, 249, 241, 0.96), rgba(248, 239, 223, 0.9));
-    border: 1px solid rgba(18,34,49,0.14);
-    border-radius: 14px;
-    box-shadow: 0 10px 30px rgba(18,34,49,0.12), 0 3px 10px rgba(18,34,49,0.08);
-    overflow: hidden;
-}
-.map-control-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.map-control-indent {
-    margin-left: 18px;
-}
-
-.map-action-buttons {
-    margin-left: 24px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
-}
-
-.map-btn {
-    border: none;
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-size: 1em;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(18,34,49,0.08);
-    font-weight: 600;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
-}
-
-.map-btn:hover,
-.map-btn:focus-visible {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 18px rgba(18,34,49,0.12);
-    filter: saturate(1.03);
-}
-
-.map-btn-secondary {
-    background: var(--panel-strong,#fff8ee);
-    color: var(--accent-coral,#ef6f51);
-}
-
-.map-btn-primary {
-    background: linear-gradient(135deg, var(--accent-coral,#ef6f51), #db5a3d);
-    color: #fff;
-}
-
-@media (max-width: 1280px) {
-    #risk-map-container { max-width: 98vw; }
-}
-@media (max-width: 768px) {
-    #risk-map-container { height: 340px; }
-    .panel > div { flex-direction: column; gap: 12px !important; }
-    .map-control-indent,
-    .map-action-buttons { margin-left: 0; }
-}
-@media (max-width: 480px) {
-    #risk-map-container { height: 220px; }
-    .panel > div { flex-direction: column; gap: 8px !important; }
-    .map-btn { width: 100%; text-align: center; }
-}
-/* Focus indicator for all focusable elements */
-:focus {
-    outline: 2px solid #1976d2 !important;
-    outline-offset: 2px;
-}
-/*
-Stage 3 Risk Map Architecture & Geospatial Field Definition
-
-Purpose: Define the technical architecture for the interactive risk map (Plotly-based) and specify required geospatial fields for backend/frontend integration.
-
-1. Map Architecture Overview
-    - Frontend: Uses Plotly.js for rendering an interactive map (pan, zoom, click, overlays).
-    - Backend: Provides two main endpoints:
-            /api/v1/alerts/map (returns alert markers with geospatial data)
-            /api/v1/risk/map (returns risk zone polygons/overlays)
-    - Data Flow:
-            1. User loads map page; JS fetches data from both endpoints.
-            2. Alerts are plotted as markers (lat/lon, severity, type, etc.).
-            3. Risk zones are plotted as polygons (GeoJSON or array of coordinates).
-            4. Overlay toggles control visibility of each layer.
-            5. Region filter and user ID personalize overlays.
-
-2. Required Geospatial Fields
-    Alerts (per marker):
-        - id: unique alert identifier
-        - latitude: float (required)
-        - longitude: float (required)
-        - type: string (e.g., AQI, wildfire, weather)
-        - severity: string or int (e.g., Low/Medium/High or 1-5)
-        - source: string
-        - timestamp: ISO8601 string
-        - title/description: string
-    Risk Zones (per polygon):
-        - id: unique risk zone identifier
-        - region: string (e.g., LA, TX, MS)
-        - polygon: array of [lat, lon] pairs or GeoJSON Polygon
-        - risk_level: string or int
-        - label: string
-        - color: string (for overlay)
-
-3. Plotly Layer Structure
-    - Base map: OpenStreetMap or similar
-    - Alert markers: Plotly scattermapbox layer
-    - Risk zones: Plotly choroplethmapbox or filled polygon layer
-    - Other overlays: AQI, wildfire, etc. as additional layers
-
-4. Accessibility & Responsiveness
-    - All controls must be keyboard and screen reader accessible
-    - Map must be responsive (mobile/desktop)
-
-5. Next Steps
-    - Implement data transformation pipeline (S3-02)
-    - Integrate Plotly map in frontend (S3-03)
-    - Connect overlays to backend endpoints
-    - Add tests and accessibility checks
-*/
-</style>
-<script>
-// Toast/snackbar logic
-function showToast(msg, duration=2200) {
-    var toast = document.getElementById('toast');
-    if (!toast) return;
-    toast.textContent = msg;
-    toast.style.display = 'block';
-    setTimeout(() => { toast.style.opacity = '1'; }, 10);
-    setTimeout(() => {
-        toast.style.opacity = '0';
-        setTimeout(() => { toast.style.display = 'none'; }, 300);
-    }, duration);
-}
-// Example: feedback on overlay toggles
-document.addEventListener('DOMContentLoaded', function() {
-    [
-        'toggle-alerts','toggle-risk','toggle-aqi','toggle-wildfire','toggle-earthquake','toggle-weather','toggle-pollution','toggle-personalized'
-    ].forEach(function(id) {
-        var el = document.getElementById(id);
-        if (el) {
-            el.addEventListener('change', function(e) {
-                var label = el.getAttribute('aria-label') || el.parentNode.textContent.trim();
-                showToast((e.target.checked ? 'Enabled ' : 'Disabled ') + label);
-            });
-        }
-    });
-});
-</script>
-
-
 <?php
-// Reuse bootstrap config when available so all pages share one API base/prefix source.
 if (!isset($config) || !is_array($config)) {
     $config = require __DIR__ . '/../config/app.php';
 }
 require_once __DIR__ . '/../services/api_client.php';
 $alerts_url = rr_api_url($config, 'alerts/map');
-$risk_url = rr_api_url($config, 'risk/map');
+$risk_url   = rr_api_url($config, 'risk/map');
 rr_render_layout_start('Risk Map', 'map');
 ?>
 
+<style>
+/* ═══════════════════════════════════════════
+   Risk Map — Page-scoped Design Extension
+   Forest green accent replaces coral.
+   ═══════════════════════════════════════════ */
+:root {
+  --map-green:         oklch(0.55 0.145 150);
+  --map-green-hover:   oklch(0.50 0.145 150);
+  --map-green-tint:    oklch(0.96 0.025 150);
+  --map-green-text:    oklch(0.34 0.10 150);
+  --map-purple:        oklch(0.42 0.12 285);
+  --map-purple-hover:  oklch(0.37 0.12 285);
+  --map-purple-tint:   oklch(0.95 0.022 285);
+  --ease-out-expo:     cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Controls Panel ──────────────────────── */
+.map-controls-panel {
+  background: linear-gradient(180deg,
+    var(--panel-strong, #fffaf2),
+    var(--panel, rgba(255,246,234,0.92)));
+  border: 1px solid var(--line, rgba(18,34,49,0.18));
+  border-radius: 20px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 2px 12px rgba(18,34,49,0.05);
+}
+
+.map-controls-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.controls-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted, #33485d);
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.region-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ── Region Pills ────────────────────────── */
+.region-pills {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.region-pill {
+  padding: 5px 14px;
+  min-height: 32px;
+  border-radius: 999px;
+  border: 1.5px solid var(--line, rgba(18,34,49,0.18));
+  background: transparent;
+  color: var(--ink, #122231);
+  font-family: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  line-height: 1;
+  transition:
+    background 0.12s var(--ease-out-expo),
+    border-color 0.12s var(--ease-out-expo),
+    color 0.12s var(--ease-out-expo);
+}
+
+.region-pill:hover {
+  background: var(--map-green-tint);
+  border-color: oklch(0.55 0.145 150 / 0.45);
+  color: var(--map-green-text);
+}
+
+.region-pill.active,
+.region-pill[aria-pressed="true"] {
+  background: var(--map-green);
+  border-color: var(--map-green);
+  color: oklch(0.98 0.006 150);
+}
+
+.region-pill:focus-visible {
+  outline: 2px solid var(--map-green);
+  outline-offset: 2px;
+}
+
+/* ── Help Button ─────────────────────────── */
+.map-help-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  min-height: 32px;
+  border-radius: 8px;
+  border: 1.5px solid var(--line, rgba(18,34,49,0.18));
+  background: transparent;
+  color: var(--muted, #33485d);
+  font-family: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.12s var(--ease-out-expo),
+    color 0.12s var(--ease-out-expo),
+    border-color 0.12s var(--ease-out-expo);
+}
+
+.map-help-btn:hover {
+  background: var(--map-green-tint);
+  color: var(--map-green-text);
+  border-color: oklch(0.55 0.145 150 / 0.45);
+}
+
+.map-help-btn:focus-visible {
+  outline: 2px solid var(--map-green);
+  outline-offset: 2px;
+}
+
+/* ── Layer Controls ──────────────────────── */
+.layer-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.layer-chips {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.layer-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  min-height: 30px;
+  border-radius: 999px;
+  border: 1.5px solid var(--line, rgba(18,34,49,0.18));
+  background: transparent;
+  color: var(--muted, #33485d);
+  font-family: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  position: relative;
+  transition:
+    background 0.12s var(--ease-out-expo),
+    border-color 0.12s var(--ease-out-expo),
+    color 0.12s var(--ease-out-expo);
+}
+
+.layer-chip input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.layer-chip:hover {
+  background: var(--map-green-tint);
+  border-color: oklch(0.55 0.145 150 / 0.4);
+  color: var(--map-green-text);
+}
+
+.layer-chip:has(input:checked) {
+  background: var(--map-green);
+  border-color: var(--map-green);
+  color: oklch(0.98 0.006 150);
+}
+
+.layer-chip:has(input:checked):hover {
+  background: var(--map-green-hover);
+  border-color: var(--map-green-hover);
+}
+
+.layer-chip:focus-within {
+  outline: 2px solid var(--map-green);
+  outline-offset: 2px;
+}
+
+/* Personalized chip — purple to signal distinct mode */
+.layer-chip-personalized:has(input:checked) {
+  background: var(--map-purple);
+  border-color: var(--map-purple);
+  color: oklch(0.98 0.006 285);
+}
+
+.layer-chip-personalized:has(input:checked):hover {
+  background: var(--map-purple-hover);
+  border-color: var(--map-purple-hover);
+}
+
+.layer-chip-personalized:focus-within {
+  outline-color: var(--map-purple);
+}
+
+.layer-divider {
+  width: 1.5px;
+  height: 18px;
+  background: var(--line, rgba(18,34,49,0.18));
+  border-radius: 2px;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+/* ── Personalized Config (grid-template-rows reveal) */
+.personalized-config {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s var(--ease-out-expo);
+}
+
+.personalized-config.is-open {
+  grid-template-rows: 1fr;
+}
+
+.personalized-config-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.personalized-config-body {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  margin-top: 4px;
+  background: oklch(0.95 0.018 285 / 0.5);
+  border: 1px solid oklch(0.42 0.12 285 / 0.28);
+  border-radius: 12px;
+  flex-wrap: wrap;
+}
+
+.personalized-input-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.personalized-input-label > span:first-child {
+  font-family: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink, #122231);
+}
+
+.controls-help {
+  font-family: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', sans-serif;
+  font-size: 0.77rem;
+  color: var(--muted, #33485d);
+  font-weight: 400;
+}
+
+.personalized-input {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1.5px solid oklch(0.42 0.12 285 / 0.4);
+  background: var(--panel-strong, #fffaf2);
+  font-family: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', sans-serif;
+  font-size: 0.875rem;
+  color: var(--ink, #122231);
+  width: 120px;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.personalized-input::-webkit-inner-spin-button,
+.personalized-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+.personalized-input:focus-visible {
+  outline: 2px solid var(--map-purple);
+  outline-offset: 2px;
+  border-color: var(--map-purple);
+}
+
+/* ── Map Container ───────────────────────── */
+#risk-map-container {
+  width: 100%;
+  height: 600px;
+  position: relative;
+  background: oklch(0.97 0.008 150);
+  border: 1.5px solid oklch(0.55 0.145 150 / 0.32);
+  border-radius: 16px;
+  box-shadow:
+    0 12px 36px rgba(18,34,49,0.09),
+    0 3px 10px rgba(18,34,49,0.05);
+  overflow: hidden;
+}
+
+#risk-map {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Legend (absolute overlay — bottom-left) */
+.map-legend {
+  position: absolute !important;
+  bottom: 20px;
+  left: 16px;
+  top: auto !important;
+  z-index: 500;
+  background: rgba(253, 248, 242, 0.93);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid rgba(18,34,49,0.13);
+  box-shadow: 0 4px 18px rgba(18,34,49,0.11);
+  min-width: 172px;
+  max-width: 212px;
+}
+
+.legend-header-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-family: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted, #33485d);
+  border-radius: 12px;
+  transition: color 0.12s;
+}
+
+.legend-header-btn:hover {
+  color: var(--map-green-text);
+}
+
+.legend-header-btn:focus-visible {
+  outline: 2px solid var(--map-green);
+  outline-offset: -2px;
+}
+
+.legend-chevron {
+  flex-shrink: 0;
+  color: inherit;
+  transition: transform 0.25s var(--ease-out-expo);
+}
+
+.legend-header-btn[aria-expanded="false"] .legend-chevron {
+  transform: rotate(-90deg);
+}
+
+.legend-body {
+  display: grid;
+  grid-template-rows: 1fr;
+  overflow: hidden;
+  transition: grid-template-rows 0.28s var(--ease-out-expo);
+}
+
+.legend-body.is-collapsed {
+  grid-template-rows: 0fr;
+}
+
+.legend-body-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.legend-list {
+  list-style: none;
+  padding: 0 12px 10px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', sans-serif;
+  font-size: 0.79rem;
+  color: var(--ink, #122231);
+  line-height: 1.3;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--dot-color, #888);
+  flex-shrink: 0;
+}
+
+.legend-swatch {
+  width: 14px;
+  height: 9px;
+  border-radius: 2px;
+  background: var(--swatch-fill, rgba(100,100,100,0.2));
+  border: 1.5px solid var(--swatch-border, #888);
+  flex-shrink: 0;
+}
+
+.legend-personalized-note {
+  padding: 7px 12px 10px;
+  font-family: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', sans-serif;
+  font-size: 0.74rem;
+  color: var(--muted, #33485d);
+  border-top: 1px solid rgba(18,34,49,0.09);
+  line-height: 1.4;
+}
+
+/* ── Loading overlay ─────────────────────── */
+.map-loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: oklch(0.97 0.008 150 / 0.86);
+  z-index: 200;
+}
+
+.map-loading-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.map-loading-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid oklch(0.55 0.145 150 / 0.2);
+  border-top-color: var(--map-green);
+  border-radius: 50%;
+  animation: map-spin 0.7s linear infinite;
+}
+
+@keyframes map-spin { to { transform: rotate(360deg); } }
+
+.map-loading-text {
+  font-family: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', sans-serif;
+  font-size: 0.875rem;
+  color: var(--muted, #33485d);
+}
+
+/* ── Fallback ────────────────────────────── */
+.map-fallback {
+  display: none;
+  position: absolute;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  background: oklch(0.97 0.008 150 / 0.9);
+  font-family: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', sans-serif;
+  font-size: 0.9rem;
+  color: var(--muted, #33485d);
+  text-align: center;
+  padding: 24px;
+  z-index: 200;
+}
+
+/* ── Map Popup Card ──────────────────────── */
+.map-popup-card {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 450;
+  background: var(--panel-strong, #fffaf2);
+  border-radius: 14px;
+  border: 1px solid var(--line, rgba(18,34,49,0.14));
+  box-shadow: 0 8px 28px rgba(18,34,49,0.14);
+  padding: 16px 18px 14px;
+  min-width: 200px;
+  max-width: 260px;
+  font-family: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', sans-serif;
+}
+
+.map-popup-heading,
+.map-popup-subheading {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ink, #122231);
+  margin-bottom: 8px;
+  padding-right: 24px;
+}
+
+.map-popup-card > div {
+  font-size: 0.84rem;
+  color: var(--muted, #33485d);
+  line-height: 1.5;
+  margin-bottom: 2px;
+}
+
+.map-popup-card > div b {
+  color: var(--ink, #122231);
+  font-weight: 600;
+}
+
+.popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--line, rgba(18,34,49,0.14));
+  background: transparent;
+  color: var(--muted, #33485d);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  line-height: 1;
+  transition: background 0.12s;
+}
+
+.popup-close:hover { background: var(--map-green-tint); }
+
+/* ── Toast ───────────────────────────────── */
+.map-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 800;
+  background: oklch(0.22 0.02 150);
+  color: oklch(0.96 0.01 150);
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-family: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', sans-serif;
+  font-size: 0.875rem;
+  box-shadow: 0 4px 20px rgba(18,34,49,0.22);
+  display: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  max-width: 320px;
+  line-height: 1.4;
+}
+
+/* ── Help Modal ──────────────────────────── */
+.help-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(18,34,49,0.45);
+  z-index: 700;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.help-modal.is-open { display: flex; }
+
+.modal-panel {
+  background: var(--panel-strong, #fffaf2);
+  border-radius: 20px;
+  padding: 28px 28px 24px;
+  max-width: 440px;
+  width: calc(100% - 40px);
+  border: 1px solid var(--line, rgba(18,34,49,0.14));
+  box-shadow: 0 20px 60px rgba(18,34,49,0.18);
+  position: relative;
+}
+
+.modal-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--ink, #122231);
+  margin: 0 0 16px;
+  padding-right: 32px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--line, rgba(18,34,49,0.14));
+  background: transparent;
+  color: var(--muted, #33485d);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, color 0.12s;
+}
+
+.modal-close:hover {
+  background: var(--map-green-tint);
+  color: var(--map-green-text);
+}
+
+.modal-close:focus-visible {
+  outline: 2px solid var(--map-green);
+  outline-offset: 2px;
+}
+
+.help-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.help-list li {
+  font-family: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', sans-serif;
+  font-size: 0.9rem;
+  color: var(--ink, #122231);
+  line-height: 1.5;
+  padding-left: 18px;
+  position: relative;
+}
+
+.help-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--map-green);
+  font-size: 0.8rem;
+  top: 2px;
+}
+
+/* ── Caption ─────────────────────────────── */
+.map-caption {
+  font-family: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', sans-serif;
+  font-size: 0.8rem;
+  color: var(--muted, #33485d);
+  text-align: center;
+  margin-top: 4px;
+}
+
+/* ── Noscript ────────────────────────────── */
+.map-noscript {
+  text-align: center;
+  padding: 48px;
+  color: var(--muted, #33485d);
+  font-family: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', sans-serif;
+}
+
+/* ── Reduced motion ──────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .personalized-config,
+  .legend-body,
+  .legend-chevron,
+  .region-pill,
+  .layer-chip,
+  .map-help-btn,
+  .map-loading-spinner {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* ── Responsive ──────────────────────────── */
+@media (max-width: 960px) {
+  #risk-map-container { height: 480px; }
+}
+
+@media (max-width: 768px) {
+  .map-controls-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+  #risk-map-container { height: 380px; }
+}
+
+@media (max-width: 640px) {
+  .map-controls-panel { padding: 14px 16px; gap: 10px; }
+  .region-pill { padding: 4px 12px; font-size: 0.82rem; }
+  .layer-chip  { padding: 4px 10px;  font-size: 0.78rem; }
+  .layer-divider { display: none; }
+  #risk-map-container { height: 320px; }
+  .map-legend { max-width: 180px; }
+}
+
+@media (max-width: 480px) {
+  #risk-map-container { height: 260px; }
+  .map-legend { min-width: 152px; max-width: 164px; }
+  .personalized-config-body { flex-direction: column; align-items: flex-start; }
+  .map-popup-card {
+    top: auto;
+    right: auto;
+    bottom: 16px;
+    left: 16px;
+    max-width: calc(100% - 32px);
+  }
+}
+</style>
+
+
+<!-- ════════════════════════════════════
+     Page Heading
+     ════════════════════════════════════ -->
 <section class="page-heading">
-    <div>
-        <p class="eyebrow">Stage 3 scaffold</p>
-        <h1>Interactive Risk Map</h1>
-    </div>
-    <p>This page is reserved for the Stage 3 interactive map extension (Plotly), including zoom/pan support and click-through risk details.</p>
+  <div>
+    <p class="eyebrow">Live Risk Overview</p>
+    <h1>Interactive Risk Map</h1>
+  </div>
+  <p>Explore real-time alerts and risk zones across the Gulf Coast region. Click any marker for details.</p>
 </section>
 
 
-<section class="panel">
-    <h2 id="risk-map-heading">Interactive Map</h2>
-        <div class="map-control-row">
-            <label for="region-filter">Region Filter: </label>
-            <select class="map-select-compact" id="region-filter" aria-label="Region Filter" aria-describedby="region-filter-desc" accesskey="r">
-                <option value="">All Regions</option>
-                <option value="LA">Louisiana</option>
-                <option value="TX">Texas</option>
-                <option value="MS">Mississippi</option>
-            </select>
-            <span id="region-filter-desc" class="sr-only">Select a region to filter map overlays. Use Tab to move to overlays and toggles. Shortcut: Alt+R.</span>
-        </div>
-        <div class="map-control-row map-control-indent">
-            <label for="user-id-input">User ID for Personalized Map: </label>
-            <input class="map-user-id-input" type="number" id="user-id-input" min="1" value="1" aria-label="User ID for Personalized Map" aria-describedby="user-id-desc" accesskey="u" />
-            <span id="user-id-desc" class="sr-only">Enter your numeric user ID to enable personalized risk overlays. This is required for personalized map mode. Shortcut: Alt+U.</span>
-        </div>
-        <div class="map-control-row" role="group" aria-label="Overlay Toggles" aria-describedby="overlay-toggles-desc">
-            <span id="overlay-toggles-desc" class="sr-only">Toggle overlays with Space or Enter. Keyboard shortcuts: Alt+1 Alerts, Alt+2 Risk Zones, Alt+3 AQI, Alt+4 Wildfire, Alt+5 Earthquake, Alt+6 Weather, Alt+7 Pollution.</span>
-            <label><input type="checkbox" id="toggle-alerts" checked aria-checked="true" aria-label="Show Alerts" accesskey="1"> Show Alerts</label>
-            <label class="map-overlay-label"><input type="checkbox" id="toggle-risk" checked aria-checked="true" aria-label="Show Risk Zones" accesskey="2"> Show Risk Zones</label>
-            <label class="map-overlay-label"><input type="checkbox" id="toggle-aqi" aria-label="AQI Overlay" accesskey="3"> AQI Overlay</label>
-            <label class="map-overlay-label"><input type="checkbox" id="toggle-wildfire" aria-label="Wildfire Overlay" accesskey="4"> Wildfire Overlay</label>
-            <label class="map-overlay-label"><input type="checkbox" id="toggle-earthquake" aria-label="Earthquake Overlay" accesskey="5"> Earthquake Overlay</label>
-            <label class="map-overlay-label"><input type="checkbox" id="toggle-weather" aria-label="Weather Overlay" accesskey="6"> Weather Overlay</label>
-            <label class="map-overlay-label"><input type="checkbox" id="toggle-pollution" aria-label="Pollution Overlay" accesskey="7"> Pollution Overlay</label>
-        </div>
-        <div class="map-action-buttons">
-            <label><input type="checkbox" id="toggle-personalized" aria-label="Personalized Risk Map"> Personalized Risk Map</label>
-            <button class="map-btn map-btn-secondary" id="darkmode-toggle" aria-label="Toggle dark mode">🌙 Dark Mode</button>
-            <button class="map-btn map-btn-primary" id="help-btn" aria-haspopup="dialog" aria-controls="help-modal" aria-label="How to use this map">Help</button>
-        </div>
-    <script>
-    // Accessible marker details modal
-    function openMarkerModal(title, description) {
-        let modal = document.getElementById('marker-modal');
-        if (!modal) {
-            modal = document.createElement('div');
-            modal.id = 'marker-modal';
-            modal.setAttribute('role', 'dialog');
-            modal.setAttribute('aria-modal', 'true');
-            modal.setAttribute('aria-labelledby', 'marker-modal-title');
-            modal.setAttribute('tabindex', '-1');
-            modal.className = 'help-modal map-marker-modal';
-            modal.style.display = 'flex';
-            modal.innerHTML = `
-                <div class="modal-panel">
-                    <button class="modal-close" id="marker-modal-close" aria-label="Close alert details">×</button>
-                    <h2 class="modal-title" id="marker-modal-title">${title}</h2>
-                    <div class="marker-modal-body">${description}</div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-        } else {
-            modal.querySelector('#marker-modal-title').textContent = title;
-            modal.querySelector('.marker-modal-body').textContent = description;
-            modal.style.display = 'flex';
-        }
-        // Focus trap
-        const closeBtn = modal.querySelector('#marker-modal-close');
-        closeBtn.focus();
-        closeBtn.onclick = function() {
-            modal.style.display = 'none';
-        };
-        modal.onkeydown = function(e) {
-            if (e.key === 'Escape') {
-                modal.style.display = 'none';
-                closeBtn.blur();
-            }
-        };
-    }
+<!-- ════════════════════════════════════
+     Map Controls
+     ════════════════════════════════════ -->
+<section class="map-controls-panel" aria-label="Map controls">
 
-    // Dark mode toggle logic
-    document.addEventListener('DOMContentLoaded', function() {
-        var darkToggle = document.getElementById('darkmode-toggle');
-        if (!darkToggle) return;
-        // Set initial mode from localStorage or default to light
-        var theme = localStorage.getItem('riskradar-theme') || 'light';
-        if (theme === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            darkToggle.textContent = '☀️ Light Mode';
-        } else {
-            document.documentElement.setAttribute('data-theme', 'light');
-            darkToggle.textContent = '🌙 Dark Mode';
-        }
-        darkToggle.addEventListener('click', function() {
-            var current = document.documentElement.getAttribute('data-theme');
-            if (current === 'dark') {
-                document.documentElement.setAttribute('data-theme', 'light');
-                localStorage.setItem('riskradar-theme', 'light');
-                darkToggle.textContent = '🌙 Dark Mode';
-            } else {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                localStorage.setItem('riskradar-theme', 'dark');
-                darkToggle.textContent = '☀️ Light Mode';
-            }
-        });
-    });
-    </script>
-    <!-- Help Modal -->
-    <div class="help-modal" id="help-modal" role="dialog" aria-modal="true" aria-labelledby="help-modal-title" tabindex="-1">
-        <div class="modal-panel">
-            <button class="modal-close" id="help-close" aria-label="Close help">×</button>
-            <h2 class="modal-title" id="help-modal-title">How to Use This Map</h2>
-            <ul class="help-list">
-                <li>Pan and zoom the map with your mouse, touch, or keyboard arrows.</li>
-                <li>Click or tap markers for alert details.</li>
-                <li>Use the region filter and overlay toggles to customize what you see.</li>
-                <li>Keyboard: Tab to controls, Enter/Space to activate, arrows to pan.</li>
-                <li>All features are accessible and color contrast checked.</li>
-            </ul>
-            <div class="help-note">Need more help? Contact support or see the full user guide.</div>
-        </div>
+  <div class="map-controls-header">
+    <div class="region-filter-group">
+      <span class="controls-label" id="region-label">Region</span>
+      <div class="region-pills" role="group" aria-labelledby="region-label">
+        <button class="region-pill active" data-region="" aria-pressed="true">All Regions</button>
+        <button class="region-pill" data-region="LA" aria-pressed="false">Louisiana</button>
+        <button class="region-pill" data-region="TX" aria-pressed="false">Texas</button>
+        <button class="region-pill" data-region="MS" aria-pressed="false">Mississippi</button>
+      </div>
     </div>
-    </section>
+    <button class="map-help-btn" id="help-btn" aria-haspopup="dialog" aria-controls="help-modal">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+        <circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="1.4"/>
+        <path d="M6 5.6C6 4.71 6.7 4 7.5 4C8.38 4 9 4.71 9 5.6C9 6.6 7.5 7.3 7.5 8.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        <circle cx="7.5" cy="10.5" r="0.7" fill="currentColor"/>
+      </svg>
+      Help
+    </button>
+  </div>
 
-    <script>
-    // Help modal logic
-    document.addEventListener('DOMContentLoaded', function() {
-        var helpBtn = document.getElementById('help-btn');
-        var helpModal = document.getElementById('help-modal');
-        var helpClose = document.getElementById('help-close');
-        if (helpBtn && helpModal && helpClose) {
-            helpBtn.addEventListener('click', function() {
-                helpModal.style.display = 'flex';
-                helpModal.focus();
-            });
-            helpClose.addEventListener('click', function() {
-                helpModal.style.display = 'none';
-                helpBtn.focus();
-            });
-            helpModal.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    helpModal.style.display = 'none';
-                    helpBtn.focus();
-                }
-            });
-        }
-    });
-    </script>
-    </div>
-    <div id="risk-map-container"
-        tabindex="0" aria-label="Risk map showing alerts and risk zones. Use arrow keys to pan. Press Enter or Space on a marker for details." aria-describedby="risk-map-legend risk-map-heading risk-map-instructions" role="region">
-        <div class="map-layer" id="risk-map" role="application" aria-label="Interactive risk map with overlays and markers" aria-describedby="risk-map-instructions"></div>
-        <div class="map-loading-overlay" id="map-loading">
-            <div class="map-loading-stack">
-                <div id="map-loading-spinner" aria-label="Loading" role="status"></div>
-                <div class="map-loading-text">Loading map data...</div>
-                <div id="map-skeleton"></div>
-            </div>
-        </div>
-        <div class="map-fallback" id="map-fallback" role="alert" aria-live="assertive"></div>
-        <span id="risk-map-instructions" class="sr-only">Use Tab to focus the map. Use arrow keys to pan. Press Enter or Space on a marker for details. All overlays and controls are accessible by keyboard and screen reader. Markers and overlays are announced to assistive technology.</span>
-    </div>
-    <noscript><p class="map-noscript">JavaScript is required to view the interactive map.</p></noscript>
-    <div class="legend-wrap" id="risk-map-legend" aria-live="polite">
-            <button class="legend-toggle" id="legend-toggle" aria-expanded="true" aria-controls="legend-list">
-                <span class="legend-toggle-icon" id="legend-toggle-icon" aria-hidden="true">▼</span>
-                Legend
-            </button>
-            <ul class="legend-list" id="legend-list">
-                <li><span class="icon-slot icon-bg-high" aria-label="High Alert"><svg width="20" height="20" fill="none" stroke="#e74c3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/></svg></span> High severity alert (contrast checked)</li>
-                <li><span class="icon-slot icon-bg-medium" aria-label="Medium Alert"><svg width="20" height="20" fill="none" stroke="#f39c12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/></svg></span> Medium severity alert (contrast checked)</li>
-                <li><span class="icon-slot icon-bg-low" aria-label="Low Alert"><svg width="20" height="20" fill="none" stroke="#27ae60" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/></svg></span> Low severity alert (contrast checked)</li>
-                <li><span class="icon-slot icon-bg-extreme" aria-label="Extreme/High Risk"><svg width="20" height="20" fill="#ff5722" stroke="#ff5722" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="12" height="12" rx="3"/></svg></span> Extreme/High risk zone (contrast checked)</li>
-                <li><span class="icon-slot icon-bg-risk-medium" aria-label="Medium Risk"><svg width="20" height="20" fill="#ffc107" stroke="#ffc107" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="12" height="12" rx="3"/></svg></span> Medium risk zone (contrast checked)</li>
-                <li><span class="icon-slot icon-bg-low" aria-label="Low Risk"><svg width="20" height="20" fill="#4caf50" stroke="#4caf50" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="12" height="12" rx="3"/></svg></span> Low risk zone (contrast checked)</li>
-                <li><span class="icon-slot icon-bg-aqi" aria-label="AQI Overlay"><svg width="20" height="20" fill="none" stroke="#7e57c2" stroke-width="2" aria-hidden="true"><path d="M4 16c4-8 8-8 12 0"/></svg></span> AQI (Air Quality) overlay</li>
-                <li><span class="icon-slot icon-bg-wildfire" aria-label="Wildfire Overlay"><svg width="20" height="20" fill="#ff7043" stroke="#ff7043" stroke-width="2" aria-hidden="true"><path d="M10 2C10 8 14 8 14 14C14 17 6 17 6 14C6 8 10 8 10 2Z"/></svg></span> Wildfire overlay</li>
-                <li><span class="icon-slot icon-bg-earthquake" aria-label="Earthquake Overlay"><svg width="20" height="20" fill="none" stroke="#009688" stroke-width="2" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M2 10h16"/></svg></span> Earthquake overlay</li>
-                <li><span class="icon-slot icon-bg-weather" aria-label="Weather Overlay"><svg width="20" height="20" fill="none" stroke="#1976d2" stroke-width="2" aria-hidden="true"><path d="M6 14a4 4 0 1 1 8 0"/><path d="M10 2v2"/><path d="M2 10h2"/><path d="M16 10h2"/><path d="M10 16v2"/></svg></span> Weather overlay</li>
-                <li><span class="icon-slot icon-bg-extreme" aria-label="Pollution Overlay"><svg width="20" height="20" fill="#c62828" stroke="#c62828" stroke-width="2" aria-hidden="true"><circle cx="10" cy="10" r="8"/><rect x="7" y="7" width="6" height="6"/></svg></span> Pollution overlay</li>
-            </ul>
-            <div class="legend-msg" id="personalized-legend-msg">
-                <strong>Personalized Mode:</strong> Risk zones reflect <u>your</u> personalized risk score at each location, based on your profile and health data. Enter your user ID above and enable the toggle to view your own risk overlays. If you do not enter a user ID, a default demo user will be used.
-            </div>
-            <span class="sr-only">All map overlays and controls are accessible by keyboard and screen reader. Colors have been checked for sufficient contrast. If you have difficulty distinguishing overlays, contact support for alternative patterns.</span>
-    </div>
-    <p class="muted">The map will display live alert markers and risk overlays as data becomes available. All features are keyboard and screen reader accessible. Focus indicators are visible for all controls.</p>
-    </section>
+  <div class="layer-controls" role="group" aria-label="Map layers">
+    <span class="controls-label">Layers</span>
+    <div class="layer-chips">
 
-    <script>
-    // Collapsible legend toggle
-    document.addEventListener('DOMContentLoaded', function() {
-        var legendToggle = document.getElementById('legend-toggle');
-        var legendList = document.getElementById('legend-list');
-        var legendIcon = document.getElementById('legend-toggle-icon');
-        if (legendToggle && legendList && legendIcon) {
-            legendToggle.addEventListener('click', function() {
-                var expanded = legendToggle.getAttribute('aria-expanded') === 'true';
-                legendToggle.setAttribute('aria-expanded', String(!expanded));
-                if (expanded) {
-                    legendList.style.maxHeight = '0px';
-                    legendIcon.style.transform = 'rotate(-90deg)';
-                } else {
-                    legendList.style.maxHeight = '800px';
-                    legendIcon.style.transform = 'rotate(0deg)';
-                }
-            });
-        }
-    });
-    </script>
+      <label class="layer-chip" title="Alert markers">
+        <input type="checkbox" id="toggle-alerts" checked aria-label="Alerts" accesskey="1">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+          <circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M6.5 3.5v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <circle cx="6.5" cy="9.5" r="0.65" fill="currentColor"/>
+        </svg>
+        Alerts
+      </label>
+
+      <label class="layer-chip" title="Risk zone overlays">
+        <input type="checkbox" id="toggle-risk" checked aria-label="Risk Zones" accesskey="2">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+          <path d="M1.5 11.5L6.5 2L11.5 11.5H1.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+        </svg>
+        Risk Zones
+      </label>
+
+      <label class="layer-chip" title="Air quality index">
+        <input type="checkbox" id="toggle-aqi" aria-label="AQI" accesskey="3">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+          <path d="M1.5 6.5C3 4.5 4.5 8.5 6.5 6.5C8.5 4.5 10 8.5 11.5 6.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        AQI
+      </label>
+
+      <label class="layer-chip" title="Wildfire activity">
+        <input type="checkbox" id="toggle-wildfire" aria-label="Wildfire" accesskey="4">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+          <path d="M6.5 11.5C6.5 11.5 2.5 8.5 2.5 5.5C2.5 4 4.5 2 6.5 4C8.5 2 10.5 4 10.5 5.5C10.5 8.5 6.5 11.5 6.5 11.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+        </svg>
+        Wildfire
+      </label>
+
+      <label class="layer-chip" title="Seismic activity">
+        <input type="checkbox" id="toggle-earthquake" aria-label="Seismic" accesskey="5">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+          <path d="M1 6.5H3.5L5 4L6.5 9L8.5 5.5L10 7.5H12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Seismic
+      </label>
+
+      <label class="layer-chip" title="Weather conditions">
+        <input type="checkbox" id="toggle-weather" aria-label="Weather" accesskey="6">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+          <path d="M9.5 8.5a3 3 0 10-6 0" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M3.5 8.5H9.5" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M4.5 10.5H8.5M5.5 12H7.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        Weather
+      </label>
+
+      <label class="layer-chip" title="Pollution levels">
+        <input type="checkbox" id="toggle-pollution" aria-label="Pollution" accesskey="7">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+          <circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M4.5 4.5L8.5 8.5M8.5 4.5L4.5 8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        Pollution
+      </label>
+
+    </div>
+
+    <div class="layer-divider" aria-hidden="true"></div>
+
+    <label class="layer-chip layer-chip-personalized" title="Risk scores based on your profile">
+      <input type="checkbox" id="toggle-personalized" aria-label="Personalized risk map">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+        <circle cx="6.5" cy="4.5" r="2.25" stroke="currentColor" stroke-width="1.4"/>
+        <path d="M2 12c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      Personalized
+    </label>
+  </div>
+
+  <!-- User ID config — inline reveal via grid-template-rows -->
+  <div class="personalized-config" id="personalized-config" aria-live="polite">
+    <div class="personalized-config-inner">
+      <div class="personalized-config-body">
+        <label class="personalized-input-label" for="user-id-input">
+          <span>User ID</span>
+          <span class="controls-help" id="user-id-desc">Enter your numeric ID for personalized risk overlays</span>
+        </label>
+        <input class="personalized-input"
+               type="number"
+               id="user-id-input"
+               min="1"
+               value="1"
+               aria-describedby="user-id-desc"
+               accesskey="u">
+      </div>
+    </div>
+  </div>
+
 </section>
 
 
-<!-- Plotly.js CDN -->
+<!-- ════════════════════════════════════
+     Map Canvas
+     ════════════════════════════════════ -->
+<div id="risk-map-container"
+     tabindex="0"
+     role="region"
+     aria-label="Interactive risk map. Arrow keys pan, +/− zoom, click markers for details."
+     aria-describedby="risk-map-instructions">
+
+  <div id="risk-map" role="application" aria-label="Risk map with overlays and markers"></div>
+
+  <div class="map-loading-overlay" id="map-loading">
+    <div class="map-loading-stack">
+      <div class="map-loading-spinner" id="map-loading-spinner" role="status" aria-label="Loading map data"></div>
+      <div class="map-loading-text">Loading map data…</div>
+    </div>
+  </div>
+
+  <div class="map-fallback" id="map-fallback" role="alert" aria-live="assertive"></div>
+
+  <!-- Legend overlay — bottom-left of map -->
+  <div class="map-legend" id="risk-map-legend" aria-label="Map legend">
+    <button class="legend-header-btn" id="legend-toggle" aria-expanded="true" aria-controls="legend-body">
+      <svg class="legend-chevron" width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
+        <path d="M2 3.5L5.5 7L9 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Legend
+    </button>
+    <div class="legend-body" id="legend-body">
+      <div class="legend-body-inner">
+        <ul class="legend-list">
+          <li class="legend-item">
+            <span class="legend-dot" style="--dot-color:#e74c3c" aria-hidden="true"></span>
+            High severity
+          </li>
+          <li class="legend-item">
+            <span class="legend-dot" style="--dot-color:#f39c12" aria-hidden="true"></span>
+            Medium severity
+          </li>
+          <li class="legend-item">
+            <span class="legend-dot" style="--dot-color:#27ae60" aria-hidden="true"></span>
+            Low severity
+          </li>
+          <li class="legend-item">
+            <span class="legend-swatch" style="--swatch-fill:rgba(255,87,34,0.22);--swatch-border:#ff5722" aria-hidden="true"></span>
+            High risk zone
+          </li>
+          <li class="legend-item">
+            <span class="legend-swatch" style="--swatch-fill:rgba(255,193,7,0.22);--swatch-border:#ffc107" aria-hidden="true"></span>
+            Medium risk zone
+          </li>
+          <li class="legend-item">
+            <span class="legend-swatch" style="--swatch-fill:rgba(76,175,80,0.22);--swatch-border:#4caf50" aria-hidden="true"></span>
+            Low risk zone
+          </li>
+        </ul>
+        <div class="legend-personalized-note" id="personalized-legend-msg" style="display:none">
+          <strong>Personalized mode:</strong> zones reflect your profile's risk score.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <span id="risk-map-instructions" class="sr-only">
+    Tab to focus. Arrow keys pan, + and − zoom. Click or press Enter on a marker for details. Escape closes cards.
+  </span>
+</div>
+
+<noscript><p class="map-noscript">JavaScript is required to view the interactive risk map.</p></noscript>
+
+<p class="muted map-caption">Live alert markers and risk overlays update as data becomes available. All controls are keyboard and screen reader accessible.</p>
+
+
+<!-- ════════════════════════════════════
+     Help Modal
+     ════════════════════════════════════ -->
+<div class="help-modal" id="help-modal" role="dialog" aria-modal="true" aria-labelledby="help-modal-title" tabindex="-1">
+  <div class="modal-panel">
+    <button class="modal-close" id="help-close" aria-label="Close help">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M3 3L11 11M11 3L3 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <h2 class="modal-title" id="help-modal-title">How to Use This Map</h2>
+    <ul class="help-list">
+      <li>Pan and zoom with your mouse, touch gestures, or keyboard arrows and +/−.</li>
+      <li>Click or tap any marker to see alert or risk zone details.</li>
+      <li>Use the region pills to focus on Louisiana, Texas, or Mississippi.</li>
+      <li>Toggle layers to show or hide specific alert types and risk overlays.</li>
+      <li>Enable Personalized to see risk scores tailored to your user profile.</li>
+      <li>Keyboard: Tab to controls, Enter/Space to activate, Escape to close panels.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Toast (errors only) -->
+<div class="map-toast" id="toast" aria-live="assertive" aria-atomic="true"></div>
+
+
+<!-- ════════════════════════════════════
+     Scripts
+     ════════════════════════════════════ -->
 <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
 <script>
-// Inject config-driven API URLs from PHP
-const MAP_ALERTS_URL = <?php echo json_encode($alerts_url); ?>;
-const MAP_RISK_URL = <?php echo json_encode($risk_url); ?>;
-const MAP_PERSONALIZED_RISK_URL = <?php echo json_encode(rr_api_url($config, 'risk/map/personalized/')); ?>; // Append user_id
+const MAP_ALERTS_URL            = <?php echo json_encode($alerts_url); ?>;
+const MAP_RISK_URL               = <?php echo json_encode($risk_url); ?>;
+const MAP_PERSONALIZED_RISK_URL  = <?php echo json_encode(rr_api_url($config, 'risk/map/personalized/')); ?>;
+
 window.RISKRADAR_MAP_ALERTS_URL = MAP_ALERTS_URL;
-window.RISKRADAR_MAP_RISK_URL = MAP_RISK_URL;
-// Helper: Get current user ID from input
+window.RISKRADAR_MAP_RISK_URL   = MAP_RISK_URL;
+
+// ── Toast (errors only) ───────────────
+function showToast(msg, duration = 3500) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.style.display = 'block';
+    requestAnimationFrame(() => { toast.style.opacity = '1'; });
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => { toast.style.display = 'none'; }, 250);
+    }, duration);
+}
+
+// ── Helpers ───────────────────────────
 function getCurrentUserId() {
-    var input = document.getElementById('user-id-input');
-    var val = input ? parseInt(input.value, 10) : 1;
+    const input = document.getElementById('user-id-input');
+    const val = input ? parseInt(input.value, 10) : 1;
     return (val && val > 0) ? val : 1;
 }
 
-// --- Consolidated Map Logic: Modern, Accessible, Feature-Complete ---
-// Accessibility: Keyboard navigation for map focus and marker activation
-document.addEventListener('DOMContentLoaded', function() {
-    var mapContainer = document.getElementById('risk-map-container');
-    var riskMap = document.getElementById('risk-map');
-    if (mapContainer && riskMap) {
-        mapContainer.addEventListener('keydown', function(e) {
-            // Arrow keys pan the map
-            if ([37,38,39,40].includes(e.keyCode)) {
-                var pan = {"mapbox.center.lon": null, "mapbox.center.lat": null};
-                var currentLayout = riskMap.layout || {};
-                var step = 0.5;
-                if (currentLayout.mapbox && currentLayout.mapbox.center) {
-                    pan["mapbox.center.lon"] = currentLayout.mapbox.center.lon;
-                    pan["mapbox.center.lat"] = currentLayout.mapbox.center.lat;
-                } else {
-                    pan["mapbox.center.lon"] = -91.15;
-                    pan["mapbox.center.lat"] = 30.45;
-                }
-                if (e.keyCode === 37) pan["mapbox.center.lon"] -= step;
-                if (e.keyCode === 39) pan["mapbox.center.lon"] += step;
-                if (e.keyCode === 38) pan["mapbox.center.lat"] += step;
-                if (e.keyCode === 40) pan["mapbox.center.lat"] -= step;
-                Plotly.relayout('risk-map', pan);
-                e.preventDefault();
-            }
-            // +/- keys for zoom
-            if (e.key === '+' || e.key === '=') {
-                var layout = riskMap.layout || {};
-                var zoom = layout.mapbox && layout.mapbox.zoom ? layout.mapbox.zoom + 0.5 : 6.5;
-                Plotly.relayout('risk-map', {"mapbox.zoom": zoom});
-                e.preventDefault();
-            }
-            if (e.key === '-' || e.key === '_') {
-                var layout = riskMap.layout || {};
-                var zoom = layout.mapbox && layout.mapbox.zoom ? Math.max(1, layout.mapbox.zoom - 0.5) : 5.5;
-                Plotly.relayout('risk-map', {"mapbox.zoom": zoom});
-                e.preventDefault();
-            }
-            // Enter or Space triggers marker details if a marker is focused
-            // (future: add marker focus management)
-        });
-
-        // Touch gestures for pan/zoom
-        let lastTouch = null;
-        let lastDist = null;
-        riskMap.addEventListener('touchstart', function(e) {
-            if (e.touches.length === 1) {
-                lastTouch = {x: e.touches[0].clientX, y: e.touches[0].clientY};
-            } else if (e.touches.length === 2) {
-                let dx = e.touches[0].clientX - e.touches[1].clientX;
-                let dy = e.touches[0].clientY - e.touches[1].clientY;
-                lastDist = Math.sqrt(dx*dx + dy*dy);
-            }
-        });
-        riskMap.addEventListener('touchmove', function(e) {
-            var layout = riskMap.layout || {};
-            if (e.touches.length === 1 && lastTouch) {
-                let dx = e.touches[0].clientX - lastTouch.x;
-                let dy = e.touches[0].clientY - lastTouch.y;
-                let pan = {"mapbox.center.lon": null, "mapbox.center.lat": null};
-                if (layout.mapbox && layout.mapbox.center) {
-                    pan["mapbox.center.lon"] = layout.mapbox.center.lon - dx * 0.01;
-                    pan["mapbox.center.lat"] = layout.mapbox.center.lat + dy * 0.01;
-                    Plotly.relayout('risk-map', pan);
-                }
-                lastTouch = {x: e.touches[0].clientX, y: e.touches[0].clientY};
-            } else if (e.touches.length === 2 && lastDist) {
-                let dx = e.touches[0].clientX - e.touches[1].clientX;
-                let dy = e.touches[0].clientY - e.touches[1].clientY;
-                let dist = Math.sqrt(dx*dx + dy*dy);
-                let layout = riskMap.layout || {};
-                let zoom = layout.mapbox && layout.mapbox.zoom ? layout.mapbox.zoom : 6;
-                if (Math.abs(dist - lastDist) > 5) {
-                    let newZoom = zoom + (dist - lastDist) * 0.01;
-                    Plotly.relayout('risk-map', {"mapbox.zoom": Math.max(1, Math.min(20, newZoom))});
-                    lastDist = dist;
-                }
-            }
-        });
-        riskMap.addEventListener('touchend', function(e) {
-            lastTouch = null;
-            lastDist = null;
-        });
-    }
-    // Add visible focus indicator for all focusable elements
-    var style = document.createElement('style');
-    style.innerHTML = `
-        :focus {
-            outline: 2px solid #1976d2 !important;
-            outline-offset: 2px;
-        }
-    `;
-    document.head.appendChild(style);
-});
-
-function showMapFallback(message) {
-    var fallback = document.getElementById('map-fallback');
-    fallback.style.display = 'flex';
-    fallback.textContent = message;
-    fallback.setAttribute('aria-live', 'assertive');
-    document.getElementById('map-loading').style.display = 'none';
-    showToast(message, 4000);
-}
-function hideMapFallback() {
-    document.getElementById('map-fallback').style.display = 'none';
-}
-function hideMapLoading() {
-    document.getElementById('map-loading').style.display = 'none';
-}
 function getSeverityColor(severity) {
+    const cs = getComputedStyle(document.documentElement);
     switch ((severity || '').toLowerCase()) {
-        case 'high': return getComputedStyle(document.documentElement).getPropertyValue('--alert-high').trim() || '#e74c3c';
-        case 'medium': return getComputedStyle(document.documentElement).getPropertyValue('--alert-medium').trim() || '#f39c12';
-        case 'low': return getComputedStyle(document.documentElement).getPropertyValue('--alert-low').trim() || '#27ae60';
-        default: return '#2980b9';
+        case 'high':   return cs.getPropertyValue('--alert-high').trim()   || '#e74c3c';
+        case 'medium': return cs.getPropertyValue('--alert-medium').trim() || '#f39c12';
+        case 'low':    return cs.getPropertyValue('--alert-low').trim()    || '#27ae60';
+        default:       return '#2980b9';
     }
 }
-function getRiskLevelColor(level, alpha=1) {
-    let cssVar = '';
+
+function getRiskLevelColor(level, alpha = 1) {
+    let cssVar = '--risk-low';
     switch ((level || '').toLowerCase()) {
-        case 'extreme': cssVar = '--risk-extreme'; break;
-        case 'high': cssVar = '--risk-extreme'; break;
-        case 'medium': cssVar = '--risk-medium'; break;
-        case 'low': cssVar = '--risk-low'; break;
-        default: cssVar = '--risk-low';
+        case 'extreme': case 'high': cssVar = '--risk-extreme'; break;
+        case 'medium':               cssVar = '--risk-medium';  break;
     }
-    let color = getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim();
-    // Convert hex to rgba
+    const color = getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim();
     if (color.startsWith('#')) {
-        let bigint = parseInt(color.slice(1), 16);
-        let r = (bigint >> 16) & 255;
-        let g = (bigint >> 8) & 255;
-        let b = bigint & 255;
-        return `rgba(${r},${g},${b},${alpha})`;
+        const n = parseInt(color.slice(1), 16);
+        return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${alpha})`;
     }
     return color;
 }
+
+// ── Data → Plotly traces ──────────────
 function alertsToScatterTraces(alerts) {
     if (!Array.isArray(alerts)) return [];
+    const cs = getComputedStyle(document.documentElement);
     return alerts
-    .map(alert => {
-        const lat = (typeof alert.lat !== 'undefined' && alert.lat !== null) ? alert.lat : alert.latitude;
-        const lon = (typeof alert.lon !== 'undefined' && alert.lon !== null) ? alert.lon : alert.longitude;
-        return { ...alert, lat, lon };
-    })
-    .filter(a => Number.isFinite(a.lat) && Number.isFinite(a.lon))
-    .map(alert => {
-        let icon = '●';
-        let color = getSeverityColor(alert.severity);
-        let type = (alert.type || alert.alert_type || 'Alert').toLowerCase();
-        let markerClass = '';
-        // Custom icons/colors for overlays
-        if (type.includes('air')) { icon = '🌫️'; color = getComputedStyle(document.documentElement).getPropertyValue('--overlay-aqi').trim() || '#7e57c2'; }
-        else if (type.includes('wildfire') || type.includes('fire')) { icon = '🔥'; color = getComputedStyle(document.documentElement).getPropertyValue('--overlay-wildfire').trim() || '#ff7043'; }
-        else if (type.includes('earthquake')) { icon = '🌎'; color = getComputedStyle(document.documentElement).getPropertyValue('--overlay-earthquake').trim() || '#009688'; }
-        else if (type.includes('weather')) { icon = '⛈️'; color = getComputedStyle(document.documentElement).getPropertyValue('--overlay-weather').trim() || '#1976d2'; }
-        else if (type.includes('pollution')) { icon = '☣️'; color = getComputedStyle(document.documentElement).getPropertyValue('--overlay-pollution').trim() || '#c62828'; }
-        // Add pulsing animation for high severity alerts
-        if ((alert.severity || '').toLowerCase() === 'high') {
-            markerClass = 'pulse-marker';
-        }
-        let details = `<strong style='color:${color}'>${icon} ${alert.title || type}</strong><br>`;
-        details += `Severity: <b>${alert.severity || 'N/A'}</b><br>`;
-        if (type.includes('earthquake') && alert.magnitude) {
-            details += `Magnitude: <b>${alert.magnitude}</b><br>`;
-        }
-        if (type.includes('air') || type.includes('pollution')) {
-            details += alert.description ? `${alert.description}<br>` : '';
-        }
-        if (type.includes('wildfire') || type.includes('fire')) {
-            details += alert.description ? `${alert.description}<br>` : '';
-        }
-        if (type.includes('weather')) {
-            details += alert.description ? `${alert.description}<br>` : '';
-        }
-        details += `Region: ${alert.region || alert.location_name || 'N/A'}<br>`;
-        if (alert.event_start) details += `Observed: ${alert.event_start}<br>`;
-        if (alert.source) details += `Source: ${alert.source}<br>`;
-        return {
-            type: 'scattermapbox',
-            lat: [alert.lat],
-            lon: [alert.lon],
-            mode: 'markers',
-            marker: {
-                size: type.includes('earthquake') && alert.magnitude ? Math.max(13, Math.min(30, alert.magnitude * 4)) : 13,
-                color,
-                opacity: 0.85,
-                symbol: 'circle'
-            },
-            text: details,
-            name: alert.type || alert.alert_type || 'Alert',
-            customdata: [alert, markerClass],
-            hoverinfo: 'text'
-        };
-    });
+        .map(a => ({
+            ...a,
+            lat: a.lat != null ? a.lat : a.latitude,
+            lon: a.lon != null ? a.lon : a.longitude,
+        }))
+        .filter(a => Number.isFinite(a.lat) && Number.isFinite(a.lon))
+        .map(alert => {
+            let color = getSeverityColor(alert.severity);
+            const type = (alert.type || alert.alert_type || 'Alert').toLowerCase();
+            if      (type.includes('air'))                               color = cs.getPropertyValue('--overlay-aqi').trim()        || '#7e57c2';
+            else if (type.includes('wildfire') || type.includes('fire')) color = cs.getPropertyValue('--overlay-wildfire').trim()   || '#ff7043';
+            else if (type.includes('earthquake'))                        color = cs.getPropertyValue('--overlay-earthquake').trim() || '#009688';
+            else if (type.includes('weather'))                           color = cs.getPropertyValue('--overlay-weather').trim()    || '#1976d2';
+            else if (type.includes('pollution'))                         color = cs.getPropertyValue('--overlay-pollution').trim()  || '#c62828';
+
+            let details = `<strong style='color:${color}'>${alert.title || type}</strong><br>`;
+            details += `Severity: <b>${alert.severity || 'N/A'}</b><br>`;
+            if (type.includes('earthquake') && alert.magnitude) details += `Magnitude: <b>${alert.magnitude}</b><br>`;
+            if (alert.description) details += `${alert.description}<br>`;
+            details += `Region: ${alert.region || alert.location_name || 'N/A'}<br>`;
+            if (alert.event_start) details += `Observed: ${alert.event_start}<br>`;
+            if (alert.source)      details += `Source: ${alert.source}<br>`;
+
+            return {
+                type: 'scattermapbox',
+                lat: [alert.lat],
+                lon: [alert.lon],
+                mode: 'markers',
+                marker: {
+                    size: (type.includes('earthquake') && alert.magnitude)
+                        ? Math.max(13, Math.min(30, alert.magnitude * 4))
+                        : 13,
+                    color,
+                    opacity: 0.85,
+                    symbol: 'circle',
+                },
+                text: details,
+                name: alert.type || alert.alert_type || 'Alert',
+                customdata: [alert],
+                hoverinfo: 'text',
+            };
+        });
 }
+
 function riskToOverlayTraces(riskZones) {
-    if (!Array.isArray(riskZones) || riskZones.length === 0) return [];
-    const polygonTraces = [];
-    riskZones.forEach(zone => {
-        if (Array.isArray(zone.polygon) && zone.polygon.length > 2) {
+    if (!Array.isArray(riskZones) || !riskZones.length) return [];
+    return riskZones
+        .filter(zone => Array.isArray(zone.polygon) && zone.polygon.length > 2)
+        .map(zone => {
             const normalized = zone.polygon
                 .map(pt => {
-                    if (Array.isArray(pt) && pt.length >= 2) {
-                        return { lat: pt[0], lon: pt[1] };
-                    }
-                    if (pt && typeof pt === 'object' && Number.isFinite(pt.lat) && Number.isFinite(pt.lon)) {
-                        return { lat: pt.lat, lon: pt.lon };
-                    }
+                    if (Array.isArray(pt) && pt.length >= 2)                                               return { lat: pt[0], lon: pt[1] };
+                    if (pt && typeof pt === 'object' && Number.isFinite(pt.lat) && Number.isFinite(pt.lon)) return pt;
                     return null;
                 })
                 .filter(Boolean);
-
-            if (normalized.length < 3) {
-                return;
-            }
-
-            const lats = normalized.map(pt => pt.lat);
-            const lons = normalized.map(pt => pt.lon);
-            polygonTraces.push({
+            if (normalized.length < 3) return null;
+            const lats = normalized.map(p => p.lat);
+            const lons = normalized.map(p => p.lon);
+            return {
                 type: 'scattermapbox',
                 lat: lats.concat([lats[0]]),
                 lon: lons.concat([lons[0]]),
@@ -636,305 +1093,332 @@ function riskToOverlayTraces(riskZones) {
                 name: `Risk: ${zone.risk_level || 'N/A'}`,
                 text: `Risk: ${zone.risk_level || 'N/A'}<br>Score: ${zone.score ?? zone.risk_score ?? 'N/A'}`,
                 hoverinfo: 'text',
-                customdata: [zone]
-            });
-        }
-    });
-    return polygonTraces;
+                customdata: [zone],
+            };
+        })
+        .filter(Boolean);
 }
+
+// ── Fetch ─────────────────────────────
 async function fetchMapData(personalized = false) {
     try {
         if (!MAP_ALERTS_URL || !MAP_RISK_URL) {
-            showMapFallback('Map API configuration is missing. Check frontend API base settings.');
+            showToast('Map API configuration is missing.');
             return null;
         }
-
-        let riskUrl = MAP_RISK_URL;
-        if (personalized) {
-            const userId = getCurrentUserId();
-            riskUrl = MAP_PERSONALIZED_RISK_URL + userId;
-        }
-        const [alertsRes, riskRes] = await Promise.all([
-            fetch(MAP_ALERTS_URL),
-            fetch(riskUrl)
-        ]);
+        const riskUrl = personalized
+            ? MAP_PERSONALIZED_RISK_URL + getCurrentUserId()
+            : MAP_RISK_URL;
+        const [alertsRes, riskRes] = await Promise.all([fetch(MAP_ALERTS_URL), fetch(riskUrl)]);
         if (!alertsRes.ok && !riskRes.ok) {
-            showMapFallback('Failed to load map data from the backend.');
+            showToast('Failed to load map data from the backend.');
             return null;
         }
-        const alertsData = alertsRes.ok ? await alertsRes.json() : null;
-        const riskData = riskRes.ok ? await riskRes.json() : null;
-        return { alerts: alertsData, risk: riskData };
-    } catch (e) {
-        showMapFallback('Network error while loading map data.');
+        return {
+            alerts: alertsRes.ok ? await alertsRes.json() : null,
+            risk:   riskRes.ok  ? await riskRes.json()   : null,
+        };
+    } catch {
+        showToast('Network error while loading map data.');
         return null;
     }
 }
-function renderMap(alertsData, riskData) {
-    const alertTraces = alertsToScatterTraces((alertsData && alertsData.alerts) || []);
-    const riskTraces = riskToOverlayTraces((riskData && riskData.risk_zones) || []);
-    const traces = [...alertTraces, ...riskTraces];
-    if (traces.length === 0) {
-        showMapFallback('No valid map data to display.');
-        return;
-    }
-    // Show/hide personalized legend message
-    const persLegend = document.getElementById('personalized-legend-msg');
-    if (persLegend) persLegend.style.display = personalizedMode ? 'block' : 'none';
-
-    const layout = {
-        mapbox: {
-            style: 'open-street-map',
-            center: { lat: 30.45, lon: -91.15 },
-            zoom: 6
-        },
-        margin: { t: 0, b: 0, l: 0, r: 0 },
-        showlegend: true
-    };
-    Plotly.newPlot('risk-map', traces, layout, {responsive: true});
-    // Add marker animation class to high severity markers
-    setTimeout(() => {
-        const svgMarkers = document.querySelectorAll('#risk-map .scatterlayer .point');
-        svgMarkers.forEach((el, idx) => {
-            // Find the corresponding markerClass from customdata
-            let markerClass = '';
-            if (traces.length > 0 && traces[0].customdata && traces[0].customdata[idx] && traces[0].customdata[idx][1]) {
-                markerClass = traces[0].customdata[idx][1];
-            }
-            if (markerClass === 'pulse-marker') {
-                el.classList.add('pulse-marker');
-            }
-        });
-    }, 400);
-
-    var riskMapDiv = document.getElementById('risk-map');
-    // Remove any existing popup
-    function removePopup() {
-        const existing = document.getElementById('map-popup-card');
-        if (existing) existing.remove();
-    }
-    riskMapDiv.on('plotly_click', function(data) {
-        removePopup();
-        if (data && data.points && data.points.length > 0) {
-            const pt = data.points[0];
-            if (pt.customdata && pt.customdata[0]) {
-                const d = pt.customdata[0];
-                let html = '';
-                let ariaLabel = '';
-                if (d.type || d.alert_type) {
-                    let type = (d.type || d.alert_type || '').toLowerCase();
-                    let icon = '';
-                    if (type.includes('air')) icon = '🌫️';
-                    else if (type.includes('wildfire') || type.includes('fire')) icon = '🔥';
-                    else if (type.includes('earthquake')) icon = '🌎';
-                    else if (type.includes('weather')) icon = '⛈️';
-                    else if (type.includes('pollution')) icon = '☣️';
-                    ariaLabel = `${d.title || type} alert details popup. Severity: ${d.severity || 'N/A'}. Region: ${d.region || d.location_name || 'N/A'}.`;
-                    html = `<div class="map-popup-card" id="map-popup-card" tabindex="0" role="dialog" aria-modal="true" aria-label="${ariaLabel}">
-                        <button class="popup-close" aria-label="Close popup" onclick="this.parentNode.remove()">×</button>
-                        <div class="map-popup-heading">${icon} <strong>${d.title || type}</strong></div>
-                        <div><b>Severity:</b> ${d.severity || 'N/A'}</div>
-                        ${d.magnitude ? `<div><b>Magnitude:</b> ${d.magnitude}</div>` : ''}
-                        ${d.description ? `<div style='margin:6px 0;'>${d.description}</div>` : ''}
-                        <div><b>Region:</b> ${d.region || d.location_name || 'N/A'}</div>
-                        ${d.event_start ? `<div><b>Observed:</b> ${d.event_start}</div>` : ''}
-                        ${d.source ? `<div><b>Source:</b> ${d.source}</div>` : ''}
-                    </div>`;
-                } else if (d.risk_level) {
-                    ariaLabel = `Risk zone details popup. Risk Level: ${d.risk_level || 'N/A'}. Region: ${d.region || 'N/A'}.`;
-                    html = `<div class="map-popup-card" id="map-popup-card" tabindex="0" role="dialog" aria-modal="true" aria-label="${ariaLabel}">
-                        <button class="popup-close" aria-label="Close popup" onclick="this.parentNode.remove()">×</button>
-                        <div class="map-popup-subheading"><strong>Risk Zone Details</strong></div>
-                        <div><b>Risk Level:</b> ${d.risk_level || 'N/A'}</div>
-                        ${typeof d.risk_score !== 'undefined' && d.risk_score !== null ? `<div><b>Personalized Score:</b> ${d.risk_score}</div>` : ''}
-                        ${typeof d.score !== 'undefined' && d.score !== null ? `<div><b>Score:</b> ${d.score}</div>` : ''}
-                        <div><b>Region:</b> ${d.region || 'N/A'}</div>
-                    </div>`;
-                }
-                // Insert popup into map container
-                document.getElementById('risk-map-container').insertAdjacentHTML('beforeend', html);
-                setTimeout(() => {
-                    const popup = document.getElementById('map-popup-card');
-                    if (popup) {
-                        popup.focus();
-                        // Trap focus inside popup
-                        popup.addEventListener('keydown', function(e) {
-                            if (e.key === 'Escape') {
-                                popup.remove();
-                            }
-                            // Trap Tab key
-                            if (e.key === 'Tab') {
-                                const focusable = popup.querySelectorAll('button, [tabindex]:not([tabindex="-1"])');
-                                if (focusable.length === 0) return;
-                                const first = focusable[0];
-                                const last = focusable[focusable.length - 1];
-                                if (e.shiftKey) {
-                                    if (document.activeElement === first) {
-                                        last.focus();
-                                        e.preventDefault();
-                                    }
-                                } else {
-                                    if (document.activeElement === last) {
-                                        first.focus();
-                                        e.preventDefault();
-                                    }
-                                }
-                            }
-                        });
-                    }
-                }, 100);
-            }
-        }
-    });
-
-    // Keyboard: Enter/Space on focused marker triggers popup (simulate click)
-    riskMapDiv.addEventListener('keydown', function(e) {
-        if ((e.key === 'Enter' || e.key === ' ') && document.activeElement === riskMapDiv) {
-            // Find closest marker to center and trigger popup
-            // (Future: implement marker focus management for full accessibility)
-            // For now, simulate click at center
-            const bbox = riskMapDiv.getBoundingClientRect();
-            const x = bbox.width / 2;
-            const y = bbox.height / 2;
-            const evt = new MouseEvent('click', {clientX: x, clientY: y, bubbles: true});
-            riskMapDiv.dispatchEvent(evt);
-            e.preventDefault();
-        }
-    });
-}
-let latestMapData = null;
-let currentRegion = '';
-let showAlerts = true;
-let showRisk = true;
-let showAQI = false;
-let showWildfire = false;
-let showEarthquake = false;
-let showWeather = false;
-let showPollution = false;
-let personalizedMode = false;
-
-function filterByRegion(data, region) {
-    if (!region) return data;
-    if (Array.isArray(data)) {
-        return data.filter(item => (item.region || '').toUpperCase() === region.toUpperCase());
-    }
-    return data;
-}
 
 async function fetchOverlayAlerts(alertType) {
-    const url = MAP_ALERTS_URL + '?alert_type=' + encodeURIComponent(alertType);
     try {
-        const res = await fetch(url);
-        if (!res.ok) {
-            showMapFallback('Failed to load ' + alertType.replace('_', ' ') + ' overlay.');
-            return [];
-        }
+        const res = await fetch(MAP_ALERTS_URL + '?alert_type=' + encodeURIComponent(alertType));
+        if (!res.ok) { showToast('Failed to load ' + alertType.replace('_', ' ') + ' overlay.'); return []; }
         const data = await res.json();
         return (data && data.alerts) || [];
     } catch {
-        showMapFallback('Network error while loading ' + alertType.replace('_', ' ') + ' overlay.');
+        showToast('Network error loading ' + alertType.replace('_', ' ') + ' overlay.');
         return [];
     }
 }
 
-async function renderFilteredMap() {
-    if (!latestMapData) return;
-    const region = currentRegion;
-    let alerts = showAlerts ? filterByRegion((latestMapData.alerts && latestMapData.alerts.alerts) || [], region) : [];
-    const risks = showRisk ? filterByRegion((latestMapData.risk && latestMapData.risk.risk_zones) || [], region) : [];
+// ── Render ────────────────────────────
+function renderMap(alertsData, riskData) {
+    const traces = [
+        ...alertsToScatterTraces((alertsData && alertsData.alerts) || []),
+        ...riskToOverlayTraces((riskData && riskData.risk_zones) || []),
+    ];
 
-    // Add AQI overlay alerts
-    if (showAQI) {
-        const aqiAlerts = await fetchOverlayAlerts('air_quality');
-        alerts = alerts.concat(filterByRegion(aqiAlerts, region));
+    if (!traces.length) {
+        showMapFallback('No map data available for this region.');
+        return;
     }
-    // Add wildfire overlay alerts
-    if (showWildfire) {
-        const wfAlerts = await fetchOverlayAlerts('wildfire');
-        alerts = alerts.concat(filterByRegion(wfAlerts, region));
-    }
-    // Add earthquake overlay alerts
-    if (showEarthquake) {
-        const eqAlerts = await fetchOverlayAlerts('earthquake');
-        alerts = alerts.concat(filterByRegion(eqAlerts, region));
-    }
-    // Add weather overlay alerts
-    if (showWeather) {
-        const wxAlerts = await fetchOverlayAlerts('weather');
-        alerts = alerts.concat(filterByRegion(wxAlerts, region));
-    }
-    // Add pollution overlay alerts
-    if (showPollution) {
-        const polAlerts = await fetchOverlayAlerts('pollution');
-        alerts = alerts.concat(filterByRegion(polAlerts, region));
-    }
-    renderMap({alerts}, {risk_zones: risks});
+    hideMapFallback();
+
+    const persLegend = document.getElementById('personalized-legend-msg');
+    if (persLegend) persLegend.style.display = personalizedMode ? 'block' : 'none';
+
+    Plotly.newPlot('risk-map', traces, {
+        mapbox: {
+            style: 'open-street-map',
+            center: { lat: 30.45, lon: -91.15 },
+            zoom: 6,
+        },
+        margin: { t: 0, b: 0, l: 0, r: 0 },
+        showlegend: true,
+    }, { responsive: true });
+
+    document.getElementById('risk-map').on('plotly_click', function(data) {
+        removePopup();
+        if (!data || !data.points || !data.points.length) return;
+        const pt = data.points[0];
+        if (!pt.customdata || !pt.customdata[0]) return;
+        const d = pt.customdata[0];
+        let html = '';
+
+        if (d.type || d.alert_type) {
+            const type = (d.type || d.alert_type || '').toLowerCase();
+            html = `<div class="map-popup-card" id="map-popup-card" tabindex="0" role="dialog" aria-modal="true"
+                         aria-label="${d.title || type} alert. Severity: ${d.severity || 'N/A'}. Region: ${d.region || d.location_name || 'N/A'}.">
+                <button class="popup-close" aria-label="Close detail card" onclick="this.parentNode.remove()">×</button>
+                <div class="map-popup-heading">${d.title || type}</div>
+                <div><b>Severity:</b> ${d.severity || 'N/A'}</div>
+                ${d.magnitude  ? `<div><b>Magnitude:</b> ${d.magnitude}</div>` : ''}
+                ${d.description ? `<div style='margin:4px 0'>${d.description}</div>` : ''}
+                <div><b>Region:</b> ${d.region || d.location_name || 'N/A'}</div>
+                ${d.event_start ? `<div><b>Observed:</b> ${d.event_start}</div>` : ''}
+                ${d.source      ? `<div><b>Source:</b> ${d.source}</div>`       : ''}
+            </div>`;
+        } else if (d.risk_level) {
+            html = `<div class="map-popup-card" id="map-popup-card" tabindex="0" role="dialog" aria-modal="true"
+                         aria-label="Risk Zone. Level: ${d.risk_level}. Region: ${d.region || 'N/A'}.">
+                <button class="popup-close" aria-label="Close detail card" onclick="this.parentNode.remove()">×</button>
+                <div class="map-popup-subheading">Risk Zone Details</div>
+                <div><b>Risk Level:</b> ${d.risk_level || 'N/A'}</div>
+                ${d.risk_score != null ? `<div><b>Personalized Score:</b> ${d.risk_score}</div>` : ''}
+                ${d.score      != null ? `<div><b>Score:</b> ${d.score}</div>`                   : ''}
+                <div><b>Region:</b> ${d.region || 'N/A'}</div>
+            </div>`;
+        }
+
+        if (!html) return;
+        document.getElementById('risk-map-container').insertAdjacentHTML('beforeend', html);
+        const popup = document.getElementById('map-popup-card');
+        if (!popup) return;
+        popup.focus();
+        popup.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') { popup.remove(); return; }
+            if (e.key === 'Tab') {
+                const focusable = popup.querySelectorAll('button,[tabindex]:not([tabindex="-1"])');
+                if (!focusable.length) return;
+                const first = focusable[0], last = focusable[focusable.length - 1];
+                if (e.shiftKey && document.activeElement === first) { last.focus(); e.preventDefault(); }
+                else if (!e.shiftKey && document.activeElement === last) { first.focus(); e.preventDefault(); }
+            }
+        });
+    });
 }
 
+function removePopup()        { const el = document.getElementById('map-popup-card'); if (el) el.remove(); }
+function showMapFallback(msg) {
+    const fb = document.getElementById('map-fallback');
+    fb.textContent = msg;
+    fb.style.display = 'flex';
+    document.getElementById('map-loading').style.display = 'none';
+    showToast(msg);
+}
+function hideMapFallback() { document.getElementById('map-fallback').style.display = 'none'; }
+function hideMapLoading()  { document.getElementById('map-loading').style.display  = 'none'; }
+
+// ── State ─────────────────────────────
+let latestMapData    = null;
+let currentRegion    = '';
+let showAlerts       = true;
+let showRisk         = true;
+let showAQI          = false;
+let showWildfire     = false;
+let showEarthquake   = false;
+let showWeather      = false;
+let showPollution    = false;
+let personalizedMode = false;
+
+function filterByRegion(data, region) {
+    if (!region || !Array.isArray(data)) return data;
+    return data.filter(item => (item.region || '').toUpperCase() === region.toUpperCase());
+}
+
+async function renderFilteredMap() {
+    if (!latestMapData) return;
+    let alerts = showAlerts
+        ? filterByRegion((latestMapData.alerts && latestMapData.alerts.alerts) || [], currentRegion)
+        : [];
+    const risks = showRisk
+        ? filterByRegion((latestMapData.risk && latestMapData.risk.risk_zones) || [], currentRegion)
+        : [];
+
+    if (showAQI)        alerts = alerts.concat(filterByRegion(await fetchOverlayAlerts('air_quality'), currentRegion));
+    if (showWildfire)   alerts = alerts.concat(filterByRegion(await fetchOverlayAlerts('wildfire'),    currentRegion));
+    if (showEarthquake) alerts = alerts.concat(filterByRegion(await fetchOverlayAlerts('earthquake'),  currentRegion));
+    if (showWeather)    alerts = alerts.concat(filterByRegion(await fetchOverlayAlerts('weather'),     currentRegion));
+    if (showPollution)  alerts = alerts.concat(filterByRegion(await fetchOverlayAlerts('pollution'),   currentRegion));
+
+    renderMap({ alerts }, { risk_zones: risks });
+}
+
+// ── Keyboard: arrow pan, +/− zoom ─────
+document.addEventListener('DOMContentLoaded', function() {
+    const mapContainer = document.getElementById('risk-map-container');
+    const riskMap      = document.getElementById('risk-map');
+
+    if (mapContainer && riskMap) {
+        mapContainer.addEventListener('keydown', function(e) {
+            const layout  = riskMap.layout || {};
+            const center  = (layout.mapbox && layout.mapbox.center) || { lat: 30.45, lon: -91.15 };
+            const step    = 0.5;
+            const updates = {};
+
+            if (e.key === 'ArrowLeft')  updates['mapbox.center.lon'] = center.lon - step;
+            if (e.key === 'ArrowRight') updates['mapbox.center.lon'] = center.lon + step;
+            if (e.key === 'ArrowUp')    updates['mapbox.center.lat'] = center.lat + step;
+            if (e.key === 'ArrowDown')  updates['mapbox.center.lat'] = center.lat - step;
+            if (e.key === '+' || e.key === '=') {
+                updates['mapbox.zoom'] = (layout.mapbox && layout.mapbox.zoom ? layout.mapbox.zoom : 6) + 0.5;
+            }
+            if (e.key === '-' || e.key === '_') {
+                updates['mapbox.zoom'] = Math.max(1, (layout.mapbox && layout.mapbox.zoom ? layout.mapbox.zoom : 6) - 0.5);
+            }
+            if (Object.keys(updates).length) {
+                Plotly.relayout('risk-map', updates);
+                e.preventDefault();
+            }
+        });
+
+        // Touch pan / pinch-zoom
+        let lastTouch = null, lastDist = null;
+        riskMap.addEventListener('touchstart', function(e) {
+            if (e.touches.length === 1) {
+                lastTouch = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            } else if (e.touches.length === 2) {
+                const dx = e.touches[0].clientX - e.touches[1].clientX;
+                const dy = e.touches[0].clientY - e.touches[1].clientY;
+                lastDist = Math.sqrt(dx*dx + dy*dy);
+            }
+        });
+        riskMap.addEventListener('touchmove', function(e) {
+            const layout = riskMap.layout || {};
+            if (e.touches.length === 1 && lastTouch) {
+                const dx = e.touches[0].clientX - lastTouch.x;
+                const dy = e.touches[0].clientY - lastTouch.y;
+                if (layout.mapbox && layout.mapbox.center) {
+                    Plotly.relayout('risk-map', {
+                        'mapbox.center.lon': layout.mapbox.center.lon - dx * 0.01,
+                        'mapbox.center.lat': layout.mapbox.center.lat + dy * 0.01,
+                    });
+                }
+                lastTouch = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            } else if (e.touches.length === 2 && lastDist) {
+                const dx = e.touches[0].clientX - e.touches[1].clientX;
+                const dy = e.touches[0].clientY - e.touches[1].clientY;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                if (Math.abs(dist - lastDist) > 5) {
+                    const zoom = layout.mapbox && layout.mapbox.zoom ? layout.mapbox.zoom : 6;
+                    Plotly.relayout('risk-map', { 'mapbox.zoom': Math.max(1, Math.min(20, zoom + (dist - lastDist) * 0.01)) });
+                    lastDist = dist;
+                }
+            }
+        });
+        riskMap.addEventListener('touchend', () => { lastTouch = null; lastDist = null; });
+    }
+});
+
+// ── Controls init ─────────────────────
 document.addEventListener('DOMContentLoaded', async function() {
     const mapDiv = document.getElementById('risk-map');
     if (!window.Plotly || !mapDiv) return;
+
     const mapData = await fetchMapData();
     hideMapLoading();
     if (!mapData) return;
     latestMapData = mapData;
     renderFilteredMap();
 
-    // Region filter
-    document.getElementById('region-filter').addEventListener('change', function(e) {
-        currentRegion = e.target.value;
-        renderFilteredMap();
+    // Region pills
+    document.querySelectorAll('.region-pill').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.region-pill').forEach(p => {
+                p.classList.remove('active');
+                p.setAttribute('aria-pressed', 'false');
+            });
+            btn.classList.add('active');
+            btn.setAttribute('aria-pressed', 'true');
+            currentRegion = btn.dataset.region;
+            renderFilteredMap();
+        });
     });
-    // User ID input
-    document.getElementById('user-id-input').addEventListener('change', async function(e) {
+
+    // User ID reload
+    document.getElementById('user-id-input').addEventListener('change', async function() {
         document.getElementById('map-loading').style.display = 'flex';
-        const mapData = await fetchMapData(personalizedMode);
+        const data = await fetchMapData(personalizedMode);
         hideMapLoading();
-        if (!mapData) return;
-        latestMapData = mapData;
+        if (!data) return;
+        latestMapData = data;
         renderFilteredMap();
     });
-    // Overlay toggles
-    document.getElementById('toggle-alerts').addEventListener('change', function(e) {
-        showAlerts = e.target.checked;
-        renderFilteredMap();
+
+    // Layer toggles
+    const layers = {
+        'toggle-alerts':     () => { showAlerts     = !showAlerts;     },
+        'toggle-risk':       () => { showRisk       = !showRisk;       },
+        'toggle-aqi':        () => { showAQI        = !showAQI;        },
+        'toggle-wildfire':   () => { showWildfire   = !showWildfire;   },
+        'toggle-earthquake': () => { showEarthquake = !showEarthquake; },
+        'toggle-weather':    () => { showWeather    = !showWeather;    },
+        'toggle-pollution':  () => { showPollution  = !showPollution;  },
+    };
+    Object.entries(layers).forEach(([id, fn]) => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', () => { fn(); renderFilteredMap(); });
     });
-    document.getElementById('toggle-risk').addEventListener('change', function(e) {
-        showRisk = e.target.checked;
-        renderFilteredMap();
-    });
-    document.getElementById('toggle-aqi').addEventListener('change', function(e) {
-        showAQI = e.target.checked;
-        renderFilteredMap();
-    });
-    document.getElementById('toggle-wildfire').addEventListener('change', function(e) {
-        showWildfire = e.target.checked;
-        renderFilteredMap();
-    });
-    // Personalized Risk Map toggle
-    document.getElementById('toggle-earthquake').addEventListener('change', function(e) {
-        showEarthquake = e.target.checked;
-        renderFilteredMap();
-    });
-    document.getElementById('toggle-weather').addEventListener('change', function(e) {
-        showWeather = e.target.checked;
-        renderFilteredMap();
-    });
-    document.getElementById('toggle-pollution').addEventListener('change', function(e) {
-        showPollution = e.target.checked;
-        renderFilteredMap();
-    });
+
+    // Personalized toggle
     document.getElementById('toggle-personalized').addEventListener('change', async function(e) {
         personalizedMode = e.target.checked;
+        document.getElementById('personalized-config').classList.toggle('is-open', personalizedMode);
         document.getElementById('map-loading').style.display = 'flex';
-        const mapData = await fetchMapData(personalizedMode);
+        const data = await fetchMapData(personalizedMode);
         hideMapLoading();
-        if (!mapData) return;
-        latestMapData = mapData;
+        if (!data) return;
+        latestMapData = data;
         renderFilteredMap();
     });
+
+    // Legend toggle
+    const legendToggle = document.getElementById('legend-toggle');
+    const legendBody   = document.getElementById('legend-body');
+    if (legendToggle && legendBody) {
+        legendToggle.addEventListener('click', function() {
+            const expanded = legendToggle.getAttribute('aria-expanded') === 'true';
+            legendToggle.setAttribute('aria-expanded', String(!expanded));
+            legendBody.classList.toggle('is-collapsed', expanded);
+        });
+    }
+
+    // Help modal
+    const helpBtn   = document.getElementById('help-btn');
+    const helpModal = document.getElementById('help-modal');
+    const helpClose = document.getElementById('help-close');
+    if (helpBtn && helpModal && helpClose) {
+        helpBtn.addEventListener('click', function() {
+            helpModal.classList.add('is-open');
+            helpModal.focus();
+        });
+        helpClose.addEventListener('click', function() {
+            helpModal.classList.remove('is-open');
+            helpBtn.focus();
+        });
+        helpModal.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                helpModal.classList.remove('is-open');
+                helpBtn.focus();
+            }
+        });
+    }
 });
-// --- End Consolidated Map Logic ---
 </script>
 
 <?php rr_render_layout_end(); ?>

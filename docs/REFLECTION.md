@@ -2,6 +2,107 @@
 
 ## Session Reflections
 
+# Stage 5: Register Page Redesign Session (2026-05-01)
+Summary:
+- Invoked `/impeccable craft Redesign register.php view in the frontend.` to perform a full visual redesign of the new-user registration page using the established project design context from `.impeccable.md`.
+- Read `.impeccable.md` (design context: Clean · Confident · Civilian-friendly brand; Cream + Forest Green palette; Bricolage Grotesque headings, Atkinson Hyperlegible Next body; WCAG AAA baseline), the existing `register.php` view (single-column `.auth-wrap > .auth-panel panel` layout with a basic `.form-stack` form, no scoped CSS, no explicit label/input ID associations, no accessibility attributes), and `login.php` (reference implementation: two-column `.auth-split` grid, scoped `<style>` block with OKLCH-based CSS classes, full accessibility via `aria-describedby`/`aria-invalid`, password field, guest mode) to establish the design language.
+- Adopted the two-column `42fr / 58fr` split grid from `login.php` for visual consistency, with the same dark forest-green page background (`oklch(0.26 0.045 148)`), frosted-glass topbar (`oklch(0.32 0.06 148 / 0.6)` with `backdrop-filter: blur(12px)`), and warm cream form panel (`oklch(0.97 0.009 100)`).
+- Differentiated the brand panel from login's "Know before you go." messaging with a register-specific headline ("Your safety profile starts here.") and three numbered feature callouts (01 — Personalized to your area, 02 — 5+ live data sources, 03 — Risk in under 10 seconds) separated by `1px` horizontal rules in `oklch(0.46 0.09 148 / 0.5)`, replacing login's single "Live data" footer card.
+- Implemented a password show/hide toggle: a `<button type="button">` (`.reg-pw-toggle`) positioned absolutely inside `.reg-pw-wrap` with an SVG eye icon that swaps between open (`<path>` + `<circle>`) and closed (crossed-out path + `<line>`) on click via `innerHTML` replacement, updating `aria-label` from "Show password" to "Hide password" in sync.
+- Added a 3-bar password strength meter (`.reg-pw-strength`) below the password field — three `flex: 1` bars initialized to `oklch(0.88 0.010 148)`; a `getStrength()` function scores length ≥8 (+1), length ≥12 (+1), and mixed uppercase + symbols (+1); `data-strength` attribute drives `:nth-child` selectors coloring bar fills with red (`oklch(0.56 0.17 25)`) at score 1, amber (`oklch(0.60 0.14 65)`) at score 2, and forest green (`oklch(0.52 0.12 148)`) at score 3.
+- Upgraded all form fields from implicit `<label>` wrappers to explicit `<label for="id">` / `<input id="id">` associations; added `aria-describedby` pointing to hint paragraphs on clean fields and error paragraphs on invalid fields; applied `aria-invalid="true"` and `role="alert"` on server-side validation errors; scoped all classes under the `reg-` namespace to prevent any collision with shared `app.css` classes.
+- Added contextual ZIP field hint ("Tailors your dashboard to local hazards. You can change this later.") connected via `aria-describedby="reg-zip-hint"`, making the field's purpose explicit without requiring the user to guess why it is asked.
+- Added all interactive states for every control: `:hover` (border lightens to `oklch(0.60 0.05 148)`), `:focus` (border darkens, `box-shadow: 0 0 0 3px oklch(0.38 0.115 148 / 0.18)`), `:focus-visible` (explicit `outline: 2.5px solid` with `outline-offset`), and `:active` on the submit button (`transform: translateY(1px)`).
+- Added responsive breakpoints: 860px (split collapses to single column, feature callouts wrap into a horizontal flex row with `flex: 1 1 180px` per item); 480px (tighter shell padding, feature callouts restack vertically, form padding reduces to 36px/24px).
+- Added `@media (prefers-reduced-motion: reduce)` disabling all transitions on the button, inputs, strength bars, and password toggle.
+- Conformed to all impeccable absolute bans: no `border-left` or `border-right` accent stripes, no gradient text, no glassmorphism.
+
+Why this was done:
+- The existing register view used the basic `.auth-wrap > .auth-panel panel` layout with no page-specific visual identity, while the login page had received a full two-column split redesign — creating a jarring visual discontinuity between the two most-trafficked pages for unauthenticated users.
+- Form fields used implicit `<label>` wrappers with no `for`/`id` linking, no `aria-describedby` on hints or errors, and no `aria-invalid` on server-side validation failures — falling short of the WCAG AAA accessibility baseline established in `.impeccable.md`.
+- The password field had no show/hide toggle and no strength feedback, increasing friction for new users setting a password and providing no guidance about whether their chosen password is sufficiently strong.
+- The ZIP code field appeared with only an "(optional)" label in a `<small>` tag but no explanation of why the platform asks for it, potentially causing hesitation or omission from users who don't understand its purpose.
+- Register is the first interaction new users have with the platform — the brand panel's "Know before you go." login messaging was not appropriate for the registration context, which needs to motivate sign-up rather than reinforce a returning user's intent.
+- All button and interactive element styling relied on the shared `.button-primary` class from `app.css`, which uses the retiring coral gradient instead of the forest green accent established as the brand direction in `.impeccable.md`.
+
+How this improved the project:
+- The register and login pages now share a cohesive two-column split design language — same background, same topbar treatment, same typography pairing, same form field styling — while each panel carries distinct messaging appropriate to its context (value-proposition callouts for register, data-source credibility for login).
+- Three numbered feature callouts (01/02/03) on the brand panel give a new user a clear, scannable answer to "why should I sign up?" before they fill in a single field — directly supporting the "confidence through clarity" design principle from `.impeccable.md`.
+- The password show/hide toggle and 3-bar strength meter reduce form anxiety: users can verify what they typed and receive real-time feedback without any server round-trip, lowering the likelihood of failed submissions.
+- Explicit label/input associations, `aria-describedby` connections, `aria-invalid` on error states, and `role="alert"` on error paragraphs bring the register page to full keyboard and screen reader accessibility, consistent with the WCAG AAA commitment defined in `.impeccable.md`.
+- The ZIP field hint copy makes the field's purpose concrete ("Tailors your dashboard to local hazards") and removes the friction of a data-entry request without a stated reason, likely improving completion of the optional field.
+- The `reg-` CSS namespace and scoped custom properties contain all register-specific styles within the view file, introducing zero collision risk with `app.css` shared classes or any other view.
+- All form behavior, PHP template logic, CSRF protection, value repopulation, and validation error rendering are preserved — the redesign is a pure presentation-layer change with no behavioral risk.
+
+# Stage 5: Profile Page Redesign Session (2026-05-01)
+Summary:
+- Invoked `/impeccable craft Redesign profile.php view in frontend.` to perform a full visual redesign of the user preferences/profile page using the established project design context from `.impeccable.md`.
+- Read `.impeccable.md`, the existing `profile.php` view, `theme_tokens.css`, `theme.css`, `app.css`, `register.php`, `dashboard.php`, and `alert_detail.php` (the most recently redesigned view, used as the primary design language reference for scoped CSS, OKLCH token conventions, and the `<details>`/`<summary>` collapsible pattern).
+- Replaced the single monolithic `.panel` form-stack with four numbered semantic sections (`01 — Identity`, `02 — Alert types`, `03 — Severity`, `04 — Health profile`) plus a collapsible `<details>` element for the technical device token field — matching the collapsible metadata pattern from `alert_detail.php`.
+- Implemented a CSS-only tile checkbox pattern for both the alert types and health conditions groups: visually hidden inputs using `clip-path: inset(50%)`, styled `.pf-tile-body` with checked-state color fill (forest green light background, green border, green-dark text), a 16×16px `.pf-tile-check` box with a checkmark SVG that transitions `opacity: 0 → 1` on check, and a `input:focus-visible + .pf-tile-body` focus ring for keyboard accessibility.
+- Replaced the plain `<select>` dropdown with a custom-styled `pf-select` using an SVG chevron background image in brand green and `appearance: none`, maintaining full browser and screen reader accessibility.
+- Applied forest green (`oklch(0.52 0.15 148)`) as the interactive accent throughout — tile checked states, input focus rings, select chevron, save button fill, section eyebrow labels, and back navigation link — consistent with the brand direction applied across all other redesigned pages.
+- Established all OKLCH color tokens under `--pf-*` custom properties on the `.pf` root class, following the scoped namespace pattern of `ad-*` (alert detail), `fc-*` (forecast), and `dash-*` (dashboard).
+- Added a back-to-dashboard navigation link with an animated left-arrow SVG, matching the `ad-back` pattern from `alert_detail.php`.
+- Preserved all PHP form structure: `name` attributes, `rr_csrf_token()`, hidden `action="preferences"` input, `rr_allowed_alert_types()`, `rr_allowed_severities()`, `rr_parse_alert_types()`, `$preferencesErrors` inline field error rendering, `rr_render_message()` flash message calls, and `$preferencesResult` result panel.
+- Added responsive breakpoints: 640px (section padding reduces, tile grids collapse to 2 columns, action button stacks full-width); 380px (tile grids collapse to 1 column).
+- Conformed to all impeccable absolute bans: no border-left accent stripes, no gradient text, no glassmorphism.
+
+Why this was done:
+- The existing profile view was a flat single-panel form with no visual hierarchy — all fields from User ID through health conditions were presented at equal weight and importance, giving users no sense of grouping, purpose, or logical progression.
+- Both checkbox groups (alert types and health conditions) used the generic `.checkbox-grid` layout with default browser checkbox styling — visually inconsistent with the polished tile and chip patterns used across all other redesigned pages.
+- The device token field — a technical value most users should never need to set manually — was surfaced at the same visual level as ZIP code and alert types, adding unnecessary complexity and potential confusion for non-technical users.
+- The plain `<select>` for minimum severity used the browser's native dropdown appearance, visually inconsistent with the custom-styled inputs established across the rest of the redesigned app.
+- The page used the generic `.page-heading` and `.panel` shared classes with no page-specific design identity, making it indistinguishable in style from a generic admin utility page rather than a personal safety configuration experience.
+- Labels used administrative language ("Write path", "User preferences") rather than user-centric language aligned with the "clean, confident, civilian-friendly" brand voice defined in `.impeccable.md`.
+
+How this improved the project:
+- Four numbered sections give the form a clear information architecture — users can immediately see the logical structure (identity → what to monitor → how sensitive → health context) rather than a homogeneous list of inputs.
+- The tile checkbox pattern transforms both checkbox groups from generic browser form controls into visually distinct selection interfaces: users can assess at a glance which alert types and health conditions are active, and the checked-state green fill provides an immediate, unambiguous confirmation of selection.
+- The collapsible `<details>` element for the device token removes it from the primary visual flow without eliminating the functionality — advanced users can still access it, while the majority of users see a cleaner form.
+- The custom `<select>` with an SVG chevron is consistent with the custom input styling used across the redesigned app, removing the visual inconsistency of the native OS dropdown in an otherwise designed interface.
+- The `pf-` CSS namespace and scoped custom properties on the `.pf` root class introduce zero collision risk with existing shared classes, consistent with the namespace isolation pattern used across all other redesigned pages.
+- User-centric language ("Your account", "Alert profile", "What you want to know about", "Sensitivities & conditions") replaces administrative framing, aligning the page with the "trusted ranger" voice established in `.impeccable.md`.
+- All form behavior, PHP template logic, CSRF protection, validation error rendering, and result display are preserved — the redesign is a pure presentation-layer change with no behavioral risk.
+
+# Stage 5: Map Page Redesign Session (2026-04-30)
+Summary:
+- Invoked `/impeccable craft Redesign the map.php view.` to perform a full visual redesign of the Interactive Risk Map page using the established project design context from `.impeccable.md`.
+- Ran `/shape` to produce a confirmed design brief before writing any code, establishing: region pills replacing the `<select>` dropdown, layer toggle chips replacing bare checkboxes, personalized mode config as an inline reveal triggered by the Personalized chip, map container height raised from 480px to 600px, legend moved from a disconnected section below the map to an absolute overlay at bottom-left inside the canvas, forest green accent replacing coral throughout all controls, and the per-page dark mode toggle removed (global concern only).
+- Loaded `spatial-design.md`, `interaction-design.md`, and `motion-design.md` reference files to inform the control bar rhythm, toggle chip interaction states, and accordion-style reveal transitions.
+- Rewrote `frontend/web/views/map.php` as a clean, layout-correct view: moved `rr_render_layout_start` to the first line of the file (eliminating the orphaned `</section>` tag, the premature `<style>` block, and the toast/script fragments that previously appeared before the layout shell was opened); added a scoped `<style>` block with fourteen new CSS component namespaces (`map-controls-panel`, `region-pill`, `layer-chip`, `layer-chip-personalized`, `personalized-config`, `map-legend`, `legend-header-btn`, `legend-body`, `legend-item`, etc.); rewrote the page heading, controls panel, map container, legend overlay, help modal, and toast as clean semantic HTML.
+- Applied forest green (`oklch(0.55 0.145 150)`) as the interactive accent throughout — active region pill fill, active layer chip fill, loading spinner border, focus rings on all controls, and the Help button hover state — consistent with the brand direction applied across all other redesigned pages.
+- Implemented layer toggle chips using CSS `:has(input:checked)` — a hidden `<input type="checkbox">` inside each `<label>` handles state; no JS needed for the visual active state. Personalized chip uses purple (`oklch(0.42 0.12 285)`) to visually distinguish it as a mode toggle rather than a data layer.
+- Implemented two `grid-template-rows: 0fr → 1fr` reveal transitions with `cubic-bezier(0.16, 1, 0.3, 1)` easing (300ms for the personalized config section, 280ms for the legend collapse) — animating `grid-template-rows` rather than `height` per motion-design guidance, using the inner wrapper `min-height: 0` pattern to allow zero-height collapse.
+- Replaced region `<select>` with button pills using `aria-pressed` and `role="group"` — click sets `currentRegion` state and re-renders the map with no additional UI step needed.
+- Updated all JS event listeners: `#region-filter` select listener replaced with `.region-pill` click delegation; personalized toggle now also calls `classList.toggle('is-open', personalizedMode)` on `#personalized-config`; legend toggle uses `classList.toggle('is-collapsed', expanded)` on `#legend-body` instead of inline `maxHeight` manipulation; toast is now only called on errors, not on every layer toggle change.
+- Removed the per-page dark mode toggle button entirely; theme is now a global layout-level concern.
+- Moved legend from a sticky `position: sticky; top: 0` section below the map to `position: absolute; bottom: 20px; left: 16px` inside `#risk-map-container`, using `!important` to override any residual `app.css` sticky positioning. Legend header uses uppercase Atkinson Hyperlegible label with a rotating chevron SVG.
+- Added `prefers-reduced-motion` media query disabling all transitions and animations on the new components; updated focus rings to use `var(--map-green)` via `:focus-visible` consistently across all interactive elements.
+- Added responsive breakpoints: 960px (600px → 480px map height), 768px (controls header stacks vertically), 640px (chip and pill font/padding reduce, layer divider hides, 380px map height), 480px (260px map height, personalized config body stacks vertically, popup card anchors to bottom-left on small screens).
+
+Why this was done:
+- The existing map view had a structural defect: a `</section>` close tag, `<style>` block, and `<script>` block all appeared before `rr_render_layout_start` was called, placing presentation markup outside the layout shell.
+- The region filter was a plain `<select>` dropdown — visually inconsistent with the pill/chip patterns used elsewhere in the redesigned app, and slower to interact with than single-click pills.
+- Layer toggles were bare `<input type="checkbox">` elements inside plain `<label>` wrappers with no styled affordance — they didn't communicate their on/off state clearly at a glance and had no visual connection to the forest green brand accent.
+- The personalized user ID input was always visible, adding visual complexity even for the majority of users who do not use personalized mode.
+- The map container was 480px tall — small relative to its importance as the primary content surface, and using a neutral border that didn't visually connect it to the forest green brand palette.
+- The legend sat below the map in a separate scroll area, disconnecting it from the data it annotated and forcing users to scroll between the map and its key.
+- The dark mode toggle was per-page with emoji labels, inconsistent with a global theme-level concern and out of step with every other redesigned page.
+- All interactive elements (buttons, primary actions) used the coral accent (`--accent-coral`, `#ef6f51`) which `.impeccable.md` explicitly designates as retired in favor of forest green.
+- Toast feedback was fired on every layer toggle, producing noisy notifications that the brief confirmed should be reserved for errors only.
+
+How this improved the project:
+- The view file now has the correct PHP layout structure — `rr_render_layout_start` is the first thing called, all HTML content is inside the layout shell, and there are no orphaned tags or misplaced style/script blocks.
+- Region pills provide single-click filtering with an immediately visible active state (forest green fill), eliminating the open-and-select interaction overhead of a dropdown and matching the interaction pattern of other pill-style selectors in the redesigned app.
+- Layer chips communicate their state visually through color fill rather than a checkbox tick — users can assess at a glance which layers are active without reading individual checkbox states. The `:has()` CSS-only approach means the visual state is always in sync with the underlying checkbox value with no JS required.
+- The personalized config section is hidden by default and revealed only when the Personalized chip is activated, reducing visual complexity for the majority of users. The `grid-template-rows` animation makes the reveal feel purposeful rather than abrupt.
+- The map container is taller (600px on desktop) and has a forest green accent border (`oklch(0.55 0.145 150 / 0.32)`), giving it more visual prominence as the primary content surface and visually connecting it to the brand palette.
+- The legend is now inside the map frame — users can read the legend while looking at the map without any scroll, and the backdrop-blur treatment (`blur(10px)`) gives it visual separation from the map content without blocking it.
+- All coral accent references are eliminated from the map page; forest green is now consistent with every other redesigned view.
+- Toast notifications fire only on errors, eliminating noise from routine layer toggling and reserving the toast as a meaningful signal that something went wrong.
+- The scoped CSS custom properties (`--map-green`, `--map-purple`, `--ease-out-expo`) and component namespaces (`map-controls-panel`, `layer-chip`, `map-legend`, etc.) introduce zero collision risk with existing shared classes and no regression exposure for any other page or view.
+
 # Stage 5: Forecast Page Redesign Session (2026-04-30)
 Summary:
 - Invoked `/impeccable craft Redesign the forecast.php view.` to perform a full visual redesign of the forecast page using the established project design context from `.impeccable.md`.
