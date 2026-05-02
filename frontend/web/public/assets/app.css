@@ -1757,3 +1757,435 @@ dd {
         border-radius: 6px;
     }
 }
+
+/* ================================================
+   Risk Score Page
+   All classes prefixed risk- to avoid collisions.
+   ================================================ */
+
+/* Form */
+.risk-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 16px;
+    align-items: end;
+}
+
+/* Empty state */
+.risk-empty-state {
+    padding: 64px 24px;
+    display: grid;
+    gap: 12px;
+    justify-items: center;
+    text-align: center;
+}
+
+.risk-empty-icon {
+    width: 56px;
+    height: 56px;
+    color: oklch(0.50 0.13 148);
+    opacity: 0.72;
+}
+
+.risk-empty-title {
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin: 4px 0 0;
+}
+
+.risk-empty-body {
+    color: var(--muted);
+    margin: 0;
+    max-width: 48ch;
+    line-height: 1.65;
+    font-size: 0.95rem;
+}
+
+.risk-empty-body a {
+    color: var(--link);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 0.22em;
+}
+
+/* Verdict panel */
+.risk-verdict {
+    padding: 32px 36px;
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow);
+    animation: risk-verdict-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes risk-verdict-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Level-specific verdict backgrounds */
+.risk-level-low {
+    background: linear-gradient(160deg,
+        oklch(0.95 0.05 148 / 0.84),
+        oklch(0.97 0.02 148 / 0.94)
+    );
+    border-color: oklch(0.72 0.08 148 / 0.45);
+}
+
+.risk-level-medium {
+    background: linear-gradient(160deg,
+        oklch(0.95 0.05 75 / 0.84),
+        oklch(0.97 0.02 75 / 0.94)
+    );
+    border-color: oklch(0.70 0.09 75 / 0.45);
+}
+
+.risk-level-high {
+    background: linear-gradient(160deg,
+        oklch(0.95 0.05 25 / 0.84),
+        oklch(0.97 0.02 25 / 0.94)
+    );
+    border-color: oklch(0.65 0.10 25 / 0.45);
+}
+
+/* Verdict interior layout */
+.risk-verdict-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    margin: 16px 0 28px;
+    flex-wrap: wrap;
+}
+
+.risk-verdict-level {
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin: 0 0 8px;
+}
+
+.risk-level-low .risk-verdict-level    { color: oklch(0.38 0.14 148); }
+.risk-level-medium .risk-verdict-level { color: oklch(0.46 0.14 65); }
+.risk-level-high .risk-verdict-level   { color: oklch(0.40 0.18 25); }
+
+.risk-verdict-context {
+    color: var(--muted);
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.5;
+}
+
+/* Data cells */
+.risk-verdict-cells {
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.risk-verdict-cell {
+    padding: 14px 20px;
+    border-radius: 16px;
+    background: oklch(1 0 0 / 0.38);
+    border: 1px solid oklch(0.6 0 0 / 0.1);
+    min-width: 88px;
+    text-align: center;
+}
+
+.risk-verdict-cell-value {
+    display: block;
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+}
+
+.risk-verdict-cell-label {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 4px;
+    white-space: nowrap;
+}
+
+/* Score gauge */
+.risk-gauge {
+    margin-top: 8px;
+}
+
+.risk-gauge-track {
+    height: 10px;
+    border-radius: 999px;
+    background: oklch(0.84 0.01 148 / 0.45);
+    position: relative;
+    overflow: hidden;
+}
+
+.risk-gauge-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: var(--score-pct);
+    border-radius: 999px;
+    transform-origin: left;
+    animation: risk-gauge-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+
+@keyframes risk-gauge-in {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+}
+
+.risk-level-low .risk-gauge-fill    { background: oklch(0.52 0.15 148); }
+.risk-level-medium .risk-gauge-fill { background: oklch(0.62 0.12 65); }
+.risk-level-high .risk-gauge-fill   { background: oklch(0.47 0.18 25); }
+
+.risk-gauge-legend {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+}
+
+/* Factor breakdown */
+.risk-factor-list {
+    margin-top: 16px;
+    display: grid;
+    gap: 0;
+}
+
+.risk-factor-row {
+    display: grid;
+    gap: 8px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.risk-factor-row:last-child {
+    border-bottom: none;
+    padding-bottom: 4px;
+}
+
+.risk-factor-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.risk-factor-name {
+    font-family: 'Geist Mono', monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+}
+
+.risk-factor-weight {
+    font-family: 'Geist Mono', monospace;
+    font-size: 0.70rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.risk-factor-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.risk-factor-bar {
+    flex: 1;
+    height: 7px;
+    border-radius: 999px;
+    background: oklch(0.86 0.01 148 / 0.45);
+    position: relative;
+    overflow: hidden;
+}
+
+.risk-factor-bar::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: var(--factor-pct);
+    border-radius: 999px;
+    background: oklch(0.52 0.14 148);
+    transform-origin: left;
+    animation: risk-factor-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+}
+
+@keyframes risk-factor-in {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+}
+
+.risk-factor-value {
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    flex-shrink: 0;
+    min-width: 3ch;
+    text-align: right;
+}
+
+.risk-factor-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.55;
+    margin: 0;
+    max-width: 72ch;
+}
+
+/* Prioritized alert log */
+.risk-alert-log {
+    margin-top: 4px;
+    display: grid;
+    gap: 0;
+}
+
+.risk-alert-entry {
+    display: grid;
+    grid-template-columns: 36px 1fr auto;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line);
+    align-items: start;
+}
+
+.risk-alert-entry:last-child {
+    border-bottom: none;
+}
+
+.risk-alert-rank {
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: oklch(0.72 0.04 148);
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    padding-top: 6px;
+    text-align: right;
+}
+
+.risk-alert-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.risk-alert-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--ink);
+    margin: 0 0 4px;
+    line-height: 1.3;
+}
+
+.risk-alert-location {
+    font-size: 0.84rem;
+    color: var(--muted);
+    margin: 0;
+}
+
+.risk-alert-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    padding-top: 8px;
+    flex-shrink: 0;
+}
+
+.risk-alert-score {
+    font-family: 'Geist Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+}
+
+.risk-alert-type {
+    font-family: 'Geist Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+/* Risk page responsive */
+@media (max-width: 960px) {
+    .risk-verdict-top {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 640px) {
+    .risk-form {
+        grid-template-columns: 1fr;
+    }
+
+    .risk-verdict {
+        padding: 24px 20px;
+    }
+
+    .risk-verdict-level {
+        font-size: 2.2rem;
+    }
+
+    .risk-verdict-cells {
+        gap: 8px;
+    }
+
+    .risk-verdict-cell {
+        padding: 12px 14px;
+        min-width: 0;
+        flex: 1;
+    }
+
+    .risk-verdict-cell-value {
+        font-size: 1.6rem;
+    }
+
+    .risk-alert-entry {
+        grid-template-columns: 28px 1fr;
+    }
+
+    .risk-alert-meta {
+        display: none;
+    }
+
+    .risk-gauge-legend {
+        font-size: 0.62rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .risk-verdict,
+    .risk-gauge-fill,
+    .risk-factor-bar::after {
+        animation: none;
+    }
+}
