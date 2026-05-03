@@ -1,5 +1,6 @@
 """Tests for assistant API endpoint."""
 
+# pylint: disable=protected-access
 import json
 from datetime import datetime, timedelta, timezone
 
@@ -11,9 +12,9 @@ from config.settings import settings
 
 @pytest.fixture(autouse=True)
 def reset_guest_limit_cache():
-    assistant_api._guest_limit_cache.clear()  # type: ignore
+    assistant_api._guest_limit_cache.clear()
     yield
-    assistant_api._guest_limit_cache.clear()  # type: ignore
+    assistant_api._guest_limit_cache.clear()
 
 
 class TestAssistantRespond:
