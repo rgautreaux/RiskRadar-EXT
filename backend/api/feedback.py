@@ -104,7 +104,7 @@ def feedback_analytics(
     response_category: str | None = None,
     current_user: User = Depends(require_admin_user),
     db: Session = Depends(get_db),
-):
+) -> dict[str, Any]:
     _ = current_user
 
     base_query = db.query(Feedback)
@@ -119,7 +119,7 @@ def feedback_analytics(
     category_rows = (
         base_query.with_entities(
             Feedback.response_category,
-            func.count(Feedback.id),
+            func.count(Feedback.id),  # type: ignore
             func.avg(Feedback.rating),
         )
         .group_by(Feedback.response_category)
@@ -128,7 +128,7 @@ def feedback_analytics(
     reaction_rows = (
         base_query.with_entities(
             Feedback.reaction,
-            func.count(Feedback.id),
+            func.count(Feedback.id),  # type: ignore
         )
         .group_by(Feedback.reaction)
         .all()

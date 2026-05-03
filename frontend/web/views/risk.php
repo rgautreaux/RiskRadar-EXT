@@ -1,4 +1,8 @@
 
+<?php
+$userId = $userId ?? 0;
+$radiusKm = $radiusKm ?? 50;
+?>
 <?php rr_render_layout_start('Risk Score', 'risk'); ?>
 
 <?php $isGuest = (function_exists('rr_access_context') && rr_access_context() === 'guest'); ?>

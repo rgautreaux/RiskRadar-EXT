@@ -1,3 +1,6 @@
+<?php
+$config = $config ?? [];
+?>
 <?php rr_render_layout_start('AI Assistant', 'assistant'); ?>
 
 <style>

@@ -2,7 +2,7 @@
 # --- Import MAX_RADIUS_KM first to avoid NameError in default args ---
 from . import MAX_RADIUS_KM
 
-"""
+"""  # noqa: F841
 RiskRadar Alert Risk Scoring & Ranking System
 ------------------------------------------------
 This module computes a transparent, user-facing risk/priority score (0-100) for each alert, combining:

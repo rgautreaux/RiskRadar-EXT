@@ -2,6 +2,8 @@
 $statsResult = $statsResult ?? ['data' => ['total' => 0], 'message' => ''];
 $alertsResult = $alertsResult ?? ['data' => [], 'message' => ''];
 $latestSummaryResult = $latestSummaryResult ?? ['data' => null, 'message' => ''];
+$total = $statsResult['data']['total'] ?? 0;
+$loadedCount = count($alertsResult['data'] ?? []);
 ?>
 <?php rr_render_layout_start('Dashboard', 'dashboard'); ?>
 

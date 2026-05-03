@@ -51,7 +51,7 @@ def _parse_datetime(value: Optional[str]) -> Optional[datetime]:
                     tzinfo=timezone.utc
                 )
             return value
-        except Exception:
+        except (TypeError, ValueError):
             return value
 
     cleaned = value.strip().replace("Z", "+00:00")

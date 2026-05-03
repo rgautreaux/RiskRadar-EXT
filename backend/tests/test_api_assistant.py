@@ -11,9 +11,9 @@ from config.settings import settings
 
 @pytest.fixture(autouse=True)
 def reset_guest_limit_cache():
-    assistant_api._guest_limit_cache.clear()
+    assistant_api._guest_limit_cache.clear()  # type: ignore
     yield
-    assistant_api._guest_limit_cache.clear()
+    assistant_api._guest_limit_cache.clear()  # type: ignore
 
 
 class TestAssistantRespond:

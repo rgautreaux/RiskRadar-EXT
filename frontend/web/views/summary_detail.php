@@ -1,3 +1,19 @@
+<?php
+$summary = $summary ?? [
+    'id' => 0,
+    'title' => 'Summary Not Found',
+    'summary_type' => '',
+    'region' => 'General',
+    'generated_at' => '',
+    'content' => '',
+    'model_used' => 'Unavailable',
+    'summary_insight' => null,
+    'why_it_matters' => null,
+    'key_takeaways' => null,
+    'context_notes' => null,
+    'confidence' => null,
+];
+?>
 <?php rr_render_layout_start('Summary Detail', 'summaries'); ?>
 
 <div class="sd-wrapper">

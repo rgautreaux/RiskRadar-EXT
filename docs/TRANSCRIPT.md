@@ -1,4 +1,105 @@
-﻿# UI/UX Polish for Guest Lockout and Onboarding (IN PROGRESS)
+﻿# Diagram for Powerpoint
+
+User: Create an architecture diagram for this project to present to the class
+
+GitHub Copilot: To create an architecture diagram for your project, I'll first outline the main components and their relationships based on your workspace structure and the contents of backend/tests/conftest.py. Here’s a high-level breakdown:
+
+**Backend (FastAPI, SQLAlchemy, Alembic, etc.):**
+- API Layer: FastAPI app with routers (api/router.py, api/*.py)
+- Auth: Handles authentication and security (auth/)
+- Database: SQLAlchemy models, migrations, and session management (db/)
+- Config: Settings and environment configuration (config/)
+- LLM: Summarization and prompt logic (llm/)
+- Scoring: Risk prioritization logic (scoring/)
+- Scrapers: Data ingestion from external sources (scrapers/)
+- Demo: Mock data and seeding for testing/demo (demo/)
+- Services: (Not fully listed, but likely business logic)
+- Tests: pytest-based test suite (tests/)
+
+**Frontend:**
+- Web and mobile clients (frontend/web, frontend/mobile)
+
+**Static & UI/UX:**
+- Static assets, wireframes, and style files
+
+**Database:**
+- riskradarweb_db.sql (schema)
+- Alembic for migrations
+
+**External Data Sources:**
+- AirNow, EPA, NWS, USGS, etc. (via scrapers)
+
+**Typical Flow:**
+1. Scrapers ingest data from external APIs.
+2. Data is stored in the database.
+3. API exposes endpoints for frontend clients.
+4. LLM module summarizes and processes data.
+5. Frontend displays data to users.
+
+I’ll now generate a Mermaid diagram to visually represent this architecture. 
+
+
+
+Here is an architecture diagram for your project, suitable for presenting to your class:
+
+```mermaid
+graph TD
+  subgraph Frontend
+    Web[Web Client]
+    Mobile[Mobile Client]
+  end
+
+  subgraph API_Backend[Backend (FastAPI)]
+    Router[API Router]
+    Auth[Auth & Security]
+    LLM[LLM Summarizer]
+    Scoring[Risk Scoring]
+    Services[Business Services]
+    Scrapers[Data Scrapers]
+    Demo[Demo/Seed Data]
+  end
+
+  subgraph Database
+    DB[(PostgreSQL/SQLite)]
+    Alembic[Alembic Migrations]
+  end
+
+  subgraph ExternalSources[External Data Sources]
+    AirNow[AirNow]
+    EPA[EPA]
+    NWS[NWS]
+    USGS[USGS]
+    Other[Other APIs]
+  end
+
+  Web -- REST/JSON --> Router
+  Mobile -- REST/JSON --> Router
+  Router -- Calls --> Auth
+  Router -- Calls --> LLM
+  Router -- Calls --> Scoring
+  Router -- Calls --> Services
+  Router -- DB Access --> DB
+  Auth -- DB Access --> DB
+  LLM -- DB Access --> DB
+  Scoring -- DB Access --> DB
+  Services -- DB Access --> DB
+  Scrapers -- Write --> DB
+  Demo -- Seed --> DB
+  Alembic -- Migrations --> DB
+
+  Scrapers -- Fetch --> AirNow
+  Scrapers -- Fetch --> EPA
+  Scrapers -- Fetch --> NWS
+  Scrapers -- Fetch --> USGS
+  Scrapers -- Fetch --> Other
+
+```
+
+This diagram shows the main components: frontend clients, backend API (with its modules), database, and external data sources. You can render this Mermaid diagram using tools like Mermaid Live Editor or VS Code extensions for your presentation. Let me know if you want a PNG or PDF export, or a more detailed breakdown!
+
+---
+
+# UI/UX Polish for Guest Lockout and Onboarding (IN PROGRESS)
 
 User: Create a detailed plan to implement the suggested UI/UX Polishing Suggestions based on the codebase and project requirements:
 

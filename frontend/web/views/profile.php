@@ -2,6 +2,7 @@
 <?php
 $flash = $flash ?? null;
 $preferencesForm = $preferencesForm ?? ['alert_types' => [], 'notify_severity' => 'moderate'];
+$isGuest = $isGuest ?? false;
 ?>
 <?php rr_render_layout_start('Profile', 'profile'); ?>
 

@@ -2,7 +2,7 @@ import json
 import logging
 import re
 from collections import defaultdict
-from typing import Any
+from typing import Any, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
@@ -184,7 +184,7 @@ class ZipcodeSummaryRequest(BaseModel):
 @router.get("", response_model=list[SummaryOut])
 def list_summaries(
     summary_type: str | None = None,
-    zip_code: str | None = None,
+    zip_code: str | None = None,  # noqa: F841
     limit: int = 20,
     db: Session = Depends(get_db),
 ) -> list[dict[str, Any]]:
