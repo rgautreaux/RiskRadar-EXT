@@ -1,9 +1,18 @@
 <?php rr_render_layout_start('Summaries', 'summaries'); ?>
 
 <section class="page-heading">
-    <div>
-        <p class="eyebrow">Environmental briefings</p>
-        <h1>Summary archive</h1>
+    <div class="summ-heading-row">
+        <div>
+            <p class="eyebrow">Environmental briefings</p>
+            <h1>Summary archive</h1>
+        </div>
+        <a href="create_summary.php" class="csg-trigger-link">
+            <svg class="csg-trigger-icon" width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.5 1v2.4M7.5 11.6V14M1 7.5h2.4M11.6 7.5H14M2.93 2.93l1.7 1.7M10.37 10.37l1.7 1.7M2.93 12.07l1.7-1.7M10.37 4.63l1.7-1.7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="7.5" cy="7.5" r="2.3" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+            Generate new briefing
+        </a>
     </div>
     <p>AI-generated environmental briefings covering air quality, weather, and regional risk conditions.</p>
 </section>

@@ -1,8 +1,10 @@
 import json
 import logging
 from collections import defaultdict
+from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from db.database import get_db
@@ -66,15 +68,25 @@ def resolve_summary_alert_ids(summary: Summary, db: Session) -> tuple[list[int],
     return fallback_ids, "summaries.alert_ids"
 
 
+class ZipcodeSummaryRequest(BaseModel):
+    zip_code: str
+    lat: Optional[float] = None
+    lon: Optional[float] = None
+    location: Optional[str] = None
+
+
 @router.get("", response_model=list[SummaryOut])
 def list_summaries(
     summary_type: str | None = None,
+    zip_code: str | None = None,
     limit: int = 20,
     db: Session = Depends(get_db),
 ):
     q = db.query(Summary)
     if summary_type:
         q = q.filter(Summary.summary_type == summary_type)
+    if zip_code:
+        q = q.filter(Summary.region == zip_code)
     return q.order_by(Summary.generated_at.desc()).limit(limit).all()
 
 
@@ -109,4 +121,22 @@ def generate_summary(db: Session = Depends(get_db)):
     summary = summarizer.generate_daily_digest(db)
     if not summary:
         raise HTTPException(status_code=404, detail="No alerts to summarize")
+    return summary
+
+
+@router.post("/generate/zipcode", response_model=SummaryOut)
+def generate_zipcode_summary(
+    body: ZipcodeSummaryRequest,
+    db: Session = Depends(get_db),
+):
+    from llm.summarizer import Summarizer
+
+    summarizer = Summarizer()
+    summary = summarizer.generate_zipcode_summary(
+        db=db,
+        zip_code=body.zip_code,
+        lat=body.lat,
+        lon=body.lon,
+        location=body.location,
+    )
     return summary

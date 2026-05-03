@@ -16,6 +16,8 @@ from llm.prompts import (
     DAILY_DIGEST_USER,
     TRIP_PACKING_SYSTEM,
     TRIP_PACKING_USER,
+    ZIPCODE_SUMMARY_SYSTEM,
+    ZIPCODE_SUMMARY_USER,
 )
 
 logger = logging.getLogger(__name__)
@@ -128,6 +130,106 @@ class Summarizer:
         user_msg = BREAKING_USER.format(alert_json=json.dumps(alert_data))
         text, _, _ = self._call_llm(BREAKING_SYSTEM, user_msg)
         return text
+
+    def _parse_datetime(self, value: str | None) -> datetime | None:
+        if not value:
+            return None
+        cleaned = value.strip().replace("Z", "+00:00")
+        try:
+            parsed = datetime.fromisoformat(cleaned)
+        except ValueError:
+            return None
+        return parsed.replace(tzinfo=timezone.utc) if parsed.tzinfo is None else parsed
+
+    def generate_zipcode_summary(
+        self,
+        db: Session,
+        zip_code: str,
+        lat: float | None = None,
+        lon: float | None = None,
+        location: str | None = None,
+    ) -> Summary:
+        """Generate and persist a location-specific summary for a ZIP code."""
+        now = datetime.now(timezone.utc)
+        window_end = now + timedelta(hours=72)
+
+        q = db.query(Alert)
+        if lat is not None and lon is not None:
+            q = q.filter(
+                Alert.latitude >= lat - 1.0,
+                Alert.latitude <= lat + 1.0,
+                Alert.longitude >= lon - 1.0,
+                Alert.longitude <= lon + 1.0,
+            )
+        elif location:
+            q = q.filter(Alert.location_name.ilike(f"%{location}%"))
+        else:
+            q = q.filter(Alert.location_name.ilike(f"%{zip_code}%"))
+
+        candidates = q.order_by(Alert.fetched_at.desc()).limit(200).all()
+
+        alerts: list[Alert] = []
+        for alert in candidates:
+            event_start = self._parse_datetime(alert.event_start)
+            event_end = self._parse_datetime(alert.event_end)
+            if event_start is not None and event_start > window_end:
+                continue
+            if event_end is not None and event_end < now:
+                continue
+            alerts.append(alert)
+        alerts = alerts[:50]
+
+        alerts_data = [
+            {
+                "type": a.alert_type,
+                "severity": a.severity,
+                "title": a.title,
+                "description": (a.description or "")[:500],
+                "location": a.location_name,
+                "time": a.event_start,
+            }
+            for a in alerts
+        ]
+
+        region_label = location or zip_code
+        system_prompt = ZIPCODE_SUMMARY_SYSTEM.replace("{zip_code}", zip_code)
+        user_msg = ZIPCODE_SUMMARY_USER.format(
+            date=date.today().strftime("%B %d, %Y"),
+            zip_code=zip_code,
+            location=region_label,
+            count=len(alerts),
+            alerts_json=json.dumps(alerts_data, indent=2),
+        )
+
+        try:
+            text, tokens, model = self._call_llm(system_prompt, user_msg)
+        except Exception as exc:
+            logger.warning("LLM unavailable for ZIP code summary: %s", exc)
+            text = self._build_fallback_summary(len(alerts), f"ZIP {zip_code}")
+            tokens = 0
+            model = "fallback"
+
+        summary = Summary(
+            title=f"Local Safety Briefing — {zip_code} ({date.today().strftime('%b %d, %Y')})",
+            content=text,
+            summary_type="zipcode",
+            alert_ids=json.dumps([a.id for a in alerts]),
+            region=zip_code,
+            model_used=model,
+            token_count=tokens,
+        )
+        db.add(summary)
+        db.flush()
+        db.add_all(
+            [SummaryAlertLink(summary_id=summary.id, alert_id=a.id) for a in alerts]
+        )
+        db.commit()
+        db.refresh(summary)
+        logger.info(
+            "ZIP code summary generated: zip=%s alerts=%s tokens=%s",
+            zip_code, len(alerts), tokens,
+        )
+        return summary
 
     def generate_trip_packing_guide(
         self,
