@@ -52,7 +52,7 @@ export function FloatingWidget({
 			</AnimatePresence>
 			{/* Floating Button */}
 			<motion.button
-				className="relative w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-300 flex items-center justify-center group"
+				className="golby-float-btn"
 				aria-label="Open Golby AI Assistant"
 				onClick={onOpen}
 				onMouseEnter={() => setIsHovered(true)}

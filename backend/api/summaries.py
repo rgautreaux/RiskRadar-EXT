@@ -5,6 +5,7 @@ from collections import defaultdict
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from db.database import get_db
@@ -173,9 +174,17 @@ def resolve_summary_alert_ids(summary: Summary, db: Session) -> tuple[list[int],
     return fallback_ids, "summaries.alert_ids"
 
 
+class ZipcodeSummaryRequest(BaseModel):
+    zip_code: str
+    lat: Optional[float] = None
+    lon: Optional[float] = None
+    location: Optional[str] = None
+
+
 @router.get("", response_model=list[SummaryOut])
 def list_summaries(
     summary_type: str | None = None,
+    zip_code: str | None = None,
     limit: int = 20,
     db: Session = Depends(get_db),
 ) -> list[dict[str, Any]]:
