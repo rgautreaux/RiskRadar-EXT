@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-from typing import Optional
+from typing import Optional, Any
 
 
 
@@ -21,7 +21,9 @@ class UserPrefsUpdate(BaseModel):
     longitude: Optional[float] = None
     alert_types: Optional[list[str]] = None
     notify_severity: Optional[str] = None
+    device_token: Optional[str] = None
     health_conditions: Optional[list[str]] = None
+    assistant_style_profile: Optional[dict[str, Any]] = None
 
 class UserAdminUpdate(BaseModel):
     is_admin: bool

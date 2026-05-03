@@ -1,10 +1,5 @@
-
-
-
-
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
- 
 from datetime import datetime, timezone
 from typing import Any
 from ..db.database import get_db
@@ -19,7 +14,6 @@ from ..scoring.prioritization import (
 router = APIRouter(prefix="/alerts", tags=["Alerts"])
 
 # Stage 4: Risk Score Formula Explanation Endpoint
-from typing import Any, Dict
 
 @router.get("/risk_formula", response_model=dict)
 def get_risk_formula() -> dict[str, Any]:
@@ -129,25 +123,7 @@ def prioritized_alerts(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    result: dict[str, Any] = build_prioritized_alerts(user, db, radius_km=radius_km, limit=limit)
-    alerts = result.get("alerts", [])
-    # Convert dicts to PrioritizedAlertOut
-    from ..schemas.alert import PrioritizedAlertOut, PriorityFactors
-    alert_objs = []
-    for a in alerts:
-        if isinstance(a, dict):
-            pf = a.get("priority_factors")
-            if pf and not isinstance(pf, PriorityFactors):
-                a["priority_factors"] = PriorityFactors(**pf)
-            alert_objs.append(PrioritizedAlertOut(**a))
-        else:
-            alert_objs.append(a)
-    return PrioritizedAlertListOut(
-        user_id=int(result.get("user_id", user_id)),
-        total_nearby=int(result.get("total_nearby", len(alert_objs))),
-        alerts=alert_objs,
-        computed_at=str(result.get("computed_at", datetime.now(timezone.utc).isoformat())),
-    )
+    return build_prioritized_alerts(user, db, radius_km=radius_km, limit=limit)
 
 
 @router.get("/{alert_id}", response_model=AlertOut)

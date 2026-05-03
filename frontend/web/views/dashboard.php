@@ -1,11 +1,11 @@
+<?php
+$statsResult = $statsResult ?? ['data' => ['total' => 0], 'message' => ''];
+$alertsResult = $alertsResult ?? ['data' => [], 'message' => ''];
+$latestSummaryResult = $latestSummaryResult ?? ['data' => null, 'message' => ''];
+$total = $statsResult['data']['total'] ?? 0;
+$loadedCount = count($alertsResult['data'] ?? []);
+?>
 <?php rr_render_layout_start('Dashboard', 'dashboard'); ?>
-
-<?php /* Golby Onboarding Popup (conditionally rendered) */
-if (!empty($user) && !$user['has_completed_onboarding']) {
-    define('GOLBY_ONBOARDING_NEEDED', true);
-    include __DIR__ . '/partials/golby_onboarding_popup.html';
-    echo "<script>window.GOLBY_ONBOARDING_NEEDED = true;</script>";
-}
 
 <section class="hero-panel">
     <div>

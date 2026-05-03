@@ -1,66 +1,108 @@
 const puppeteer = require('puppeteer');
 
-describe('Golby Onboarding Tutorial', () => {
-  let browser, page;
+const APP_BASE = 'http://localhost:8080';
+const AUTHENTICATED_PAGES = [
+  '/index.php',
+  '/alerts.php',
+  '/summaries.php',
+  '/profile.php',
+  '/map.php',
+  '/forecast.php',
+  '/assistant.php',
+];
+
+async function registerUser(page) {
+  await page.goto(`${APP_BASE}/register.php`, { waitUntil: 'networkidle0' });
+
+  const email = `golby_${Date.now()}@example.com`;
+  await page.type('input[name="display_name"]', 'Golby Tester');
+  await page.type('input[name="email"]', email);
+  await page.type('input[name="password"]', 'TestPass123!');
+  await page.type('input[name="zip_code"]', '90210');
+
+  await Promise.all([
+    page.waitForNavigation({ waitUntil: 'networkidle0' }),
+    page.click('button[type="submit"]'),
+  ]);
+
+  return { email, password: 'TestPass123!' };
+}
+
+async function loginUser(page, credentials) {
+  await page.goto(`${APP_BASE}/login.php`, { waitUntil: 'networkidle0' });
+  await page.type('input[name="email"]', credentials.email);
+  await page.type('input[name="password"]', credentials.password);
+
+  await Promise.all([
+    page.waitForNavigation({ waitUntil: 'networkidle0' }),
+    page.click('button[type="submit"]'),
+  ]);
+}
+
+async function expectOnboardingVisible(page) {
+  await page.waitForSelector('#golby-onboarding-shell:not([hidden])', { timeout: 15000 });
+  const visible = await page.$('#golby-onboarding-shell:not([hidden])');
+  expect(visible).not.toBeNull();
+}
+
+async function expectOnboardingHidden(page) {
+  const visible = await page.$('#golby-onboarding-shell:not([hidden])');
+  expect(visible).toBeNull();
+}
+
+describe('Golby onboarding tutorial', () => {
+  let browser;
+  let page;
+
   beforeAll(async () => {
     browser = await puppeteer.launch({ headless: true });
     page = await browser.newPage();
-  }, 30000); // 30 seconds
+  }, 30000);
+
   afterAll(async () => {
     await browser.close();
   });
 
-  it('shows onboarding for new user', async () => {
-    await page.goto('http://localhost:8080/register.php');
-    // Fill registration form with random email
-    await page.type('input[name="display_name"]', 'Test User');
-    const email = `testuser_${Date.now()}@example.com`;
-    await page.type('input[name="email"]', email);
-    await page.type('input[name="password"]', 'TestPass123!');
-    await page.type('input[name="zip_code"]', '12345');
-    console.log('DEBUG: Submitting registration form');
-    await page.click('button[type="submit"]');
-    // Wait for redirect to login, then login
-    try {
-      await page.waitForSelector('.message-success', { timeout: 15000 });
-      console.log('DEBUG: Registration success message detected');
-    } catch (e) {
-      console.log('DEBUG: Registration success message TIMEOUT', e);
-      const content = await page.content();
-      console.log('DEBUG: Registration page content after submit:', content);
-      throw e;
-    }
-    await page.type('input[name="email"]', email);
-    await page.type('input[name="password"]', 'TestPass123!');
-    await page.click('button[type="submit"]');
-    // Wait for onboarding popup after login
-    try {
-      await page.waitForSelector('.golby-onboarding-step', { timeout: 20000 });
-      console.log('DEBUG: Onboarding popup detected after login');
-    } catch (e) {
-      console.log('DEBUG: Onboarding popup TIMEOUT after login', e);
-      const content = await page.content();
-      console.log('DEBUG: Page content after login:', content);
-      await page.screenshot({ path: 'onboarding_after_login.png', fullPage: true });
-      throw e;
-    }
-    const onboardingVisible = await page.$('.golby-onboarding-step') !== null;
-    expect(onboardingVisible).toBe(true);
-  }, 120000);
+  it('stays hidden on login and register pages before sign-in', async () => {
+    await page.goto(`${APP_BASE}/login.php`, { waitUntil: 'networkidle0' });
+    await expectOnboardingHidden(page);
 
-  it('does not show onboarding for returning user', async () => {
-    // Log out if already logged in
-    await page.goto('http://localhost:8080/logout.php');
-    await page.goto('http://localhost:8080/login.php');
-    // Use the same email and password
-    await page.type('input[name="email"]', 'testuser@example.com');
-    await page.type('input[name="password"]', 'TestPass123!');
-    await page.click('button[type="submit"]');
-    // Wait for possible onboarding popup
-    try {
-      await page.waitForTimeout(3000); // Give time for UI to update
-    } catch (e) {}
-    const onboardingVisible = await page.$('.golby-onboarding-step') !== null;
-    expect(onboardingVisible).toBe(false);
+    await page.goto(`${APP_BASE}/register.php`, { waitUntil: 'networkidle0' });
+    await expectOnboardingHidden(page);
+  }, 60000);
+
+  it('appears on authenticated pages until the user finishes the tour', async () => {
+    const credentials = await registerUser(page);
+    await loginUser(page, credentials);
+
+    for (const path of AUTHENTICATED_PAGES) {
+      await page.goto(`${APP_BASE}${path}`, { waitUntil: 'networkidle0' });
+      await expectOnboardingVisible(page);
+      await page.screenshot({ path: `golby-onboarding-${path.replace(/\//g, '').replace('.php', '')}.png`, fullPage: true });
+    }
+
+    const nextButton = '[data-golby-onboarding-action="next"]';
+    for (let step = 0; step < 3; step += 1) {
+      await page.click(nextButton);
+      await page.waitForFunction(
+        (expectedStep) => document.querySelector('[data-golby-onboarding-counter]')?.textContent === expectedStep,
+        {},
+        `Step ${step + 2} of 4`,
+      );
+    }
+
+    await Promise.all([
+      page.waitForFunction(() => document.querySelector('#golby-onboarding-shell')?.hidden === true, { timeout: 10000 }),
+      page.click(nextButton),
+    ]);
+
+    const onboardingHidden = await page.$('#golby-onboarding-shell:not([hidden])');
+    expect(onboardingHidden).toBeNull();
+
+    await page.goto(`${APP_BASE}/index.php`, { waitUntil: 'networkidle0' });
+    await expectOnboardingHidden(page);
+
+    await page.goto(`${APP_BASE}/alerts.php`, { waitUntil: 'networkidle0' });
+    await expectOnboardingHidden(page);
   }, 120000);
 });

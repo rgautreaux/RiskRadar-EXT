@@ -126,7 +126,7 @@ def _sync_user_health_conditions(db: Session, user: User, condition_keys: list[s
 
 def _serialize_user(user: User, db: Session | None = None) -> UserOut:
     # Use .__dict__ to access actual values, not SQLAlchemy columns
-    user_data: Dict[str, Any] = user.__dict__
+    user_data: Dict[str, Any] = dict(user.__dict__)
     alert_types = _parse_alert_types_json(user_data.get('alert_types'))
     if db is not None and not alert_types:
         pref_rows = (
@@ -157,6 +157,7 @@ def _serialize_user(user: User, db: Session | None = None) -> UserOut:
     )
 
     created_at = user_data.get('created_at') or datetime.now(timezone.utc)
+    created_at_str = created_at.isoformat() if isinstance(created_at, datetime) else str(created_at)
     return UserOut(
         id=user_data['id'],
         display_name=user_data.get('display_name'),
@@ -169,7 +170,7 @@ def _serialize_user(user: User, db: Session | None = None) -> UserOut:
         notify_severity=user_data.get('notify_severity'),
         health_conditions=serialized_health_conditions,
         assistant_style_profile=user_data.get('assistant_style_profile'),
-        created_at=created_at,
+        created_at=created_at_str,
         has_completed_onboarding=user_data.get('has_completed_onboarding', False),
     )
 

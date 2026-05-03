@@ -300,6 +300,9 @@ window.__RISKRADAR_FORECAST_API_PREFIX__ = <?php echo json_encode($forecastApiPr
     opacity: 0.62;
 }
 
+/* --- Locked overlay for guests --- */
+.forecast-locked { pointer-events: none; opacity: 0.5; }
+
 .fc-risk-badge {
     font-family: 'Geist Mono', monospace;
     font-size: 0.66rem;
@@ -427,13 +430,41 @@ window.__RISKRADAR_FORECAST_API_PREFIX__ = <?php echo json_encode($forecastApiPr
 }
 </style>
 
-<section class="fc-hero">
+<?php $isGuest = (function_exists('rr_access_context') && rr_access_context() === 'guest'); ?>
+
+<?php if ($isGuest) : ?>
+    <div class="locked-overlay" role="dialog" aria-modal="true" aria-labelledby="forecast-lockout-title">
+        <div class="locked-modal-panel">
+            <div class="locked-modal-header">
+                <svg class="locked-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="32" height="32" aria-hidden="true">
+                    <rect x="3" y="11" width="18" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/><path d="M7 11V8a5 5 0 0 1 10 0v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <h2 id="forecast-lockout-title" class="locked-modal-title">48-Hour Forecast for Registered Users</h2>
+            </div>
+            <p class="locked-modal-body">
+                Get data-driven risk forecasts tailored to your location. Our predictive models analyze environmental trends 24-48 hours ahead to help you stay informed.
+            </p>
+            <ul class="locked-modal-benefits" aria-label="Forecast benefits">
+                <li>Personalized 48-hour risk projections</li>
+                <li>Per-condition breakdowns (air, fire, pollen, etc.)</li>
+                <li>Trend direction and confidence levels</li>
+                <li>Integrated with your location and health profile</li>
+            </ul>
+            <div class="locked-modal-actions">
+                <a href="/login.php" class="button-primary" role="button">Sign In</a>
+                <a href="/register.php" class="button-secondary" role="button">Create Account</a>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
+<section class="fc-hero<?php echo $isGuest ? ' forecast-locked' : ''; ?>">
     <p class="fc-eyebrow">24–48 Hour Outlook</p>
     <h1 class="fc-headline">Predictive Risk Forecast</h1>
     <p class="fc-sub">Enter a location to see environmental risk projections for the next 48 hours — trend direction, confidence levels, and per-condition breakdowns.</p>
 </section>
 
-<section class="fc-search-wrap">
+<section class="fc-search-wrap<?php echo $isGuest ? ' forecast-locked' : ''; ?>">
     <form id="forecast-location-form" class="fc-search-form">
         <div class="fc-input-group">
             <svg class="fc-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

@@ -218,5 +218,72 @@ function rr_validate_preferences(array $post): array
         $data['device_token'] = null;
     }
 
+    // Parse and validate personality profile if provided
+    $personalityJson = trim((string) ($post['personality_profile_json'] ?? ''));
+    $assistantStyleProfile = null;
+    if ($personalityJson !== '') {
+        $decoded = json_decode($personalityJson, true);
+        if (!is_array($decoded) || !rr_validate_personality_profile($decoded)) {
+            $errors['personality_profile_json'] = 'Invalid Golby personality profile format.';
+        } else {
+            $assistantStyleProfile = $decoded;
+        }
+    }
+    $data['assistant_style_profile'] = $assistantStyleProfile;
+
     return [$data, $errors];
+}
+
+function rr_validate_personality_profile(?array $profile): bool
+{
+    if ($profile === null) {
+        return true; // Optional field
+    }
+
+    if (!is_array($profile)) {
+        return false;
+    }
+
+    // Check required top-level sections
+    if (!isset($profile['tone']) || !isset($profile['delivery']) || !isset($profile['voice'])) {
+        return false;
+    }
+
+    // Validate tone section
+    $tone = $profile['tone'];
+    if (!is_array($tone) || !isset($tone['warmth'], $tone['calmness'], $tone['humor'])) {
+        return false;
+    }
+    if (!is_numeric($tone['warmth']) || !is_numeric($tone['calmness']) || !is_numeric($tone['humor'])) {
+        return false;
+    }
+    if ($tone['warmth'] < 0 || $tone['warmth'] > 1 || $tone['calmness'] < 0 || $tone['calmness'] > 1 || $tone['humor'] < 0 || $tone['humor'] > 1) {
+        return false;
+    }
+
+    // Validate delivery section
+    $delivery = $profile['delivery'];
+    if (!is_array($delivery) || !isset($delivery['conciseness'], $delivery['detail'])) {
+        return false;
+    }
+    if (!is_numeric($delivery['conciseness']) || !is_numeric($delivery['detail'])) {
+        return false;
+    }
+    if ($delivery['conciseness'] < 0 || $delivery['conciseness'] > 1 || $delivery['detail'] < 0 || $delivery['detail'] > 1) {
+        return false;
+    }
+
+    // Validate voice section
+    $voice = $profile['voice'];
+    if (!is_array($voice) || !isset($voice['formality'])) {
+        return false;
+    }
+    if (!is_numeric($voice['formality'])) {
+        return false;
+    }
+    if ($voice['formality'] < 0 || $voice['formality'] > 1) {
+        return false;
+    }
+
+    return true;
 }
