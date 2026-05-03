@@ -120,7 +120,7 @@ def feedback_analytics(
     category_rows = (
         base_query.with_entities(
             Feedback.response_category,
-            func.count(Feedback.id),  # type: ignore
+            func.count(Feedback.id),  # type: ignore[operator]
             func.avg(Feedback.rating),
         )
         .group_by(Feedback.response_category)
@@ -129,7 +129,7 @@ def feedback_analytics(
     reaction_rows = (
         base_query.with_entities(
             Feedback.reaction,
-            func.count(Feedback.id),  # type: ignore
+            func.count(Feedback.id),  # type: ignore[operator]
         )
         .group_by(Feedback.reaction)
         .all()
@@ -200,7 +200,7 @@ def feedback_weekly_report(
         day_buckets[day_key]["count"] += 1
         day_buckets[day_key]["rating_sum"] += row.rating
 
-    by_day = []
+    by_day: list[dict[str, Any]] = []
     for day_key, values in day_buckets.items():
         count = int(values["count"])
         rating_sum = float(values["rating_sum"])

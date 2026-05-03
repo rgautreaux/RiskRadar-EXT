@@ -1,5 +1,6 @@
 """Shared fixtures for all tests."""
 
+# pylint: disable=redefined-outer-name
 import json
 from collections.abc import Generator
 from datetime import datetime, timezone
@@ -43,7 +44,7 @@ def db_session() -> Generator[Session, None, None]:
 
 
 @pytest.fixture
-def test_client(db_session: Session) -> Generator[TestClient, None, None]:  # type: ignore  # noqa: F811
+def test_client(db_session: Session) -> Generator[TestClient, None, None]:
     """FastAPI TestClient wired to the in-memory DB.
 
     Creates a fresh app without lifespan (no scheduler, no prod DB init)
@@ -96,7 +97,7 @@ _pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 
 @pytest.fixture
-def sample_alerts(db_session: Session) -> list[Alert]:  # type: ignore  # noqa: F811
+def sample_alerts(db_session: Session) -> list[Alert]:
     """Insert 3 alerts of different types."""
     alerts = [
         Alert(
@@ -153,7 +154,7 @@ def sample_alerts(db_session: Session) -> list[Alert]:  # type: ignore  # noqa: 
 
 
 @pytest.fixture
-def sample_user(db_session: Session) -> User:  # type: ignore  # noqa: F811
+def sample_user(db_session: Session) -> User:
     """Insert a test user."""
     user = User(
         display_name="Test User",
@@ -171,7 +172,7 @@ def sample_user(db_session: Session) -> User:  # type: ignore  # noqa: F811
 
 
 @pytest.fixture
-def admin_user(db_session: Session) -> User:  # noqa: F811
+def admin_user(db_session: Session) -> User:
     """Insert an admin test user."""
     user = User(
         display_name="Admin User",
@@ -189,7 +190,7 @@ def admin_user(db_session: Session) -> User:  # noqa: F811
 
 
 @pytest.fixture
-def sample_summary(db_session: Session, sample_alerts: list[Alert]) -> Summary:  # noqa: F811
+def sample_summary(db_session: Session, sample_alerts: list[Alert]) -> Summary:
     """Insert a test summary linked to sample_alerts."""
     summary = Summary(
         title="Environmental Digest — Mar 02, 2026",

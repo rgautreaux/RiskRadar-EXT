@@ -4,6 +4,7 @@ import re
 from collections import defaultdict
 from typing import Any, Optional
 
+# pylint: disable=unused-argument
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -51,7 +52,7 @@ def _parse_alert_ids_json(raw_alert_ids: str | None) -> list[int]:
         if isinstance(item, bool):
             continue
         try:
-            value = int(item)
+            value = int(item)  # type: ignore
         except (TypeError, ValueError):
             continue
         if value > 0:
@@ -184,7 +185,7 @@ class ZipcodeSummaryRequest(BaseModel):
 @router.get("", response_model=list[SummaryOut])
 def list_summaries(
     summary_type: str | None = None,
-    zip_code: str | None = None,  # noqa: F841
+    zip_code: str | None = None,
     limit: int = 20,
     db: Session = Depends(get_db),
 ) -> list[dict[str, Any]]:

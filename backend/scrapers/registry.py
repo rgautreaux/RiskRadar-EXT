@@ -8,7 +8,7 @@ from typing import Any
 import yaml
 
 from config.settings import settings
-from scrapers.base_scraper import BaseScraper  # noqa: F401
+from scrapers.base_scraper import BaseScraper as _BaseScraper  # noqa: F401
 from scrapers.generic_api_scraper import GenericAPIScraper
 from scrapers.web_scraper import WebScraper
 from scrapers.nws_scraper import NWSScraper
@@ -32,6 +32,7 @@ def _get_config_value(name: str) -> str:
 
 # Legacy scrapers with custom Python logic.
 # These coexist alongside config-driven sources from sources.yaml.
+# pylint: disable=unnecessary-lambda
 LEGACY_SCRAPERS: list[dict] = [
     {
         "factory": lambda: NWSScraper(),
@@ -62,6 +63,7 @@ LEGACY_SCRAPERS: list[dict] = [
         "stagger_offset_minutes": 5,
     },
 ]
+# pylint: enable=unnecessary-lambda
 
 
 def _load_yaml_config() -> dict:
