@@ -117,19 +117,19 @@ def feedback_analytics(
     total_feedback = base_query.count()
     average_rating = base_query.with_entities(func.avg(Feedback.rating)).scalar()
 
-    category_rows = (
+    category_rows = (  # type: ignore
         base_query.with_entities(
             Feedback.response_category,
-            func.count(Feedback.id),  # type: ignore[operator]
+            func.count(Feedback.id),  # type: ignore
             func.avg(Feedback.rating),
         )
         .group_by(Feedback.response_category)
         .all()
     )
-    reaction_rows = (
+    reaction_rows = (  # type: ignore
         base_query.with_entities(
             Feedback.reaction,
-            func.count(Feedback.id),  # type: ignore[operator]
+            func.count(Feedback.id),  # type: ignore
         )
         .group_by(Feedback.reaction)
         .all()
