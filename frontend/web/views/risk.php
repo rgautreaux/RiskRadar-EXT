@@ -16,10 +16,19 @@
     <?php if ($isGuest): ?>
         <div class="locked-overlay">
             <div class="locked-message">
-                <span class="locked-icon" aria-hidden="true">🔒</span>
-                <strong>This feature is for registered users only</strong>
-                <p>Sign in or create an account to access personalized risk scoring.</p>
-                <a href="login.php" class="button-secondary">Sign In / Register</a>
+                <div class="locked-header">
+                    <img src="assets/icons/warning.svg" alt="Locked feature" class="locked-svg" />
+                    <div>
+                        <strong>This feature is for registered users only</strong>
+                        <button class="info-button" aria-describedby="risk-lockout-info" aria-label="Why is this locked?">
+                            <img src="assets/icons/info.svg" alt="Info" class="info-svg" />
+                        </button>
+                    </div>
+                </div>
+                <p class="locked-text">Sign in or create an account to access personalized risk scoring.</p>
+                <div class="locked-actions">
+                    <a href="login.php" class="button-secondary">Sign In / Register</a>
+                </div>
             </div>
         </div>
         <form class="filter-grid locked" onsubmit="showLockoutPopup(); return false;" aria-disabled="true">
@@ -35,6 +44,7 @@
         </form>
         <script>
         function showLockoutPopup() {
+            if (window.showLockoutDialog) return window.showLockoutDialog();
             alert('Personalized risk scoring is only available to registered users. Please sign in or create an account.');
         }
         </script>

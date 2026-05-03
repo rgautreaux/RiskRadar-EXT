@@ -105,7 +105,14 @@ The RiskRadar Web-Extension provides a comprehensive set of features accessible 
    - Operational Golby assistant widget for natural-language risk Q&A.
    - Supports live backend responses with local fallback behavior.
    - Includes safety guardrails for medical/legal/emergency/harmful request classes.
+   - Guest users are limited by `GUEST_DAILY_LIMIT` and see a registration prompt for personalized requests.
    - Supports feedback controls that feed communication-style learning pathways.
+
+#### Guest Chat Policy
+- Anonymous users can send up to `GUEST_DAILY_LIMIT` Golby messages per day before the assistant returns a daily-limit message.
+- Requests that reference personal state such as "my risk" or "my profile" are reserved for signed-in users.
+- Set `GUEST_DAILY_LIMIT` in the backend environment if you want to raise or lower the guest message cap.
+- Registered users are not subject to the guest message cap.
 
 ---
 

@@ -210,6 +210,23 @@
     }
 }
 /*
+
+    /* Lockout / onboarding helpers */
+    .locked-overlay { position: relative; }
+    .locked-message { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; padding: 18px; border-radius: 12px; background: linear-gradient(180deg,#fff,#fff8f2); border: 1px solid var(--line); }
+    .locked-header { display:flex; gap:12px; align-items:center; }
+    .locked-svg { width:40px; height:40px; flex-shrink:0; }
+    .info-button { background:transparent; border:none; padding:4px; margin-left:8px; cursor:pointer; }
+    .info-svg { width:20px; height:20px; }
+    .locked-actions { display:flex; gap:8px; margin-top:6px; }
+    .locked-text { margin:0; color:var(--muted); }
+    .inline-lockout-info { margin-top:8px; padding:8px 10px; background:#fff8f0; border:1px solid var(--line); border-radius:8px; color:var(--ink); }
+    .lockout-backdrop { position: fixed; inset:0; background: rgba(0,0,0,0.32); }
+    .lockout-panel { position: fixed; left:50%; top:50%; transform: translate(-50%,-50%); z-index:2000; background:#fff; border-radius:12px; padding:20px; max-width:520px; box-shadow: 0 20px 60px rgba(0,0,0,0.25); }
+    .lockout-panel h2 { margin:0 0 8px 0; }
+    .lockout-actions { margin:12px 0; }
+    .button-ghost { background:transparent; border:1px solid var(--line); padding:8px 12px; border-radius:8px; cursor:pointer; }
+    .lockout-close { margin-top:8px; }
 ====================================================
  RiskRadar Web Design System — Layout Lane Utilities
  Author: Rebecca (Layout Lane)

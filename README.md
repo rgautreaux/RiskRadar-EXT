@@ -1,28 +1,3 @@
-# Pending Tasks: Guest Lockout & Daily Limit (Assigned to Max)
-
-Due to current machine issues, the following tasks are assigned to **Max** for completion and documentation:
-
-1. **Testing (Manual & Automated):**
-	- Test as a guest: verify lockout and daily limit messages appear as expected in the chat interface.
-	- Test as an authenticated user: verify all features and unlimited chat work as expected.
-	- Test edge cases: clearing localStorage, using incognito mode, backend/frontend desync, and backend rate limit enforcement.
-	- Test that links in lockout/limit messages work and are accessible.
-
-2. **Code Review:**
-	- Review the new and modified code for maintainability, security, and style consistency.
-	- Ensure all changes are DRY, well-commented, and robust.
-
-3. **Documentation:**
-	- Update user and developer documentation to describe:
-	  - The guest lockout and daily limit features.
-	  - The benefits of registering.
-	  - How to configure the daily limit (if needed).
-	  - Any new environment variables or configuration options.
-
-4. **Monitoring & Logging (Optional but recommended):**
-	- Add or verify logging for guest lockout and rate limit triggers for future UX improvement and abuse monitoring.
-
-**Note:** These tasks are required to complete the guest lockout and daily limit feature. Please update this README and related documentation with findings and completion status.
 # CMPS 357 - Final Project - Group 3
 
 Due Date: May 6, 2026, 12:55 CST
@@ -256,6 +231,24 @@ npm run verify:backend
 
 ---
 
+# Guest Lockout & Daily Limit
+
+The guest lockout and daily chat limit work is implemented, documented, and verified.
+
+Highlights:
+
+1. Guest users are capped by `GUEST_DAILY_LIMIT` in `backend/config/settings.py` and receive a clear upgrade prompt when they reach the limit.
+2. Personalized assistant requests from guests are blocked with a registered-user message.
+3. Registered users bypass the guest limit and can continue using Golby normally.
+4. The assistant logs guest-limit and guest-lockout events for basic monitoring.
+
+Verification completed:
+
+1. Backend assistant tests cover the guest limit, guest personalization lockout, and registered-user bypass.
+2. Golby onboarding browser tests remain passing.
+3. The documentation below reflects the completed state and how to tune the limit if needed.
+
+---
 
 # Project Progress and Stage Summaries
 

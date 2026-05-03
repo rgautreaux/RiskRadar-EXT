@@ -3,6 +3,7 @@
 import logging
 import os
 from pathlib import Path
+from typing import Any
 
 import yaml
 
@@ -76,7 +77,7 @@ def _load_yaml_config() -> dict:
     return config
 
 
-def load_all_scrapers() -> list[dict]:
+def load_all_scrapers() -> list[dict[str, Any]]:
     """Return a list of scraper descriptors for the scheduler.
 
     Each descriptor is a dict with:

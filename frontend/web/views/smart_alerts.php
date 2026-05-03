@@ -1,4 +1,9 @@
 
+<?php
+$userId = $userId ?? 0;
+$radiusKm = $radiusKm ?? 150;
+$limit = $limit ?? 50;
+?>
 <?php rr_render_layout_start('Smart Alerts', 'smart_alerts'); ?>
 
 <?php $isGuest = (function_exists('rr_access_context') && rr_access_context() === 'guest'); ?>
@@ -15,13 +20,20 @@
 <section class="panel">
     <?php if ($isGuest): ?>
         <div class="locked-overlay">
-            <div class="locked-message">
-                <span class="locked-icon" aria-hidden="true">🔒</span>
-                <strong>User-Only Feature</strong>
-                <p>You’re currently exploring as a guest.<br>Sign in or create a free account to unlock smart alerts, personalized risk scores, and more!</p>
+            <div class="locked-message" aria-hidden="false">
+                <div class="locked-header">
+                    <img src="assets/icons/warning.svg" alt="Locked feature" class="locked-svg" />
+                    <div>
+                        <strong>User-Only Feature</strong>
+                        <button class="info-button" aria-describedby="lockout-info" aria-label="Why is this locked?"> 
+                            <img src="assets/icons/info.svg" alt="Info" class="info-svg" />
+                        </button>
+                    </div>
+                </div>
+                <p class="locked-text">You’re currently exploring as a guest. Sign in or create a free account to unlock smart alerts, personalized risk scores, and more!</p>
                 <div class="locked-actions">
-                    <a href="login.php" class="button-secondary">Sign In to Unlock</a>
-                    <a href="register.php" class="button-primary">Create Account</a>
+                    <a href="login.php" class="button-secondary" aria-label="Sign in to unlock">Sign In to Unlock</a>
+                    <a href="register.php" class="button-primary" aria-label="Create account">Create Account</a>
                 </div>
             </div>
         </div>
@@ -41,9 +53,63 @@
             <button class="button-primary" type="submit" disabled>Load prioritized alerts</button>
         </form>
         <script>
-        function showLockoutPopup() {
-            alert('Sign in or create an account to unlock smart alerts, personalized risk scores, and more!');
-        }
+        // Accessible lockout dialog: open/close and focus management
+        (function(){
+            const DIALOG_ID = 'lockout-dialog';
+            function createDialog() {
+                if (document.getElementById(DIALOG_ID)) return;
+                const dlg = document.createElement('div');
+                dlg.id = DIALOG_ID;
+                dlg.setAttribute('role','dialog');
+                dlg.setAttribute('aria-modal','true');
+                dlg.hidden = true;
+                dlg.innerHTML = `
+                    <div class="lockout-backdrop" tabindex="-1"></div>
+                    <div class="lockout-panel" role="document">
+                        <h2>User-Only Feature</h2>
+                        <p id="lockout-info">Sign in or create a free account to unlock smart alerts, personalized risk scores, and more.</p>
+                        <p class="lockout-actions"><a href="login.php" class="button-secondary">Sign In</a> <a href="register.php" class="button-primary">Create Account</a></p>
+                        <button class="button-ghost lockout-close" aria-label="Close dialog">Close</button>
+                    </div>
+                `;
+                document.body.appendChild(dlg);
+                dlg.querySelector('.lockout-close').addEventListener('click', () => closeDialog(dlg));
+                dlg.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeDialog(dlg); });
+            }
+            function openDialog() {
+                createDialog();
+                const dlg = document.getElementById(DIALOG_ID);
+                dlg.hidden = false;
+                // save previously focused
+                dlg._prevFocus = document.activeElement;
+                const closeBtn = dlg.querySelector('.lockout-close');
+                closeBtn.focus();
+            }
+            function closeDialog(dlg) {
+                dlg.hidden = true;
+                try { dlg._prevFocus && dlg._prevFocus.focus(); } catch(e){}
+            }
+            // attach to locked form behavior
+            window.showLockoutDialog = openDialog;
+            // backward-compatible alias for existing pages
+            window.showLockoutPopup = openDialog;
+            // attach info button to show inline info (non-modal)
+            document.addEventListener('click', function(e){
+                const t = e.target;
+                if (t.closest && t.closest('.info-button')){
+                    e.preventDefault();
+                    const id = 'lockout-inline-info';
+                    if (document.getElementById(id)) return;
+                    const el = document.createElement('div');
+                    el.id = id;
+                    el.className = 'inline-lockout-info';
+                    el.setAttribute('role','status');
+                    el.innerText = 'We limit some features to registered users to protect resources and provide personalized data.';
+                    t.closest('.locked-message').appendChild(el);
+                    setTimeout(()=> el.remove(), 8000);
+                }
+            });
+        })();
         </script>
     <?php else: ?>
         <form class="filter-grid" method="get" action="smart_alerts.php">

@@ -6,7 +6,21 @@
   }
 </style>
 
-<!-- Assistant Page Welcome & Chat Wrapper -->
+<section class="panel" style="margin: 0 0 1.25rem; border-radius: 0 0 18px 18px;">
+  <div class="panel-header">
+    <div>
+      <p class="eyebrow">Safety and privacy</p>
+      <h1>How to use Golby safely</h1>
+    </div>
+  </div>
+  <p>Golby is designed to explain alerts, summaries, and forecast context. Use it for guidance, not for sharing secrets or making emergency decisions without a second source.</p>
+  <ul>
+    <li>Ask about environmental risks, summary takeaways, and how to navigate RiskRadar.</li>
+    <li>Do not enter passwords, API keys, or other sensitive account details into chat.</li>
+    <li>Verify urgent or high-impact information in the dashboard or alert detail pages.</li>
+  </ul>
+</section>
+
 <div id="riskradar-assistant-page-welcome"></div>
 
 <script>

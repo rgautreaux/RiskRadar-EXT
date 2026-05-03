@@ -20,6 +20,7 @@ from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 
 from db.models import Alert, User
+from schemas.risk_score import RiskScoreOut, RiskFactor
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -152,10 +153,10 @@ def compute_risk_score(
     user: User,
     db: Session,
     radius_km: float = MAX_RADIUS_KM,
-) -> dict:
+) -> RiskScoreOut:
     """Compute a personalized risk score for the given user.
 
-    Returns a dict matching the RiskScoreOut schema shape.
+    Returns a RiskScoreOut Pydantic model.
     """
     user_lat = user.latitude
     user_lon = user.longitude
@@ -205,40 +206,40 @@ def compute_risk_score(
     risk_level = _level_from_score(overall)
 
     factors = [
-        {
-            "name": "proximity",
-            "value": round(prox, 1),
-            "weight": PROXIMITY_WEIGHT,
-            "description": f"Based on distance to {len(nearby_alerts)} nearby alert(s)",
-        },
-        {
-            "name": "severity",
-            "value": round(sev, 1),
-            "weight": SEVERITY_WEIGHT,
-            "description": "Weighted severity of nearby alerts",
-        },
-        {
-            "name": "health_sensitivity",
-            "value": round(sens, 1),
-            "weight": SENSITIVITY_WEIGHT,
-            "description": f"Match between conditions {user_conditions} and alert types {nearby_alert_types}",
-        },
-        {
-            "name": "alert_density",
-            "value": round(dens, 1),
-            "weight": DENSITY_WEIGHT,
-            "description": f"{len(nearby_alerts)} alert(s) within {radius_km} km",
-        },
+        RiskFactor(
+            name="proximity",
+            value=round(prox, 1),
+            weight=PROXIMITY_WEIGHT,
+            description=f"Based on distance to {len(nearby_alerts)} nearby alert(s)",
+        ),
+        RiskFactor(
+            name="severity",
+            value=round(sev, 1),
+            weight=SEVERITY_WEIGHT,
+            description="Weighted severity of nearby alerts",
+        ),
+        RiskFactor(
+            name="health_sensitivity",
+            value=round(sens, 1),
+            weight=SENSITIVITY_WEIGHT,
+            description=f"Match between conditions {user_conditions} and alert types {nearby_alert_types}",
+        ),
+        RiskFactor(
+            name="alert_density",
+            value=round(dens, 1),
+            weight=DENSITY_WEIGHT,
+            description=f"{len(nearby_alerts)} alert(s) within {radius_km} km",
+        ),
     ]
 
-    return {
-        "user_id": user.id,
-        "overall_score": overall,
-        "risk_level": risk_level,
-        "factors": factors,
-        "nearby_alert_count": len(nearby_alerts),
-        "computed_at": datetime.now(timezone.utc).isoformat(),
-    }
+    return RiskScoreOut(
+        user_id=user.id,
+        overall_score=overall,
+        risk_level=risk_level,
+        factors=factors,
+        nearby_alert_count=len(nearby_alerts),
+        computed_at=datetime.now(timezone.utc).isoformat(),
+    )
 
 
 def _level_from_score(score: float) -> str:
@@ -251,37 +252,38 @@ def _level_from_score(score: float) -> str:
     return "low"
 
 
-def _zero_score(user_id: int, reason: str = "") -> dict:
-    return {
-        "user_id": user_id,
-        "overall_score": 0.0,
-        "risk_level": "low",
-        "factors": [
-            {
-                "name": "proximity",
-                "value": 0.0,
-                "weight": PROXIMITY_WEIGHT,
-                "description": reason or "No data available",
-            },
-            {
-                "name": "severity",
-                "value": 0.0,
-                "weight": SEVERITY_WEIGHT,
-                "description": reason or "No data available",
-            },
-            {
-                "name": "health_sensitivity",
-                "value": 0.0,
-                "weight": SENSITIVITY_WEIGHT,
-                "description": reason or "No data available",
-            },
-            {
-                "name": "alert_density",
-                "value": 0.0,
-                "weight": DENSITY_WEIGHT,
-                "description": reason or "No data available",
-            },
-        ],
-        "nearby_alert_count": 0,
-        "computed_at": datetime.now(timezone.utc).isoformat(),
-    }
+def _zero_score(user_id: int, reason: str = "") -> RiskScoreOut:
+    factors = [
+        RiskFactor(
+            name="proximity",
+            value=0.0,
+            weight=PROXIMITY_WEIGHT,
+            description=reason or "No data available",
+        ),
+        RiskFactor(
+            name="severity",
+            value=0.0,
+            weight=SEVERITY_WEIGHT,
+            description=reason or "No data available",
+        ),
+        RiskFactor(
+            name="health_sensitivity",
+            value=0.0,
+            weight=SENSITIVITY_WEIGHT,
+            description=reason or "No data available",
+        ),
+        RiskFactor(
+            name="alert_density",
+            value=0.0,
+            weight=DENSITY_WEIGHT,
+            description=reason or "No data available",
+        ),
+    ]
+    return RiskScoreOut(
+        user_id=user_id,
+        overall_score=0.0,
+        risk_level="low",
+        factors=factors,
+        nearby_alert_count=0,
+        computed_at=datetime.now(timezone.utc).isoformat(),
+    )

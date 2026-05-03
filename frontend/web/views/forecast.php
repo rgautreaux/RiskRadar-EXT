@@ -25,9 +25,16 @@ window.__RISKRADAR_FORECAST_API_PREFIX__ = <?php echo json_encode($forecastApiPr
     <?php if ($isGuest): ?>
         <div class="locked-overlay">
             <div class="locked-message">
-                <span class="locked-icon" aria-hidden="true">🔒</span>
-                <strong>User-Only Feature</strong>
-                <p>You’re currently exploring as a guest.<br>Sign in or create a free account to unlock personalized forecasts, smart alerts, and more!</p>
+                <div class="locked-header">
+                    <img src="assets/icons/warning.svg" alt="Locked feature" class="locked-svg" />
+                    <div>
+                        <strong>User-Only Feature</strong>
+                        <button class="info-button" aria-describedby="forecast-lockout-info" aria-label="Why is this locked?">
+                            <img src="assets/icons/info.svg" alt="Info" class="info-svg" />
+                        </button>
+                    </div>
+                </div>
+                <p class="locked-text">You’re currently exploring as a guest. Sign in or create a free account to unlock personalized forecasts, smart alerts, and more!</p>
                 <div class="locked-actions">
                     <a href="login.php" class="button-secondary">Sign In to Unlock</a>
                     <a href="register.php" class="button-primary">Create Account</a>
@@ -42,7 +49,9 @@ window.__RISKRADAR_FORECAST_API_PREFIX__ = <?php echo json_encode($forecastApiPr
         <div id="forecast-location-status" style="font-size: 0.95rem; color: var(--muted-foreground); margin-bottom: 0.5rem;"></div>
         <div id="forecast-results" aria-live="polite"></div>
         <script>
+        // Prefer the global lockout dialog when available
         function showLockoutPopup() {
+            if (window.showLockoutDialog) return window.showLockoutDialog();
             alert('Sign in or create an account to unlock personalized forecasts, smart alerts, and more!');
         }
         </script>

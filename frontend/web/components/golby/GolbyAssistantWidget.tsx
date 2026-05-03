@@ -24,6 +24,26 @@ export function GolbyAssistantWidget() {
       setShowWelcome(true);
     }
 
+    // Support explicit onboarding trigger via URL hash (e.g., #onboard) and global opener
+    try {
+      if (typeof window !== 'undefined' && window.location && (window.location.hash === '#onboard' || window.location.hash === '#welcome')) {
+        setOpen(true);
+        setShowWelcome(true);
+      }
+      // expose a global function and listen for a custom event so header buttons can trigger onboarding
+      // @ts-ignore
+      window.openGolbyOnboarding = () => { setOpen(true); setShowWelcome(true); };
+      const handler = () => { setOpen(true); setShowWelcome(true); };
+      window.addEventListener && window.addEventListener('golby:show-onboarding', handler as EventListener);
+      return () => {
+        try { window.removeEventListener && window.removeEventListener('golby:show-onboarding', handler as EventListener); } catch {}
+        // @ts-ignore
+        try { delete window.openGolbyOnboarding; } catch {}
+      };
+    } catch {
+      // ignore in non-browser contexts
+    }
+
     const mount = document.getElementById('riskradar-ai-assistant-widget');
     const parsedCurrentUserId = Number(mount?.dataset.currentUserId ?? mount?.dataset.adminUserId);
     if (Number.isFinite(parsedCurrentUserId) && parsedCurrentUserId > 0) {

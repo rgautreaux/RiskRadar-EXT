@@ -16,6 +16,49 @@
 
     <p><?php echo nl2br(e($summary['content'])); ?></p>
 
+    <?php if ($summary['summary_insight'] || $summary['why_it_matters'] || $summary['key_takeaways'] || $summary['context_notes'] || $summary['confidence'] !== null) : ?>
+    <section class="panel" style="margin-top: 1.5rem;">
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">Golby insight</p>
+                <h2>Why this summary matters</h2>
+            </div>
+        </div>
+
+        <?php if ($summary['summary_insight']) : ?>
+            <p><?php echo nl2br(e($summary['summary_insight'])); ?></p>
+        <?php endif; ?>
+
+        <?php if ($summary['why_it_matters']) : ?>
+            <p><?php echo nl2br(e($summary['why_it_matters'])); ?></p>
+        <?php endif; ?>
+
+        <?php if ($summary['key_takeaways']) : ?>
+            <h3>Key takeaways</h3>
+            <ul>
+                <?php foreach ($summary['key_takeaways'] as $takeaway) : ?>
+                    <li><?php echo e($takeaway); ?></li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+
+        <dl class="metadata-grid detail-grid" style="margin-top: 1.25rem;">
+            <?php if ($summary['context_notes']) : ?>
+            <div>
+                <dt>Context notes</dt>
+                <dd><?php echo e($summary['context_notes']); ?></dd>
+            </div>
+            <?php endif; ?>
+            <?php if ($summary['confidence'] !== null) : ?>
+            <div>
+                <dt>Confidence</dt>
+                <dd><?php echo e(rr_format_confidence($summary['confidence'])); ?></dd>
+            </div>
+            <?php endif; ?>
+        </dl>
+    </section>
+    <?php endif; ?>
+
     <dl class="metadata-grid detail-grid">
         <div>
             <dt>Summary ID</dt>
