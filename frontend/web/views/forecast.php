@@ -11,105 +11,466 @@ window.__RISKRADAR_FORECAST_API_PREFIX__ = <?php echo json_encode($forecastApiPr
 <script src="/assets/forecast-location.js"></script>
 <?php rr_render_layout_start('Forecast', 'forecast'); ?>
 
-<section class="page-heading">
-    <div>
-        <p class="eyebrow">Stage 4 Preview</p>
-        <h1>Predictive Risk Forecast</h1>
-    </div>
-    <p class="muted">This page will surface 24-48 hour environmental risk forecasts and confidence/trend visuals.</p>
+<style>
+/* =============================================================
+   Forecast page — fc- namespace
+   ============================================================= */
+
+.fc-hero { margin-bottom: 40px; }
+
+.fc-eyebrow {
+    font-family: 'Geist Mono', 'Courier New', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: oklch(0.52 0.14 150);
+    margin: 0 0 8px;
+}
+
+.fc-headline {
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--ink, #122231);
+    margin: 0 0 10px;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+}
+
+.fc-sub {
+    font-size: 1rem;
+    color: var(--muted, #33485d);
+    margin: 0;
+    max-width: 54ch;
+    line-height: 1.6;
+}
+
+/* --- Search --- */
+
+.fc-search-wrap { margin-bottom: 40px; }
+
+.fc-search-form {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+    max-width: 680px;
+}
+
+.fc-input-group {
+    flex: 1;
+    position: relative;
+    min-width: 0;
+}
+
+.fc-search-input {
+    width: 100%;
+    padding: 12px 16px 12px 44px;
+    border: 1.5px solid var(--line, rgba(18, 34, 49, 0.24));
+    border-radius: 10px;
+    background: var(--panel-strong, #fff5e6);
+    font-family: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', system-ui, sans-serif;
+    font-size: 1rem;
+    color: var(--ink, #122231);
+    transition: border-color 0.18s, box-shadow 0.18s;
+    box-sizing: border-box;
+}
+
+.fc-search-input::placeholder {
+    color: var(--muted, #33485d);
+    opacity: 0.5;
+}
+
+.fc-search-input:focus {
+    outline: none;
+    border-color: oklch(0.52 0.14 150);
+    box-shadow: 0 0 0 3px oklch(0.52 0.14 150 / 0.14);
+}
+
+.fc-search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted, #33485d);
+    opacity: 0.38;
+    pointer-events: none;
+}
+
+.fc-btn {
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-family: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', system-ui, sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background 0.14s, box-shadow 0.14s, transform 0.1s;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.fc-btn:active { transform: translateY(1px); }
+
+.fc-btn-primary {
+    background: oklch(0.52 0.14 150);
+    color: #fff;
+}
+
+.fc-btn-primary:hover {
+    background: oklch(0.47 0.14 150);
+    box-shadow: 0 3px 14px oklch(0.52 0.14 150 / 0.3);
+}
+
+.fc-btn-ghost {
+    background: var(--panel-strong, #fff5e6);
+    color: var(--ink, #122231);
+    border: 1.5px solid var(--line, rgba(18, 34, 49, 0.24));
+}
+
+.fc-btn-ghost:hover {
+    background: oklch(0.96 0.01 150);
+    border-color: oklch(0.52 0.14 150 / 0.45);
+}
+
+/* --- Status line --- */
+
+.fc-status {
+    margin: 10px 0 0;
+    font-size: 0.875rem;
+    color: var(--muted, #33485d);
+    min-height: 1.3em;
+    line-height: 1.55;
+}
+
+.fc-status-badge {
+    display: inline-block;
+    font-family: 'Geist Mono', monospace;
+    font-size: 0.67rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: oklch(0.52 0.14 150 / 0.12);
+    color: oklch(0.38 0.11 150);
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+.fc-status-time {
+    color: var(--muted, #33485d);
+    opacity: 0.52;
+    font-size: 0.8rem;
+    margin-left: 6px;
+}
+
+/* --- Stat strip --- */
+
+.fc-stat-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: var(--panel-strong, #fff5e6);
+    border: 1px solid oklch(0.88 0.02 150);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.fc-stat-cell {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.fc-stat-cell + .fc-stat-cell {
+    border-left: 1px solid oklch(0.88 0.02 150);
+}
+
+.fc-stat-label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted, #33485d);
+    margin: 0;
+    opacity: 0.68;
+}
+
+.fc-stat-value {
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--ink, #122231);
+    margin: 0;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+}
+
+/* --- Chart section --- */
+
+.fc-chart-section {
+    background: var(--panel-strong, #fff5e6);
+    border: 1px solid oklch(0.88 0.02 150);
+    border-radius: 14px;
+    padding: 22px 22px 14px;
+    margin-bottom: 20px;
+}
+
+.fc-section-label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 0.67rem;
+    font-weight: 500;
+    color: var(--muted, #33485d);
+    margin: 0 0 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.11em;
+    opacity: 0.62;
+}
+
+.fc-chart-legend {
+    display: flex;
+    gap: 18px;
+    margin-top: 10px;
+    font-size: 0.77rem;
+    color: var(--muted, #33485d);
+    opacity: 0.72;
+}
+
+.fc-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.fc-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* --- Point list --- */
+
+.fc-points-section { margin-bottom: 20px; }
+
+.fc-point-list {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0 0;
+    background: var(--panel-strong, #fff5e6);
+    border: 1px solid oklch(0.88 0.02 150);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.fc-point-item {
+    display: grid;
+    grid-template-columns: 52px 1fr auto auto;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 18px;
+}
+
+.fc-point-item + .fc-point-item {
+    border-top: 1px solid oklch(0.91 0.01 150);
+}
+
+.fc-point-hour {
+    font-family: 'Geist Mono', monospace;
+    font-size: 0.76rem;
+    color: var(--muted, #33485d);
+    font-variant-numeric: tabular-nums;
+    opacity: 0.62;
+}
+
+.fc-point-type {
+    font-size: 0.875rem;
+    color: var(--ink, #122231);
+    text-transform: capitalize;
+}
+
+.fc-point-score {
+    font-family: 'Geist Mono', monospace;
+    font-size: 0.79rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted, #33485d);
+    opacity: 0.62;
+}
+
+.fc-risk-badge {
+    font-family: 'Geist Mono', monospace;
+    font-size: 0.66rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.fc-risk-high     { background: rgba(180, 55, 34, 0.13); color: #5a1b10; }
+.fc-risk-moderate { background: rgba(142, 82, 0, 0.14);  color: #4a2b00; }
+.fc-risk-low      { background: rgba(61, 120, 82, 0.13); color: #1f5235; }
+
+/* --- Zone fallback --- */
+
+.fc-zone-section {
+    background: var(--panel-strong, #fff5e6);
+    border: 1px solid oklch(0.88 0.02 150);
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 20px;
+}
+
+.fc-zone-desc {
+    font-size: 0.875rem;
+    color: var(--muted, #33485d);
+    margin: 0 0 12px;
+    line-height: 1.5;
+}
+
+.fc-zone-pills {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.fc-zone-pill {
+    font-family: 'Geist Mono', monospace;
+    font-size: 0.78rem;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-variant-numeric: tabular-nums;
+}
+
+/* --- Empty state --- */
+
+.fc-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 24px;
+    text-align: center;
+}
+
+.fc-empty-icon {
+    width: 52px;
+    height: 52px;
+    background: oklch(0.52 0.14 150 / 0.1);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    color: oklch(0.52 0.14 150);
+}
+
+.fc-empty-title {
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--ink, #122231);
+    margin: 0 0 6px;
+}
+
+.fc-empty-body {
+    font-size: 0.875rem;
+    color: var(--muted, #33485d);
+    max-width: 38ch;
+    margin: 0;
+    line-height: 1.55;
+    opacity: 0.72;
+}
+
+/* --- Entrance animation --- */
+
+@keyframes fc-rise {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0);   }
+}
+
+.fc-stat-strip    { animation: fc-rise 0.26s ease-out both; }
+.fc-chart-section { animation: fc-rise 0.26s ease-out 0.04s both; }
+.fc-points-section,
+.fc-zone-section  { animation: fc-rise 0.26s ease-out 0.08s both; }
+
+/* --- Responsive --- */
+
+@media (max-width: 640px) {
+    .fc-headline { font-size: 1.7rem; }
+
+    .fc-search-form { flex-wrap: wrap; }
+    .fc-btn-ghost .fc-btn-text { display: none; }
+
+    .fc-stat-strip { grid-template-columns: repeat(2, 1fr); }
+    .fc-stat-cell:nth-child(3) {
+        border-left: none;
+        border-top: 1px solid oklch(0.88 0.02 150);
+    }
+    .fc-stat-cell:nth-child(4) {
+        border-top: 1px solid oklch(0.88 0.02 150);
+    }
+
+    .fc-point-item { grid-template-columns: 44px 1fr auto; }
+    .fc-point-score { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fc-stat-strip,
+    .fc-chart-section,
+    .fc-points-section,
+    .fc-zone-section  { animation: none; }
+    .fc-btn,
+    .fc-search-input  { transition: none; }
+}
+</style>
+
+<section class="fc-hero">
+    <p class="fc-eyebrow">24–48 Hour Outlook</p>
+    <h1 class="fc-headline">Predictive Risk Forecast</h1>
+    <p class="fc-sub">Enter a location to see environmental risk projections for the next 48 hours — trend direction, confidence levels, and per-condition breakdowns.</p>
 </section>
 
-
-<?php $isGuest = (function_exists('rr_access_context') && rr_access_context() === 'guest'); ?>
-<section class="panel" style="background: var(--card); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 1.5rem; max-width: 700px; margin: 0 auto 2rem auto;">
-    <?php if ($isGuest): ?>
-        <div class="locked-overlay">
-            <div class="locked-message">
-                <span class="locked-icon" aria-hidden="true">🔒</span>
-                <strong>User-Only Feature</strong>
-                <p>You’re currently exploring as a guest.<br>Sign in or create a free account to unlock personalized forecasts, smart alerts, and more!</p>
-                <div class="locked-actions">
-                    <a href="login.php" class="button-secondary">Sign In to Unlock</a>
-                    <a href="register.php" class="button-primary">Create Account</a>
-                </div>
-            </div>
+<section class="fc-search-wrap">
+    <form id="forecast-location-form" class="fc-search-form">
+        <div class="fc-input-group">
+            <svg class="fc-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input
+                id="forecast-location-input"
+                class="fc-search-input"
+                type="text"
+                placeholder="ZIP code or City, State"
+                autocomplete="off"
+                aria-label="Location search"
+            />
         </div>
-        <form id="forecast-location-form" class="flex items-center gap-2 locked" onsubmit="showLockoutPopup(); return false;" aria-disabled="true" style="margin-bottom: 0.5rem;">
-            <input id="forecast-location-input" type="text" placeholder="Enter ZIP or City, State" style="flex:1; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--muted); font-size: 1rem;" disabled />
-            <button type="submit" style="padding: 0.5rem 1rem; border-radius: 6px; background: var(--primary); color: #fff; border: none; font-weight: 600;" disabled>Go</button>
-            <button type="button" id="use-my-location-btn" style="padding: 0.5rem 1rem; border-radius: 6px; background: var(--accent); color: var(--primary); border: none; font-weight: 600;" disabled>Use My Location</button>
-        </form>
-        <div id="forecast-location-status" style="font-size: 0.95rem; color: var(--muted-foreground); margin-bottom: 0.5rem;"></div>
-        <div id="forecast-results" aria-live="polite"></div>
-        <script>
-        function showLockoutPopup() {
-            alert('Sign in or create an account to unlock personalized forecasts, smart alerts, and more!');
-        }
-        </script>
-    <?php else: ?>
-        <form id="forecast-location-form" class="flex items-center gap-2" style="margin-bottom: 0.5rem;">
-            <input id="forecast-location-input" type="text" placeholder="Enter ZIP or City, State" style="flex:1; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--muted); font-size: 1rem;" />
-            <button type="submit" style="padding: 0.5rem 1rem; border-radius: 6px; background: var(--primary); color: #fff; border: none; font-weight: 600;">Go</button>
-            <button type="button" id="use-my-location-btn" style="padding: 0.5rem 1rem; border-radius: 6px; background: var(--accent); color: var(--primary); border: none; font-weight: 600;">Use My Location</button>
-        </form>
-        <div id="forecast-location-status" style="font-size: 0.95rem; color: var(--muted-foreground); margin-bottom: 0.5rem;"></div>
-        <div id="forecast-results" aria-live="polite"></div>
-    <?php endif; ?>
+        <button type="submit" class="fc-btn fc-btn-primary">Get Forecast</button>
+        <button type="button" id="use-my-location-btn" class="fc-btn fc-btn-ghost" title="Use device location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+            </svg>
+            <span class="fc-btn-text">Use my location</span>
+        </button>
+    </form>
+    <p id="forecast-location-status" class="fc-status" aria-live="polite"></p>
 </section>
 
-
-
-<?php
-// Stage 4: Dynamic forecast data integration now happens in the companion script.
-?>
-<section class="panel" style="background: var(--card); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 2rem 1.5rem; max-width: 700px; margin: 0 auto;">
-    <h2 class="mb-2" style="color: var(--primary); font-family: 'Space Grotesk', Inter, Arial, sans-serif;">24–48 Hour Risk Forecast</h2>
-    <p class="muted" style="margin-bottom: 1rem;">The live forecast panel above will update from the backend and summarize risk, confidence, and the current outlook for your selected location.</p>
-    <!-- Forecasted condition icons row (static preview) -->
-    <div class="flex items-center justify-between mb-2" style="gap: 0.5rem; max-width: 560px; margin: 0 auto 1.5rem auto;">
-        <img src="/assets/illustrations/weather.svg" alt="Weather" title="Weather" style="width: 38px; height: 38px;" />
-        <img src="/assets/illustrations/fire.svg" alt="Fire" title="Fire" style="width: 38px; height: 38px;" />
-        <img src="/assets/illustrations/air-quality.svg" alt="Air Quality" title="Air Quality" style="width: 38px; height: 38px;" />
-        <img src="/assets/illustrations/flood.svg" alt="Flood" title="Flood" style="width: 38px; height: 38px;" />
-        <img src="/assets/illustrations/pollen.svg" alt="Pollen" title="Pollen" style="width: 38px; height: 38px;" />
-        <img src="/assets/illustrations/earthquake.svg" alt="Earthquake" title="Earthquake" style="width: 38px; height: 38px;" />
+<div id="forecast-results" aria-live="polite">
+    <div class="fc-empty-state">
+        <div class="fc-empty-icon" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+            </svg>
+        </div>
+        <p class="fc-empty-title">Locating your forecast</p>
+        <p class="fc-empty-body">Allow location access, or enter a ZIP code or city above to load your 48-hour risk outlook.</p>
     </div>
-    <svg width="100%" height="220" viewBox="0 0 560 220" aria-labelledby="forecastTitle forecastDesc" role="img" style="background: var(--accent); border-radius: var(--radius-md); box-shadow: var(--shadow-sm);">
-        <title id="forecastTitle">Risk Forecast Timeline</title>
-        <desc id="forecastDesc">Shows predicted risk levels and confidence bands for the next 48 hours</desc>
-        <!-- Axes -->
-        <line x1="50" y1="180" x2="520" y2="180" stroke="var(--muted)" stroke-width="2" />
-        <line x1="50" y1="40" x2="50" y2="180" stroke="var(--muted)" stroke-width="2" />
-        <!-- Confidence band (static for now) -->
-        <polygon points="50,150 90,120 130,110 170,100 210,90 250,100 290,120 330,130 370,140 410,150 450,160 490,170 520,175 520,180 50,180" fill="var(--chart-1)" fill-opacity="0.18" />
-        <!-- Forecast line (static for now) -->
-        <polyline points="50,150 90,120 130,110 170,100 210,90 250,100 290,120 330,130 370,140 410,150 450,160 490,170 520,175" fill="none" stroke="var(--primary)" stroke-width="3" />
-        <!-- Trend arrow -->
-        <polygon points="520,175 510,170 510,180" fill="var(--primary)" />
-        <!-- Y-axis labels -->
-        <text x="40" y="180" font-size="12" fill="var(--muted-foreground)">Low</text>
-        <text x="35" y="100" font-size="12" fill="var(--muted-foreground)">High</text>
-        <!-- X-axis labels (hours) -->
-        <text x="50" y="200" font-size="12" fill="var(--muted-foreground)">Now</text>
-        <text x="210" y="200" font-size="12" fill="var(--muted-foreground)">+12h</text>
-        <text x="370" y="200" font-size="12" fill="var(--muted-foreground)">+24h</text>
-        <text x="520" y="200" font-size="12" fill="var(--muted-foreground)">+48h</text>
-        <!-- Confidence indicator -->
-        <rect x="400" y="50" width="120" height="28" rx="8" fill="var(--chart-1)" fill-opacity="0.12" />
-        <text x="410" y="70" font-size="14" fill="var(--primary)" font-weight="bold">Confidence: 85%</text>
-    </svg>
-    <div class="flex items-center gap-4 mt-3" style="font-size: 14px; color: var(--muted-foreground);">
-        <span style="display: inline-block; width: 12px; height: 12px; background: var(--primary); border-radius: 2px; margin-right: 6px;"></span>
-        Forecasted Risk Level
-        <span style="display: inline-block; width: 12px; height: 12px; background: var(--chart-1); border-radius: 2px; margin: 0 6px 0 18px; opacity: 0.18;"></span>
-        Confidence Band
-    </div>
-    <div class="mt-4" style="color: var(--destructive); font-size: 13px;">
-        <strong>Note:</strong> The static preview remains as a fallback visual until the live forecast panel has data.
-    </div>
-
-<?php include __DIR__ . '/partials/risk_legend.php'; ?>
-    </div>
-</section>
+</div>
 
 <?php rr_render_layout_end(); ?>
