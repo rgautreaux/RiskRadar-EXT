@@ -1,4 +1,7 @@
+
 <?php rr_render_layout_start('Risk Score', 'risk'); ?>
+
+<?php $isGuest = (function_exists('rr_access_context') && rr_access_context() === 'guest'); ?>
 
 <section class="page-heading">
     <div>
@@ -7,6 +10,7 @@
     </div>
     <p>Your personalized environmental risk score based on proximity, severity, health sensitivity, and alert density.</p>
 </section>
+
 
 <section class="panel">
     <form class="risk-form" method="get" action="risk.php">

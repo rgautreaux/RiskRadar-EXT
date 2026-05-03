@@ -13,12 +13,6 @@ Optional stretch goals:
 - Stage 4: Predictive Analytics and AI-Driven Insights
 - Stage 5: Ongoing Maintenance, Advanced Features, and Review
 
-## Verification Snapshot (Latest)
-
-- Latest final Golby verification pass: connectivity preflight **PASS**, frontend build **PASS**, and demo journey **6/6 passed** (2026-04-14).
-- Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
-- S3-06 closeout command added: `npm run verify:evidence:s3` (passes when all required evidence files and links are present).
-
 ## Documentation Sync Checklist
 
 When closing or advancing work, update docs in this order:

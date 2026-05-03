@@ -1,4 +1,7 @@
+
 <?php rr_render_layout_start('Smart Alerts', 'smart_alerts'); ?>
+
+<?php $isGuest = (function_exists('rr_access_context') && rr_access_context() === 'guest'); ?>
 
 <section class="page-heading">
     <div>
@@ -7,6 +10,7 @@
     </div>
     <p>Alerts ranked by personalized priority using distance, severity, health sensitivity, and recency. Enter a user ID to see results tailored to that user's location and health profile.</p>
 </section>
+
 
 <section class="panel">
     <form class="sa-filter-grid" method="get" action="smart_alerts.php">
