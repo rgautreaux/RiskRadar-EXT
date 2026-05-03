@@ -10,17 +10,31 @@ if (!empty($user) && !$user['has_completed_onboarding']) {
 <section class="hero-panel">
     <div>
         <p class="eyebrow">Live backend snapshot</p>
-        <h1>Desktop-first environmental awareness.</h1>
-        <p class="hero-copy">This dashboard combines current alert volume, severity mix, and the latest generated summary into one web-specific overview.</p>
+        <h1 class="dash-hero-headline">
+            <?php if ($total === 0): ?>
+                You're clear
+            <?php elseif ($total === 1): ?>
+                1 alert active
+            <?php else: ?>
+                <?php echo e((string) $total); ?> alerts active
+            <?php endif; ?>
+        </h1>
+        <p class="dash-hero-sub">Environmental risk snapshot for your region. Review active alerts and the latest AI-generated summary below.</p>
     </div>
-    <div class="hero-meta">
-        <div>
-            <span>Total Alerts</span>
-            <strong><?php echo e((string) $statsResult['data']['total']); ?></strong>
+    <div class="dash-hero-data">
+        <div class="dash-hero-stat">
+            <p class="dash-hero-stat-label">Total Alerts</p>
+            <p class="dash-hero-stat-value"><?php echo e((string) $total); ?></p>
         </div>
-        <div>
-            <span>Loaded Alerts</span>
-            <strong><?php echo e((string) count($alertsResult['data'])); ?></strong>
+        <div class="dash-hero-stat">
+            <p class="dash-hero-stat-label">
+                Loaded Alerts
+                <span class="dash-tooltip-wrap">
+                    <span class="dash-info" tabindex="0" aria-describedby="tooltip-loaded">ⓘ</span>
+                    <span class="dash-tooltip-text" id="tooltip-loaded" role="tooltip">Alerts retrieved in this request. May be fewer than the total count if a fetch limit was applied.</span>
+                </span>
+            </p>
+            <p class="dash-hero-stat-value"><?php echo e((string) $loadedCount); ?></p>
         </div>
     </div>
 </section>
@@ -29,23 +43,20 @@ if (!empty($user) && !$user['has_completed_onboarding']) {
 <?php rr_render_message($alertsResult['message']); ?>
 <?php rr_render_message($latestSummaryResult['message']); ?>
 
-<section class="stats-grid">
-    <article class="stat-card accent-coral">
-        <span class="stat-label">Total Alerts</span>
-        <strong><?php echo e((string) $statsResult['data']['total']); ?></strong>
-        <p>Backend alert count exposed by the existing stats endpoint.</p>
-    </article>
-    <article class="stat-card accent-amber">
-        <span class="stat-label">Highest Severity Bucket</span>
-        <strong><?php echo e($topSeverityLabel); ?></strong>
-        <p>Quick severity concentration check for the current feed.</p>
-    </article>
-    <article class="stat-card accent-teal">
-        <span class="stat-label">Most Common Type</span>
-        <strong><?php echo e($topTypeLabel); ?></strong>
-        <p>Useful for spotting dominant environmental patterns at a glance.</p>
-    </article>
-</section>
+<div class="dash-stat-strip">
+    <div class="dash-stat-cell">
+        <p class="dash-stat-cell-label">Total Alerts</p>
+        <p class="dash-stat-cell-value"><?php echo e((string) $statsResult['data']['total']); ?></p>
+    </div>
+    <div class="dash-stat-cell">
+        <p class="dash-stat-cell-label">Highest Severity</p>
+        <p class="dash-stat-cell-value"><?php echo e(ucfirst($topSeverityLabel ?: '—')); ?></p>
+    </div>
+    <div class="dash-stat-cell">
+        <p class="dash-stat-cell-label">Most Common Type</p>
+        <p class="dash-stat-cell-value"><?php echo e(ucwords($topTypeLabel ?: '—')); ?></p>
+    </div>
+</div>
 
 <section class="content-grid">
     <article class="panel">
@@ -54,48 +65,54 @@ if (!empty($user) && !$user['has_completed_onboarding']) {
                 <p class="eyebrow">Overview module</p>
                 <h2>Top alerts now</h2>
             </div>
-            <a class="content-action" href="alerts.php">Open alerts list</a>
+            <a class="dash-action" href="alerts.php">Open alerts list &rarr;</a>
         </div>
 
         <?php if (!$alertsResult['data']) : ?>
-            <p class="empty-state">No alerts are available from the backend right now.</p>
+            <div class="dash-empty">
+                <p class="dash-empty-title">You're clear.</p>
+                <p class="dash-empty-body">No active alerts in the system right now. Check back when conditions change.</p>
+            </div>
         <?php else : ?>
-            <div class="alert-list compact-list">
+            <div class="dash-alert-log">
                 <?php foreach ($alertsResult['data'] as $alert) : ?>
-                    <article class="alert-row">
+                    <a class="dash-alert-entry" href="alert_detail.php?id=<?php echo e((string) $alert['id']); ?>">
                         <div>
                             <span class="severity-pill <?php echo e(rr_severity_class($alert['severity'])); ?>"><?php echo e(ucfirst($alert['severity'])); ?></span>
-                            <h3><?php echo e($alert['title']); ?></h3>
-                            <p><?php echo e($alert['location_name'] ?: 'Location unavailable'); ?></p>
+                            <p class="dash-alert-title"><?php echo e($alert['title']); ?></p>
+                            <p class="dash-alert-location"><?php echo e($alert['location_name'] ?: 'Location unavailable'); ?></p>
                         </div>
-                        <div class="row-meta">
-                            <span><?php echo e($alert['alert_type']); ?></span>
-                            <span><?php echo e(rr_format_datetime($alert['fetched_at'])); ?></span>
+                        <div class="dash-alert-meta">
+                            <span class="dash-alert-type"><?php echo e($alert['alert_type']); ?></span>
+                            <span class="dash-alert-time"><?php echo e(rr_format_datetime($alert['fetched_at'])); ?></span>
                         </div>
-                    </article>
+                    </a>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
     </article>
 
-    <article class="panel panel-feature">
+    <article class="panel">
         <div class="panel-header">
             <div>
                 <p class="eyebrow">Summary module</p>
                 <h2>Latest generated summary</h2>
             </div>
-            <a class="content-action" href="summaries.php">Browse summaries</a>
+            <a class="dash-action" href="summaries.php">Browse summaries &rarr;</a>
         </div>
 
         <?php if (!$latestSummaryResult['data']) : ?>
-            <p class="empty-state">No summary is currently available. The backend may not have generated one yet.</p>
+            <div class="dash-empty">
+                <p class="dash-empty-title">No summary yet.</p>
+                <p class="dash-empty-body">Summaries are generated automatically when alerts are active. Check back once there is activity in the system.</p>
+            </div>
         <?php else : ?>
-            <h3><?php echo e($latestSummaryResult['data']['title']); ?></h3>
-            <p class="summary-meta">
+            <h3 class="dash-summary-title"><?php echo e($latestSummaryResult['data']['title']); ?></h3>
+            <p class="dash-summary-meta">
                 <span><?php echo e($latestSummaryResult['data']['summary_type']); ?></span>
                 <span><?php echo e(rr_format_datetime($latestSummaryResult['data']['generated_at'])); ?></span>
             </p>
-            <p class="summary-copy"><?php echo nl2br(e($latestSummaryResult['data']['content'])); ?></p>
+            <p class="dash-summary-body"><?php echo nl2br(e($latestSummaryResult['data']['content'])); ?></p>
         <?php endif; ?>
     </article>
 </section>
