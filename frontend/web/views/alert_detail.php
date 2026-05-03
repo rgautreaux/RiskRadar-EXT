@@ -369,9 +369,9 @@
 
 <?php
     $sevClass = match (strtolower((string) ($alert['severity'] ?? ''))) {
-        'high', 'critical', 'extreme' => 'ad-sev-high',
-        'medium', 'moderate'          => 'ad-sev-medium',
-        default                        => 'ad-sev-low',
+        'high', 'severe', 'critical', 'extreme' => 'ad-sev-high',
+        'medium', 'moderate'                    => 'ad-sev-medium',
+        default                                 => 'ad-sev-low',
     };
 ?>
 
@@ -413,7 +413,9 @@
             <span class="ad-fact-label">Event window</span>
             <?php if ($alert['event_start'] || $alert['event_end']) : ?>
                 <span class="ad-fact-value">
-                    <?php echo e(rr_format_datetime($alert['event_start'])); ?>
+                    <?php if ($alert['event_start']) : ?>
+                        <?php echo e(rr_format_datetime($alert['event_start'])); ?>
+                    <?php endif; ?>
                     <?php if ($alert['event_start'] && $alert['event_end']) : ?>
                         &nbsp;&rarr;&nbsp;
                     <?php endif; ?>

@@ -1,9 +1,6 @@
 <?php rr_render_layout_start('Sign in', 'login'); ?>
 
 <style>
-/* ─── Font imports ────────────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap');
-
 /* ─── Page-level shell overrides ─────────────────────────────────── */
 body.page-login {
     background: oklch(0.26 0.045 148);
@@ -424,11 +421,11 @@ body.page-login .page-shell {
 
 <div class="auth-split">
 
-    <!-- Left: brand panel -->
+    <!-- Left: brand panel (decorative, hidden from assistive tech) -->
     <div class="auth-brand" aria-hidden="true">
         <div class="auth-brand-content">
             <p class="auth-brand-eyebrow">Environmental risk intelligence</p>
-            <h1 class="auth-brand-headline">Know before<br>you go.</h1>
+            <p class="auth-brand-headline">Know before<br>you go.</p>
             <p class="auth-brand-body">Aggregated hazard data — air quality, weather advisories, wildfire conditions — presented clearly for the people who depend on safe conditions.</p>
         </div>
         <div class="auth-brand-foot">
@@ -441,7 +438,7 @@ body.page-login .page-shell {
     <div class="auth-form-panel">
         <div class="auth-form-inner">
 
-            <h2 class="auth-form-heading">Sign in</h2>
+            <h1 class="auth-form-heading">Sign in</h1>
             <p class="auth-form-sub">Access your environmental risk dashboard.</p>
 
             <?php if ($flash) : ?>
@@ -456,7 +453,7 @@ body.page-login .page-shell {
                 </div>
             <?php endif; ?>
 
-            <form method="post" action="login.php" novalidate>
+            <form method="post" action="login.php">
                 <input type="hidden" name="csrf_token" value="<?php echo e(rr_csrf_token()); ?>">
                 <input type="hidden" name="action" value="login">
 
