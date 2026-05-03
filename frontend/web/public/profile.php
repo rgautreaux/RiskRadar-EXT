@@ -61,6 +61,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'device_token' => $preferencesForm['device_token'],
                 'health_conditions' => $preferencesForm['health_conditions'],
             ];
+            
+            // Parse and include personality profile if present
+            $personalityJson = trim((string) ($_POST['personality_profile_json'] ?? ''));
+            if ($personalityJson !== '') {
+                $personalityProfile = json_decode($personalityJson, true);
+                if (is_array($personalityProfile)) {
+                    $preferencesPayload['assistant_style_profile'] = $personalityProfile;
+                }
+            }
+            
             $preferencesResult = rr_update_preferences($config, $userId, $preferencesPayload);
             if ($preferencesResult['ok']) {
                 rr_set_flash('success', 'Preferences updated successfully.');

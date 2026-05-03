@@ -298,16 +298,18 @@ This document maps each demonstrated feature to the stage it fulfills and provid
 
 ### Feature: AI Assistant Widget (Golby)
 - **What**: React-based chat widget with context-aware responses and guardrails
-- **Requirements Met**: ✅ Integrated UI, ✅ Guardrails, ✅ Context from user profile & alerts, ✅ Soft learning from feedback
+- **Requirements Met**: ✅ Integrated UI, ✅ Guardrails, ✅ Context from user profile & alerts, ✅ Guest daily limit, ✅ Soft learning from feedback
 - **Code Files**:
   - [frontend/web/public/assistant.php](../frontend/web/public/assistant.php) — Widget container + mount script
   - [frontend/public/Golby/](../frontend/public/Golby/) — React component (compiled JS bundle)
-  - [backend/api/assistant.py](../backend/api/assistant.py) — Chat endpoint with guardrails
+  - [backend/api/assistant.py](../backend/api/assistant.py) — Chat endpoint with guardrails and guest limits
   - [backend/services/assistant_personality.py](../backend/services/assistant_personality.py) — Response shaping
 - **Evidence**:
   - `/assistant.php`: React widget loads (chat interface visible)
   - Chat input accepts user messages
   - Responses are contextual and safe (guardrails enforce)
+  - Guest users receive a daily-limit upgrade prompt after the configured message cap
+  - Personalized guest requests are redirected to sign-in or registration
   - Responses can be rated/reacted; feedback updates personality profile
 - **How to Verify**: Open `/assistant.php`, type a question, see contextual response
 

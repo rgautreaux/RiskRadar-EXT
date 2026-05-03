@@ -1,4 +1,7 @@
-<?php rr_render_layout_start('Sign in', 'login'); ?>
+<?php
+$flash = $flash ?? null;
+$loginForm = $loginForm ?? ['email' => ''];
+?><?php rr_render_layout_start('Login', 'login'); ?>
 
 <style>
 /* ─── Page-level shell overrides ─────────────────────────────────── */
@@ -447,11 +450,11 @@ body.page-login .page-shell {
                 </div>
             <?php endif; ?>
 
-            <?php if (isset($loginErrors['_form'])) : ?>
-                <div class="auth-message auth-message-error" role="alert">
-                    <?php echo e($loginErrors['_form']); ?>
-                </div>
-            <?php endif; ?>
+        <?php if (isset($loginErrors['_form'])) : ?>
+            <?php rr_render_message($loginErrors['_form']); ?>
+        <?php endif; ?>
+
+        <p class="auth-foot">Security note: sign-in is protected with CSRF checks and an httpOnly session cookie. Never paste passwords or API keys into chat or support messages.</p>
 
             <form method="post" action="login.php">
                 <input type="hidden" name="csrf_token" value="<?php echo e(rr_csrf_token()); ?>">

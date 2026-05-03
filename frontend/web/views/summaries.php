@@ -1,3 +1,7 @@
+<?php
+$summariesResult = $summariesResult ?? ['data' => [], 'message' => ''];
+$filters = $filters ?? ['limit' => 20];
+?>
 <?php rr_render_layout_start('Summaries', 'summaries'); ?>
 
 <section class="page-heading">

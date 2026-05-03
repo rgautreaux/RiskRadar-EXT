@@ -27,7 +27,7 @@ def health_live() -> dict[str, object]:
     }
 
 
-@router.get("/ready")
+@router.get("/ready", response_model=None)
 def health_ready() -> dict[str, object] | JSONResponse:
     """Check database connectivity and schema validity, returning readiness status."""
     checks: dict[str, str] = {

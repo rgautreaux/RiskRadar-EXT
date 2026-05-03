@@ -209,98 +209,72 @@
         height: 16px;
     }
 }
-/*
-====================================================
+
+/* ────────────────────────────────────────────────────
+ Lockout / Onboarding Helpers
+ ──────────────────────────────────────────────────── */
+    .locked-overlay { position: relative; }
+    .locked-message { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; padding: 18px; border-radius: 12px; background: linear-gradient(180deg,#fff,#fff8f2); border: 1px solid var(--line); }
+    .locked-header { display:flex; gap:12px; align-items:center; }
+    .locked-svg { width:40px; height:40px; flex-shrink:0; }
+    .info-button { background:transparent; border:none; padding:4px; margin-left:8px; cursor:pointer; }
+    .info-svg { width:20px; height:20px; }
+    .locked-actions { display:flex; gap:8px; margin-top:6px; }
+    .locked-text { margin:0; color:var(--muted); }
+    .inline-lockout-info { margin-top:8px; padding:8px 10px; background:#fff8f0; border:1px solid var(--line); border-radius:8px; color:var(--ink); }
+    .lockout-backdrop { position: fixed; inset:0; background: rgba(0,0,0,0.32); }
+    .lockout-panel { position: fixed; left:50%; top:50%; transform: translate(-50%,-50%); z-index:2000; background:#fff; border-radius:12px; padding:20px; max-width:520px; box-shadow: 0 20px 60px rgba(0,0,0,0.25); }
+    .lockout-panel h2 { margin:0 0 8px 0; }
+    .lockout-actions { margin:12px 0; }
+    .button-ghost { background:transparent; border:1px solid var(--line); padding:8px 12px; border-radius:8px; cursor:pointer; }
+    .lockout-close { margin-top:8px; }
+
+/* ====================================================
  RiskRadar Web Design System — Layout Lane Utilities
  Author: Rebecca (Layout Lane)
  Last Updated: 2026-03-23
-----------------------------------------------------
- This file contains global CSS variables, utility classes,
- and design system tokens for wireframe-accurate UI/UX.
- Only update this file for global/shared changes.
-====================================================
-*/
+================================================== */
+
 :root {
-    /*
-    ----------------------------------------------------
-     Spacing Rhythm Tokens
-     Use these for margin/padding to ensure consistent layout.
-     Example: var(--space-md) for 24px spacing.
-    ----------------------------------------------------
-    */
-    :root {
-        --space-xs: 4px;
-        --space-sm: 8px;
-        --space-md: 24px;
-        --space-lg: 40px;
-        --space-xl: 64px;
-    }
-    /*
-    ----------------------------------------------------
-     Typography Utility Classes
-    ----------------------------------------------------
-    */
-    .text-xs { font-size: 0.75rem; }
-    .text-sm { font-size: 0.92rem; }
-    .text-md { font-size: 1.1rem; }
-    .text-lg { font-size: 1.4rem; font-weight: 500; }
-    .text-xl { font-size: 2rem; font-weight: 700; }
-    /*
-    ----------------------------------------------------
-     Icon Slot Utility Classes
-     Use .icon-slot for icon backgrounds, .icon-badge for badges.
-    ----------------------------------------------------
-    */
-    /*
-    ----------------------------------------------------
-     Layout Utility Classes
-    ----------------------------------------------------
-    */
-    .flex-row { display: flex; flex-direction: row; gap: var(--space-sm); }
-    .flex-col { display: flex; flex-direction: column; gap: var(--space-sm); }
-    .align-center { align-items: center; }
-    .justify-between { justify-content: space-between; }
-    .gap-xs { gap: var(--space-xs); }
-    .gap-sm { gap: var(--space-sm); }
-    .gap-md { gap: var(--space-md); }
-    .gap-lg { gap: var(--space-lg); }
-    .gap-xl { gap: var(--space-xl); }
-    /*
-    ----------------------------------------------------
-     Color Utility Classes
-    ----------------------------------------------------
-    */
-    .bg-coral { background: var(--accent-coral); color: #fff; }
-    .bg-amber { background: var(--accent-amber); color: #fff; }
-    .bg-teal { background: var(--accent-teal); color: #fff; }
-    .bg-panel { background: var(--panel); }
-    .bg-panel-strong { background: var(--panel-strong); }
-    .text-muted { color: var(--muted); }
-    .text-ink { color: var(--ink); }
-    /*
-    ----------------------------------------------------
-     End of Layout Lane Utility Section
-    ----------------------------------------------------
-    */
-    --bg: #f4efe3;
-    --ink: #122231;
-    --muted: #33485d;
-    --panel: rgba(255, 246, 234, 0.92);
-    --panel-strong: #fff5e6;
-    --line: rgba(18, 34, 49, 0.24);
-    --link: #8d2f1e;
-    --accent-coral-strong: #b43722;
-    --accent-amber-strong: #8e5200;
-    --accent-coral: #ff5a3d;
-    --accent-amber: #ffb01f;
-    --accent-teal: #0f9a98;
-    --success: #2e7d32;
-    --warning: #b65c00;
-    --accent-green: #3a7a5a;
-    --accent-green-subtle: rgba(58, 122, 90, 0.1);
-    --accent-green-border: rgba(58, 122, 90, 0.25);
-    --shadow: 0 20px 50px rgba(18, 34, 49, 0.14), 0 8px 20px rgba(18, 34, 49, 0.06);
+    /* Spacing Rhythm Tokens */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 24px;
+    --space-lg: 40px;
+    --space-xl: 64px;
+    
+    /* Typography Utility Classes */
+    /* Icon Slot Utility Classes */
+    /* Layout Utility Classes */
+    /* Color Utility Classes */
+    
+    /* Color Variables */
 }
+
+/* Utility Classes */
+.text-xs { font-size: 0.75rem; }
+.text-sm { font-size: 0.92rem; }
+.text-md { font-size: 1.1rem; }
+.text-lg { font-size: 1.4rem; font-weight: 500; }
+.text-xl { font-size: 2rem; font-weight: 700; }
+
+.flex-row { display: flex; flex-direction: row; gap: var(--space-sm); }
+.flex-col { display: flex; flex-direction: column; gap: var(--space-sm); }
+.align-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-xs { gap: var(--space-xs); }
+.gap-sm { gap: var(--space-sm); }
+.gap-md { gap: var(--space-md); }
+.gap-lg { gap: var(--space-lg); }
+.gap-xl { gap: var(--space-xl); }
+
+.bg-coral { background: var(--accent-coral); color: #fff; }
+.bg-amber { background: var(--accent-amber); color: #fff; }
+.bg-teal { background: var(--accent-teal); color: #fff; }
+.bg-panel { background: var(--panel); }
+.bg-panel-strong { background: var(--panel-strong); }
+.text-muted { color: var(--muted); }
+.text-ink { color: var(--ink); }
 
 * {
     box-sizing: border-box;
@@ -2810,6 +2784,7 @@ dd {
     max-width: 72ch;
     display: -webkit-box;
     -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }

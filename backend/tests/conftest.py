@@ -1,5 +1,6 @@
 """Shared fixtures for all tests."""
 
+# pylint: disable=redefined-outer-name
 import json
 from collections.abc import Generator
 from datetime import datetime, timezone
