@@ -43,7 +43,7 @@ def db_session() -> Generator[Session, None, None]:
 
 
 @pytest.fixture
-def test_client(db_session: Session) -> Generator[TestClient, None, None]:  # noqa: F811
+def test_client(db_session: Session) -> Generator[TestClient, None, None]:  # type: ignore  # noqa: F811
     """FastAPI TestClient wired to the in-memory DB.
 
     Creates a fresh app without lifespan (no scheduler, no prod DB init)
@@ -96,7 +96,7 @@ _pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 
 @pytest.fixture
-def sample_alerts(db_session: Session) -> list[Alert]:  # noqa: F811
+def sample_alerts(db_session: Session) -> list[Alert]:  # type: ignore  # noqa: F811
     """Insert 3 alerts of different types."""
     alerts = [
         Alert(
@@ -153,7 +153,7 @@ def sample_alerts(db_session: Session) -> list[Alert]:  # noqa: F811
 
 
 @pytest.fixture
-def sample_user(db_session: Session) -> User:  # noqa: F811
+def sample_user(db_session: Session) -> User:  # type: ignore  # noqa: F811
     """Insert a test user."""
     user = User(
         display_name="Test User",

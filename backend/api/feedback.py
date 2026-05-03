@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func
@@ -162,7 +163,7 @@ def feedback_weekly_report(
     response_category: str | None = None,
     current_user: User = Depends(require_admin_user),
     db: Session = Depends(get_db),
-):
+) -> dict[str, Any]:
     _ = current_user
 
     days = max(1, min(days, 30))
