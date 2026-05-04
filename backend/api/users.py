@@ -2,7 +2,7 @@ import json
 import logging
 from collections import defaultdict
 from datetime import datetime, timezone
-from typing import Any, List, Dict
+from typing import Any, Dict, List, cast
 
 from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.orm import Session
@@ -78,8 +78,12 @@ def _parse_alert_types_json(raw_alert_types: str | None) -> List[str]:
     if not isinstance(parsed, list):
         return []
 
-    # Parsed JSON is dynamic; explicit cast avoids rigid typing here
-    return _normalize_alert_types([str(item) for item in parsed])
+    parsed_items = cast(list[Any], parsed)
+    normalized_values: list[str] = []
+    for item in parsed_items:
+        normalized_values.append(str(item))
+
+    return _normalize_alert_types(normalized_values)
 
 
 def _parse_health_conditions_json(raw_health_conditions: str | None) -> List[str]:
@@ -94,8 +98,12 @@ def _parse_health_conditions_json(raw_health_conditions: str | None) -> List[str
     if not isinstance(parsed, list):
         return []
 
-    # Parsed JSON is dynamic; explicit cast avoids rigid typing here
-    return _normalize_health_conditions([str(item) for item in parsed])
+    parsed_items = cast(list[Any], parsed)
+    normalized_values: list[str] = []
+    for item in parsed_items:
+        normalized_values.append(str(item))
+
+    return _normalize_health_conditions(normalized_values)
 
 
 def _sync_user_alert_preferences(db: Session, user: User, alert_types: list[str]):
