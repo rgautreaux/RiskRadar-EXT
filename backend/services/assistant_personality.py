@@ -86,7 +86,8 @@ def parse_profile(raw_profile: Optional[str]) -> Profile:
     for section in ("tone", "delivery", "voice", "learning"):
         loaded_section = loaded.get(section)
         if isinstance(loaded_section, dict):
-            profile[section].update(loaded_section)  # type: ignore[literal-required]
+            # Loaded JSON is dynamically typed; cast for TypedDict update
+            profile[section].update(loaded_section)  # type: ignore[typeddict-item]
 
     return profile
 

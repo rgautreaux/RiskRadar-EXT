@@ -78,8 +78,8 @@ def _parse_alert_types_json(raw_alert_types: str | None) -> List[str]:
     if not isinstance(parsed, list):
         return []
 
-    # type: ignore for mypy/pyright: item type is dynamic from JSON
-    return _normalize_alert_types([str(item) for item in parsed])  # type: ignore
+    # Parsed JSON is dynamic; explicit cast avoids rigid typing here
+    return _normalize_alert_types([str(item) for item in parsed])
 
 
 def _parse_health_conditions_json(raw_health_conditions: str | None) -> List[str]:
@@ -94,8 +94,8 @@ def _parse_health_conditions_json(raw_health_conditions: str | None) -> List[str
     if not isinstance(parsed, list):
         return []
 
-    # type: ignore for mypy/pyright: item type is dynamic from JSON
-    return _normalize_health_conditions([str(item) for item in parsed])  # type: ignore
+    # Parsed JSON is dynamic; explicit cast avoids rigid typing here
+    return _normalize_health_conditions([str(item) for item in parsed])
 
 
 def _sync_user_alert_preferences(db: Session, user: User, alert_types: list[str]):
@@ -238,9 +238,8 @@ def update_preferences(user_id: int, body: UserPrefsUpdate, db: Session = Depend
         _sync_user_health_conditions(db, user, normalized_health_conditions)
         changed_fields.append('health_conditions')
     if body.assistant_style_profile is not None:
-        asp = body.assistant_style_profile  # type: ignore
-        # type: ignore for type checker on dynamic dict
-        logging.getLogger(__name__).info("User %s assistant_style_profile updated: %s", user.id, asp)  # type: ignore
+        asp = body.assistant_style_profile
+        logging.getLogger(__name__).info("User %s assistant_style_profile updated: %s", user.id, asp)
         setattr(user, 'assistant_style_profile', json.dumps(asp))
         changed_fields.append('assistant_style_profile')
 
