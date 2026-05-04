@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from datetime import datetime, timezone
 from typing import Any
-from ..db.database import get_db
-from ..db.models import Alert, User
-from ..schemas.alert import AlertOut, AlertStats, PrioritizedAlertListOut, MapAlertListOut
-from ..scoring.prioritization import (
+from db.database import get_db
+from db.models import Alert, User
+from schemas.alert import AlertOut, AlertStats, PrioritizedAlertListOut, MapAlertListOut
+from scoring.prioritization import (
     prioritize_alerts as build_prioritized_alerts,
     compute_alert_risk_breakdown,
     explain_alert_risk_formula,
