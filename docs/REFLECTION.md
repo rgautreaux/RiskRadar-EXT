@@ -1,3 +1,7 @@
+# CMPS 357 Final Project Reflection
+
+## Session Reflections
+
 # Stage 5: Session-Based UserID/Profile Flow Migration, UI/UX Verification, and Documentation Handoff to Max (2026-04-15)
 Summary:
 - Migrated the profile page and related flows to a secure, session-based UserID system, removing manual UserID entry from the frontend and enforcing session-derived user context throughout the stack.
@@ -14,9 +18,6 @@ How this improved the project:
 - Reduced risk of user error and security issues by making UserID session-based and read-only in the UI.
 - Improved clarity and usability of the profile page for all users.
 - Ensured that all necessary manual verification and documentation updates are clearly assigned and tracked, maintaining project momentum and documentation quality.
-# CMPS 357 Final Project Reflection
-
-## Session Reflections
 
 # Stage 5: Local Digest Scope Selector Session (2026-05-02)
 Summary:
