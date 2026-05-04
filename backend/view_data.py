@@ -125,7 +125,7 @@ def view_stats(db):
     for a in alerts:
         by_type.setdefault(a.alert_type, 0)
         by_type[a.alert_type] += 1
-    print(f"\n  Alerts by type:")
+    print("\n  Alerts by type:")
     for atype, count in sorted(by_type.items()):
         print(f"    {atype:<25s} {count:>5d}")
 
