@@ -1,8 +1,4 @@
 
-# --- Import MAX_RADIUS_KM first to avoid NameError in default args ---
-# pylint: disable=pointless-string-statement
-from . import MAX_RADIUS_KM
-
 """
 RiskRadar Alert Risk Scoring & Ranking System
 ------------------------------------------------
@@ -29,7 +25,6 @@ The formula and factor breakdown are exposed for user transparency and explainab
 # ---------------------------------------------------------------------------
 # Imports
 # ---------------------------------------------------------------------------
-
 from typing import Any, Dict
 import json
 from datetime import datetime, timezone
@@ -37,6 +32,7 @@ from sqlalchemy.orm import Session
 from db.models import Alert, User
 from schemas.alert import PrioritizedAlertListOut, PrioritizedAlertOut, PriorityFactors
 from . import (
+    MAX_RADIUS_KM,
     haversine_km,
     CONDITION_ALERT_MAP,
     SEVERITY_SCORES,

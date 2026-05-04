@@ -9,7 +9,7 @@ Run from the backend directory:
 """
 
 import argparse
-import json
+import json  # noqa: F401 (used in optional debugging scenarios)
 
 from db.database import SessionLocal
 from db.models import Alert, Summary, ScrapeLog
@@ -21,9 +21,9 @@ def view_alerts(db, source_filter=None, show_full=False):
         query = query.filter(Alert.source == source_filter)
 
     alerts = query.all()
-    print(f"\n{'='*70}")
-    print(f"  ALERTS ({len(alerts)} total)")
-    print(f"{'='*70}")
+    print("\n" + "="*70)
+    print("  ALERTS (" + str(len(alerts)) + " total)")
+    print("" + "="*70)
 
     if not alerts:
         print("  No alerts found.")
@@ -58,9 +58,9 @@ def view_alerts(db, source_filter=None, show_full=False):
 
 def view_summaries(db):
     summaries = db.query(Summary).order_by(Summary.created_at.desc()).all()
-    print(f"\n{'='*70}")
-    print(f"  SUMMARIES ({len(summaries)} total)")
-    print(f"{'='*70}")
+    print("\n" + "="*70)
+    print("  SUMMARIES (" + str(len(summaries)) + " total)")
+    print("" + "="*70)
 
     if not summaries:
         print("  No summaries generated yet.")
@@ -78,9 +78,9 @@ def view_summaries(db):
 
 def view_scrape_logs(db):
     logs = db.query(ScrapeLog).order_by(ScrapeLog.completed_at.desc()).limit(20).all()
-    print(f"\n{'='*70}")
-    print(f"  SCRAPE LOG (last 20 runs)")
-    print(f"{'='*70}")
+    print("\n" + "="*70)
+    print("  SCRAPE LOG (last 20 runs)")
+    print("" + "="*70)
 
     if not logs:
         print("  No scrape logs yet.")
@@ -97,16 +97,16 @@ def view_scrape_logs(db):
 
 def view_stats(db):
     alerts = db.query(Alert).all()
-    print(f"\n{'='*70}")
-    print(f"  DATABASE STATS")
-    print(f"{'='*70}")
+    print("\n" + "="*70)
+    print("  DATABASE STATS")
+    print("" + "="*70)
 
     # By source
     by_source = {}
     for a in alerts:
         by_source.setdefault(a.source, 0)
         by_source[a.source] += 1
-    print(f"\n  Alerts by source:")
+    print("\n  Alerts by source:")
     for source, count in sorted(by_source.items()):
         print(f"    {source:<25s} {count:>5d}")
 
@@ -115,7 +115,7 @@ def view_stats(db):
     for a in alerts:
         by_severity.setdefault(a.severity, 0)
         by_severity[a.severity] += 1
-    print(f"\n  Alerts by severity:")
+    print("\n  Alerts by severity:")
     for sev in ["critical", "high", "moderate", "low"]:
         if sev in by_severity:
             print(f"    {sev:<25s} {by_severity[sev]:>5d}")

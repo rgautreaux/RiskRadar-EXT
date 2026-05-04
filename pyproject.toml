@@ -1,0 +1,8 @@
+[tool.ruff]
+line-length = 120
+exclude = [".venv", "frontend/node_modules", "backend/.venv"]
+# Allow more relaxed rules in tests (long lines, unused imports sometimes used for fixtures)
+
+per-file-ignores = {
+  "backend/tests/**" = ["E501", "F401", "W291", "W293", "W292", "F841"]
+}
