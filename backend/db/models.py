@@ -127,9 +127,9 @@ class User(Base):
     zip_code: Mapped[str | None] = mapped_column(Text)
     latitude: Mapped[float | None] = mapped_column()
     longitude: Mapped[float | None] = mapped_column()
-    alert_types: Mapped[str] = mapped_column(Text, default='["all"]')    # JSON array
+    alert_types: Mapped[str | None] = mapped_column(Text, nullable=True, default='["all"]')    # JSON array
     notify_severity: Mapped[str] = mapped_column(Text, default="high")
-    health_conditions: Mapped[str] = mapped_column(Text, default='[]')   # JSON array of condition keys
+    health_conditions: Mapped[str | None] = mapped_column(Text, nullable=True, default='[]')   # JSON array of condition keys
     assistant_style_profile: Mapped[str] = mapped_column(
         Text,
         default=(
