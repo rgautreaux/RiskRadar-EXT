@@ -120,7 +120,7 @@ def feedback_analytics(
     category_rows = (  # type: ignore
         base_query.with_entities(
             Feedback.response_category,
-            func.count(Feedback.id),  # type: ignore
+            func.count(Feedback.id),  # type: ignore # pylint: disable=not-callable
             func.avg(Feedback.rating),
         )
         .group_by(Feedback.response_category)
@@ -129,7 +129,7 @@ def feedback_analytics(
     reaction_rows = (  # type: ignore
         base_query.with_entities(
             Feedback.reaction,
-            func.count(Feedback.id),  # type: ignore
+            func.count(Feedback.id),  # type: ignore # pylint: disable=not-callable
         )
         .group_by(Feedback.reaction)
         .all()

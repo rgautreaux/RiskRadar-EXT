@@ -339,7 +339,7 @@ def main():
     
     args = parser.parse_args()
     
-    print(f"\n📊 RiskRadar Mock Alert Generator")
+    print("\n📊 RiskRadar Mock Alert Generator")
     print(f"Generating {args.count} alerts...")
     print(f"  Location: {args.location}")
     if args.alert_type:
@@ -376,7 +376,7 @@ def main():
         for severity, count in sorted(severity_counts.items()):
             print(f"  {severity}: {count}")
         
-        print(f"\nOutput (first 3 alerts):")
+        print("\nOutput (first 3 alerts):")
         print(json.dumps(alerts[:3], indent=2))
 
 

@@ -10,6 +10,7 @@ from backend.api.risk import router as risk_router
 from backend.api.summaries import router as summaries_router
 from backend.api.users import router as users_router
 from backend.api.forecast import router as forecast_router
+from backend.api.packing import router as packing_router
 
 
 api_router = APIRouter(prefix="/api/v1")
@@ -22,3 +23,4 @@ api_router.include_router(risk_router)
 api_router.include_router(summaries_router)
 api_router.include_router(users_router)
 api_router.include_router(forecast_router)
+api_router.include_router(packing_router)

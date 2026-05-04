@@ -232,7 +232,7 @@ def compute_risk_score(
         ),
     ]
 
-    return RiskScoreOut(
+    result_model = RiskScoreOut(
         user_id=user.id,
         overall_score=overall,
         risk_level=risk_level,
@@ -240,6 +240,7 @@ def compute_risk_score(
         nearby_alert_count=len(nearby_alerts),
         computed_at=datetime.now(timezone.utc).isoformat(),
     )
+    return result_model.model_dump()
 
 
 def _level_from_score(score: float) -> str:
@@ -279,7 +280,7 @@ def _zero_score(user_id: int, reason: str = "") -> RiskScoreOut:
             description=reason or "No data available",
         ),
     ]
-    return RiskScoreOut(
+    result_model = RiskScoreOut(
         user_id=user_id,
         overall_score=0.0,
         risk_level="low",
@@ -287,3 +288,4 @@ def _zero_score(user_id: int, reason: str = "") -> RiskScoreOut:
         nearby_alert_count=0,
         computed_at=datetime.now(timezone.utc).isoformat(),
     )
+    return result_model.model_dump()

@@ -1,8 +1,4 @@
 
-# --- Import MAX_RADIUS_KM first to avoid NameError in default args ---
-# pylint: disable=pointless-string-statement
-from . import MAX_RADIUS_KM
-
 """
 RiskRadar Alert Risk Scoring & Ranking System
 ------------------------------------------------
@@ -29,14 +25,14 @@ The formula and factor breakdown are exposed for user transparency and explainab
 # ---------------------------------------------------------------------------
 # Imports
 # ---------------------------------------------------------------------------
-
 from typing import Any, Dict
 import json
 from datetime import datetime, timezone
 from sqlalchemy.orm import Session
-from ..db.models import Alert, User
-from ..schemas.alert import PrioritizedAlertListOut, PrioritizedAlertOut, PriorityFactors
+from db.models import Alert, User
+from schemas.alert import PrioritizedAlertListOut, PrioritizedAlertOut, PriorityFactors
 from . import (
+    MAX_RADIUS_KM,
     haversine_km,
     CONDITION_ALERT_MAP,
     SEVERITY_SCORES,
@@ -224,12 +220,7 @@ def prioritize_alerts(
     user_lon = user.longitude
 
     if user_lat is None or user_lon is None:
-        return PrioritizedAlertListOut(
-            user_id=user.id,
-            total_nearby=0,
-            alerts=[],
-            computed_at=datetime.now(timezone.utc).isoformat(),
-        )
+        return _empty_result(user.id)
 
     # Parse user health conditions
     raw_conditions = user.health_conditions or "[]"
@@ -332,12 +323,13 @@ def prioritize_alerts(
         )
         alert_outs.append(alert_out)
 
-    return PrioritizedAlertListOut(
+    result_model = PrioritizedAlertListOut(
         user_id=user.id,
         total_nearby=len(scored),
         alerts=alert_outs,
         computed_at=datetime.now(timezone.utc).isoformat(),
     )
+    return result_model.model_dump()
 
 
 def compute_alert_priority(

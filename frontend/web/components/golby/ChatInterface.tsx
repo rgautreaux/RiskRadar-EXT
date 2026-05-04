@@ -10,6 +10,11 @@ import { Send, ThumbsUp, ThumbsDown, Smile } from 'lucide-react';
 type ResponseCategory = 'docs' | 'page' | 'live' | 'playful' | 'static';
 type FeedbackReaction = 'thumbs_up' | 'thumbs_down' | 'smile';
 type GuardrailCategory = 'medical' | 'legal' | 'emergency' | 'unsafe';
+type GolbyResponse = {
+	text: string;
+	category: ResponseCategory;
+	sources?: string[];
+};
 
 // Guardrail patterns for sensitive topics
 const GUARDED_PATTERNS: { regex: RegExp; category: GuardrailCategory }[] = [

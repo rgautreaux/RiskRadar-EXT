@@ -1,4 +1,4 @@
-import{c as p,u as x,j as e,m as l,G as f,C as w,a as j,R as n,f as S}from"./golby-chunk-ChatInterface-DD_uUCIS.js";/**
+import{c as p,u as x,j as e,m as l,G as f,C as w,a as j,R as n,f as S}from"./golby-chunk-ChatInterface-CIGpDSvM.js";/**
  * @license lucide-react v1.7.0 - ISC
  *
  * This source code is licensed under the ISC license.
