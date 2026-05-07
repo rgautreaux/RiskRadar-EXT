@@ -16,7 +16,7 @@ Our goal for the CMPS 357 final project is to build a unique web-app extension w
 
 | Feature | Status | Details |
 |---------|--------|---------|
-| **Guest Access & Limits** | ✅ Complete | 10 msgs/day trial, rate-limited login |
+| **Guest Access & Limits** | ✅ Complete | 10 msgs/day trial, login rate-limiting (10 failures → 15-min IP lockout), locked pages for guests |
 | **First-Time Onboarding** | ✅ Complete | Persistent state, help button, multi-page |
 | **Golby AI Personality** | ✅ Complete | 5 customizable dimensions, feedback-driven |
 | **Summary Explainability** | ✅ Complete | Confidence + reasoning displayed |
@@ -194,6 +194,7 @@ The demo fulfills all course requirements:
 - ✅ **Stage 2**: Personalized risk scoring, smart alert prioritization, health sensitivities
 - ✅ **Stage 3**: Interactive geospatial map, overlays, responsive UX, accessibility  
 - ✅ **Stage 4**: Forecast UI with personalized advice, AI assistant with guardrails
+- ✅ **Final Sprint**: First-time onboarding tour, guest daily limit enforcement, Golby personality feedback loop, security hardening (rate limiting, account lockout, password strength validation)
 
 See [DEMO_FEATURES_BY_STAGE.md](./docs/DEMO_FEATURES_BY_STAGE.md) for detailed feature-to-code mapping.
 
@@ -211,7 +212,7 @@ See [DEMO_FEATURES_BY_STAGE.md](./docs/DEMO_FEATURES_BY_STAGE.md) for detailed f
 | `ModuleNotFoundError` | Run `py -m pip install -r requirements.txt` in the backend folder |
 | Expo QR code won't scan | Press `w` to test on web first; make sure Expo Go app is installed on phone |
 | Registration fails silently | Check the backend terminal for error messages |
-| Assistant or user routes return HTTP 500 with `no such column: users.is_admin` | Local SQLite schema is stale. Stop backend and rebuild backend DB with fixtures: `c:/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/.venv/Scripts/python.exe backend/demo/seed_demo_data.py --mode fresh --db-path backend/riskradar.db`, then restart backend on `8001`. |
+| Assistant or user routes return HTTP 500 with `no such column: users.is_admin` | Local SQLite schema is stale. Stop backend and rebuild backend DB with fixtures: `py backend/demo/seed_demo_data.py --mode fresh --db-path backend/riskradar.db`, then restart backend on `8001`. |
 
 ---
 
