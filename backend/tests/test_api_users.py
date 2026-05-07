@@ -17,6 +17,7 @@ class TestRegisterUser:
         data = resp.json()
         assert data["display_name"] == "Alice"
         assert data["email"] == "alice@test.com"
+        assert data["has_completed_onboarding"] is False
         assert "password" not in data
         assert "password_hash" not in data
 
@@ -108,6 +109,22 @@ class TestRegisterUser:
 
 
 class TestUpdatePreferences:
+    def test_complete_onboarding_updates_user_flag(self, test_client, db_session, sample_user):
+        from db.models import User
+
+        resp = test_client.post(
+            f"/api/v1/users/{sample_user.id}/onboarding",
+            json={"completed": True},
+        )
+
+        assert resp.status_code == 200
+        body = resp.json()
+        assert body["has_completed_onboarding"] is True
+
+        refreshed = db_session.query(User).filter(User.id == sample_user.id).first()
+        assert refreshed is not None
+        assert refreshed.has_completed_onboarding is True
+
     def test_update_zip_code(self, test_client, sample_user):
         resp = test_client.put(f"/api/v1/users/{sample_user.id}/preferences", json={
             "zip_code": "10001",

@@ -63,7 +63,7 @@ class Summarizer:
                 ],
             )
 
-            text = completion.choices[0].message.content
+            text = completion.choices[0].message.content or ""
             tokens = completion.usage.total_tokens if completion.usage else 0
             return text, tokens, model
         else:

@@ -32,11 +32,16 @@ def _apply_migrations(eng):
     """
     inspector = inspect(eng)
     with eng.connect() as conn:
-        # Migration: add is_admin to users table (introduced in Stage 4)
         users_columns = {col["name"] for col in inspector.get_columns("users")}
+        # Migration: add is_admin to users table (introduced in Stage 4)
         if "is_admin" not in users_columns:
             _log.info("Migration: adding is_admin column to users table")
             conn.execute(text("ALTER TABLE users ADD COLUMN is_admin BOOLEAN NOT NULL DEFAULT 0"))
+            conn.commit()
+        # Migration: add is_guest to users table (2026-04-22)
+        if "is_guest" not in users_columns:
+            _log.info("Migration: adding is_guest column to users table")
+            conn.execute(text("ALTER TABLE users ADD COLUMN is_guest BOOLEAN NOT NULL DEFAULT 0"))
             conn.commit()
 
 

@@ -6,8 +6,6 @@ No API key required.
 
 import json
 import httpx
-
-from config.settings import settings
 from scrapers.base_scraper import BaseScraper
 
 

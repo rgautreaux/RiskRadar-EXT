@@ -1,4 +1,43 @@
+
+<?php
+$userId = $userId ?? 0;
+$radiusKm = $radiusKm ?? 150;
+$limit = $limit ?? 50;
+?>
 <?php rr_render_layout_start('Smart Alerts', 'smart_alerts'); ?>
+
+<?php $isGuest = (function_exists('rr_access_context') && rr_access_context() === 'guest'); ?>
+
+<?php if ($isGuest) : ?>
+    <style>
+        .page-heading, .sa-filter-grid, .sa-empty-state, .sa-summary-strip, .sa-summary-cell, .panel, .risk-factor-list, .alert-row { pointer-events: none; opacity: 0.5; }
+    </style>
+    <div class="locked-overlay" role="dialog" aria-modal="true" aria-labelledby="lockout-title">
+        <div class="locked-modal-panel">
+            <div class="locked-modal-header">
+                <svg class="locked-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="32" height="32" aria-hidden="true">
+                    <rect x="3" y="11" width="18" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M7 11V8a5 5 0 0 1 10 0v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <h2 id="lockout-title" class="locked-modal-title">Feature for Registered Users Only</h2>
+            </div>
+            <p class="locked-modal-body">
+                Personalized smart alert prioritization is available to registered users only. 
+                Sign in or create a free account to unlock:
+            </p>
+            <ul class="locked-modal-benefits" aria-label="Benefits of registration">
+                <li>Personalized risk scores based on your location</li>
+                <li>Custom alerts tailored to your health preferences</li>
+                <li>Priority rankings by severity and relevance</li>
+                <li>Unlimited smart alerts and monitoring</li>
+            </ul>
+            <div class="locked-modal-actions">
+                <a href="/login.php" class="button-primary" role="button">Sign In</a>
+                <a href="/register.php" class="button-secondary" role="button">Create Account</a>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
 
 <section class="page-heading">
     <div>
@@ -7,6 +46,7 @@
     </div>
     <p>Alerts ranked by personalized priority using distance, severity, health sensitivity, and recency. Enter a user ID to see results tailored to that user's location and health profile.</p>
 </section>
+
 
 <section class="panel">
     <form class="sa-filter-grid" method="get" action="smart_alerts.php">

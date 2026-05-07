@@ -10,6 +10,41 @@ import { Send, ThumbsUp, ThumbsDown, Smile } from 'lucide-react';
 type ResponseCategory = 'docs' | 'page' | 'live' | 'playful' | 'static';
 type FeedbackReaction = 'thumbs_up' | 'thumbs_down' | 'smile';
 type GuardrailCategory = 'medical' | 'legal' | 'emergency' | 'unsafe';
+type GolbyResponse = {
+	text: string;
+	category: ResponseCategory;
+	sources?: string[];
+};
+
+// Guardrail patterns for sensitive topics
+const GUARDED_PATTERNS: { regex: RegExp; category: GuardrailCategory }[] = [
+	{ regex: /\b(emergency|911|ambulance|fire|police|hospital|urgent|immediate danger|life[- ]?threatening)\b/i, category: 'emergency' },
+	{ regex: /\b(medical|diagnos(e|is|ed)|treatment|prescrib(e|ing|ed)|medicine|doctor|nurse|symptom|therapy|cure|remedy|health advice|pain|injury|illness|disease|sick|hospitalization|prescription)\b/i, category: 'medical' },
+	{ regex: /\b(legal|lawyer|attorney|court|sue|lawsuit|litigation|contract|will|testament|notary|legal advice|crime|criminal|arrest|jail|prison|sentence|parole|probation|divorce|custody|immigration|visa|citizenship)\b/i, category: 'legal' },
+	{ regex: /\b(hack|exploit|phish|malware|virus|attack|illegal|harm|violence|weapon|bomb|shoot|kill|suicide|self[- ]?harm|overdose|poison|abuse|threat|terror|credential|password|ssn|social security|credit card|bank account|account number)\b/i, category: 'unsafe' },
+];
+
+// Simple sentiment detection (expandable)
+function detectSentiment(message: string): 'positive' | 'negative' | 'neutral' {
+	const lower = message.toLowerCase();
+	if (lower.match(/\b(thank(s| you)|great|awesome|love|amazing|good|happy|excited|yay|cool|helpful|appreciate)\b/)) {
+		return 'positive';
+	}
+	if (lower.match(/\b(sad|angry|upset|frustrated|bad|hate|annoyed|worried|scared|afraid|anxious|disappointed|unhappy|problem|issue|stuck|lost)\b/)) {
+		return 'negative';
+	}
+	return 'neutral';
+}
+
+function getSupportiveResponse(sentiment: 'positive' | 'negative' | 'neutral'): string | null {
+	if (sentiment === 'positive') {
+		return "I'm glad to hear that! 😊 If you have more questions or need help, just ask.";
+	}
+	if (sentiment === 'negative') {
+		return "I'm here for you. If something's not working or you feel stuck, let me know and I'll do my best to help!";
+	}
+	return null;
+}
 
 interface AssistantProfile {
 	docs: number;
@@ -66,8 +101,8 @@ const golbyJokes = [
 	"What do you call dangerous precipitation? A rain of terror! ☔️",
 	"Why did the sun go to school? To get a little brighter! ☀️",
 	"How do hurricanes see? With one eye! 🌀",
-	"Why don’t mountains get cold in the winter? They wear snowcaps! 🏔️",
-	"What’s a snowman’s favorite snack? Ice Krispies! ⛄️",
+	"Why don't mountains get cold in the winter? They wear snowcaps! 🏔️",
+	"What's a snowman's favorite snack? Ice Krispies! ⛄️",
 	"Why did the bicycle fall over on its trip? It was two-tired! 🚲",
 	"Why did the traveler bring a ladder to the bar? Because they heard the drinks were on the house! 🍹",
 	"Why did the airplane get sent to its room? For having a bad altitude! ✈️",
@@ -80,7 +115,7 @@ const golbyGreetings = [
 	"Hey there! Ready to explore some environmental insights? 🌍",
 	"Hello, traveler! Where are you headed today? 🧳",
 	"Greetings, explorer! Need a weather update or a fun fact? ☀️",
-	"Welcome back! Let’s make your journey safe and fun. 🚦",
+	"Welcome back! Let's make your journey safe and fun. 🚦",
 	"Hey! Golby here, your trusty travel buddy. How can I assist? 🐟",
 	"Hi! Want a forecast, a risk check, or just a good laugh? 😄"
 ];
@@ -103,6 +138,40 @@ const SESSION_STORAGE_KEY = 'golby-session-id';
 const FEEDBACK_COUNT_STORAGE_KEY = 'golby-feedback-count';
 const STYLE_BIAS_STORAGE_KEY = 'golby-style-bias';
 
+// Guest daily request limit
+const GUEST_DAILY_LIMIT = 10;
+const GUEST_LIMIT_STORAGE_KEY = 'golby-guest-daily-count';
+const GUEST_LIMIT_DATE_KEY = 'golby-guest-daily-date';
+
+function isGuestUser(currentUserId?: number) {
+	return !currentUserId || currentUserId <= 0;
+}
+
+function getTodayISO() {
+	return new Date().toISOString().slice(0, 10);
+}
+
+function getGuestDailyCount() {
+	if (typeof window === 'undefined') return 0;
+	const today = getTodayISO();
+	const storedDate = window.localStorage.getItem(GUEST_LIMIT_DATE_KEY);
+	if (storedDate !== today) {
+		window.localStorage.setItem(GUEST_LIMIT_DATE_KEY, today);
+		window.localStorage.setItem(GUEST_LIMIT_STORAGE_KEY, '0');
+		return 0;
+	}
+	const count = parseInt(window.localStorage.getItem(GUEST_LIMIT_STORAGE_KEY) || '0', 10);
+	return isNaN(count) ? 0 : count;
+}
+
+function incrementGuestDailyCount() {
+	if (typeof window === 'undefined') return;
+	const today = getTodayISO();
+	window.localStorage.setItem(GUEST_LIMIT_DATE_KEY, today);
+	const count = getGuestDailyCount() + 1;
+	window.localStorage.setItem(GUEST_LIMIT_STORAGE_KEY, String(count));
+}
+
 const PROFILE_CAP = 8;
 const PROFILE_DECAY = 0.9;
 const MIN_FEEDBACK_TO_REORDER = 3;
@@ -118,7 +187,6 @@ function createMessageId() {
 	if (typeof window !== 'undefined' && window.crypto?.randomUUID) {
 		return window.crypto.randomUUID();
 	}
-
 	return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
@@ -126,13 +194,11 @@ function readStoredProfile(): AssistantProfile {
 	if (typeof window === 'undefined') {
 		return { ...DEFAULT_PROFILE };
 	}
-
 	try {
 		const rawProfile = window.localStorage.getItem(PROFILE_STORAGE_KEY);
 		if (!rawProfile) {
 			return { ...DEFAULT_PROFILE };
 		}
-
 		return { ...DEFAULT_PROFILE, ...JSON.parse(rawProfile) };
 	} catch {
 		return { ...DEFAULT_PROFILE };
@@ -143,7 +209,6 @@ function persistProfile(profile: AssistantProfile) {
 	if (typeof window === 'undefined') {
 		return;
 	}
-
 	try {
 		window.localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
 	} catch {
@@ -155,18 +220,15 @@ function readStoredNumber(key: string, fallback: number) {
 	if (typeof window === 'undefined') {
 		return fallback;
 	}
-
 	try {
 		const rawValue = window.localStorage.getItem(key);
 		if (!rawValue) {
 			return fallback;
 		}
-
 		const parsed = Number(rawValue);
 		if (Number.isNaN(parsed)) {
 			return fallback;
 		}
-
 		return parsed;
 	} catch {
 		return fallback;
@@ -177,7 +239,6 @@ function persistNumber(key: string, value: number) {
 	if (typeof window === 'undefined') {
 		return;
 	}
-
 	try {
 		window.localStorage.setItem(key, String(value));
 	} catch {
@@ -189,13 +250,11 @@ function getSessionId() {
 	if (typeof window === 'undefined') {
 		return 'server-session';
 	}
-
 	try {
 		const existing = window.localStorage.getItem(SESSION_STORAGE_KEY);
 		if (existing) {
 			return existing;
 		}
-
 		const sessionId = createMessageId();
 		window.localStorage.setItem(SESSION_STORAGE_KEY, sessionId);
 		return sessionId;
@@ -220,34 +279,49 @@ function reactionDelta(reaction: FeedbackReaction) {
 	return reactionToRating(reaction) - 3;
 }
 
-function classifyTopic(message: string): 'forecast' | 'alert' | 'risk' | 'joke' | 'greeting' | 'help' | 'general' {
-	if (message.includes('joke')) {
-		return 'joke';
-	}
-	if (message.includes('hello') || message.includes('hi')) {
-		return 'greeting';
-	}
-	if (message.includes('forecast') || message.includes('weather')) {
-		return 'forecast';
-	}
-	if (message.includes('alert')) {
-		return 'alert';
-	}
-	if (message.includes('risk')) {
-		return 'risk';
-	}
-	if (message.includes('help')) {
-		return 'help';
+function classifyTopic(message: string): 'forecast' | 'alert' | 'risk' | 'joke' | 'greeting' | 'help' | 'travel' | 'general' {
+	const lower = message.toLowerCase();
+	if (lower.includes('joke')) return 'joke';
+	if (lower.includes('hello') || lower.includes('hi')) return 'greeting';
+	if (lower.includes('forecast') || lower.includes('weather')) return 'forecast';
+	if (lower.includes('alert')) return 'alert';
+	if (lower.includes('risk')) return 'risk';
+	if (lower.includes('help')) return 'help';
+	if (lower.match(/\b(travel|trip|packing|pack|prepare|preparation|luggage|suitcase|what should i bring|what to bring|checklist|advice)\b/)) {
+		return 'travel';
 	}
 	return 'general';
 }
 
-const GUARDED_PATTERNS: Array<{ category: GuardrailCategory; regex: RegExp }> = [
-	{ category: 'medical', regex: /\b(diagnose|diagnosis|prescription|dosage|dose|medication|treatment|medical advice)\b/i },
-	{ category: 'legal', regex: /\b(legal advice|lawsuit|sue|liability|attorney|lawyer|court)\b/i },
-	{ category: 'emergency', regex: /\b(call 911|emergency|evacuate now|life[- ]?threatening|immediate danger)\b/i },
-	{ category: 'unsafe', regex: /\b(hack|bypass|exploit|steal|weapon|harm|violence|password|secret key|token)\b/i },
-];
+function generateTravelChecklist(riskData?: any): string {
+	const baseChecklist = [
+		'Valid ID and travel documents',
+		'Phone and charger',
+		'Medications and health essentials',
+		'Reusable water bottle',
+		'Snacks',
+		'Weather-appropriate clothing',
+		'Personal hygiene items',
+		'Face mask (for air quality or crowded places)',
+		'Hand sanitizer',
+	];
+	const riskTips: string[] = [];
+	if (riskData) {
+		if (riskData.air_quality && riskData.air_quality === 'poor') {
+			riskTips.push('Pack extra face masks due to poor air quality.');
+		}
+		if (riskData.weather && riskData.weather === 'rain') {
+			riskTips.push('Bring a rain jacket or umbrella.');
+		}
+		if (riskData.weather && riskData.weather === 'hot') {
+			riskTips.push('Pack sunscreen and stay hydrated.');
+		}
+		if (riskData.alerts && riskData.alerts.includes('wildfire')) {
+			riskTips.push('Check for wildfire alerts and plan alternate routes.');
+		}
+	}
+	return `Here's a travel preparation checklist for you:\n- ${baseChecklist.join('\n- ')}${riskTips.length ? '\n\nBased on current risks:\n- ' + riskTips.join('\n- ') : ''}`;
+}
 
 function detectGuardrailCategory(message: string): GuardrailCategory | null {
 	for (const item of GUARDED_PATTERNS) {
@@ -255,7 +329,6 @@ function detectGuardrailCategory(message: string): GuardrailCategory | null {
 			return item.category;
 		}
 	}
-
 	return null;
 }
 
@@ -263,15 +336,12 @@ function getGuardrailResponse(category: GuardrailCategory): string {
 	if (category === 'emergency') {
 		return 'I cannot provide emergency-response instructions. If there is immediate danger, contact local emergency services and follow official local alerts.';
 	}
-
 	if (category === 'medical') {
 		return 'I can explain RiskRadar environmental data, but I cannot provide medical advice, diagnosis, or treatment guidance. Please consult a qualified healthcare professional.';
 	}
-
 	if (category === 'legal') {
 		return 'I cannot provide legal advice. Please consult a licensed attorney or official legal resources for legal questions.';
 	}
-
 	return 'I cannot help with harmful, illegal, or credential-related requests. I can still help interpret RiskRadar alerts, maps, and forecast data.';
 }
 
@@ -283,6 +353,7 @@ function getOrderedCategories(topic: ReturnType<typeof classifyTopic>, profile: 
 		joke: ['playful', 'static'],
 		greeting: ['playful', 'static'],
 		help: ['docs', 'static', 'page', 'live'],
+		travel: ['live', 'static', 'docs', 'page'],
 		general: ['docs', 'page', 'live', 'static'],
 	};
 
@@ -297,7 +368,6 @@ function getOrderedCategories(topic: ReturnType<typeof classifyTopic>, profile: 
 			if (scoreDelta !== 0) {
 				return scoreDelta;
 			}
-
 			return candidateOrders[topic].indexOf(left) - candidateOrders[topic].indexOf(right);
 		});
 }
@@ -325,15 +395,12 @@ function getResponseStyle(feedbackCount: number, styleBias: number): ResponseSty
 	if (feedbackCount < MIN_FEEDBACK_TO_STYLE_SHIFT) {
 		return 'balanced';
 	}
-
 	if (styleBias <= -2) {
 		return 'concise';
 	}
-
 	if (styleBias >= 2) {
 		return 'detailed';
 	}
-
 	return 'balanced';
 }
 
@@ -341,7 +408,6 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 	if (style === 'balanced' || category === 'playful') {
 		return text;
 	}
-
 	if (style === 'concise') {
 		if (text.includes('\n')) {
 			const lines = text.split('\n').filter(Boolean);
@@ -356,7 +422,6 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 	if (text.length < 160) {
 		return `${text} If you want, I can provide a deeper breakdown.`;
 	}
-
 	return text;
 }
 
@@ -374,9 +439,10 @@ export function ChatInterface({
 			text: "Hey there! I'm Golby, your travel safety buddy. What can I help you discover today?",
 			isGolby: true,
 			timestamp: new Date(),
-			responseCategory: 'playful'
-		}
+			responseCategory: 'playful',
+		},
 	]);
+
 	const [inputValue, setInputValue] = useState('');
 	const [isTyping, setIsTyping] = useState(false);
 	const [userGuide, setUserGuide] = useState<string | null>(null);
@@ -390,7 +456,7 @@ export function ChatInterface({
 	const [analyticsError, setAnalyticsError] = useState<string | null>(null);
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 	const sessionIdRef = useRef(getSessionId());
-	// Fetch USER_GUIDE.md on mount
+
 	useEffect(() => {
 		fetchUserGuide().then(setUserGuide).catch(() => setUserGuide(null));
 	}, []);
@@ -445,11 +511,46 @@ export function ChatInterface({
 		}
 	}, [showDiagnostics]);
 
+	// Feedback handler for thumbs up/down/smile
+	const handleFeedback = async (message: Message, reaction: FeedbackReaction) => {
+		if (!message.isGolby) return;
+		const category = message.responseCategory || 'static';
+		const nextProfile = applyFeedback(assistantProfile, category, reaction);
+		const nextFeedbackCount = feedbackCount + 1;
+		const nextStyleBias = updateStyleBias(styleBias, reaction, message.text);
+		setAssistantProfile(nextProfile);
+		setFeedbackCount(nextFeedbackCount);
+		setStyleBias(nextStyleBias);
+		persistProfile(nextProfile);
+		persistNumber(FEEDBACK_COUNT_STORAGE_KEY, nextFeedbackCount);
+		persistNumber(STYLE_BIAS_STORAGE_KEY, nextStyleBias);
+		try {
+			await sendGolbyFeedback({
+				session_id: sessionIdRef.current,
+				message_id: message.id,
+				reaction,
+				rating: reactionToRating(reaction),
+				page_context: pageContext,
+				response_category: category,
+				response_text: message.text,
+			});
+			setRuntimeDiagnostics(null);
+		} catch {
+			setRuntimeDiagnostics('Feedback could not be synced right now. Local learning remains active.');
+		}
 
-
+		if (currentUserId) {
+			try {
+				await syncGolbyStyleProfile(currentUserId, nextProfile, nextFeedbackCount, nextStyleBias);
+				setRuntimeDiagnostics(null);
+			} catch {
+				setRuntimeDiagnostics('Profile sync is delayed. Changes will apply locally for this session.');
+			}
+		}
+	};
 
 	// Async: Try to answer from docs, page context, live data, and then fallback to static.
-	const getGolbyResponse = async (userMessage: string): Promise<{ text: string; category: ResponseCategory }> => {
+	const getGolbyResponse = async (userMessage: string): Promise<GolbyResponse> => {
 		const lowerMessage = userMessage.toLowerCase();
 		const guardrailCategory = detectGuardrailCategory(lowerMessage);
 		if (guardrailCategory) {
@@ -457,6 +558,12 @@ export function ChatInterface({
 				text: getGuardrailResponse(guardrailCategory),
 				category: 'static',
 			};
+		}
+		// Emotional intelligence: detect sentiment and offer supportive/friendly response
+		const sentiment = detectSentiment(userMessage);
+		const supportive = getSupportiveResponse(sentiment);
+		if (supportive && sentiment !== 'neutral') {
+			return { text: supportive, category: 'playful' };
 		}
 
 		const locationMatch = userMessage.match(/(?:for|in)\s+([\w\s,]+)/i);
@@ -474,6 +581,7 @@ export function ChatInterface({
 				return {
 					text: backendReply.reply,
 					category: mappedCategory,
+					sources: backendReply.sources,
 				};
 			}
 		} catch {
@@ -484,7 +592,7 @@ export function ChatInterface({
 		const topic = classifyTopic(lowerMessage);
 		const orderedCategories = getOrderedCategories(topic, assistantProfile, feedbackCount);
 		const preferredStyle = getResponseStyle(feedbackCount, styleBias);
-		const withStyle = (text: string, category: ResponseCategory) => ({
+		const withStyle = (text: string, category: ResponseCategory): GolbyResponse => ({
 			text: formatResponseForStyle(text, preferredStyle, category),
 			category,
 		});
@@ -499,7 +607,6 @@ export function ChatInterface({
 				}
 				continue;
 			}
-
 			if (category === 'page') {
 				if (pageContext === 'map' && lowerMessage.includes('risk')) {
 					return withStyle("You're on the map view! Click any location to see detailed risk scores and environmental data for that area.", 'page');
@@ -521,8 +628,11 @@ export function ChatInterface({
 				}
 				continue;
 			}
-
 			if (category === 'live') {
+				// Proactive travel/packing/preparation advice
+				if (topic === 'travel') {
+					return withStyle(generateTravelChecklist(), 'live');
+				}
 				try {
 					if (lowerMessage.includes('current alert') || lowerMessage.includes('latest alert')) {
 						const alerts = await fetchCurrentAlerts();
@@ -558,7 +668,6 @@ export function ChatInterface({
 				}
 				continue;
 			}
-
 			if (category === 'playful') {
 				if (topic === 'joke') {
 					return withStyle(golbyJokes[Math.floor(Math.random() * golbyJokes.length)], 'playful');
@@ -568,7 +677,6 @@ export function ChatInterface({
 				}
 				continue;
 			}
-
 			if (category === 'static') {
 				if (lowerMessage.includes('help')) {
 					return withStyle(golbyResponses['help'], 'static');
@@ -589,48 +697,30 @@ export function ChatInterface({
 		return withStyle(golbyResponses['default'], 'static');
 	};
 
-	const handleFeedback = async (message: Message, reaction: FeedbackReaction) => {
-		const category = message.responseCategory ?? 'static';
-		const nextProfile = applyFeedback(assistantProfile, category, reaction);
-		const nextFeedbackCount = feedbackCount + 1;
-		const nextStyleBias = updateStyleBias(styleBias, reaction, message.text);
-
-		setAssistantProfile(nextProfile);
-		persistProfile(nextProfile);
-		setFeedbackCount(nextFeedbackCount);
-		persistNumber(FEEDBACK_COUNT_STORAGE_KEY, nextFeedbackCount);
-		setStyleBias(nextStyleBias);
-		persistNumber(STYLE_BIAS_STORAGE_KEY, nextStyleBias);
-
-		try {
-			await sendGolbyFeedback({
-				session_id: sessionIdRef.current,
-				message_id: message.id,
-				reaction,
-				rating: reactionToRating(reaction),
-				page_context: pageContext,
-				response_category: category,
-				response_text: message.text,
-			});
-			setRuntimeDiagnostics(null);
-		} catch {
-			setRuntimeDiagnostics('Feedback could not be synced right now. Local learning remains active.');
-			// Keep the local learning loop working even if the backend call fails.
-		}
-
-		if (currentUserId) {
-			try {
-				await syncGolbyStyleProfile(currentUserId, nextProfile, nextFeedbackCount, nextStyleBias);
-				setRuntimeDiagnostics(null);
-			} catch {
-				setRuntimeDiagnostics('Profile sync is delayed. Changes will apply locally for this session.');
-				// Keep local learning responsive even if profile sync fails.
-			}
-		}
-	};
-
 	const handleSendMessage = async (text: string) => {
 		if (!text.trim()) return;
+		// Guest daily limit enforcement
+		if (isGuestUser(currentUserId)) {
+			const guestCount = getGuestDailyCount();
+			if (guestCount >= GUEST_DAILY_LIMIT) {
+				const limitMsg: Message = {
+					id: createMessageId(),
+					text: `You've reached the daily limit for guest users (${GUEST_DAILY_LIMIT} messages per day).\n\nCreate a free account to unlock unlimited chat and personalized features!`,
+					isGolby: true,
+					timestamp: new Date(),
+					responseCategory: 'static',
+				};
+				setMessages((prev: Message[]) => [...prev, {
+					id: createMessageId(),
+					text: text,
+					isGolby: false,
+					timestamp: new Date()
+				}, limitMsg]);
+				setInputValue('');
+				return;
+			}
+			incrementGuestDailyCount();
+		}
 		// Add user message
 		const userMessage: Message = {
 			id: createMessageId(),
@@ -638,12 +728,47 @@ export function ChatInterface({
 			isGolby: false,
 			timestamp: new Date()
 		};
-		setMessages(prev => [...prev, userMessage]);
+		setMessages((prev: Message[]) => [...prev, userMessage]);
 		setInputValue('');
-		// Simulate Golby typing
 		setIsTyping(true);
 		const response = await getGolbyResponse(text);
 		setIsTyping(false);
+
+		let lockoutDetected = false;
+		let limitDetected = false;
+		if (isGuestUser(currentUserId)) {
+			const respText = (response.text || '').toLowerCase();
+			if (respText.includes('only available to registered users') || (response.sources && response.sources.includes('guest-lockout'))) {
+				lockoutDetected = true;
+			}
+			if (respText.includes('reached the daily limit') || (response.sources && response.sources.includes('guest-limit'))) {
+				limitDetected = true;
+			}
+		}
+		if (lockoutDetected) {
+			const lockMsg: Message = {
+				id: createMessageId(),
+				text: `This feature is only available to registered users.\n\nWhy register?\n- Unlock personalized risk scores and recommendations\n- Set up custom alerts for your area\n- Save your preferences and health info\n- Access your profile and account features\n\n` +
+					`<a href='/login' class='text-blue-700 underline'>Sign In</a> or <a href='/register' class='text-blue-700 underline'>Create Account</a> for full access!`,
+				isGolby: true,
+				timestamp: new Date(),
+				responseCategory: 'static',
+			};
+			setMessages((prev: Message[]) => [...prev, lockMsg]);
+			return;
+		}
+		if (limitDetected) {
+			const limitMsg: Message = {
+				id: createMessageId(),
+				text: `You've reached the daily limit for guest users (${GUEST_DAILY_LIMIT} messages per day).\n\nCreate a free account to unlock unlimited chat and personalized features!\n\n` +
+					`<a href='/login' class='text-blue-700 underline'>Sign In</a> or <a href='/register' class='text-blue-700 underline'>Create Account</a>`,
+				isGolby: true,
+				timestamp: new Date(),
+				responseCategory: 'static',
+			};
+			setMessages((prev: Message[]) => [...prev, limitMsg]);
+			return;
+		}
 		const golbyMessage: Message = {
 			id: createMessageId(),
 			text: response.text,
@@ -651,7 +776,7 @@ export function ChatInterface({
 			timestamp: new Date(),
 			responseCategory: response.category,
 		};
-		setMessages(prev => [...prev, golbyMessage]);
+		setMessages((prev: Message[]) => [...prev, golbyMessage]);
 	};
 
 	const handleSuggestionClick = (suggestion: string) => {
@@ -672,6 +797,7 @@ export function ChatInterface({
 						onClick={() => setShowDiagnostics((current) => !current)}
 						className="golby-header-btn"
 						aria-label="Toggle diagnostics panel"
+						tabIndex={0}
 					>
 						{showDiagnostics ? 'Hide Panels' : 'Show Panels'}
 					</button>
@@ -792,6 +918,7 @@ export function ChatInterface({
 										className="golby-feedback-btn"
 										onClick={() => handleFeedback(message, 'thumbs_up')}
 										aria-label="This was helpful"
+										tabIndex={0}
 									>
 										<ThumbsUp size={14} />
 									</button>
@@ -799,6 +926,7 @@ export function ChatInterface({
 										className="golby-feedback-btn"
 										onClick={() => handleFeedback(message, 'thumbs_down')}
 										aria-label="This wasn't helpful"
+										tabIndex={0}
 									>
 										<ThumbsDown size={14} />
 									</button>
@@ -806,6 +934,7 @@ export function ChatInterface({
 										className="golby-feedback-btn"
 										onClick={() => handleFeedback(message, 'smile')}
 										aria-label="Rate with emoji"
+										tabIndex={0}
 									>
 										<Smile size={14} />
 									</button>
@@ -869,12 +998,14 @@ export function ChatInterface({
 						placeholder="Ask Golby anything..."
 						className="golby-input-field"
 						aria-label="Message input"
+						tabIndex={0}
 					/>
 					<button
 						type="submit"
 						disabled={!inputValue.trim()}
 						className="golby-send-btn"
 						aria-label="Send message"
+						tabIndex={0}
 					>
 						<Send size={17} />
 					</button>

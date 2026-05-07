@@ -1,14 +1,17 @@
+import logging
+import time
 from datetime import datetime, timedelta, timezone
-from typing import Optional
+from typing import Any, Optional
 
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-
+from config.settings import settings
 from auth.dependencies import get_optional_current_user
 from db.database import get_db
 from db.models import Alert, User
-from schemas.assistant import AssistantRequest, AssistantResponse
+from fastapi import APIRouter, Depends, HTTPException, Request
+from sqlalchemy.orm import Session
+
 from services.assistant_personality import (
+    Profile,
     apply_style_directive,
     parse_profile,
     parse_style_directive,
@@ -16,10 +19,12 @@ from services.assistant_personality import (
     shape_reply,
     style_directive_ack,
 )
+from backend.schemas.assistant import AssistantRequest, AssistantResponse
 
 router = APIRouter(prefix="/assistant", tags=["Assistant"])
+logger = logging.getLogger(__name__)
 
-GUARDRAIL_KEYWORDS = {
+GUARDRAIL_KEYWORDS: dict[str, list[str]] = {
     "medical": ["diagnose", "diagnosis", "prescription", "dosage", "medication", "treatment", "medical advice"],
     "legal": ["legal advice", "lawsuit", "sue", "liability", "lawyer", "attorney", "court"],
     "emergency": ["call 911", "emergency", "evacuate now", "life threatening", "immediate danger"],
@@ -54,27 +59,24 @@ def _guardrail_reply(category: str) -> str:
     )
 
 
-def _parse_datetime(value: str | None) -> datetime | None:
+def _parse_datetime(value: Optional[str]) -> Optional[datetime]:
     if not value:
         return None
-
     cleaned = value.strip().replace("Z", "+00:00")
     try:
         parsed = datetime.fromisoformat(cleaned)
     except ValueError:
         return None
-
     if parsed.tzinfo is None:
         return parsed.replace(tzinfo=timezone.utc)
     return parsed
 
 
-def _query_active_alerts(db: Session, location: str | None = None) -> list[Alert]:
+def _query_active_alerts(db: Session, location: Optional[str] = None) -> list[Alert]:
     now = datetime.now(timezone.utc)
     window_end = now + timedelta(hours=48)
 
     query = db.query(Alert)
-
     if location:
         query = query.filter(Alert.location_name.ilike(f"%{location}%"))
 
@@ -82,8 +84,10 @@ def _query_active_alerts(db: Session, location: str | None = None) -> list[Alert
     active_alerts: list[Alert] = []
 
     for alert in alerts:
-        event_start = _parse_datetime(alert.event_start)
-        event_end = _parse_datetime(alert.event_end)
+        raw_start: Any = alert.event_start
+        raw_end: Any = alert.event_end
+        event_start = _parse_datetime(str(raw_start) if raw_start is not None else None)
+        event_end = _parse_datetime(str(raw_end) if raw_end is not None else None)
 
         if event_start is not None and event_start > window_end:
             continue
@@ -103,8 +107,8 @@ def _risk_level(score: float) -> str:
     return "low"
 
 
-def _severity_weight(severity: str | None) -> float:
-    mapping = {
+def _severity_weight(severity: Optional[str]) -> float:
+    mapping: dict[str, float] = {
         "critical": 1.0,
         "high": 0.85,
         "moderate": 0.55,
@@ -113,12 +117,80 @@ def _severity_weight(severity: str | None) -> float:
     return mapping.get((severity or "").lower(), 0.35)
 
 
-@router.post("/respond", response_model=AssistantResponse)
+GUEST_DAILY_LIMIT = settings.GUEST_DAILY_LIMIT
+
+# Simple in-memory guest rate limit (per IP, per day)
+_guest_limit_cache: dict[str, int] = {}
+
+
+def _guest_limit_key(request: Request) -> str:
+    ip = request.client.host if request.client else "unknown"
+    today = time.strftime("%Y-%m-%d", time.gmtime())
+    return f"{ip}:{today}"
+
+
+def _increment_guest_limit(request: Request) -> int:
+    key = _guest_limit_key(request)
+    count = _guest_limit_cache.get(key, 0) + 1
+    _guest_limit_cache[key] = count
+    return count
+
+
+def _get_guest_limit(request: Request) -> int:
+    key = _guest_limit_key(request)
+    return _guest_limit_cache.get(key, 0)
+
+
+@router.post("/respond", response_model=AssistantResponse, response_model_exclude_unset=True)
+
+
 def respond(
     body: AssistantRequest,
+    request: Request,
     db: Session = Depends(get_db),
-    current_user: User | None = Depends(get_optional_current_user),
-):
+    current_user: Optional[User] = Depends(get_optional_current_user),
+) -> Any:
+
+    # Guest daily limit enforcement
+    is_guest = current_user is None
+    if is_guest:
+        if _get_guest_limit(request) >= GUEST_DAILY_LIMIT:
+            client_ip = request.client.host if request.client else "unknown"
+            logger.warning("Guest assistant daily limit reached for %s", client_ip)
+            return AssistantResponse(
+                reply=(
+                    f"You have reached the daily limit for guest users ({GUEST_DAILY_LIMIT} messages per day). "
+                    "Create a free account to unlock unlimited chat and personalized features!"
+                ),
+                category="fallback",
+                used_live_data=False,
+                sources=["guest-limit"],
+            )
+        _increment_guest_limit(request)
+
+    # User-only feature lockout for guests (simple keyword-based)
+    personalized_keywords = [
+        "my risk", "my score", "my alerts", "my profile", "my preferences", "my account",
+        "personalized", "custom alert", "my health", "my recommendations",
+    ]
+    lower_msg = body.message.lower()
+    if is_guest and any(k in lower_msg for k in personalized_keywords):
+        client_ip = request.client.host if request.client else "unknown"
+        logger.info("Guest assistant personalization lockout triggered for %s", client_ip)
+        return AssistantResponse(
+            reply=(
+                "This feature is only available to registered users.\n\nWhy register?\n"
+                "- Unlock personalized risk scores and recommendations\n"
+                "- Set up custom alerts for your area\n"
+                "- Save your preferences and health info\n"
+                "- Access your profile and account features\n\n"
+                "Sign in or create an account for full access!"
+            ),
+            category="fallback",
+            used_live_data=False,
+            sources=["guest-lockout"],
+        )
+
     guardrail_category = _detect_guardrail(body.message)
     if guardrail_category:
         return AssistantResponse(
@@ -129,21 +201,22 @@ def respond(
         )
 
     user = current_user
-    profile = parse_profile(None)
+    profile: Profile = parse_profile(None)
     if body.user_id is not None:
         if user is None:
             user = db.query(User).filter(User.id == body.user_id).first()
             if user is None:
                 raise HTTPException(status_code=404, detail="User not found")
     if user is not None:
-        profile = parse_profile(user.assistant_style_profile)
+        raw_profile: Any = user.assistant_style_profile
+        profile = parse_profile(str(raw_profile) if raw_profile is not None else None)
 
     directive = parse_style_directive(body.message)
     if directive:
         profile = apply_style_directive(profile, directive)
         persisted = user is not None
-        if persisted:
-            user.assistant_style_profile = serialize_profile(profile)
+        if user is not None:
+            user.assistant_style_profile = serialize_profile(profile)  # type: ignore[assignment]
             db.commit()
         return AssistantResponse(
             reply=style_directive_ack(directive, persisted=persisted),
@@ -163,7 +236,6 @@ def respond(
                 used_live_data=True,
                 sources=["alerts"],
             )
-
         weighted = sum(_severity_weight(getattr(alert, "severity", None)) for alert in alerts)
         score = min(100.0, round((weighted / max(len(alerts), 1)) * 100, 1))
         high = sum(1 for alert in alerts if (alert.severity or "").lower() in {"high", "critical"})
@@ -189,7 +261,6 @@ def respond(
                 used_live_data=True,
                 sources=["alerts"],
             )
-
         top = alerts[:3]
         lines = [f"- {item.title} ({item.severity})" for item in top]
         reply = "Latest alerts:\n" + "\n".join(lines)
@@ -208,7 +279,6 @@ def respond(
                 used_live_data=True,
                 sources=["alerts"],
             )
-
         weighted = sum(_severity_weight(getattr(alert, "severity", None)) for alert in alerts)
         score = min(100.0, round((weighted / max(len(alerts), 1)) * 100, 1))
         reply = (

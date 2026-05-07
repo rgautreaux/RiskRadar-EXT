@@ -369,9 +369,9 @@
 
 <?php
     $sevClass = match (strtolower((string) ($alert['severity'] ?? ''))) {
-        'high', 'critical', 'extreme' => 'ad-sev-high',
-        'medium', 'moderate'          => 'ad-sev-medium',
-        default                        => 'ad-sev-low',
+        'high', 'severe', 'critical', 'extreme' => 'ad-sev-high',
+        'medium', 'moderate'                    => 'ad-sev-medium',
+        default                                 => 'ad-sev-low',
     };
 ?>
 
@@ -413,7 +413,9 @@
             <span class="ad-fact-label">Event window</span>
             <?php if ($alert['event_start'] || $alert['event_end']) : ?>
                 <span class="ad-fact-value">
-                    <?php echo e(rr_format_datetime($alert['event_start'])); ?>
+                    <?php if ($alert['event_start']) : ?>
+                        <?php echo e(rr_format_datetime($alert['event_start'])); ?>
+                    <?php endif; ?>
                     <?php if ($alert['event_start'] && $alert['event_end']) : ?>
                         &nbsp;&rarr;&nbsp;
                     <?php endif; ?>
@@ -495,5 +497,83 @@
     </details>
 
 </div>
+
+<section class="panel" aria-labelledby="risk-score-heading">
+    <h2 id="risk-score-heading" tabindex="0">Risk Score Breakdown</h2>
+    <?php
+    // Example: fetch user ID from session or context
+    $userId = $_SESSION['user_id'] ?? null;
+    $riskBreakdown = null;
+    $riskFormula = null;
+    if ($userId) {
+        $riskBreakdownJson = @file_get_contents("/api/v1/alerts/risk_breakdown/{$alert['id']}/{$userId}");
+        if ($riskBreakdownJson) {
+            $riskBreakdown = json_decode($riskBreakdownJson, true);
+        }
+        $riskFormulaJson = @file_get_contents("/api/v1/alerts/risk_formula");
+        if ($riskFormulaJson) {
+            $riskFormula = json_decode($riskFormulaJson, true);
+        }
+    }
+    ?>
+    <?php if ($riskBreakdown): ?>
+        <div class="risk-score-summary" role="region" aria-label="Risk score details">
+            <strong>Risk Score:</strong> <span aria-live="polite"><?php echo e($riskBreakdown['risk_score']); ?></span> (<span><?php echo e(ucfirst($riskBreakdown['risk_level'])); ?></span>)
+            <ul class="risk-factor-list">
+                <li><strong>Distance factor:</strong> <span><?php echo e($riskBreakdown['factor_scores']['distance']); ?></span></li>
+                <li><strong>Severity factor:</strong> <span><?php echo e($riskBreakdown['factor_scores']['severity']); ?></span></li>
+                <li><strong>Sensitivity factor:</strong> <span><?php echo e($riskBreakdown['factor_scores']['sensitivity']); ?></span></li>
+                <li><strong>Recency factor:</strong> <span><?php echo e($riskBreakdown['factor_scores']['recency']); ?></span></li>
+            </ul>
+        </div>
+    <?php else: ?>
+        <p class="empty-state" aria-live="polite">Risk score breakdown is unavailable for this alert and user.</p>
+    <?php endif; ?>
+    <?php if ($riskFormula): ?>
+        <details class="risk-formula-details" tabindex="0">
+            <summary><span class="visually-hidden">Show explanation: </span>How is this risk score calculated?</summary>
+            <p><strong>Formula:</strong> <span><?php echo e($riskFormula['formula']); ?></span></p>
+            <ul>
+                <li><strong>Distance:</strong> <span><?php echo e($riskFormula['factors']['distance']); ?></span> (weight: <span><?php echo e($riskFormula['weights']['distance'] * 100); ?>%</span>)</li>
+                <li><strong>Severity:</strong> <span><?php echo e($riskFormula['factors']['severity']); ?></span> (weight: <span><?php echo e($riskFormula['weights']['severity'] * 100); ?>%</span>)</li>
+                <li><strong>Sensitivity:</strong> <span><?php echo e($riskFormula['factors']['sensitivity']); ?></span> (weight: <span><?php echo e($riskFormula['weights']['sensitivity'] * 100); ?>%</span>)</li>
+                <li><strong>Recency:</strong> <span><?php echo e($riskFormula['factors']['recency']); ?></span> (weight: <span><?php echo e($riskFormula['weights']['recency'] * 100); ?>%</span>)</li>
+            </ul>
+            <p><strong>Priority levels:</strong> High (70-100), Medium (40-69), Low (0-39)</p>
+        </details>
+    <?php endif; ?>
+</section>
+
+<style>
+.risk-score-summary {
+  background: var(--theme-panel-strong, #fff6ea);
+  border-radius: var(--radius-md, 12px);
+  padding: 1rem 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--theme-ink, #122231);
+}
+.risk-factor-list {
+  list-style: disc inside;
+  margin: 0.5em 0 0 1em;
+  padding: 0;
+}
+.risk-formula-details {
+  margin-top: 1em;
+  background: var(--theme-panel, #fffbf5);
+  border-radius: var(--radius-md, 12px);
+  padding: 1rem 1.5rem;
+  color: var(--theme-ink, #122231);
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+}
+</style>
 
 <?php rr_render_layout_end(); ?>

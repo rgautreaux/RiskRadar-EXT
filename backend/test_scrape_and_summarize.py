@@ -124,6 +124,7 @@ def main(argv: list[str] | None = None) -> int:
                     return_value=(
                         "[MOCK] Daily digest generated for integration verification.",
                         42,
+                        "mock-summary",
                     ),
                 )
                 if args.mock_summary

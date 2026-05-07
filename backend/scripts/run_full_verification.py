@@ -10,16 +10,25 @@ Usage (from repository root):
 
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 from pathlib import Path
 import argparse
+from typing import NamedTuple
 
 
 def _run(command: list[str], cwd: Path) -> int:
     print(f"\n$ {' '.join(command)}")
     result = subprocess.run(command, cwd=str(cwd), check=False)
     return result.returncode
+
+
+class VerificationStep(NamedTuple):
+    label: str
+    command: list[str]
+    cwd: Path
+    env: dict[str, str] | None = None
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -47,16 +56,24 @@ def main() -> int:
     print(f"Python: {python_exe}")
     print(f"Repo:   {repo_root}")
 
-    steps = [
-        (
+    pythonpath_parts = [str(repo_root), str(backend_dir)]
+    existing_pythonpath = os.environ.get("PYTHONPATH")
+    if existing_pythonpath:
+        pythonpath_parts.append(existing_pythonpath)
+    verification_env = os.environ.copy()
+    verification_env["PYTHONPATH"] = os.pathsep.join(pythonpath_parts)
+
+    steps: list[VerificationStep] = [
+        VerificationStep(
             "Run pytest suite",
             [python_exe, "-m", "pytest"],
             backend_dir,
         ),
-        (
+        VerificationStep(
             "Run standalone smoke test with mock summary",
             [python_exe, "test_scrape_and_summarize.py", "--mock-summary"],
             backend_dir,
+            verification_env,
         ),
     ]
 
@@ -70,16 +87,19 @@ def main() -> int:
         guardrail_cmd.append("--allow-missing-tables")
 
         steps.append(
-            (
+            VerificationStep(
                 "Run normalization guardrails",
                 guardrail_cmd,
                 backend_dir,
             )
         )
 
-    for label, command, cwd in steps:
+    for step in steps:
+        label = step.label
+        command = step.command
+        cwd = step.cwd
         print(f"\n== {label} ==")
-        code = _run(command, cwd)
+        code = _run(command, cwd) if step.env is None else subprocess.run(command, cwd=str(cwd), check=False, env=step.env).returncode
         if code != 0:
             print(f"FAILED: {label} (exit code {code})")
             return code
