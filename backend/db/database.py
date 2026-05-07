@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, declarative_base
 
-from config.settings import settings
-from db.models import Base  # noqa: F401 — re-exported so callers can use `from db.database import Base`
+
+from backend.config.settings import settings  # Always use absolute import for scripts and app
 
 database_url = str(settings.DATABASE_URL).strip()
 DATABASE_URL = database_url or f"sqlite:///{str(settings.DB_PATH)}"
@@ -12,6 +12,7 @@ if DATABASE_URL.startswith("sqlite"):
 else:
     engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
+Base = declarative_base()
 
 
 def get_db():

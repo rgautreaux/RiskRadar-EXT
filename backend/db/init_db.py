@@ -60,7 +60,8 @@ def init_database(*, strict: bool = True) -> SchemaValidationOutcome:
     remediation = (
         "Schema drift detected. Rebuild local DB if needed, then rerun connectivity checks.\n"
         "Suggested local command:\n"
-        "python backend/demo/seed_demo_data.py --mode fresh --db-path backend/riskradar.db"
+        "c:/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/.venv/Scripts/python.exe "
+        "backend/demo/seed_demo_data.py --mode fresh --db-path backend/riskradar.db"
     )
     message = f"Database schema validation failed:\n{issue_block}\n{remediation}"
     if strict:
