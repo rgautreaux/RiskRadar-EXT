@@ -50,6 +50,11 @@ async function expectOnboardingHidden(page) {
   expect(visible).toBeNull();
 }
 
+async function expectWidgetHidden(page) {
+  const mount = await page.$('#riskradar-ai-assistant-widget');
+  expect(mount).toBeNull();
+}
+
 describe('Golby onboarding tutorial', () => {
   let browser;
   let page;
@@ -66,9 +71,11 @@ describe('Golby onboarding tutorial', () => {
   it('stays hidden on login and register pages before sign-in', async () => {
     await page.goto(`${APP_BASE}/login.php`, { waitUntil: 'networkidle0' });
     await expectOnboardingHidden(page);
+    await expectWidgetHidden(page);
 
     await page.goto(`${APP_BASE}/register.php`, { waitUntil: 'networkidle0' });
     await expectOnboardingHidden(page);
+    await expectWidgetHidden(page);
   }, 60000);
 
   it('appears on authenticated pages until the user finishes the tour', async () => {

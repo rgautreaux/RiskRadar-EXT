@@ -64,6 +64,20 @@ function rr_prepare_golby_onboarding_state(array $config, string $activePage): ?
     ];
 }
 
+function rr_should_render_golby_widget(string $activePage): bool
+{
+    if ($activePage === 'login' || $activePage === 'register') {
+        return false;
+    }
+
+    if (!function_exists('rr_access_context')) {
+        return false;
+    }
+
+    $accessContext = rr_access_context();
+    return $accessContext === 'authenticated' || $accessContext === 'guest';
+}
+
 function rr_render_golby_onboarding_markup(array $state): void
 {
     $pageLabel = e((string) ($state['page_label'] ?? 'this page'));
@@ -147,7 +161,7 @@ function rr_render_layout_start(string $title, string $activePage): void
         $apiPrefix = '/' . trim((string) ($globalConfig['api']['prefix'] ?? $apiPrefix), '/');
     }
 
-    $shouldRenderGolbyWidget = $activePage !== 'login' && $activePage !== 'register';
+    $shouldRenderGolbyWidget = rr_should_render_golby_widget($activePage);
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -252,7 +266,7 @@ function rr_render_layout_start(string $title, string $activePage): void
 function rr_render_layout_end(): void
 {
     $activePage = (string) ($GLOBALS['rr_layout_active_page'] ?? 'unknown');
-    $shouldRenderGolbyWidget = $activePage !== 'login' && $activePage !== 'register';
+    $shouldRenderGolbyWidget = rr_should_render_golby_widget($activePage);
     $golbyOnboardingState = $GLOBALS['rr_golby_onboarding_state'] ?? null;
 
     ?>
