@@ -162,6 +162,7 @@ function rr_render_layout_start(string $title, string $activePage): void
     }
 
     $shouldRenderGolbyWidget = rr_should_render_golby_widget($activePage);
+    $isWebExperiencePage = !in_array($activePage, ['login', 'register'], true);
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -176,7 +177,15 @@ function rr_render_layout_start(string $title, string $activePage): void
         <script>
         window.__RISKRADAR_API_BASE__ = <?php echo json_encode($apiBase); ?>;
         window.__RISKRADAR_API_PREFIX__ = <?php echo json_encode($apiPrefix); ?>;
+        window.__RISKRADAR_CLIENT_CONTEXT__ = <?php echo json_encode([
+            'page' => $activePage,
+            'accessContext' => $accessContext,
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?>;
         </script>
+        <?php if ($isWebExperiencePage) : ?>
+        <link rel="stylesheet" href="assets/rr-web-ux.css">
+        <script src="assets/rr-web-ux.js" defer></script>
+        <?php endif; ?>
         <?php if (is_array($golbyOnboardingState)) : ?>
         <link rel="stylesheet" href="assets/golby-onboarding.css">
         <script>
@@ -190,6 +199,7 @@ function rr_render_layout_start(string $title, string $activePage): void
         <?php endif; ?>
     </head>
     <body class="page-<?php echo e($activePage); ?>" data-page="<?php echo e($activePage); ?>">
+        <a class="skip-link" href="#main-content">Skip to main content</a>
         <div class="app-shell">
             <header class="topbar">
                 <div>
@@ -221,6 +231,9 @@ function rr_render_layout_start(string $title, string $activePage): void
                     <a class="<?php echo $activePage === 'assistant' ? 'is-active' : ''; ?>" href="assistant.php">
                         <img src="assets/icons/ai-assistant.svg" alt="Assistant Icon" class="nav-icon"> Assistant
                     </a>
+                    <a class="<?php echo $activePage === 'travel' ? 'is-active' : ''; ?>" href="travel.php">
+                        <img src="assets/icons/location-pin.svg" alt="Travel Icon" class="nav-icon"> Travel
+                    </a>
                     <a class="<?php echo $activePage === 'login' ? 'is-active' : ''; ?>" href="login.php">
                         <img src="assets/icons/profile.svg" alt="Login Icon" class="nav-icon"> Login
                     </a>
@@ -249,6 +262,9 @@ function rr_render_layout_start(string $title, string $activePage): void
                     <a class="<?php echo $activePage === 'assistant' ? 'is-active' : ''; ?>" href="assistant.php">
                         <img src="assets/icons/ai-assistant.svg" alt="Assistant Icon" class="nav-icon"> Assistant
                     </a>
+                    <a class="<?php echo $activePage === 'travel' ? 'is-active' : ''; ?>" href="travel.php">
+                        <img src="assets/icons/location-pin.svg" alt="Travel Icon" class="nav-icon"> Travel
+                    </a>
                     <a href="logout.php">
                         <img src="assets/icons/profile.svg" alt="Logout Icon" class="nav-icon"> Logout
                     </a>
@@ -257,9 +273,23 @@ function rr_render_layout_start(string $title, string $activePage): void
                     </button>
                     <?php endif; ?>
                 </nav>
+                <?php if ($isWebExperiencePage) : ?>
+                <div class="topbar-preferences" aria-label="Display preferences">
+                    <label for="rr-language" class="topbar-preferences-label">Language</label>
+                    <select id="rr-language" class="topbar-preferences-select" aria-label="Select language">
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                    </select>
+                    <label for="rr-timezone" class="topbar-preferences-label">Timezone</label>
+                    <select id="rr-timezone" class="topbar-preferences-select" aria-label="Select timezone">
+                        <option value="local">Local browser timezone</option>
+                        <option value="UTC">UTC</option>
+                    </select>
+                </div>
+                <?php endif; ?>
                 <?php endif; ?>
             </header>
-            <main class="page-shell">
+            <main class="page-shell" id="main-content" tabindex="-1">
     <?php
 }
 

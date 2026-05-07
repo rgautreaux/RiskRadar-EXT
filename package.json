@@ -17,7 +17,10 @@
     "demo:info": "node backend/scripts/run_demo.mjs --info",
     "demo:generate-alerts": "node backend/scripts/run_demo.mjs --generate-alerts",
     "demo:run": "npm run build:web && npm run verify:connectivity && node frontend/web/tests/demo/demo_journey.js",
-    "demo:report": "node frontend/web/tests/demo/report_generator.js"
+    "demo:report": "node frontend/web/tests/demo/report_generator.js",
+    "web:test:e2e": "playwright test",
+    "web:test:a11y": "node frontend/web/tests/accessibility/audit.mjs",
+    "web:check": "npm run build:web && npm run web:test:e2e && npm run web:test:a11y"
   },
   "dependencies": {
     "@types/react": "^19.2.14",
@@ -28,6 +31,8 @@
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
+    "@playwright/test": "^1.54.2",
     "@tailwindcss/vite": "^4.1.12",
     "@vitejs/plugin-react": "^4.7.0",
     "jest": "^30.3.0",

@@ -1,3 +1,12 @@
+## Web Delivery Playbooks
+
+- [WEB_LOCAL_RUNBOOK.md](./WEB_LOCAL_RUNBOOK.md) - final local startup and verification flow for web and backend.
+- [LOCAL_SETUP_FIX_REBECCA.md](./LOCAL_SETUP_FIX_REBECCA.md) - validated local fix path for Rebecca's environment.
+- [WEB_DEPLOY_GUIDE.md](./WEB_DEPLOY_GUIDE.md) - CI/deploy and migration guide.
+- [WEB_SECURITY_PRIVACY_REVIEW.md](./WEB_SECURITY_PRIVACY_REVIEW.md) - predeploy security and privacy checklist.
+- [WEB_USER_TESTING_PLAN.md](./WEB_USER_TESTING_PLAN.md) - usability test plan and iteration loop.
+- [WEB_TASK_EXECUTION_STATUS.md](./WEB_TASK_EXECUTION_STATUS.md) - implementation status for the web task pass.
+
 
 ## Stage 5 SVG Asset White-Pixel Removal and Documentation Synchronization Session (2026-04-13)
 

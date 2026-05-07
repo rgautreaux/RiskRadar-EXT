@@ -3,16 +3,19 @@ import { createRoot } from 'react-dom/client';
 import './golby-widget.css';
 import { PageWelcome } from '../components/golby/PageWelcome';
 import { PageChat } from '../components/golby/PageChat';
-import { fetchCurrentUser } from '../components/golby/apiClient';
 
 const ASSISTANT_WELCOME_SEEN_KEY = 'golby-assistant-welcome-seen';
+
+declare global {
+  interface Window {
+    __RISKRADAR_ASSISTANT_ROOT__?: ReturnType<typeof createRoot>;
+  }
+}
 
 function AssistantPageWrapper() {
   const [showWelcome, setShowWelcome] = React.useState(true);
   const [welcomeSeen, setWelcomeSeen] = React.useState(false);
   const [pageContext] = React.useState('assistant');
-  const [currentUserId, setCurrentUserId] = React.useState<number | undefined>(undefined);
-  const [isAdmin, setIsAdmin] = React.useState(false);
 
   React.useEffect(() => {
     try {
@@ -23,17 +26,6 @@ function AssistantPageWrapper() {
       setShowWelcome(true);
       setWelcomeSeen(false);
     }
-
-    fetchCurrentUser()
-      .then((currentUser) => {
-        if (currentUser?.id && Number.isFinite(Number(currentUser.id))) {
-          setCurrentUserId(Number(currentUser.id));
-        }
-        setIsAdmin(Boolean(currentUser?.is_admin));
-      })
-      .catch(() => {
-        // Keep functionality working even if user fetch fails
-      });
   }, []);
 
   const handleGetStarted = React.useCallback(() => {
@@ -62,8 +54,6 @@ function AssistantPageWrapper() {
       ) : (
         <PageChat
           pageContext={pageContext}
-          isAdmin={isAdmin}
-          currentUserId={currentUserId}
           onBack={handleBackToWelcome}
         />
       )}
@@ -74,8 +64,8 @@ function AssistantPageWrapper() {
 function renderAssistantPage() {
   const mount = document.getElementById('riskradar-assistant-page-welcome');
   if (mount) {
-    const root = createRoot(mount);
-    root.render(<AssistantPageWrapper />);
+    window.__RISKRADAR_ASSISTANT_ROOT__ ??= createRoot(mount);
+    window.__RISKRADAR_ASSISTANT_ROOT__.render(<AssistantPageWrapper />);
   }
 }
 
