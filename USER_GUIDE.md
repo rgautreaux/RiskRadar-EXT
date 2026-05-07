@@ -18,6 +18,22 @@ This guide walks you through how to run and use the RiskRadar Web-Extension, inc
 
 ## What You Can Do Right Now
 
+### First-Time Onboarding Tour
+
+When you sign in for the first time, Golby automatically launches a guided welcome tour. The tour shows a modal dialog with:
+
+- A page-specific welcome heading and introduction text.
+- A progress bar and step counter so you know where you are in the tour.
+- Highlights covering live alert feeds, the interactive map, forecast, and profile tuning.
+- **Next** and **Skip for now** buttons.
+
+The tour marks itself complete after you finish it. To re-open it at any time:
+- Select the **Help** button in the Golby widget on any page.
+- Add `#onboard` to the URL (e.g., `http://127.0.0.1:8080/index.php#onboard`).
+- Call `window.openGolbyOnboarding()` from the browser console.
+
+---
+
 ## Navigating All Implemented Features
 
 The RiskRadar Web-Extension provides a comprehensive set of features accessible via the web interface. Below is a guide to all currently implemented and accessible features, including navigation tips and usage instructions for each page.
@@ -37,6 +53,13 @@ The RiskRadar Web-Extension provides a comprehensive set of features accessible 
    - View full alert details by selecting an alert card.
    - Safe empty-state handling if no data is available.
 
+### Alert Detail
+- **URL:** `/alert_detail.php` (opened from an alert card)
+- **Features:**
+   - Full alert detail view with all available metadata.
+   - Severity color-coded header (High / Medium / Low).
+   - Back link returns to the alerts list.
+
 ### Summaries
 - **URL:** `/summaries.php`
 - **Features:**
@@ -44,6 +67,24 @@ The RiskRadar Web-Extension provides a comprehensive set of features accessible 
    - Filter by summary type and result limit.
    - Open full summary details for each entry.
    - Empty-state handling for missing or malformed API payloads.
+
+### Generate a Briefing
+- **URL:** `/create_summary.php`
+- **Features:**
+   - Choose **Nationwide** (all US alerts) or **Local digest** (alerts near a ZIP code) scope.
+   - ZIP code input slides in automatically when Local is selected; validated before submission.
+   - Async generation with an animated loading state ("Analyzing recent alerts…").
+   - On success, redirects automatically to the full summary detail view.
+   - On error, displays a title, description, and optional **Try again** button.
+
+### Summary Detail
+- **URL:** `/summary_detail.php` (opened from a summary card or after generating a briefing)
+- **Features:**
+   - Full summary with type badge, region, and generated timestamp in the masthead.
+   - Body text rendered as readable paragraphs.
+   - **"Golby insight — Why this summary matters"** explainability panel, shown when AI reasoning fields are present. Includes:
+     - Insight text and a "Why it matters" prose explanation.
+     - Key takeaways as a bullet list.
 
 ### Registration
 - **URL:** `/register.php`
@@ -65,23 +106,24 @@ The RiskRadar Web-Extension provides a comprehensive set of features accessible 
    - Set ZIP code, alert types, minimum severity, device token, and health sensitivities/preferences (asthma, COPD, allergies, heart, elderly, pregnant, children, immunocompromised).
    - Save preferences and receive a success message upon update.
    - Preferences are now used for personalized risk scoring, smart alerts, and forecast advice.
-
-**Note:** Manual entry of UserID is no longer possible; all profile updates are tied to the authenticated session user. Further manual UI/UX verification and documentation updates for this flow are assigned to Max due to current login issues for the previous implementer. Please document findings and update the project tracker accordingly.
+   - Golby's communication style (warmth, calmness, humor, conciseness, and detail) adapts automatically over time based on your thumbs up/down feedback in the Golby chat widget — no manual configuration required.
 
 ### Risk Page
 - **URL:** `/risk.php`
 - **Features:**
-   - Enter your user ID and radius to view your personalized risk score and prioritized alerts.
+   - Authenticated users have their user ID populated automatically from the session. Guests must enter a user ID manually.
+   - Enter your radius to view your personalized risk score and prioritized alerts.
    - Results are tailored to your location and health profile if set in your preferences.
    - Shows overall risk score (0-100), tier label (Low/Medium/High), and factor-level breakdown (proximity, severity, health sensitivity, alert density).
 
 ### Smart Alerts (Prioritized Alerts)
 - **URL:** `/smart_alerts.php`
 - **Features:**
-   - Enter your user ID, radius, and limit to view alerts ranked by personalized priority.
+   - Enter your user ID, radius, and limit to view alerts ranked by personalized priority. Unlike the Risk page, user ID is not auto-populated and must always be entered manually.
    - Prioritization uses distance, severity, health sensitivity, and recency.
    - Find your user ID on the Profile page after registering.
    - Alerts are sorted by composite priority score with urgency labels (High/Medium/Low).
+   - Guest users see the page content blurred behind a sign-in prompt.
 
 ### Interactive Map
 - **URL:** `/map.php`
@@ -95,9 +137,8 @@ The RiskRadar Web-Extension provides a comprehensive set of features accessible 
 - **URL:** `/forecast.php`
 - **Features:**
    - Predictive risk forecast UI: enter ZIP or city/state, or use your location, to view a 24–48 hour risk forecast.
-   - Timeline chart with risk levels and confidence bands (static for now; dynamic data coming soon).
+   - Timeline chart with risk levels and confidence bands loaded live from the backend API.
    - Personalized advice and grouping by risk type, using your profile sensitivities/preferences.
-   - Fully integrated with backend for roundtrip updates (when backend is ready).
 
 ### Assistant (Stage 4)
 - **URL:** `/assistant.php`
@@ -106,7 +147,7 @@ The RiskRadar Web-Extension provides a comprehensive set of features accessible 
    - Supports live backend responses with local fallback behavior.
    - Includes safety guardrails for medical/legal/emergency/harmful request classes.
    - Guest users are limited by `GUEST_DAILY_LIMIT` and see a registration prompt for personalized requests.
-   - Supports feedback controls that feed communication-style learning pathways.
+   - Supports feedback controls (thumbs up/down) that shape Golby's personality over time. Each reaction adjusts Golby's warmth, calmness, humor, conciseness, and level of detail in future responses.
 
 #### Guest Chat Policy
 - Anonymous users can send up to `GUEST_DAILY_LIMIT` Golby messages per day before the assistant returns a daily-limit message.
