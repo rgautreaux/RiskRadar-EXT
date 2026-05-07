@@ -1,40 +1,47 @@
 <?php
 
-
 require_once __DIR__ . '/../services/bootstrap.php';
 
-// Only allow authenticated users (not guests or anonymous) to access profile page
-if (rr_access_context() !== 'authenticated') {
-    rr_set_flash('warning', 'You must be signed in to access your profile.');
-    header('Location: login.php');
-    exit;
+rr_require_feature_access();
+
+// Resolve the authenticated user from the session cookie.
+// This avoids asking the user to type their ID manually and prevents
+// a BOLA vulnerability where a forged user_id POST value could update
+// a different account's preferences.
+$currentUser = null;
+if (rr_is_authenticated()) {
+    $meResult = rr_fetch_current_user($config);
+    if ($meResult['ok'] && is_array($meResult['data'])) {
+        $currentUser = $meResult['data'];
+    }
 }
+$sessionUserId = $currentUser !== null ? (int) ($currentUser['id'] ?? 0) : 0;
 
 $flash = rr_get_flash();
 $preferencesErrors = [];
 $preferencesResult = null;
-
-$currentUser = null;
 $preferencesForm = [
-    'zip_code' => '',
-    'alert_types' => [],
-    'notify_severity' => '',
-    'device_token' => '',
-    'health_conditions' => [],
+    'user_id'          => $sessionUserId ?: null,
+    'zip_code'         => '',
+    'alert_types'      => [],
+    'notify_severity'  => '',
+    'device_token'     => '',
+    'health_conditions'=> [],
 ];
 
-// Fetch current user from session (API call)
-$userResult = rr_fetch_current_user($config);
-if ($userResult['ok'] && is_array($userResult['data'])) {
-    $currentUser = $userResult['data'];
-    // Pre-fill form with user data
-    $preferencesForm['zip_code'] = $currentUser['zip_code'] ?? '';
-    $preferencesForm['alert_types'] = is_array($currentUser['alert_types']) ? $currentUser['alert_types'] : [];
-    $preferencesForm['notify_severity'] = $currentUser['notify_severity'] ?? '';
-    $preferencesForm['device_token'] = $currentUser['device_token'] ?? '';
-    $preferencesForm['health_conditions'] = is_array($currentUser['health_conditions']) ? $currentUser['health_conditions'] : [];
+// Pre-populate from saved preferences on GET requests
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $currentUser !== null) {
+    $preferencesForm['zip_code']          = $currentUser['zip_code'] ?? '';
+    $preferencesForm['notify_severity']   = $currentUser['notify_severity'] ?? '';
+    $savedAlertTypes = $currentUser['alert_types'] ?? null;
+    $preferencesForm['alert_types']       = is_string($savedAlertTypes) && $savedAlertTypes !== ''
+        ? (json_decode($savedAlertTypes, true) ?: [])
+        : [];
+    $savedHealthConditions = $currentUser['health_conditions'] ?? null;
+    $preferencesForm['health_conditions'] = is_string($savedHealthConditions) && $savedHealthConditions !== ''
+        ? (json_decode($savedHealthConditions, true) ?: [])
+        : [];
 }
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = trim((string) ($_POST['action'] ?? ''));
@@ -50,10 +57,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    if ($action === 'preferences' && $currentUser) {
+    if ($action === 'preferences') {
+        // Always use the session-resolved ID — never trust the POST value.
+        $_POST['user_id'] = (string) $sessionUserId;
         [$preferencesForm, $preferencesErrors] = rr_validate_preferences($_POST);
         if (!$preferencesErrors) {
-            $userId = (int) $currentUser['id'];
+            $userId = $sessionUserId;
             $preferencesPayload = [
                 'zip_code' => $preferencesForm['zip_code'],
                 'alert_types' => $preferencesForm['alert_types'],
@@ -61,16 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'device_token' => $preferencesForm['device_token'],
                 'health_conditions' => $preferencesForm['health_conditions'],
             ];
-            
-            // Parse and include personality profile if present
-            $personalityJson = trim((string) ($_POST['personality_profile_json'] ?? ''));
-            if ($personalityJson !== '') {
-                $personalityProfile = json_decode($personalityJson, true);
-                if (is_array($personalityProfile)) {
-                    $preferencesPayload['assistant_style_profile'] = $personalityProfile;
-                }
-            }
-            
             $preferencesResult = rr_update_preferences($config, $userId, $preferencesPayload);
             if ($preferencesResult['ok']) {
                 rr_set_flash('success', 'Preferences updated successfully.');

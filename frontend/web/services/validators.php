@@ -78,10 +78,11 @@ function rr_collect_summary_filters(): array
 function rr_validate_registration(array $post): array
 {
     $data = [
-        'display_name' => trim((string) ($post['display_name'] ?? '')),
-        'email' => trim((string) ($post['email'] ?? '')),
-        'password' => (string) ($post['password'] ?? ''),
-        'zip_code' => trim((string) ($post['zip_code'] ?? '')),
+        'display_name'    => trim((string) ($post['display_name'] ?? '')),
+        'email'           => trim((string) ($post['email'] ?? '')),
+        'password'        => (string) ($post['password'] ?? ''),
+        'confirm_password' => (string) ($post['confirm_password'] ?? ''),
+        'zip_code'        => trim((string) ($post['zip_code'] ?? '')),
     ];
     $errors = [];
 
@@ -115,6 +116,14 @@ function rr_validate_registration(array $post): array
         $errors['password'] = 'Password must include a special character.';
     }
 
+    if (!isset($errors['password'])) {
+        if ($data['confirm_password'] === '') {
+            $errors['confirm_password'] = 'Please confirm your password.';
+        } elseif ($data['password'] !== $data['confirm_password']) {
+            $errors['confirm_password'] = 'Passwords do not match.';
+        }
+    }
+
     if ($data['zip_code'] !== '' && !preg_match('/^\d{5}$/', $data['zip_code'])) {
         $errors['zip_code'] = 'ZIP code must be a 5-digit US ZIP code.';
     }
@@ -122,6 +131,8 @@ function rr_validate_registration(array $post): array
     if ($data['zip_code'] === '') {
         $data['zip_code'] = null;
     }
+
+    unset($data['confirm_password']);
 
     return [$data, $errors];
 }

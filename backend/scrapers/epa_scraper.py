@@ -14,8 +14,8 @@ class EPAScraper(BaseScraper):
     alert_type = "pollution"
 
     def fetch_raw_data(self) -> list[dict]:
-        # Query TRI facilities in California (default state)
-        url = "https://data.epa.gov/efservice/tri_facility/state_abbr/CA/rows/0:24/JSON"
+        # Query TRI facilities nationwide (no state filter)
+        url = "https://data.epa.gov/efservice/tri_facility/rows/0:99/JSON"
 
         resp = httpx.get(url, timeout=30)
         resp.raise_for_status()

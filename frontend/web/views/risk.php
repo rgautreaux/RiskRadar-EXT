@@ -1,11 +1,4 @@
-
-<?php
-$userId = $userId ?? 0;
-$radiusKm = $radiusKm ?? 50;
-?>
 <?php rr_render_layout_start('Risk Score', 'risk'); ?>
-
-<?php $isGuest = (function_exists('rr_access_context') && rr_access_context() === 'guest'); ?>
 
 <section class="page-heading">
     <div>
@@ -15,56 +8,25 @@ $radiusKm = $radiusKm ?? 50;
     <p>Your personalized environmental risk score based on proximity, severity, health sensitivity, and alert density.</p>
 </section>
 
-
 <section class="panel">
-    <?php if ($isGuest): ?>
-        <div class="locked-overlay">
-            <div class="locked-message">
-                <div class="locked-header">
-                    <img src="assets/icons/warning.svg" alt="Locked feature" class="locked-svg" />
-                    <div>
-                        <strong>This feature is for registered users only</strong>
-                        <button class="info-button" aria-describedby="risk-lockout-info" aria-label="Why is this locked?">
-                            <img src="assets/icons/info.svg" alt="Info" class="info-svg" />
-                        </button>
-                    </div>
-                </div>
-                <p class="locked-text">Sign in or create an account to access personalized risk scoring.</p>
-                <div class="locked-actions">
-                    <a href="login.php" class="button-secondary">Sign In / Register</a>
-                </div>
-            </div>
-        </div>
-        <form class="filter-grid locked" onsubmit="showLockoutPopup(); return false;" aria-disabled="true">
-            <label>
-                <span>User ID</span>
-                <input type="number" name="user_id" min="1" max="999999" value="" disabled placeholder="1">
-            </label>
-            <label>
-                <span>Radius (km)</span>
-                <input type="number" name="radius_km" min="1" max="500" value="" disabled>
-            </label>
-            <button class="button-primary" type="submit" disabled>Calculate risk score</button>
-        </form>
-        <script>
-        function showLockoutPopup() {
-            if (window.showLockoutDialog) return window.showLockoutDialog();
-            alert('Personalized risk scoring is only available to registered users. Please sign in or create an account.');
-        }
-        </script>
-    <?php else: ?>
-        <form class="filter-grid" method="get" action="risk.php">
+    <form class="risk-form" method="get" action="risk.php">
+        <?php if ($currentUser !== null) : ?>
+            <input type="hidden" name="user_id" value="<?php echo e((string) $userId); ?>">
+            <p class="risk-session-user">
+                Analyzing risk for <strong><?php echo e((string) ($currentUser['display_name'] ?? $currentUser['email'] ?? 'you')); ?></strong>
+            </p>
+        <?php else : ?>
             <label>
                 <span>User ID</span>
                 <input type="number" name="user_id" min="1" max="999999" value="<?php echo e((string) $userId); ?>" required placeholder="1">
             </label>
-            <label>
-                <span>Radius (km)</span>
-                <input type="number" name="radius_km" min="1" max="500" value="<?php echo e((string) $radiusKm); ?>">
-            </label>
-            <button class="button-primary" type="submit">Calculate risk score</button>
-        </form>
-    <?php endif; ?>
+        <?php endif; ?>
+        <label>
+            <span>Radius (km)</span>
+            <input type="number" name="radius_km" min="1" max="500" value="<?php echo e((string) $radiusKm); ?>">
+        </label>
+        <button class="button-primary" type="submit">Calculate risk</button>
+    </form>
 </section>
 
 <?php if ($userId <= 0) : ?>
@@ -73,8 +35,13 @@ $radiusKm = $radiusKm ?? 50;
             <circle cx="24" cy="24" r="21" stroke="currentColor" stroke-width="2"/>
             <path d="M24 14v13M24 33v2" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
         </svg>
-        <p class="risk-empty-title">Enter your user ID to begin</p>
-        <p class="risk-empty-body">Your personalized risk score will appear here, calculated from nearby alerts, severity levels, and your health sensitivity profile. Find your ID on the <a href="profile.php">Profile</a> page after registering.</p>
+        <?php if ($currentUser !== null) : ?>
+            <p class="risk-empty-title">Unable to load your user profile</p>
+            <p class="risk-empty-body">Your account could not be resolved from your session. Try signing out and back in.</p>
+        <?php else : ?>
+            <p class="risk-empty-title">Enter your user ID to begin</p>
+            <p class="risk-empty-body">Your personalized risk score will appear here, calculated from nearby alerts, severity levels, and your health sensitivity profile. Find your ID on the <a href="profile.php">Profile</a> page after registering.</p>
+        <?php endif; ?>
     </div>
 
 <?php elseif ($riskResult !== null && $riskResult['ok'] && $riskResult['data']) : ?>

@@ -29,13 +29,8 @@ class FIRMSScraper(BaseScraper):
         if not settings.NASA_FIRMS_MAP_KEY:
             raise RuntimeError("NASA_FIRMS_MAP_KEY not set")
 
-        lat = settings.DEFAULT_LAT
-        lon = settings.DEFAULT_LON
-        # Bounding box: +-5 degrees around default location
-        west = lon - 5
-        south = lat - 5
-        east = lon + 5
-        north = lat + 5
+        # CONUS bounding box for nationwide fire coverage
+        west, south, east, north = -130.0, 24.0, -65.0, 50.0
 
         url = (
             f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/"

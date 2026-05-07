@@ -1,9 +1,3 @@
-
-<?php
-$flash = $flash ?? null;
-$preferencesForm = $preferencesForm ?? ['alert_types' => [], 'notify_severity' => 'moderate'];
-$isGuest = $isGuest ?? false;
-?>
 <?php rr_render_layout_start('Profile', 'profile'); ?>
 
 <style>
@@ -250,6 +244,8 @@ $isGuest = $isGuest ?? false;
     font-size: 0.875rem;
     font-weight: 600;
     line-height: 1.3;
+    overflow-wrap: break-word;
+    word-break: break-word;
     transition: border-color 0.12s ease-out, background 0.12s ease-out, color 0.12s ease-out;
     user-select: none;
 }
@@ -449,43 +445,38 @@ $isGuest = $isGuest ?? false;
         <?php rr_render_message($preferencesResult['message']); ?>
     <?php endif; ?>
 
+    <form method="post" action="profile.php" class="pf-form" novalidate>
+        <input type="hidden" name="csrf_token" value="<?php echo e(rr_csrf_token()); ?>">
+        <input type="hidden" name="action" value="preferences">
 
-<section class="panel">
-    <?php if ($isGuest): ?>
-        <div class="locked-overlay">
-            <div class="locked-message" aria-hidden="false">
-                <div class="locked-header">
-                    <img src="assets/icons/warning.svg" alt="Locked feature" class="locked-svg" />
-                    <div>
-                        <strong>User-Only Feature</strong>
-                        <button class="info-button" aria-describedby="profile-lockout-info" aria-label="Why is this locked?">
-                            <img src="assets/icons/info.svg" alt="Info" class="info-svg" />
-                        </button>
-                    </div>
-                </div>
-                <p class="locked-text">You’re currently exploring as a guest. Sign in or create a free account to unlock profile management, health preferences, and more!</p>
-                <div class="locked-actions">
-                    <a href="login.php" class="button-secondary" aria-label="Sign in to unlock">Sign In to Unlock</a>
-                    <a href="register.php" class="button-primary" aria-label="Create account">Create Account</a>
-                </div>
+        <!-- 01 — Identity -->
+        <section class="pf-section">
+            <div class="pf-section-head">
+                <p class="pf-section-label">01 &mdash; Identity</p>
+                <h2 class="pf-section-title">Who you are &amp; where you are</h2>
+                <p class="pf-section-desc">Your ZIP code sets your local alert area.</p>
             </div>
             <div class="pf-field-row">
-                <div class="pf-field">
-                    <label class="pf-field-label" for="pf-user-id">User ID</label>
-                    <input
-                        class="pf-input"
-                        type="number"
-                        id="pf-user-id"
-                        name="user_id"
-                        min="1"
-                        value="<?php echo e((string) ($preferencesForm['user_id'] ?: '')); ?>"
-                        required
-                        autocomplete="off"
-                    >
-                    <?php if (isset($preferencesErrors['user_id'])) : ?>
-                        <p class="pf-field-error"><?php echo e($preferencesErrors['user_id']); ?></p>
-                    <?php endif; ?>
-                </div>
+                <?php if ($currentUser !== null) : ?>
+                    <input type="hidden" name="user_id" value="<?php echo e((string) ($preferencesForm['user_id'] ?: '')); ?>">
+                <?php else : ?>
+                    <div class="pf-field">
+                        <label class="pf-field-label" for="pf-user-id">User ID</label>
+                        <input
+                            class="pf-input"
+                            type="number"
+                            id="pf-user-id"
+                            name="user_id"
+                            min="1"
+                            value="<?php echo e((string) ($preferencesForm['user_id'] ?: '')); ?>"
+                            required
+                            autocomplete="off"
+                        >
+                        <?php if (isset($preferencesErrors['user_id'])) : ?>
+                            <p class="pf-field-error"><?php echo e($preferencesErrors['user_id']); ?></p>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
                 <div class="pf-field">
                     <label class="pf-field-label" for="pf-zip">ZIP code</label>
                     <input
@@ -503,54 +494,15 @@ $isGuest = $isGuest ?? false;
                         <p class="pf-field-error"><?php echo e($preferencesErrors['zip_code']); ?></p>
                     <?php endif; ?>
                 </div>
-            </fieldset>
-            <button class="button-primary" type="submit" disabled>Save preferences</button>
-        </form>
-        <script>
-        // Reuse lockout dialog helper if available, otherwise fallback to alert
-        (function(){
-            function tryShow() {
-                if (window.showLockoutDialog) {
-                    window.showLockoutDialog();
-                } else {
-                    alert('Sign in or create an account to unlock profile management, health preferences, and more!');
-                }
-            }
-            window.showLockoutPopup = tryShow;
-            // attach info button inline info (non-modal)
-            document.addEventListener('click', function(e){
-                const t = e.target;
-                if (t.closest && t.closest('.info-button')){
-                    e.preventDefault();
-                    const id = 'profile-inline-info';
-                    if (document.getElementById(id)) return;
-                    const el = document.createElement('div');
-                    el.id = id;
-                    el.className = 'inline-lockout-info';
-                    el.setAttribute('role','status');
-                    el.innerText = 'Profiles and saved preferences require an account so we can store settings for you.';
-                    t.closest('.locked-message').appendChild(el);
-                    setTimeout(()=> el.remove(), 8000);
-                }
-            });
-        })();
-        </script>
-    <?php else: ?>
-        <div class="panel-header">
-            <div>
-                <p class="eyebrow">Write path</p>
-                <h2>Update preferences</h2>
             </div>
-        </div>
-        <form method="post" action="profile.php" class="form-stack" id="profile-form">
-            <input type="hidden" name="csrf_token" value="<?php echo e(rr_csrf_token()); ?>">
-            <input type="hidden" name="action" value="preferences">
-            <div class="readonly-userid">
-                <span>User ID</span>
-                <span class="userid-value" style="font-family:monospace;font-weight:bold;"> 
-                    <?php echo isset($currentUser) ? e((string)$currentUser['id']) : '<em>Unknown</em>'; ?>
-                </span>
-                <small class="field-help">This is your unique User ID. Use it for features that require UserID entry (e.g., Risk Scoring).</small>
+        </section>
+
+        <!-- 02 — Alert types -->
+        <section class="pf-section">
+            <div class="pf-section-head">
+                <p class="pf-section-label">02 &mdash; Alert types</p>
+                <h2 class="pf-section-title">What you want to know about</h2>
+                <p class="pf-section-desc">Select every category relevant to your routes and environment. Unselected types won't reach you.</p>
             </div>
             <div class="pf-tile-grid" role="group" aria-label="Alert types">
                 <?php foreach (rr_allowed_alert_types() as $alertType) : ?>
@@ -661,138 +613,22 @@ $isGuest = $isGuest ?? false;
                         autocomplete="off"
                     >
                 </div>
-            </fieldset>
-            <fieldset>
-                <legend>Golby assistant personality (optional)</legend>
-                <p class="field-help">Tune how Golby communicates with you. These settings shape the assistant's tone, detail level, and style.</p>
-                <div class="personality-grid">
-                    <div class="personality-slider-group">
-                        <label for="warmth">
-                            <span>Warmth</span>
-                            <small class="slider-hint" id="warmth-hint">Neutral</small>
-                        </label>
-                        <input type="range" id="warmth" name="personality_warmth" min="0" max="100" value="55" class="personality-slider" data-hint="warmth-hint">
-                        <small class="field-help">Friendly ← → Professional</small>
-                    </div>
-                    <div class="personality-slider-group">
-                        <label for="calmness">
-                            <span>Calmness</span>
-                            <small class="slider-hint" id="calmness-hint">Calm</small>
-                        </label>
-                        <input type="range" id="calmness" name="personality_calmness" min="0" max="100" value="70" class="personality-slider" data-hint="calmness-hint">
-                        <small class="field-help">Energetic ← → Calm</small>
-                    </div>
-                    <div class="personality-slider-group">
-                        <label for="humor">
-                            <span>Humor</span>
-                            <small class="slider-hint" id="humor-hint">Minimal</small>
-                        </label>
-                        <input type="range" id="humor" name="personality_humor" min="0" max="100" value="35" class="personality-slider" data-hint="humor-hint">
-                        <small class="field-help">Serious ← → Playful</small>
-                    </div>
-                    <div class="personality-slider-group">
-                        <label for="conciseness">
-                            <span>Conciseness</span>
-                            <small class="slider-hint" id="conciseness-hint">Balanced</small>
-                        </label>
-                        <input type="range" id="conciseness" name="personality_conciseness" min="0" max="100" value="65" class="personality-slider" data-hint="conciseness-hint">
-                        <small class="field-help">Detailed ← → Concise</small>
-                    </div>
-                    <div class="personality-slider-group">
-                        <label for="detail">
-                            <span>Detail Level</span>
-                            <small class="slider-hint" id="detail-hint">Balanced</small>
-                        </label>
-                        <input type="range" id="detail" name="personality_detail" min="0" max="100" value="45" class="personality-slider" data-hint="detail-hint">
-                        <small class="field-help">Quick ← → Thorough</small>
-                    </div>
-                </div>
-                <input type="hidden" id="personality_profile_json" name="personality_profile_json" value="">
-            </fieldset>
-            <button class="button-primary" type="submit">Save preferences</button>
-        </form>
-
-        <?php if ($preferencesResult && $preferencesResult['ok'] && $preferencesResult['data']) : ?>
-            <div class="result-panel">
-                <p>Updated user: <strong><?php echo e((string) $preferencesResult['data']['id']); ?></strong></p>
-                <p>Stored alert types: <?php echo e(implode(', ', rr_parse_alert_types($preferencesResult['data']['alert_types'])) ?: 'None'); ?></p>
             </div>
-        <?php endif; ?>
-        <script>
-        (function() {
-            const hintMap = {
-                'warmth': ['Cold', 'Distant', 'Neutral', 'Friendly', 'Warm'],
-                'calmness': ['Energetic', 'Lively', 'Balanced', 'Tranquil', 'Calm'],
-                'humor': ['Serious', 'Dry', 'Neutral', 'Witty', 'Playful'],
-                'conciseness': ['Detailed', 'Elaborate', 'Balanced', 'Brief', 'Concise'],
-                'detail': ['Quick', 'Surface', 'Balanced', 'Thorough', 'Deep']
-            };
+        </details>
 
-            function updateHint(sliderId) {
-                const slider = document.getElementById(sliderId);
-                if (!slider) return;
-                const hintId = slider.dataset.hint;
-                if (!hintId) return;
-                const hintEl = document.getElementById(hintId);
-                if (!hintEl) return;
+        <!-- Save -->
+        <div class="pf-actions">
+            <button class="pf-btn" type="submit">Save preferences</button>
+        </div>
 
-                const value = parseInt(slider.value, 10);
-                const hints = hintMap[sliderId] || ['Low', 'Medium-Low', 'Medium', 'Medium-High', 'High'];
-                const index = Math.floor((value / 100) * (hints.length - 1));
-                hintEl.textContent = hints[Math.min(index, hints.length - 1)];
-            }
+    </form>
 
-            function serializePersonality() {
-                const warmth = (parseInt(document.getElementById('warmth')?.value || '55', 10) / 100) * 0.45 + 0.55;
-                const calmness = (parseInt(document.getElementById('calmness')?.value || '70', 10) / 100) * 0.3 + 0.7;
-                const humor = (parseInt(document.getElementById('humor')?.value || '35', 10) / 100) * 0.7;
-                const conciseness = (parseInt(document.getElementById('conciseness')?.value || '65', 10) / 100) * 0.35 + 0.65;
-                const detail = (parseInt(document.getElementById('detail')?.value || '45', 10) / 100) * 0.55;
-
-                const profile = {
-                    tone: {
-                        warmth: Math.round(warmth * 10000) / 10000,
-                        calmness: Math.round(calmness * 10000) / 10000,
-                        humor: Math.round(humor * 10000) / 10000
-                    },
-                    delivery: {
-                        conciseness: Math.round(conciseness * 10000) / 10000,
-                        detail: Math.round(detail * 10000) / 10000,
-                        expandability: 0.5
-                    },
-                    voice: {
-                        formality: Math.round((1 - warmth + conciseness) / 2 * 10000) / 10000
-                    },
-                    learning: {
-                        feedback_count: 0,
-                        last_feedback_at: null
-                    }
-                };
-
-                return profile;
-            }
-
-            function handleFormSubmit(e) {
-                const profile = serializePersonality();
-                document.getElementById('personality_profile_json').value = JSON.stringify(profile);
-            }
-
-            // Attach slider listeners for hint updates
-            document.querySelectorAll('.personality-slider').forEach(slider => {
-                slider.addEventListener('input', function() {
-                    updateHint(this.id);
-                });
-                // Initialize hint
-                updateHint(slider.id);
-            });
-
-            // Attach form submit listener
-            const form = document.getElementById('profile-form');
-            if (form) {
-                form.addEventListener('submit', handleFormSubmit);
-            }
-        })();
-        </script>
+    <?php if ($preferencesResult && $preferencesResult['ok'] && $preferencesResult['data']) : ?>
+        <div class="pf-result" role="status" aria-live="polite">
+            <p class="pf-result-badge">Preferences saved</p>
+            <p class="pf-result-row">Updated user: <strong>#<?php echo e((string) $preferencesResult['data']['id']); ?></strong></p>
+            <p class="pf-result-row">Alert types: <?php echo e(implode(', ', rr_parse_alert_types($preferencesResult['data']['alert_types'])) ?: 'None selected'); ?></p>
+        </div>
     <?php endif; ?>
 
 </div>
