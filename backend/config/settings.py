@@ -5,15 +5,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(extra="allow")
+
+    pythonpath: str = ""
     # Database
     DATABASE_URL: str = ""
     DB_PATH: str = str(BASE_DIR / "riskradar.db")
 
     # JWT Authentication
-    # IMPORTANT: Change JWT_SECRET_KEY in your .env file before production!
     JWT_SECRET_KEY: str = "CHANGE-ME-set-a-real-secret-in-dotenv"
     JWT_ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60  # token lifetime in minutes
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
 
     # User data protection
     EMAIL_ENCRYPTION_KEY: str = ""
@@ -40,6 +42,7 @@ class Settings(BaseSettings):
     DEFAULT_ZIP_CODE: str = "90001"
     DEFAULT_LAT: float = 34.0522
     DEFAULT_LON: float = -118.2437
+    GUEST_DAILY_LIMIT: int = 10
     SCRAPE_INTERVAL_MINUTES: int = 30
     NWS_USER_AGENT: str = "RiskRadar/1.0 (school-project)"
     SOURCES_CONFIG_PATH: str = str(BASE_DIR / "config" / "sources.yaml")
@@ -49,11 +52,5 @@ class Settings(BaseSettings):
 
     # Startup safety
     SCHEMA_VALIDATION_STRICT: bool = True
-
-    model_config = SettingsConfigDict(
-        env_file=str(BASE_DIR.parent / ".env"),
-        env_file_encoding="utf-8",
-    )
-
 
 settings = Settings()

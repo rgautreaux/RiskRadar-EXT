@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func
@@ -7,7 +8,7 @@ from sqlalchemy.orm import Session
 from auth.dependencies import get_optional_current_user, require_admin_user
 from db.database import get_db
 from db.models import Feedback, User
-from schemas.feedback import FeedbackCreate, FeedbackOut
+from backend.schemas.feedback import FeedbackCreate, FeedbackOut
 from services.assistant_personality import (
     apply_feedback_to_profile,
     parse_profile,
@@ -104,7 +105,7 @@ def feedback_analytics(
     response_category: str | None = None,
     current_user: User = Depends(require_admin_user),
     db: Session = Depends(get_db),
-):
+) -> dict[str, Any]:
     _ = current_user
 
     base_query = db.query(Feedback)
@@ -116,19 +117,19 @@ def feedback_analytics(
     total_feedback = base_query.count()
     average_rating = base_query.with_entities(func.avg(Feedback.rating)).scalar()
 
-    category_rows = (
+    category_rows = (  # type: ignore
         base_query.with_entities(
             Feedback.response_category,
-            func.count(Feedback.id),
+            func.count(Feedback.id),  # type: ignore # pylint: disable=not-callable
             func.avg(Feedback.rating),
         )
         .group_by(Feedback.response_category)
         .all()
     )
-    reaction_rows = (
+    reaction_rows = (  # type: ignore
         base_query.with_entities(
             Feedback.reaction,
-            func.count(Feedback.id),
+            func.count(Feedback.id),  # type: ignore # pylint: disable=not-callable
         )
         .group_by(Feedback.reaction)
         .all()
@@ -162,7 +163,7 @@ def feedback_weekly_report(
     response_category: str | None = None,
     current_user: User = Depends(require_admin_user),
     db: Session = Depends(get_db),
-):
+) -> dict[str, Any]:
     _ = current_user
 
     days = max(1, min(days, 30))
@@ -199,7 +200,7 @@ def feedback_weekly_report(
         day_buckets[day_key]["count"] += 1
         day_buckets[day_key]["rating_sum"] += row.rating
 
-    by_day = []
+    by_day: list[dict[str, Any]] = []
     for day_key, values in day_buckets.items():
         count = int(values["count"])
         rating_sum = float(values["rating_sum"])

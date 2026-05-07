@@ -1,3 +1,19 @@
+<?php
+$summary = $summary ?? [
+    'id' => 0,
+    'title' => 'Summary Not Found',
+    'summary_type' => '',
+    'region' => 'General',
+    'generated_at' => '',
+    'content' => '',
+    'model_used' => 'Unavailable',
+    'summary_insight' => null,
+    'why_it_matters' => null,
+    'key_takeaways' => null,
+    'context_notes' => null,
+    'confidence' => null,
+];
+?>
 <?php rr_render_layout_start('Summary Detail', 'summaries'); ?>
 
 <div class="sd-wrapper">
@@ -36,23 +52,73 @@
         <?php endforeach; ?>
     </div>
 
-    <footer class="sd-provenance">
-        <dl class="sd-provenance-list">
-            <div class="sd-provenance-item">
-                <dt>Briefing</dt>
-                <dd>#<?php echo e((string) $summary['id']); ?></dd>
-            </div>
-            <div class="sd-provenance-item">
-                <dt>Model</dt>
-                <dd><?php echo e($summary['model_used'] ?: 'Unavailable'); ?></dd>
-            </div>
-            <div class="sd-provenance-item">
-                <dt>Type</dt>
-                <dd><?php echo e($summary['summary_type']); ?></dd>
-            </div>
-        </dl>
-    </footer>
+    <p><?php echo nl2br(e($summary['content'])); ?></p>
 
-</div>
+    <?php if ($summary['summary_insight'] || $summary['why_it_matters'] || $summary['key_takeaways'] || $summary['context_notes'] || $summary['confidence'] !== null) : ?>
+    <section class="panel" style="margin-top: 1.5rem;">
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">Golby insight</p>
+                <h2>Why this summary matters</h2>
+            </div>
+        </div>
+
+        <?php if ($summary['summary_insight']) : ?>
+            <p><?php echo nl2br(e($summary['summary_insight'])); ?></p>
+        <?php endif; ?>
+
+        <?php if ($summary['why_it_matters']) : ?>
+            <p><?php echo nl2br(e($summary['why_it_matters'])); ?></p>
+        <?php endif; ?>
+
+        <?php if ($summary['key_takeaways']) : ?>
+            <h3>Key takeaways</h3>
+            <ul>
+                <?php foreach ($summary['key_takeaways'] as $takeaway) : ?>
+                    <li><?php echo e($takeaway); ?></li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+
+        <dl class="metadata-grid detail-grid" style="margin-top: 1.25rem;">
+            <?php if ($summary['context_notes']) : ?>
+            <div>
+                <dt>Context notes</dt>
+                <dd><?php echo e($summary['context_notes']); ?></dd>
+            </div>
+            <?php endif; ?>
+            <?php if ($summary['confidence'] !== null) : ?>
+            <div>
+                <dt>Confidence</dt>
+                <dd><?php echo e(rr_format_confidence($summary['confidence'])); ?></dd>
+            </div>
+            <?php endif; ?>
+        </dl>
+    </section>
+    <?php endif; ?>
+
+    <dl class="metadata-grid detail-grid">
+        <div>
+            <dt>Summary ID</dt>
+            <dd><?php echo e((string) $summary['id']); ?></dd>
+        </div>
+        <div>
+            <dt>Type</dt>
+            <dd><?php echo e($summary['summary_type']); ?></dd>
+        </div>
+        <div>
+            <dt>Region</dt>
+            <dd><?php echo e($summary['region'] ?: 'General'); ?></dd>
+        </div>
+        <div>
+            <dt>Model</dt>
+            <dd><?php echo e($summary['model_used'] ?: 'Unavailable'); ?></dd>
+        </div>
+        <div>
+            <dt>Generated</dt>
+            <dd><?php echo e(rr_format_datetime($summary['generated_at'])); ?></dd>
+        </div>
+    </dl>
+</article>
 
 <?php rr_render_layout_end(); ?>

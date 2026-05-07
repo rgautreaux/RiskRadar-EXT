@@ -2,8 +2,9 @@
   "scripts": {
     "build:web": "vite build --config frontend/web/vite.config.mjs",
     "build:web:watch": "vite build --watch --config frontend/web/vite.config.mjs",
-    "backend:run": "cd backend && py -m uvicorn main:app --host 0.0.0.0 --port 8001",
-    "backend:test": "cd backend && py -m pytest",
+    "dev:web": "vite --config frontend/web/vite.config.mjs",
+    "backend:run": "cd backend && python -m uvicorn main:app --host 0.0.0.0 --port 8001",
+    "backend:test": "cd backend && python -m pytest",
     "backend:check": "npm run backend:test && npm run verify:backend",
     "verify:backend": "node backend/scripts/run_full_verification.mjs",
     "verify:connectivity": "node backend/scripts/run_connectivity_preflight.mjs",
@@ -29,8 +30,10 @@
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.12",
     "@vitejs/plugin-react": "^4.7.0",
-    "tailwindcss": "^4.1.12",
+    "jest": "^30.3.0",
     "playwright": "^1.54.2",
+    "puppeteer": "^24.42.0",
+    "tailwindcss": "^4.1.12",
     "vite": "^6.3.5"
   }
 }

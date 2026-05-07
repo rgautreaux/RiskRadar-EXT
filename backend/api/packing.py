@@ -1,11 +1,10 @@
 """Trip packing guide endpoint — generates LLM-powered packing recommendations."""
 
-import json
 import logging
 from datetime import date, datetime, timedelta, timezone
 from typing import Optional
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 

@@ -5,9 +5,46 @@ from __future__ import annotations
 import json
 from copy import deepcopy
 from datetime import datetime, timezone
+from typing import Optional
+
+from typing_extensions import TypedDict
 
 
-DEFAULT_PROFILE = {
+# ---------------------------------------------------------------------------
+# Typed profile structure — matches DEFAULT_PROFILE exactly
+# ---------------------------------------------------------------------------
+
+class ToneProfile(TypedDict):
+    warmth: float
+    calmness: float
+    humor: float
+
+
+class DeliveryProfile(TypedDict):
+    conciseness: float
+    detail: float
+    expandability: float
+
+
+class VoiceProfile(TypedDict):
+    formality: float
+
+
+class LearningProfile(TypedDict):
+    feedback_count: int
+    last_feedback_at: Optional[str]
+
+
+class Profile(TypedDict):
+    tone: ToneProfile
+    delivery: DeliveryProfile
+    voice: VoiceProfile
+    learning: LearningProfile
+
+
+# ---------------------------------------------------------------------------
+
+DEFAULT_PROFILE: Profile = {
     "tone": {
         "warmth": 0.55,
         "calmness": 0.75,
@@ -36,24 +73,26 @@ def default_profile_json() -> str:
     return json.dumps(DEFAULT_PROFILE)
 
 
-def parse_profile(raw_profile: str | None) -> dict:
+def parse_profile(raw_profile: Optional[str]) -> Profile:
     if not raw_profile:
         return deepcopy(DEFAULT_PROFILE)
 
     try:
-        loaded = json.loads(raw_profile)
+        loaded: dict[str, object] = json.loads(raw_profile)
     except json.JSONDecodeError:
         return deepcopy(DEFAULT_PROFILE)
 
-    profile = deepcopy(DEFAULT_PROFILE)
+    profile: Profile = deepcopy(DEFAULT_PROFILE)
     for section in ("tone", "delivery", "voice", "learning"):
-        if isinstance(loaded.get(section), dict):
-            profile[section].update(loaded[section])
+        loaded_section = loaded.get(section)
+        if isinstance(loaded_section, dict):
+            # Loaded JSON is dynamically typed; cast for TypedDict update
+            profile[section].update(loaded_section)  # type: ignore[typeddict-item]
 
     return profile
 
 
-def serialize_profile(profile: dict) -> str:
+def serialize_profile(profile: Profile) -> str:
     return json.dumps(profile)
 
 
@@ -62,12 +101,12 @@ def _contains_any(text: str, terms: tuple[str, ...]) -> bool:
 
 
 def apply_feedback_to_profile(
-    profile: dict,
+    profile: Profile,
     reaction: str,
     rating: int,
-    comment: str | None = None,
-) -> dict:
-    updated = deepcopy(profile)
+    comment: Optional[str] = None,
+) -> Profile:
+    updated: Profile = deepcopy(profile)
     tone = updated["tone"]
     delivery = updated["delivery"]
     voice = updated["voice"]
@@ -125,7 +164,7 @@ def _wants_expansion(message: str) -> bool:
     )
 
 
-def shape_reply(reply: str, category: str, profile: dict, message: str) -> str:
+def shape_reply(reply: str, category: str, profile: Profile, message: str) -> str:
     if category == "guardrail":
         return reply
 
@@ -155,7 +194,7 @@ def shape_reply(reply: str, category: str, profile: dict, message: str) -> str:
     return shaped
 
 
-def parse_style_directive(message: str) -> str | None:
+def parse_style_directive(message: str) -> Optional[str]:
     lower = (message or "").lower()
 
     concise_terms = ("be shorter", "be concise", "shorter", "more concise", "brief")
@@ -178,8 +217,8 @@ def parse_style_directive(message: str) -> str | None:
     return None
 
 
-def apply_style_directive(profile: dict, directive: str) -> dict:
-    updated = deepcopy(profile)
+def apply_style_directive(profile: Profile, directive: str) -> Profile:
+    updated: Profile = deepcopy(profile)
     tone = updated["tone"]
     delivery = updated["delivery"]
 

@@ -1,12 +1,14 @@
+<?php
+$statsResult = $statsResult ?? ['data' => ['total' => 0], 'message' => ''];
+$alertsResult = $alertsResult ?? ['data' => [], 'message' => ''];
+$latestSummaryResult = $latestSummaryResult ?? ['data' => null, 'message' => ''];
+$total = $statsResult['data']['total'] ?? 0;
+$loadedCount = count($alertsResult['data'] ?? []);
+?>
 <?php rr_render_layout_start('Dashboard', 'dashboard'); ?>
 
-<?php
-$total      = (int) $statsResult['data']['total'];
-$loadedCount = count($alertsResult['data']);
-?>
-
-<section class="dash-hero panel">
-    <div class="dash-hero-content">
+<section class="hero-panel">
+    <div>
         <p class="eyebrow">Live backend snapshot</p>
         <h1 class="dash-hero-headline">
             <?php if ($total === 0): ?>

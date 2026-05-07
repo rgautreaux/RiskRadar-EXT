@@ -1,8 +1,13 @@
 <?php
 
+
 require_once __DIR__ . '/../services/bootstrap.php';
 
-rr_require_feature_access();
+if (rr_access_context() !== 'authenticated') {
+    rr_set_flash('warning', 'Personalized risk scoring is only available to registered users. Please sign in or create an account.');
+    header('Location: login.php');
+    exit;
+}
 
 $radiusKm = rr_read_query_int('radius_km', 150, 1, 500);
 
