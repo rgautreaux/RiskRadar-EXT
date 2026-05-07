@@ -5,7 +5,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(extra="allow")
+    model_config = SettingsConfigDict(
+        extra="allow",
+        env_file=(str(BASE_DIR / ".env"), str(BASE_DIR.parent / ".env")),
+        env_file_encoding="utf-8",
+    )
 
     pythonpath: str = ""
     # Database

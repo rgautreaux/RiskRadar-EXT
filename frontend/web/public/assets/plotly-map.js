@@ -61,7 +61,7 @@ async function renderRiskMap(alertsUrl, riskUrl, containerId) {
         lat: [a.latitude],
         lon: [a.longitude],
         mode: 'markers',
-        marker: { size: 12, color: '#ef6f51' },
+        marker: { size: 12, color: '#e74c3c' },
         name: a.title || a.alert_type,
         text: a.description || '',
         customdata: [a],

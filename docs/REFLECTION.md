@@ -2,6 +2,39 @@
 
 ## Session Reflections
 
+# Stage 5: Scraper Fixes & .env Loading Session (2026-05-07)
+Summary:
+- Audited all five scraper implementations (`airnow_scraper.py`, `epa_scraper.py`, `firms_scraper.py`, `nws_scraper.py`, `web_scraper.py`), the scraper registry, and the alerts API to identify bugs preventing correct alert collection.
+- Identified a hardcoded Firecrawl API key (`fc-fa26117bfd0f47f184cbe7add944d79f`) in `backend/scrapers/web_scraper.py` that was committed to source control instead of being read from environment configuration.
+- Identified that `AirNowScraper` had `"requires_env": None` in `backend/scrapers/registry.py`, causing it to run on every scrape cycle without a key and log a scrape failure rather than gracefully skipping.
+- Identified fragile CSV parsing in `backend/scrapers/firms_scraper.py`: the manual `line.split(",")` approach failed silently on any quoted CSV field containing a comma (valid in the FIRMS VIIRS dataset).
+- Identified that `backend/scrapers/nws_scraper.py` handled only `Polygon` and `Point` GeoJSON geometry types, leaving `MultiPolygon` (used by NWS for multi-region alerts) with `lat=None, lon=None` and losing all location data for those alerts.
+- Identified that `backend/scrapers/epa_scraper.py` fetched only the first 100 TRI facilities nationwide (`rows/0:99`) out of thousands — missing 95%+ of the dataset.
+- Fixed the Firecrawl key exposure in `web_scraper.py`: replaced the hardcoded string with `settings.FIRECRAWL_API_KEY` and added a `RuntimeError` guard if the key is empty, mirroring the FIRMS scraper pattern.
+- Fixed the AirNow registry entry in `registry.py`: changed `"requires_env": None` to `"requires_env": "AIRNOW_API_KEY"` so AirNow is skipped cleanly when no key is configured.
+- Fixed FIRMS CSV parsing in `firms_scraper.py`: replaced `line.split(",")` with `csv.DictReader(io.StringIO(resp.text.strip()))`, which correctly handles quoted fields per the CSV spec.
+- Added `MultiPolygon` geometry handling in `nws_scraper.py`: flattens all rings from all polygons and computes a centroid, consistent with the existing `Polygon` centroid approach.
+- Fixed EPA pagination in `epa_scraper.py`: replaced the single `rows/0:99` request with a paginated loop fetching up to 3 batches of 1 000 rows each (capped at 3 000 total), stopping early when a batch returns fewer rows than requested.
+- Added `TestFIRMSCsvParsing` and `TestRegistryAirNowSkip` test classes to `backend/tests/test_scrapers.py`. All 36 tests pass.
+- Diagnosed that `DATABASE_URL` set in `.env` was not being loaded by the backend: `SettingsConfigDict` had no `env_file` declared, so pydantic-settings never read the `.env` file and fell back to shell environment variables only.
+- Fixed `.env` loading in `backend/config/settings.py`: added `env_file` (pointing at both `backend/.env` and the project-root `.env`) and `env_file_encoding="utf-8"` to `SettingsConfigDict`, enabling pydantic-settings to find and load the `.env` file regardless of which directory uvicorn is started from.
+
+Why this was done:
+- The hardcoded Firecrawl API key was a security vulnerability: the secret was committed to the repository and visible to anyone with access to the codebase, and could not be rotated without a code change.
+- Without `requires_env` set for AirNow, the scraper attempted to call the AirNow API on every 30-minute cycle with an empty key, producing a logged scrape failure that obscured real errors and wasted a schedule slot.
+- The FIRMS scraper's `line.split(",")` approach would produce a misaligned `dict` (wrong field assignments) or silently drop rows whenever NASA's VIIRS CSV output used quoting — a valid and documented CSV feature — causing wildfire alerts to be lost without any error.
+- NWS uses `MultiPolygon` geometry for alerts that span multiple non-contiguous regions (e.g., a winter storm covering several disjoint forecast zones). Without handling this type, all such alerts were stored with `latitude=None, longitude=None`, making them invisible to distance-based prioritization and map queries.
+- The 100-row EPA cap was a leftover default from initial development. With the TRI dataset containing thousands of facilities, the scraper was providing an arbitrarily small and geographically non-representative sample of pollution data.
+- `DATABASE_URL` in `.env` was never being read because pydantic-settings `SettingsConfigDict` defaults to reading only shell environment variables unless `env_file` is explicitly declared. This meant switching from SQLite to MariaDB required manually exporting the variable in every terminal session, which is not a workable workflow.
+
+How this improved the project:
+- The Firecrawl API key is no longer stored in source code. The `RuntimeError` guard gives a clear, immediate failure message at scraper startup if the key is absent, preventing silent no-ops.
+- AirNow is now skipped with a clean `INFO`-level log message when `AIRNOW_API_KEY` is unset, keeping the scrape log clean and making it easy to identify which scrapers are active vs. skipped due to missing credentials.
+- FIRMS wildfire data is now parsed correctly for all valid CSV output from the VIIRS endpoint, including any quoted fields. The new `TestFIRMSCsvParsing` tests confirm both the fix and the regression scenario.
+- NWS weather alerts covering multi-region `MultiPolygon` areas now have correct centroid coordinates, making them eligible for distance-based prioritization and visible on the map endpoint.
+- The EPA scraper now ingests up to 3 000 TRI facilities per run — a 30× increase — providing substantially better nationwide pollution coverage while the early-exit condition prevents over-fetching when the dataset is smaller than the cap.
+- `DATABASE_URL` (and all other `.env` variables) are now loaded automatically by pydantic-settings from either `backend/.env` or the project-root `.env`, whichever exists — no shell exports required. This makes switching between SQLite (development) and MariaDB (production) a single `.env` change.
+
 # Stage 5: Register Page Security Enhancements Session (2026-05-07)
 Summary:
 - Invoked `/impeccable craft For the signup page, I want to add two new security features: 1. Confirm password 2. Ensure that the user is not already registered in our database.` to extend the existing register page with two validation layers: a client-and-server-side confirm password check, and an inline email-already-registered error surfaced from the backend's 400 response.

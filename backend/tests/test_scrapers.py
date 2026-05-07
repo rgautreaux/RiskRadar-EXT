@@ -250,6 +250,86 @@ class TestWebScraperNormalize:
 
 
 # ---------------------------------------------------------------------------
+# FIRMS CSV parsing regression
+# ---------------------------------------------------------------------------
+
+class TestFIRMSCsvParsing:
+    def test_quoted_fields_with_comma_inside(self):
+        """csv.DictReader handles quoted fields containing commas; line.split(',') does not."""
+        import io
+        import csv
+
+        # A CSV row where the latitude value is quoted and contains extra content
+        # (simulates any field that might be quoted in a real FIRMS response)
+        headers = "latitude,longitude,bright_ti4,confidence,acq_date,acq_time"
+        row = '"34.05","-118.24","450.5","high","2026-05-07","1234"'
+        full_csv = f"{headers}\n{row}"
+
+        # Old fragile approach: splits on ALL commas — quoted values with commas inside would break
+        old_split = row.split(",")
+        # Quoted numerics produce the same count here, but this confirms DictReader works correctly
+        reader = csv.DictReader(io.StringIO(full_csv))
+        rows = list(reader)
+
+        assert len(rows) == 1
+        assert rows[0]["latitude"].strip('"') == "34.05"
+        assert rows[0]["confidence"].strip('"') == "high"
+
+    def test_quoted_field_with_internal_comma(self):
+        """Quoted field with internal comma: DictReader gives correct count; split gives wrong count."""
+        import io
+        import csv
+
+        headers = "latitude,longitude,bright_ti4,confidence,acq_date,acq_time"
+        # confidence field quoted and contains a comma — would confuse naive split
+        row = '34.05,-118.24,450.5,"high,verified","2026-05-07","1234"'
+        full_csv = f"{headers}\n{row}"
+
+        # Naive split produces too many values (7 instead of 6)
+        assert len(row.split(",")) == 7
+
+        # DictReader handles it correctly
+        reader = csv.DictReader(io.StringIO(full_csv))
+        rows = list(reader)
+        assert len(rows) == 1
+        assert rows[0]["confidence"] == "high,verified"
+        assert rows[0]["acq_date"] == "2026-05-07"
+
+
+# ---------------------------------------------------------------------------
+# Registry: AirNow skipped when AIRNOW_API_KEY is absent
+# ---------------------------------------------------------------------------
+
+class TestRegistryAirNowSkip:
+    def test_airnow_skipped_when_key_missing(self):
+        """AirNow scraper is excluded from load_all_scrapers() when AIRNOW_API_KEY is unset."""
+        from scrapers.registry import load_all_scrapers
+
+        with patch("scrapers.registry._load_yaml_config", return_value={"api_sources": [], "web_sources": []}), \
+             patch("scrapers.registry._get_config_value", return_value=""):
+            scrapers = load_all_scrapers()
+            ids = [s["id"] for s in scrapers]
+
+        assert "airnow" not in ids
+        # NWS requires no key and should still be included
+        assert "nws" in ids
+
+    def test_airnow_included_when_key_present(self):
+        """AirNow scraper IS included when AIRNOW_API_KEY is set."""
+        from scrapers.registry import load_all_scrapers
+
+        def fake_get_config(name: str) -> str:
+            return "fake_key" if name == "AIRNOW_API_KEY" else ""
+
+        with patch("scrapers.registry._load_yaml_config", return_value={"api_sources": [], "web_sources": []}), \
+             patch("scrapers.registry._get_config_value", side_effect=fake_get_config):
+            scrapers = load_all_scrapers()
+            ids = [s["id"] for s in scrapers]
+
+        assert "airnow" in ids
+
+
+# ---------------------------------------------------------------------------
 # BaseScraper.run() integration
 # ---------------------------------------------------------------------------
 

@@ -45,6 +45,16 @@ class NWSScraper(BaseScraper):
                 ring = coords[0]
                 lon = sum(c[0] for c in ring) / len(ring)
                 lat = sum(c[1] for c in ring) / len(ring)
+            elif geometry["type"] == "MultiPolygon":
+                all_coords = [
+                    coord
+                    for polygon in coords
+                    for ring in polygon
+                    for coord in ring
+                ]
+                if all_coords:
+                    lon = sum(c[0] for c in all_coords) / len(all_coords)
+                    lat = sum(c[1] for c in all_coords) / len(all_coords)
             elif geometry["type"] == "Point":
                 lon, lat = coords[0], coords[1]
 

@@ -8,18 +8,29 @@ import json
 import httpx
 from scrapers.base_scraper import BaseScraper
 
+_BATCH_SIZE = 1000
+_MAX_ROWS = 3000
+
 
 class EPAScraper(BaseScraper):
     source_name = "epa"
     alert_type = "pollution"
 
     def fetch_raw_data(self) -> list[dict]:
-        # Query TRI facilities nationwide (no state filter)
-        url = "https://data.epa.gov/efservice/tri_facility/rows/0:99/JSON"
-
-        resp = httpx.get(url, timeout=30)
-        resp.raise_for_status()
-        return resp.json()
+        # Paginate TRI facility queries in batches to avoid the original 100-row limit
+        results: list[dict] = []
+        for start in range(0, _MAX_ROWS, _BATCH_SIZE):
+            end = start + _BATCH_SIZE - 1
+            url = f"https://data.epa.gov/efservice/tri_facility/rows/{start}:{end}/JSON"
+            resp = httpx.get(url, timeout=30)
+            resp.raise_for_status()
+            batch = resp.json()
+            if not batch:
+                break
+            results.extend(batch)
+            if len(batch) < _BATCH_SIZE:
+                break  # Fewer rows than requested means we've reached the end
+        return results
 
     def normalize(self, raw: dict) -> dict:
         tri_id = raw.get("tri_facility_id", "")

@@ -19,7 +19,7 @@ from services.assistant_personality import (
     shape_reply,
     style_directive_ack,
 )
-from backend.schemas.assistant import AssistantRequest, AssistantResponse
+from schemas.assistant import AssistantRequest, AssistantResponse
 
 router = APIRouter(prefix="/assistant", tags=["Assistant"])
 logger = logging.getLogger(__name__)

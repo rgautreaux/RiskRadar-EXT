@@ -45,7 +45,7 @@ LEGACY_SCRAPERS: list[dict] = [
         "factory": lambda: AirNowScraper(),
         "id": "airnow",
         "interval_minutes": None,
-        "requires_env": None,
+        "requires_env": "AIRNOW_API_KEY",
         "stagger_offset_minutes": 1,
     },
     {
