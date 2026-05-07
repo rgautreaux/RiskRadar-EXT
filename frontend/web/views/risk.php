@@ -10,10 +10,17 @@
 
 <section class="panel">
     <form class="risk-form" method="get" action="risk.php">
-        <label>
-            <span>User ID</span>
-            <input type="number" name="user_id" min="1" max="999999" value="<?php echo e((string) $userId); ?>" required placeholder="1">
-        </label>
+        <?php if ($currentUser !== null) : ?>
+            <input type="hidden" name="user_id" value="<?php echo e((string) $userId); ?>">
+            <p class="risk-session-user">
+                Analyzing risk for <strong><?php echo e((string) ($currentUser['display_name'] ?? $currentUser['email'] ?? 'you')); ?></strong>
+            </p>
+        <?php else : ?>
+            <label>
+                <span>User ID</span>
+                <input type="number" name="user_id" min="1" max="999999" value="<?php echo e((string) $userId); ?>" required placeholder="1">
+            </label>
+        <?php endif; ?>
         <label>
             <span>Radius (km)</span>
             <input type="number" name="radius_km" min="1" max="500" value="<?php echo e((string) $radiusKm); ?>">
@@ -28,8 +35,13 @@
             <circle cx="24" cy="24" r="21" stroke="currentColor" stroke-width="2"/>
             <path d="M24 14v13M24 33v2" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
         </svg>
-        <p class="risk-empty-title">Enter your user ID to begin</p>
-        <p class="risk-empty-body">Your personalized risk score will appear here, calculated from nearby alerts, severity levels, and your health sensitivity profile. Find your ID on the <a href="profile.php">Profile</a> page after registering.</p>
+        <?php if ($currentUser !== null) : ?>
+            <p class="risk-empty-title">Unable to load your user profile</p>
+            <p class="risk-empty-body">Your account could not be resolved from your session. Try signing out and back in.</p>
+        <?php else : ?>
+            <p class="risk-empty-title">Enter your user ID to begin</p>
+            <p class="risk-empty-body">Your personalized risk score will appear here, calculated from nearby alerts, severity levels, and your health sensitivity profile. Find your ID on the <a href="profile.php">Profile</a> page after registering.</p>
+        <?php endif; ?>
     </div>
 
 <?php elseif ($riskResult !== null && $riskResult['ok'] && $riskResult['data']) : ?>

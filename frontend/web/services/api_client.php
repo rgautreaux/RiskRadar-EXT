@@ -188,7 +188,8 @@ function rr_http_request(array $config, string $method, string $path, array $que
     $bodyText = @file_get_contents($url, false, $context);
     $status = null;
 
-    if (!empty($http_response_header[0]) && preg_match('/\s(\d{3})\s/', $http_response_header[0], $matches)) {
+    $responseHeaders = http_get_last_response_headers() ?? [];
+    if (!empty($responseHeaders[0]) && preg_match('/\s(\d{3})\s/', $responseHeaders[0], $matches)) {
         $status = (int) $matches[1];
     }
 
@@ -299,6 +300,7 @@ function rr_normalize_user(?array $user): ?array
         'zip_code' => rr_safe_nullable_string($user['zip_code'] ?? null),
         'alert_types' => rr_safe_nullable_string($user['alert_types'] ?? null),
         'notify_severity' => rr_safe_nullable_string($user['notify_severity'] ?? null),
+        'health_conditions' => rr_safe_nullable_string($user['health_conditions'] ?? null),
         'created_at' => rr_safe_string($user['created_at'] ?? null),
     ];
 }

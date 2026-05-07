@@ -244,6 +244,8 @@
     font-size: 0.875rem;
     font-weight: 600;
     line-height: 1.3;
+    overflow-wrap: break-word;
+    word-break: break-word;
     transition: border-color 0.12s ease-out, background 0.12s ease-out, color 0.12s ease-out;
     user-select: none;
 }
@@ -452,25 +454,29 @@
             <div class="pf-section-head">
                 <p class="pf-section-label">01 &mdash; Identity</p>
                 <h2 class="pf-section-title">Who you are &amp; where you are</h2>
-                <p class="pf-section-desc">Your user ID links these settings to your account. Your ZIP code sets your local alert area.</p>
+                <p class="pf-section-desc">Your ZIP code sets your local alert area.</p>
             </div>
             <div class="pf-field-row">
-                <div class="pf-field">
-                    <label class="pf-field-label" for="pf-user-id">User ID</label>
-                    <input
-                        class="pf-input"
-                        type="number"
-                        id="pf-user-id"
-                        name="user_id"
-                        min="1"
-                        value="<?php echo e((string) ($preferencesForm['user_id'] ?: '')); ?>"
-                        required
-                        autocomplete="off"
-                    >
-                    <?php if (isset($preferencesErrors['user_id'])) : ?>
-                        <p class="pf-field-error"><?php echo e($preferencesErrors['user_id']); ?></p>
-                    <?php endif; ?>
-                </div>
+                <?php if ($currentUser !== null) : ?>
+                    <input type="hidden" name="user_id" value="<?php echo e((string) ($preferencesForm['user_id'] ?: '')); ?>">
+                <?php else : ?>
+                    <div class="pf-field">
+                        <label class="pf-field-label" for="pf-user-id">User ID</label>
+                        <input
+                            class="pf-input"
+                            type="number"
+                            id="pf-user-id"
+                            name="user_id"
+                            min="1"
+                            value="<?php echo e((string) ($preferencesForm['user_id'] ?: '')); ?>"
+                            required
+                            autocomplete="off"
+                        >
+                        <?php if (isset($preferencesErrors['user_id'])) : ?>
+                            <p class="pf-field-error"><?php echo e($preferencesErrors['user_id']); ?></p>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
                 <div class="pf-field">
                     <label class="pf-field-label" for="pf-zip">ZIP code</label>
                     <input

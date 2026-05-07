@@ -330,6 +330,26 @@ body.page-register .page-shell {
     outline-offset: 2px;
 }
 
+/* ─── Password match indicator ───────────────────────────────────── */
+.reg-pw-match {
+    font-family: 'Atkinson Hyperlegible Next', sans-serif;
+    font-size: 0.8125rem;
+    min-height: 1.3em;
+    line-height: 1.4;
+    opacity: 0;
+    transition: opacity 0.18s ease, color 0.18s ease;
+}
+
+.reg-pw-match[data-state="match"] {
+    opacity: 1;
+    color: oklch(0.40 0.12 148);
+}
+
+.reg-pw-match[data-state="mismatch"] {
+    opacity: 1;
+    color: oklch(0.36 0.18 25);
+}
+
 /* ─── Password strength meter ────────────────────────────────────── */
 .reg-pw-strength {
     display: flex;
@@ -420,7 +440,8 @@ body.page-register .page-shell {
     .reg-btn-primary,
     .reg-input,
     .reg-pw-strength-bar,
-    .reg-pw-toggle {
+    .reg-pw-toggle,
+    .reg-pw-match {
         transition: none;
     }
 }
@@ -633,6 +654,32 @@ body.page-register .page-shell {
                 </div>
 
                 <div class="reg-field">
+                    <label class="reg-label" for="reg-confirm-password">Confirm password</label>
+                    <div class="reg-pw-wrap">
+                        <input
+                            class="reg-input"
+                            type="password"
+                            id="reg-confirm-password"
+                            name="confirm_password"
+                            minlength="8"
+                            autocomplete="new-password"
+                            required
+                            <?php if (isset($registerErrors['confirm_password'])) : ?>aria-describedby="reg-confirm-error" aria-invalid="true"<?php else : ?>aria-describedby="reg-pw-match"<?php endif; ?>
+                        >
+                        <button type="button" class="reg-pw-toggle" id="reg-confirm-toggle" aria-label="Show confirm password">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" id="reg-confirm-icon">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="reg-pw-match" id="reg-pw-match" aria-live="polite" aria-atomic="true"></div>
+                    <?php if (isset($registerErrors['confirm_password'])) : ?>
+                        <p class="reg-field-error" id="reg-confirm-error" role="alert"><?php echo e($registerErrors['confirm_password']); ?></p>
+                    <?php endif; ?>
+                </div>
+
+                <div class="reg-field">
                     <label class="reg-label" for="reg-zip">
                         ZIP code
                         <span class="reg-label-optional">optional</span>
@@ -668,14 +715,18 @@ body.page-register .page-shell {
 
 <script>
 (function () {
-    var pwInput   = document.getElementById('reg-password');
-    var pwToggle  = document.getElementById('reg-pw-toggle');
-    var pwIcon    = document.getElementById('reg-pw-icon');
+    var pwInput    = document.getElementById('reg-password');
+    var pwToggle   = document.getElementById('reg-pw-toggle');
+    var pwIcon     = document.getElementById('reg-pw-icon');
     var pwStrength = document.getElementById('reg-pw-strength');
+    var cpInput    = document.getElementById('reg-confirm-password');
+    var cpToggle   = document.getElementById('reg-confirm-toggle');
+    var cpIcon     = document.getElementById('reg-confirm-icon');
+    var cpMatch    = document.getElementById('reg-pw-match');
 
     if (!pwInput || !pwToggle || !pwIcon || !pwStrength) return;
 
-    var EYE_OPEN = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+    var EYE_OPEN   = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
     var EYE_CLOSED = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
 
     pwToggle.addEventListener('click', function () {
@@ -684,6 +735,15 @@ body.page-register .page-shell {
         pwToggle.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
         pwIcon.innerHTML = showing ? EYE_OPEN : EYE_CLOSED;
     });
+
+    if (cpToggle && cpInput && cpIcon) {
+        cpToggle.addEventListener('click', function () {
+            var showing = cpInput.type === 'text';
+            cpInput.type = showing ? 'password' : 'text';
+            cpToggle.setAttribute('aria-label', showing ? 'Show confirm password' : 'Hide confirm password');
+            cpIcon.innerHTML = showing ? EYE_OPEN : EYE_CLOSED;
+        });
+    }
 
     function getStrength(pw) {
         if (pw.length === 0) return 0;
@@ -697,7 +757,31 @@ body.page-register .page-shell {
     pwInput.addEventListener('input', function () {
         var s = getStrength(this.value);
         pwStrength.setAttribute('data-strength', s > 0 ? String(s) : '');
+        if (cpInput && cpInput.value.length > 0) updateMatch();
     });
+
+    function updateMatch() {
+        if (!cpInput || !cpMatch) return;
+        var pw = pwInput.value;
+        var cp = cpInput.value;
+        if (cp.length === 0) {
+            cpMatch.dataset.state = '';
+            cpMatch.textContent = '';
+            cpInput.removeAttribute('aria-invalid');
+        } else if (pw === cp) {
+            cpMatch.dataset.state = 'match';
+            cpMatch.textContent = 'Passwords match';
+            cpInput.setAttribute('aria-invalid', 'false');
+        } else {
+            cpMatch.dataset.state = 'mismatch';
+            cpMatch.textContent = 'Passwords do not match';
+            cpInput.setAttribute('aria-invalid', 'true');
+        }
+    }
+
+    if (cpInput) {
+        cpInput.addEventListener('input', updateMatch);
+    }
 }());
 </script>
 

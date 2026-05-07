@@ -27,30 +27,11 @@ class NWSScraper(BaseScraper):
         url = "https://api.weather.gov/alerts/active"
         headers = {"User-Agent": settings.NWS_USER_AGENT, "Accept": "application/geo+json"}
 
-        # First try point-based query for the exact location
-        params = {"point": f"{settings.DEFAULT_LAT},{settings.DEFAULT_LON}"}
+        # Query all active alerts nationwide (status=actual, message_type=alert)
+        params = {"status": "actual", "message_type": "alert"}
         resp = httpx.get(url, params=params, headers=headers, timeout=30)
         resp.raise_for_status()
-        data = resp.json()
-        features = data.get("features", [])
-
-        # If no alerts for exact point, broaden to the forecast zone
-        if not features:
-            try:
-                point_url = f"https://api.weather.gov/points/{settings.DEFAULT_LAT},{settings.DEFAULT_LON}"
-                point_resp = httpx.get(point_url, headers=headers, timeout=30)
-                point_resp.raise_for_status()
-                zone_url = point_resp.json().get("properties", {}).get("forecastZone", "")
-                if zone_url:
-                    zone_id = zone_url.rsplit("/", 1)[-1]  # e.g. "CAZ368"
-                    state = zone_id[:2]  # e.g. "CA"
-                    resp2 = httpx.get(url, params={"area": state}, headers=headers, timeout=30)
-                    resp2.raise_for_status()
-                    features = resp2.json().get("features", [])
-            except Exception:
-                pass  # Fall back to empty list if zone lookup fails
-
-        return features
+        return resp.json().get("features", [])
 
     def normalize(self, raw: dict) -> dict:
         props = raw.get("properties", {})

@@ -33,6 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: login.php');
             exit;
         }
+        if (($registerResult['status'] ?? 0) === 400 && stripos($registerResult['message'] ?? '', 'already registered') !== false) {
+            $registerErrors['email'] = 'An account with this email already exists. Try signing in instead.';
+            $registerResult = null;
+        }
     }
 }
 

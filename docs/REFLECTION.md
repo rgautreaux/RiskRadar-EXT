@@ -2,6 +2,49 @@
 
 ## Session Reflections
 
+# Stage 5: Register Page Security Enhancements Session (2026-05-07)
+Summary:
+- Invoked `/impeccable craft For the signup page, I want to add two new security features: 1. Confirm password 2. Ensure that the user is not already registered in our database.` to extend the existing register page with two validation layers: a client-and-server-side confirm password check, and an inline email-already-registered error surfaced from the backend's 400 response.
+- Read `frontend/web/views/register.php` (the existing two-column register view using the `reg-` namespace, password show/hide toggle, 3-bar strength meter, four fields: display name, email, password, ZIP), `frontend/web/public/register.php` (the controller: CSRF check, calls `rr_validate_registration` then `rr_register_user`; displays `$registerResult['message']` as a general warning when the API fails), `frontend/web/services/validators.php` (`rr_validate_registration`: validates display name, email, password complexity, ZIP format), and `frontend/web/services/api_client.php` (`rr_register_user`: returns HTTP 400 with a message containing "already registered" when a duplicate email is detected by the backend).
+- Updated `rr_validate_registration` in `frontend/web/services/validators.php`: added `confirm_password` to `$data`; after the password block (guarded by `!isset($errors['password'])`), validates that `confirm_password` is non-empty and matches `password`, recording "Please confirm your password." or "Passwords do not match." in `$errors['confirm_password']`; calls `unset($data['confirm_password'])` before returning so the field is never forwarded to the backend API payload.
+- Updated `frontend/web/public/register.php`: after `rr_register_user` returns a non-ok 400 result whose message contains "already registered", injects the error into `$registerErrors['email']` as "An account with this email already exists. Try signing in instead." and sets `$registerResult = null` to suppress the duplicate general alert banner — the error now appears inline under the email field, directing the user precisely to the conflict.
+- Updated `frontend/web/views/register.php`: added `.reg-pw-match` CSS (opacity 0 by default, transitions to `oklch(0.40 0.12 148)` forest green on `data-state="match"` and `oklch(0.36 0.18 25)` red on `data-state="mismatch"` at 0.18s ease) and extended the `prefers-reduced-motion` block to include `.reg-pw-match`; inserted the confirm password field between the password and ZIP fields using the same `reg-pw-wrap` / `.reg-pw-toggle` pattern as the existing password field, with an `aria-live="polite"` `.reg-pw-match` live region and server-side `$registerErrors['confirm_password']` error rendering; updated the JS IIFE to add the confirm toggle (same `innerHTML` SVG swap + `aria-label` update), an `updateMatch()` function that sets `data-state` on the match indicator and `aria-invalid` on the confirm input based on a direct string comparison with the main password field, and event listeners on both password inputs so the match status updates in real time as either field changes.
+
+Why this was done:
+- The existing registration form had no confirm password field, meaning a typo in the password could permanently lock a user out of their account without any indication at registration time.
+- When a user attempted to register with an email address already in the database, the backend 400 response was displayed as a floating general-purpose warning banner with no visual connection to the email field — the user had to read the message, understand the implication, and locate the affected field manually.
+- PHP-only validation provides no real-time feedback; the confirm password check needed a client-side counterpart so users could see immediately whether their passwords match while still typing, without a round-trip to the server.
+
+How this improved the project:
+- Users now receive real-time match feedback on the confirm password field: green "Passwords match" text appears as soon as the two fields agree, and red "Passwords do not match" appears on any divergence — reducing submission attempts with mismatched passwords to near zero.
+- Server-side confirm password validation in `rr_validate_registration` ensures the constraint holds even when JavaScript is disabled or bypassed, and the `unset($data['confirm_password'])` call guarantees the field is never forwarded to the backend API.
+- The email-already-registered error is now surfaced inline under the email input with `aria-invalid="true"` and a `role="alert"` paragraph, matching the accessible error pattern used for all other field-level validation errors on the form — no new error display mechanism was introduced.
+- Setting `$registerResult = null` after injecting the inline email error eliminates the redundant floating warning banner, reducing visual noise and keeping the error message in one predictable location.
+- The confirm password toggle mirrors the main password toggle precisely (same SVG icons, same `aria-label` update, same transition behavior), maintaining a fully consistent interaction pattern across both password fields.
+- All changes are contained within the `reg-` namespace and the existing PHP validation / controller architecture — no new CSS classes, no new PHP functions, and no new JavaScript globals were introduced.
+
+# Stage 5: Profile Preferences Pre-population & Deprecation Fix Session (2026-05-07)
+Summary:
+- Read `frontend/web/public/profile.php`, `frontend/web/views/profile.php`, `frontend/web/services/api_client.php`, and `backend/schemas/user.py` to understand how saved preferences were fetched but never used to seed the form on GET requests.
+- Identified that `$preferencesForm` was always initialized with empty values (`zip_code: ''`, `alert_types: []`, `notify_severity: ''`, `health_conditions: []`, `device_token: ''`) and was only populated from `$_POST` data. The `$currentUser` object returned by `rr_fetch_current_user()` was available in the controller but never read for pre-population.
+- Identified that `rr_normalize_user()` in `frontend/web/services/api_client.php` did not include `health_conditions` in its return array, even though `UserOut` in `backend/schemas/user.py` exposes it as an optional JSON string field.
+- Identified a PHP deprecation warning in `api_client.php` at line 191: the implicit `$http_response_header` superglobal populated by `file_get_contents()` is deprecated in favor of the explicit `http_get_last_response_headers()` function.
+- Added `'health_conditions' => rr_safe_nullable_string($user['health_conditions'] ?? null)` to the return array of `rr_normalize_user()` in `frontend/web/services/api_client.php`.
+- Updated `frontend/web/public/profile.php`: initialized `$preferencesForm['health_conditions']` to `[]` in the base declaration; added a pre-population block guarded by `$_SERVER['REQUEST_METHOD'] !== 'POST' && $currentUser !== null` that seeds `zip_code` and `notify_severity` directly from `$currentUser`, and JSON-decodes `alert_types` and `health_conditions` from their stored JSON string form into PHP arrays for use by the tile checkbox `in_array` checks in the view.
+- Fixed the deprecation warning in `frontend/web/services/api_client.php` by replacing the reference to `$http_response_header[0]` with a call to `http_get_last_response_headers()`, storing the result in a local `$responseHeaders` variable with a `?? []` guard.
+
+Why this was done:
+- The profile page rendered a completely blank form on every page load regardless of what preferences the user had previously saved, requiring them to re-enter all values from memory each time they visited the page. This was a significant usability regression given that the backend (`GET /auth/me`) already returns all saved preference fields on every authenticated page load.
+- The `health_conditions` field was already part of the `UserOut` schema and was being returned by the API, but was silently dropped inside `rr_normalize_user()`, making it impossible for the controller to access it.
+- The `$http_response_header` deprecation produces a visible warning in the frontend output, degrading page quality and indicating the use of a PHP behavior that is scheduled for removal in a future version.
+- `device_token` is intentionally omitted from `UserOut` for security reasons and therefore correctly remains blank on page load — this is an accepted constraint.
+
+How this improved the project:
+- Authenticated users now see all their previously saved preferences (ZIP code, alert types, severity threshold, and health conditions) pre-filled and pre-checked when they open the profile page, eliminating the need to re-enter values they have already configured.
+- The pre-population only applies on GET requests; POST requests that fail validation continue to repopulate the form from the submitted values as before, preserving error recovery behavior.
+- `health_conditions` is now a first-class field in the normalized user object, making it accessible to any view or controller that calls `rr_fetch_current_user()`, not only to the profile form.
+- The `http_get_last_response_headers()` fix removes the deprecation warning from the frontend output and prepares the HTTP client layer for future PHP versions.
+
 # Stage 5: Local Digest Scope Selector Session (2026-05-02)
 Summary:
 - Invoked `/impeccable craft I want to add an option to create a local daily digest summary to the summary generation view.` to extend the existing `create_summary.php` generation page with a Nationwide / Local digest scope selector, using the established project design context from `.impeccable.md`.

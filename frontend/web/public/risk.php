@@ -4,8 +4,23 @@ require_once __DIR__ . '/../services/bootstrap.php';
 
 rr_require_feature_access();
 
-$userId = rr_read_query_int('user_id', 0, 0, 999999);
 $radiusKm = rr_read_query_int('radius_km', 150, 1, 500);
+
+// Resolve user ID from session for authenticated users.
+// This avoids asking the user to enter their ID manually and closes a
+// BOLA vulnerability where any user could view any other user's risk
+// score by supplying an arbitrary user_id query parameter.
+$currentUser = null;
+if (rr_is_authenticated()) {
+    $meResult = rr_fetch_current_user($config);
+    if ($meResult['ok'] && is_array($meResult['data'])) {
+        $currentUser = $meResult['data'];
+    }
+}
+
+$userId = $currentUser !== null
+    ? (int) ($currentUser['id'] ?? 0)
+    : rr_read_query_int('user_id', 0, 0, 999999);
 
 $riskResult = null;
 $prioritizedResult = null;
