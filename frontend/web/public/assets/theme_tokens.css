@@ -9,7 +9,7 @@
 :root {
   --theme-bg: #f4efe3;
   --theme-ink: #122231;
-  --theme-accent: #ef6f51;
+  --theme-accent: oklch(0.52 0.148 148);
   --theme-panel: #fffbf5;
   --theme-panel-strong: #fff6ea;
 
@@ -30,7 +30,7 @@
 [data-theme="dark"] {
   --theme-bg: #181f25;
   --theme-ink: #f6efe1;
-  --theme-accent: #f2b441;
+  --theme-accent: oklch(0.72 0.12 148);
   --theme-panel: #212a32;
   --theme-panel-strong: #2a353f;
 }

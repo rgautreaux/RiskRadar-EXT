@@ -2,27 +2,27 @@
 @import url('/assets/app.css');
 
 :root {
-  --primary: #2563eb;
-  --accent: #f1f5f9;
-  --muted: #64748b;
-  --muted-foreground: #94a3b8;
+  --primary: oklch(0.52 0.148 148);
+  --accent: oklch(0.95 0.022 148);
+  --muted: oklch(0.52 0.012 148);
+  --muted-foreground: oklch(0.63 0.010 148);
   --destructive: #dc2626;
   --radius-lg: 18px;
   --radius-md: 12px;
   --shadow-md: 0 4px 24px 0 rgba(0,0,0,0.08);
   --shadow-sm: 0 2px 8px 0 rgba(0,0,0,0.04);
-  --chart-1: #38bdf8;
+  --chart-1: oklch(0.52 0.148 148);
 }
 
 body {
-  font-family: 'Inter', 'Space Grotesk', Arial, sans-serif;
+  font-family: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', system-ui, sans-serif;
   background: var(--accent);
-  color: #222;
+  color: oklch(0.22 0.012 148);
 }
 
 .page-heading h1 {
   color: var(--primary);
-  font-family: 'Space Grotesk', Inter, Arial, sans-serif;
+  font-family: 'Bricolage Grotesque', system-ui, sans-serif;
 }
 
 .forecast-icon {

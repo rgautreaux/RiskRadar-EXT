@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from auth.security import decrypt_email, hash_email, normalize_email, password_hash, validate_password_strength
 from db.database import get_db
 from db.models import User, UserAlertPreference, UserHealthCondition
-from backend.schemas.user import UserCreate, UserPrefsUpdate, UserOut
+from schemas.user import UserCreate, UserPrefsUpdate, UserOut
 from services.assistant_personality import default_profile_json
 
 router = APIRouter(prefix="/users", tags=["Users"])
