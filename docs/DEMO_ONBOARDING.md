@@ -92,6 +92,29 @@ session.close()
 
 ---
 
+## Guest Chat Limits
+
+Golby now includes a configurable daily limit for anonymous users.
+
+### What happens for guest users
+
+- Anonymous users can send up to `GUEST_DAILY_LIMIT` messages per day.
+- When the limit is reached, Golby returns a friendly upgrade prompt instead of continuing the chat.
+- Personalized requests such as "my risk" or "my profile" are reserved for signed-in users.
+
+### How to configure the limit
+
+- Set `GUEST_DAILY_LIMIT` in the backend environment.
+- The default is `10` if you do not override it.
+- The assistant logs guest-limit and guest-lockout events so you can monitor usage during demos.
+
+### Demo note
+
+- If you want to re-run onboarding for the same account, clear the browser localStorage entry for that user or use a fresh browser profile.
+- Guest daily-limit state is enforced on the backend per IP/day, so use a fresh guest session when testing the cap.
+
+---
+
 ## Generating Custom Alerts
 
 ### Generate Alerts On Demand

@@ -4,6 +4,8 @@ API docs: https://firms.modaps.eosdis.nasa.gov/api/
 Requires a MAP_KEY (free registration).
 """
 
+import csv
+import io
 import json
 import httpx
 
@@ -29,13 +31,8 @@ class FIRMSScraper(BaseScraper):
         if not settings.NASA_FIRMS_MAP_KEY:
             raise RuntimeError("NASA_FIRMS_MAP_KEY not set")
 
-        lat = settings.DEFAULT_LAT
-        lon = settings.DEFAULT_LON
-        # Bounding box: +-5 degrees around default location
-        west = lon - 5
-        south = lat - 5
-        east = lon + 5
-        north = lat + 5
+        # CONUS bounding box for nationwide fire coverage
+        west, south, east, north = -130.0, 24.0, -65.0, 50.0
 
         url = (
             f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/"
@@ -46,18 +43,9 @@ class FIRMSScraper(BaseScraper):
         resp = httpx.get(url, timeout=30)
         resp.raise_for_status()
 
-        # Parse CSV response
-        lines = resp.text.strip().split("\n")
-        if len(lines) < 2:
-            return []
-
-        headers = lines[0].split(",")
-        results = []
-        for line in lines[1:]:
-            values = line.split(",")
-            if len(values) == len(headers):
-                results.append(dict(zip(headers, values)))
-        return results
+        # Parse CSV response using DictReader to handle quoted fields correctly
+        reader = csv.DictReader(io.StringIO(resp.text.strip()))
+        return list(reader)
 
     def normalize(self, raw: dict) -> dict:
         lat = raw.get("latitude", "")

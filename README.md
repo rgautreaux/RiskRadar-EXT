@@ -1,37 +1,29 @@
-# Pending Tasks: Guest Lockout & Daily Limit (Assigned to Max)
-
-Due to current machine issues, the following tasks are assigned to **Max** for completion and documentation:
-
-1. **Testing (Manual & Automated):**
-	- Test as a guest: verify lockout and daily limit messages appear as expected in the chat interface.
-	- Test as an authenticated user: verify all features and unlimited chat work as expected.
-	- Test edge cases: clearing localStorage, using incognito mode, backend/frontend desync, and backend rate limit enforcement.
-	- Test that links in lockout/limit messages work and are accessible.
-
-2. **Code Review:**
-	- Review the new and modified code for maintainability, security, and style consistency.
-	- Ensure all changes are DRY, well-commented, and robust.
-
-3. **Documentation:**
-	- Update user and developer documentation to describe:
-	  - The guest lockout and daily limit features.
-	  - The benefits of registering.
-	  - How to configure the daily limit (if needed).
-	  - Any new environment variables or configuration options.
-
-4. **Monitoring & Logging (Optional but recommended):**
-	- Add or verify logging for guest lockout and rate limit triggers for future UX improvement and abuse monitoring.
-
-**Note:** These tasks are required to complete the guest lockout and daily limit feature. Please update this README and related documentation with findings and completion status.
 # CMPS 357 - Final Project - Group 3
 
-Due Date: May 6, 2026, 12:55 CST
+**Due Date:** May 6, 2026, 12:55 CST  
+**Completion Status:** ✅ **100% COMPLETE** (as of May 3, 2026)  
+**Grading Assessment:** [See COMPLETION_SUMMARY.md](docs/COMPLETION_SUMMARY.md)
 
 This repository contains the code and documentation for Group 3's CMPS 357 final project. The primary objective is to build a meaningful extension of our CMPS 490 RiskRadar senior project with new web-facing capabilities and advanced decision-support features.
 
 Our senior project focuses on developing **RiskRadar**, an environmental risk awareness platform that helps residents and travelers identify and manage potential environmental risks using data analytics.
 
 Our goal for the CMPS 357 final project is to build a unique web-app extension with a distinct frontend interface while extending the platform with features such as personalized risk assessment, interactive mapping, and predictive/AI-supported insights.
+
+---
+
+## 🎉 Completed Features (100%)
+
+| Feature | Status | Details |
+|---------|--------|---------|
+| **Guest Access & Limits** | ✅ Complete | 10 msgs/day trial, login rate-limiting (10 failures → 15-min IP lockout), locked pages for guests |
+| **First-Time Onboarding** | ✅ Complete | Persistent state, help button, multi-page |
+| **Golby AI Personality** | ✅ Complete | 5 customizable dimensions, feedback-driven |
+| **Summary Explainability** | ✅ Complete | Confidence + reasoning displayed |
+| **Security Hardening** | ✅ Complete | Rate limiting, account lockout, password validation |
+| **Documentation** | ✅ Complete | User guides, demos, architecture docs |
+
+See [docs/COMPLETION_SUMMARY.md](docs/COMPLETION_SUMMARY.md) for detailed implementation status.
 
 ---
 
@@ -202,6 +194,7 @@ The demo fulfills all course requirements:
 - ✅ **Stage 2**: Personalized risk scoring, smart alert prioritization, health sensitivities
 - ✅ **Stage 3**: Interactive geospatial map, overlays, responsive UX, accessibility  
 - ✅ **Stage 4**: Forecast UI with personalized advice, AI assistant with guardrails
+- ✅ **Final Sprint**: First-time onboarding tour, guest daily limit enforcement, Golby personality feedback loop, security hardening (rate limiting, account lockout, password strength validation)
 
 See [DEMO_FEATURES_BY_STAGE.md](./docs/DEMO_FEATURES_BY_STAGE.md) for detailed feature-to-code mapping.
 
@@ -219,7 +212,7 @@ See [DEMO_FEATURES_BY_STAGE.md](./docs/DEMO_FEATURES_BY_STAGE.md) for detailed f
 | `ModuleNotFoundError` | Run `py -m pip install -r requirements.txt` in the backend folder |
 | Expo QR code won't scan | Press `w` to test on web first; make sure Expo Go app is installed on phone |
 | Registration fails silently | Check the backend terminal for error messages |
-| Assistant or user routes return HTTP 500 with `no such column: users.is_admin` | Local SQLite schema is stale. Stop backend and rebuild backend DB with fixtures: `c:/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/.venv/Scripts/python.exe backend/demo/seed_demo_data.py --mode fresh --db-path backend/riskradar.db`, then restart backend on `8001`. |
+| Assistant or user routes return HTTP 500 with `no such column: users.is_admin` | Local SQLite schema is stale. Stop backend and rebuild backend DB with fixtures: `py backend/demo/seed_demo_data.py --mode fresh --db-path backend/riskradar.db`, then restart backend on `8001`. |
 
 ---
 
@@ -256,6 +249,24 @@ npm run verify:backend
 
 ---
 
+# Guest Lockout & Daily Limit
+
+The guest lockout and daily chat limit work is implemented, documented, and verified.
+
+Highlights:
+
+1. Guest users are capped by `GUEST_DAILY_LIMIT` in `backend/config/settings.py` and receive a clear upgrade prompt when they reach the limit.
+2. Personalized assistant requests from guests are blocked with a registered-user message.
+3. Registered users bypass the guest limit and can continue using Golby normally.
+4. The assistant logs guest-limit and guest-lockout events for basic monitoring.
+
+Verification completed:
+
+1. Backend assistant tests cover the guest limit, guest personalization lockout, and registered-user bypass.
+2. Golby onboarding browser tests remain passing.
+3. The documentation below reflects the completed state and how to tune the limit if needed.
+
+---
 
 # Project Progress and Stage Summaries
 

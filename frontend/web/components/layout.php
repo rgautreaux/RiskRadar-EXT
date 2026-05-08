@@ -13,6 +13,136 @@
 ====================================================
 */
 
+function rr_golby_onboarding_page_label(string $activePage): string
+{
+    return match ($activePage) {
+        'dashboard' => 'Dashboard',
+        'alerts' => 'Alerts',
+        'summaries' => 'Summaries',
+        'profile' => 'Profile',
+        'risk' => 'Risk',
+        'map' => 'Map',
+        'forecast' => 'Forecast',
+        'assistant' => 'Assistant',
+        default => 'this page',
+    };
+}
+
+function rr_prepare_golby_onboarding_state(array $config, string $activePage): ?array
+{
+    if ($activePage === 'login' || $activePage === 'register') {
+        return null;
+    }
+
+    if (!function_exists('rr_access_context') || rr_access_context() !== 'authenticated') {
+        return null;
+    }
+
+    if (!function_exists('rr_fetch_current_user') || !function_exists('rr_api_url')) {
+        return null;
+    }
+
+    $userResult = rr_fetch_current_user($config);
+    if (empty($userResult['ok']) || !is_array($userResult['data'])) {
+        return null;
+    }
+
+    $currentUser = $userResult['data'];
+    if (!empty($currentUser['has_completed_onboarding'])) {
+        return null;
+    }
+
+    $userId = (int) ($currentUser['id'] ?? 0);
+    if ($userId <= 0) {
+        return null;
+    }
+
+    return [
+        'user_id' => $userId,
+        'page_label' => rr_golby_onboarding_page_label($activePage),
+        'complete_url' => rr_api_url($config, 'users/' . $userId . '/onboarding'),
+    ];
+}
+
+function rr_should_render_golby_widget(string $activePage): bool
+{
+    if ($activePage === 'login' || $activePage === 'register') {
+        return false;
+    }
+
+    if (!function_exists('rr_access_context')) {
+        return false;
+    }
+
+    $accessContext = rr_access_context();
+    return $accessContext === 'authenticated' || $accessContext === 'guest';
+}
+
+function rr_render_golby_onboarding_markup(array $state): void
+{
+    $pageLabel = e((string) ($state['page_label'] ?? 'this page'));
+    ?>
+    <div class="golby-onboarding-shell" id="golby-onboarding-shell" hidden data-golby-onboarding-shell>
+        <div class="golby-onboarding-backdrop" data-golby-onboarding-dismiss="backdrop" aria-hidden="true"></div>
+        <section
+            class="golby-onboarding-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="golby-onboarding-title"
+            aria-describedby="golby-onboarding-copy"
+            data-golby-onboarding-dialog
+        >
+            <button type="button" class="golby-onboarding-close" data-golby-onboarding-action="dismiss" aria-label="Close tutorial">
+                <span aria-hidden="true">&times;</span>
+            </button>
+
+            <div class="golby-onboarding-header">
+                <div class="golby-onboarding-avatar" aria-hidden="true">
+                    <img src="assets/icons/Golby-Laugh.svg" alt="">
+                </div>
+                <div>
+                    <p class="golby-onboarding-eyebrow">Golby-led first-time tour</p>
+                    <h2 id="golby-onboarding-title">Welcome to <?php echo $pageLabel; ?></h2>
+                    <p id="golby-onboarding-copy" class="golby-onboarding-intro">
+                        I’ll walk you through the web app in a minute or two, so your new account feels friendly right away.
+                    </p>
+                </div>
+            </div>
+
+            <div class="golby-onboarding-progress" aria-hidden="true">
+                <span class="golby-onboarding-progress-fill" data-golby-onboarding-progress></span>
+            </div>
+            <div class="golby-onboarding-step-meta">
+                <span data-golby-onboarding-counter>Step 1 of 4</span>
+                <span class="golby-onboarding-page-pill"><?php echo $pageLabel; ?></span>
+            </div>
+
+            <div class="golby-onboarding-body">
+                <h3 data-golby-onboarding-step-title>Warm hello from Golby</h3>
+                <p data-golby-onboarding-step-body>
+                    You’re in the right place. I’ll show you the parts of RiskRadar that matter most so you can feel at home quickly.
+                </p>
+            </div>
+
+            <ul class="golby-onboarding-highlights" aria-label="Tutorial highlights">
+                <li>See live alert volume and severity at a glance.</li>
+                <li>Use summaries, map, and forecast pages for quick context.</li>
+                <li>Keep your profile tuned so the app feels personal and calm.</li>
+            </ul>
+
+            <div class="golby-onboarding-actions">
+                <button type="button" class="button-secondary golby-onboarding-ghost" data-golby-onboarding-action="skip">
+                    Skip for now
+                </button>
+                <button type="button" class="button-primary golby-onboarding-primary" data-golby-onboarding-action="next">
+                    Next
+                </button>
+            </div>
+        </section>
+    </div>
+    <?php
+}
+
 function rr_render_layout_start(string $title, string $activePage): void
 {
     $GLOBALS['rr_layout_active_page'] = $activePage;
@@ -20,6 +150,8 @@ function rr_render_layout_start(string $title, string $activePage): void
     $accessContext = function_exists('rr_access_context') ? rr_access_context() : 'anonymous';
     $isAnonymous = $accessContext === 'anonymous';
     $isGuest = $accessContext === 'guest';
+    $golbyOnboardingState = rr_prepare_golby_onboarding_state($GLOBALS['config'] ?? [], $activePage);
+    $GLOBALS['rr_golby_onboarding_state'] = $golbyOnboardingState;
 
     $apiBase = 'http://127.0.0.1:8001';
     $apiPrefix = '/api/v1';
@@ -29,7 +161,7 @@ function rr_render_layout_start(string $title, string $activePage): void
         $apiPrefix = '/' . trim((string) ($globalConfig['api']['prefix'] ?? $apiPrefix), '/');
     }
 
-    $shouldRenderGolbyWidget = $activePage !== 'login' && $activePage !== 'register';
+    $shouldRenderGolbyWidget = rr_should_render_golby_widget($activePage);
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -39,12 +171,19 @@ function rr_render_layout_start(string $title, string $activePage): void
         <title><?php echo e($title); ?> | RiskRadar Web</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Atkinson+Hyperlegible+Next:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="assets/app.css">
         <script>
         window.__RISKRADAR_API_BASE__ = <?php echo json_encode($apiBase); ?>;
         window.__RISKRADAR_API_PREFIX__ = <?php echo json_encode($apiPrefix); ?>;
         </script>
+        <?php if (is_array($golbyOnboardingState)) : ?>
+        <link rel="stylesheet" href="assets/golby-onboarding.css">
+        <script>
+        window.__GOLBY_ONBOARDING__ = <?php echo json_encode($golbyOnboardingState, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?>;
+        </script>
+        <script src="assets/golby-onboarding.js" defer></script>
+        <?php endif; ?>
         <?php if ($shouldRenderGolbyWidget) : ?>
         <link rel="stylesheet" href="assets/golby-widget.css">
         <script type="module" src="assets/golby-widget.js" defer></script>
@@ -113,6 +252,9 @@ function rr_render_layout_start(string $title, string $activePage): void
                     <a href="logout.php">
                         <img src="assets/icons/profile.svg" alt="Logout Icon" class="nav-icon"> Logout
                     </a>
+                    <button class="topnav-help" onclick="(window.openGolbyOnboarding ? window.openGolbyOnboarding() : window.dispatchEvent(new Event('golby:show-onboarding')));" aria-label="Show tutorial"> 
+                        <img src="assets/icons/info.svg" alt="Help" class="nav-icon"> Help
+                    </button>
                     <?php endif; ?>
                 </nav>
                 <?php endif; ?>
@@ -124,10 +266,14 @@ function rr_render_layout_start(string $title, string $activePage): void
 function rr_render_layout_end(): void
 {
     $activePage = (string) ($GLOBALS['rr_layout_active_page'] ?? 'unknown');
-    $shouldRenderGolbyWidget = $activePage !== 'login' && $activePage !== 'register';
+    $shouldRenderGolbyWidget = rr_should_render_golby_widget($activePage);
+    $golbyOnboardingState = $GLOBALS['rr_golby_onboarding_state'] ?? null;
 
     ?>
             </main>
+            <?php if (is_array($golbyOnboardingState)) : ?>
+            <?php rr_render_golby_onboarding_markup($golbyOnboardingState); ?>
+            <?php endif; ?>
             <?php if ($shouldRenderGolbyWidget) : ?>
             <div id="riskradar-ai-assistant-widget"></div>
             <?php endif; ?>

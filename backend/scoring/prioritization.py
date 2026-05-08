@@ -23,10 +23,26 @@ Tie-breaking order (deterministic):
 The formula and factor breakdown are exposed for user transparency and explainability.
 """
 # ---------------------------------------------------------------------------
+# Imports
+# ---------------------------------------------------------------------------
+from typing import Any, Dict
+import json
+from datetime import datetime, timezone
+from sqlalchemy.orm import Session
+from db.models import Alert, User
+from schemas.alert import PrioritizedAlertListOut, PrioritizedAlertOut, PriorityFactors
+from . import (
+    MAX_RADIUS_KM,
+    haversine_km,
+    CONDITION_ALERT_MAP,
+    SEVERITY_SCORES,
+)
+
+# ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
 
-def explain_alert_risk_formula():
+def explain_alert_risk_formula() -> Dict[str, Any]:
     """
     Returns a human-readable explanation of the risk scoring formula and weights.
     """
@@ -54,7 +70,7 @@ def explain_alert_risk_formula():
         },
     }
 
-def compute_alert_risk_breakdown(alert: Alert, user: User, radius_km: float = MAX_RADIUS_KM) -> dict | None:
+def compute_alert_risk_breakdown(alert: Alert, user: User, radius_km: float = MAX_RADIUS_KM) -> Dict[str, Any] | None:
     """
     Compute a detailed risk score breakdown for a single alert and user.
     Returns a dict with each factor's score, the overall score, and level.
@@ -107,17 +123,6 @@ def compute_alert_risk_breakdown(alert: Alert, user: User, radius_km: float = MA
         "weights": explain_alert_risk_formula()["weights"],
     }
 
-
-import json
-from datetime import datetime, timezone
-from sqlalchemy.orm import Session
-from ..db.models import Alert, User
-from . import (
-    haversine_km,
-    CONDITION_ALERT_MAP,
-    MAX_RADIUS_KM,
-    SEVERITY_SCORES,
-)
 
 # ---------------------------------------------------------------------------
 # Weights
@@ -206,10 +211,10 @@ def prioritize_alerts(
     db: Session,
     radius_km: float = MAX_RADIUS_KM,
     limit: int = 50,
-) -> dict:
+) -> PrioritizedAlertListOut:
     """Return alerts ranked by personalized priority for the given user.
 
-    Returns a dict with prioritized alert list and metadata.
+    Returns a PrioritizedAlertListOut with prioritized alert list and metadata.
     """
     user_lat = user.latitude
     user_lon = user.longitude
@@ -292,12 +297,39 @@ def prioritize_alerts(
     # Apply limit
     scored = scored[:limit]
 
-    return {
-        "user_id": user.id,
-        "total_nearby": len(scored) if limit >= len(scored) else len(scored),
-        "alerts": scored,
-        "computed_at": datetime.now(timezone.utc).isoformat(),
-    }
+    # Convert scored dicts to PrioritizedAlertOut instances
+    alert_outs: list[PrioritizedAlertOut] = []
+    for item in scored:
+        priority_factors = PriorityFactors(**item["priority_factors"])
+        alert_out = PrioritizedAlertOut(
+            alert_id=item["alert_id"],
+            source=item["source"],
+            source_id=item["source_id"],
+            alert_type=item["alert_type"],
+            severity=item["severity"],
+            title=item["title"],
+            description=item["description"],
+            latitude=item["latitude"],
+            longitude=item["longitude"],
+            location_name=item["location_name"],
+            event_start=item["event_start"],
+            event_end=item["event_end"],
+            fetched_at=item["fetched_at"],
+            created_at=item["created_at"],
+            priority_score=item["priority_score"],
+            priority_level=item["priority_level"],
+            distance_km=item["distance_km"],
+            priority_factors=priority_factors,
+        )
+        alert_outs.append(alert_out)
+
+    result_model = PrioritizedAlertListOut(
+        user_id=user.id,
+        total_nearby=len(scored),
+        alerts=alert_outs,
+        computed_at=datetime.now(timezone.utc).isoformat(),
+    )
+    return result_model.model_dump()
 
 
 def compute_alert_priority(

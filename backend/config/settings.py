@@ -5,7 +5,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(extra="allow")
+    model_config = SettingsConfigDict(
+        extra="allow",
+        env_file=(str(BASE_DIR / ".env"), str(BASE_DIR.parent / ".env")),
+        env_file_encoding="utf-8",
+    )
 
     pythonpath: str = ""
     # Database
@@ -42,6 +46,7 @@ class Settings(BaseSettings):
     DEFAULT_ZIP_CODE: str = "90001"
     DEFAULT_LAT: float = 34.0522
     DEFAULT_LON: float = -118.2437
+    GUEST_DAILY_LIMIT: int = 10
     SCRAPE_INTERVAL_MINUTES: int = 30
     NWS_USER_AGENT: str = "RiskRadar/1.0 (school-project)"
     SOURCES_CONFIG_PATH: str = str(BASE_DIR / "config" / "sources.yaml")

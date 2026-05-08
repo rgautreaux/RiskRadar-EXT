@@ -95,6 +95,44 @@ function rr_safe_nullable_string(mixed $value): ?string
     return null;
 }
 
+function rr_safe_nullable_string_list(mixed $value): array
+{
+    if ($value === null || $value === '') {
+        return [];
+    }
+
+    if (is_string($value)) {
+        $decoded = json_decode($value, true);
+        if (is_array($decoded)) {
+            $value = $decoded;
+        } else {
+            $parts = preg_split('/[\r\n;]+/', $value) ?: [];
+            return array_values(array_filter(array_map(function ($item) {
+                return trim((string) $item);
+            }, $parts), function ($item) {
+                return $item !== '';
+            }));
+        }
+    }
+
+    if (!is_array($value)) {
+        return [];
+    }
+
+    $items = [];
+    foreach ($value as $item) {
+        $text = rr_safe_nullable_string($item);
+        if ($text !== null) {
+            $text = trim($text);
+            if ($text !== '') {
+                $items[] = $text;
+            }
+        }
+    }
+
+    return array_values(array_unique($items));
+}
+
 function rr_safe_nullable_float(mixed $value): ?float
 {
     if ($value === null || $value === '') {
@@ -188,7 +226,8 @@ function rr_http_request(array $config, string $method, string $path, array $que
     $bodyText = @file_get_contents($url, false, $context);
     $status = null;
 
-    if (!empty($http_response_header[0]) && preg_match('/\s(\d{3})\s/', $http_response_header[0], $matches)) {
+    $responseHeaders = http_get_last_response_headers() ?? [];
+    if (!empty($responseHeaders[0]) && preg_match('/\s(\d{3})\s/', $responseHeaders[0], $matches)) {
         $status = (int) $matches[1];
     }
 
@@ -283,6 +322,11 @@ function rr_normalize_summary(?array $summary): ?array
         'region' => rr_safe_nullable_string($summary['region'] ?? null),
         'generated_at' => rr_safe_string($summary['generated_at'] ?? null),
         'model_used' => rr_safe_nullable_string($summary['model_used'] ?? null),
+        'summary_insight' => rr_safe_nullable_string($summary['summary_insight'] ?? $summary['explanation'] ?? null),
+        'why_it_matters' => rr_safe_nullable_string($summary['why_it_matters'] ?? null),
+        'key_takeaways' => rr_safe_nullable_string_list($summary['key_takeaways'] ?? $summary['highlights'] ?? null),
+        'context_notes' => rr_safe_nullable_string($summary['context_notes'] ?? null),
+        'confidence' => rr_safe_nullable_float($summary['confidence'] ?? null),
     ];
 }
 
@@ -292,6 +336,18 @@ function rr_normalize_user(?array $user): ?array
         return null;
     }
 
+    // Parse assistant_style_profile from JSON if present
+    $assistantStyleProfile = null;
+    $profileJson = $user['assistant_style_profile'] ?? null;
+    if (is_string($profileJson) && $profileJson !== '') {
+        $decoded = json_decode($profileJson, true);
+        if (is_array($decoded)) {
+            $assistantStyleProfile = $decoded;
+        }
+    } elseif (is_array($profileJson)) {
+        $assistantStyleProfile = $profileJson;
+    }
+
     return [
         'id' => (int) ($user['id'] ?? 0),
         'display_name' => rr_safe_nullable_string($user['display_name'] ?? null),
@@ -299,7 +355,10 @@ function rr_normalize_user(?array $user): ?array
         'zip_code' => rr_safe_nullable_string($user['zip_code'] ?? null),
         'alert_types' => rr_safe_nullable_string($user['alert_types'] ?? null),
         'notify_severity' => rr_safe_nullable_string($user['notify_severity'] ?? null),
+        'health_conditions' => rr_safe_nullable_string($user['health_conditions'] ?? null),
         'created_at' => rr_safe_string($user['created_at'] ?? null),
+        'has_completed_onboarding' => (bool) ($user['has_completed_onboarding'] ?? false),
+        'assistant_style_profile' => $assistantStyleProfile,
     ];
 }
 

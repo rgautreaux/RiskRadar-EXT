@@ -2,7 +2,7 @@ import json
 import logging
 from collections import defaultdict
 from datetime import datetime, timezone
-from typing import Any, List, Dict
+from typing import Any, Dict, List, cast
 
 from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.orm import Session
@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from auth.security import decrypt_email, hash_email, normalize_email, password_hash, validate_password_strength
 from db.database import get_db
 from db.models import User, UserAlertPreference, UserHealthCondition
-from backend.schemas.user import UserCreate, UserPrefsUpdate, UserOut
+from schemas.user import UserCreate, UserPrefsUpdate, UserOut
 from services.assistant_personality import default_profile_json
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -78,8 +78,12 @@ def _parse_alert_types_json(raw_alert_types: str | None) -> List[str]:
     if not isinstance(parsed, list):
         return []
 
-    # type: ignore for mypy/pyright: item type is dynamic from JSON
-    return _normalize_alert_types([str(item) for item in parsed])  # type: ignore
+    parsed_items = cast(list[Any], parsed)
+    normalized_values: list[str] = []
+    for item in parsed_items:
+        normalized_values.append(str(item))
+
+    return _normalize_alert_types(normalized_values)
 
 
 def _parse_health_conditions_json(raw_health_conditions: str | None) -> List[str]:
@@ -94,8 +98,12 @@ def _parse_health_conditions_json(raw_health_conditions: str | None) -> List[str
     if not isinstance(parsed, list):
         return []
 
-    # type: ignore for mypy/pyright: item type is dynamic from JSON
-    return _normalize_health_conditions([str(item) for item in parsed])  # type: ignore
+    parsed_items = cast(list[Any], parsed)
+    normalized_values: list[str] = []
+    for item in parsed_items:
+        normalized_values.append(str(item))
+
+    return _normalize_health_conditions(normalized_values)
 
 
 def _sync_user_alert_preferences(db: Session, user: User, alert_types: list[str]):
@@ -126,7 +134,7 @@ def _sync_user_health_conditions(db: Session, user: User, condition_keys: list[s
 
 def _serialize_user(user: User, db: Session | None = None) -> UserOut:
     # Use .__dict__ to access actual values, not SQLAlchemy columns
-    user_data: Dict[str, Any] = user.__dict__
+    user_data: Dict[str, Any] = dict(user.__dict__)
     alert_types = _parse_alert_types_json(user_data.get('alert_types'))
     if db is not None and not alert_types:
         pref_rows = (
@@ -157,6 +165,7 @@ def _serialize_user(user: User, db: Session | None = None) -> UserOut:
     )
 
     created_at = user_data.get('created_at') or datetime.now(timezone.utc)
+    created_at_str = created_at.isoformat() if isinstance(created_at, datetime) else str(created_at)
     return UserOut(
         id=user_data['id'],
         display_name=user_data.get('display_name'),
@@ -169,7 +178,8 @@ def _serialize_user(user: User, db: Session | None = None) -> UserOut:
         notify_severity=user_data.get('notify_severity'),
         health_conditions=serialized_health_conditions,
         assistant_style_profile=user_data.get('assistant_style_profile'),
-        created_at=created_at,
+        created_at=created_at_str,
+        has_completed_onboarding=user_data.get('has_completed_onboarding', False),
     )
 
 
@@ -236,9 +246,8 @@ def update_preferences(user_id: int, body: UserPrefsUpdate, db: Session = Depend
         _sync_user_health_conditions(db, user, normalized_health_conditions)
         changed_fields.append('health_conditions')
     if body.assistant_style_profile is not None:
-        asp = body.assistant_style_profile  # type: ignore
-        # type: ignore for type checker on dynamic dict
-        logging.getLogger(__name__).info("User %s assistant_style_profile updated: %s", user.id, asp)  # type: ignore
+        asp = body.assistant_style_profile
+        logging.getLogger(__name__).info("User %s assistant_style_profile updated: %s", user.id, asp)
         setattr(user, 'assistant_style_profile', json.dumps(asp))
         changed_fields.append('assistant_style_profile')
 

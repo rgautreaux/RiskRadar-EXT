@@ -23,9 +23,6 @@ api_sources:
         starttime: "{today_minus_1}"
         endtime: "{today}"
         minmagnitude: 2.5
-        latitude: "{default_lat}"
-        longitude: "{default_lon}"
-        maxradiuskm: 500
       headers: {}
     auth:
       type: "none"

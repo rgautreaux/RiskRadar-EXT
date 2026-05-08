@@ -1,22 +1,452 @@
-# Stage 5: Session-Based UserID/Profile Flow Migration, UI/UX Verification, and Documentation Handoff to Max (2026-04-15)
-Summary:
-- Migrated the profile page and related flows to a secure, session-based UserID system, removing manual UserID entry from the frontend and enforcing session-derived user context throughout the stack.
-- Improved checkbox grid alignment and added device token help text for clarity and usability.
-- Updated backend and frontend logic to enforce session-based user context for all profile operations.
-- Due to login issues, assigned all further manual UI/UX verification and documentation updates to Max in the project documentation (README.md, USER_GUIDE.md).
-
-Why this was done:
-- To improve security and usability by eliminating manual UserID entry and enforcing session-based authentication throughout the profile flow.
-- To clarify device token usage and improve the visual alignment of the checkbox grid for better user experience.
-- To ensure that further manual verification and documentation updates are completed despite access issues for the previous implementer.
-
-How this improved the project:
-- Reduced risk of user error and security issues by making UserID session-based and read-only in the UI.
-- Improved clarity and usability of the profile page for all users.
-- Ensured that all necessary manual verification and documentation updates are clearly assigned and tracked, maintaining project momentum and documentation quality.
 # CMPS 357 Final Project Reflection
 
 ## Session Reflections
+
+# Stage 5: Scraper Fixes & .env Loading Session (2026-05-07)
+Summary:
+- Audited all five scraper implementations (`airnow_scraper.py`, `epa_scraper.py`, `firms_scraper.py`, `nws_scraper.py`, `web_scraper.py`), the scraper registry, and the alerts API to identify bugs preventing correct alert collection.
+- Identified a hardcoded Firecrawl API key (`fc-fa26117bfd0f47f184cbe7add944d79f`) in `backend/scrapers/web_scraper.py` that was committed to source control instead of being read from environment configuration.
+- Identified that `AirNowScraper` had `"requires_env": None` in `backend/scrapers/registry.py`, causing it to run on every scrape cycle without a key and log a scrape failure rather than gracefully skipping.
+- Identified fragile CSV parsing in `backend/scrapers/firms_scraper.py`: the manual `line.split(",")` approach failed silently on any quoted CSV field containing a comma (valid in the FIRMS VIIRS dataset).
+- Identified that `backend/scrapers/nws_scraper.py` handled only `Polygon` and `Point` GeoJSON geometry types, leaving `MultiPolygon` (used by NWS for multi-region alerts) with `lat=None, lon=None` and losing all location data for those alerts.
+- Identified that `backend/scrapers/epa_scraper.py` fetched only the first 100 TRI facilities nationwide (`rows/0:99`) out of thousands — missing 95%+ of the dataset.
+- Fixed the Firecrawl key exposure in `web_scraper.py`: replaced the hardcoded string with `settings.FIRECRAWL_API_KEY` and added a `RuntimeError` guard if the key is empty, mirroring the FIRMS scraper pattern.
+- Fixed the AirNow registry entry in `registry.py`: changed `"requires_env": None` to `"requires_env": "AIRNOW_API_KEY"` so AirNow is skipped cleanly when no key is configured.
+- Fixed FIRMS CSV parsing in `firms_scraper.py`: replaced `line.split(",")` with `csv.DictReader(io.StringIO(resp.text.strip()))`, which correctly handles quoted fields per the CSV spec.
+- Added `MultiPolygon` geometry handling in `nws_scraper.py`: flattens all rings from all polygons and computes a centroid, consistent with the existing `Polygon` centroid approach.
+- Fixed EPA pagination in `epa_scraper.py`: replaced the single `rows/0:99` request with a paginated loop fetching up to 3 batches of 1 000 rows each (capped at 3 000 total), stopping early when a batch returns fewer rows than requested.
+- Added `TestFIRMSCsvParsing` and `TestRegistryAirNowSkip` test classes to `backend/tests/test_scrapers.py`. All 36 tests pass.
+- Diagnosed that `DATABASE_URL` set in `.env` was not being loaded by the backend: `SettingsConfigDict` had no `env_file` declared, so pydantic-settings never read the `.env` file and fell back to shell environment variables only.
+- Fixed `.env` loading in `backend/config/settings.py`: added `env_file` (pointing at both `backend/.env` and the project-root `.env`) and `env_file_encoding="utf-8"` to `SettingsConfigDict`, enabling pydantic-settings to find and load the `.env` file regardless of which directory uvicorn is started from.
+
+Why this was done:
+- The hardcoded Firecrawl API key was a security vulnerability: the secret was committed to the repository and visible to anyone with access to the codebase, and could not be rotated without a code change.
+- Without `requires_env` set for AirNow, the scraper attempted to call the AirNow API on every 30-minute cycle with an empty key, producing a logged scrape failure that obscured real errors and wasted a schedule slot.
+- The FIRMS scraper's `line.split(",")` approach would produce a misaligned `dict` (wrong field assignments) or silently drop rows whenever NASA's VIIRS CSV output used quoting — a valid and documented CSV feature — causing wildfire alerts to be lost without any error.
+- NWS uses `MultiPolygon` geometry for alerts that span multiple non-contiguous regions (e.g., a winter storm covering several disjoint forecast zones). Without handling this type, all such alerts were stored with `latitude=None, longitude=None`, making them invisible to distance-based prioritization and map queries.
+- The 100-row EPA cap was a leftover default from initial development. With the TRI dataset containing thousands of facilities, the scraper was providing an arbitrarily small and geographically non-representative sample of pollution data.
+- `DATABASE_URL` in `.env` was never being read because pydantic-settings `SettingsConfigDict` defaults to reading only shell environment variables unless `env_file` is explicitly declared. This meant switching from SQLite to MariaDB required manually exporting the variable in every terminal session, which is not a workable workflow.
+
+How this improved the project:
+- The Firecrawl API key is no longer stored in source code. The `RuntimeError` guard gives a clear, immediate failure message at scraper startup if the key is absent, preventing silent no-ops.
+- AirNow is now skipped with a clean `INFO`-level log message when `AIRNOW_API_KEY` is unset, keeping the scrape log clean and making it easy to identify which scrapers are active vs. skipped due to missing credentials.
+- FIRMS wildfire data is now parsed correctly for all valid CSV output from the VIIRS endpoint, including any quoted fields. The new `TestFIRMSCsvParsing` tests confirm both the fix and the regression scenario.
+- NWS weather alerts covering multi-region `MultiPolygon` areas now have correct centroid coordinates, making them eligible for distance-based prioritization and visible on the map endpoint.
+- The EPA scraper now ingests up to 3 000 TRI facilities per run — a 30× increase — providing substantially better nationwide pollution coverage while the early-exit condition prevents over-fetching when the dataset is smaller than the cap.
+- `DATABASE_URL` (and all other `.env` variables) are now loaded automatically by pydantic-settings from either `backend/.env` or the project-root `.env`, whichever exists — no shell exports required. This makes switching between SQLite (development) and MariaDB (production) a single `.env` change.
+
+# Stage 5: Register Page Security Enhancements Session (2026-05-07)
+Summary:
+- Invoked `/impeccable craft For the signup page, I want to add two new security features: 1. Confirm password 2. Ensure that the user is not already registered in our database.` to extend the existing register page with two validation layers: a client-and-server-side confirm password check, and an inline email-already-registered error surfaced from the backend's 400 response.
+- Read `frontend/web/views/register.php` (the existing two-column register view using the `reg-` namespace, password show/hide toggle, 3-bar strength meter, four fields: display name, email, password, ZIP), `frontend/web/public/register.php` (the controller: CSRF check, calls `rr_validate_registration` then `rr_register_user`; displays `$registerResult['message']` as a general warning when the API fails), `frontend/web/services/validators.php` (`rr_validate_registration`: validates display name, email, password complexity, ZIP format), and `frontend/web/services/api_client.php` (`rr_register_user`: returns HTTP 400 with a message containing "already registered" when a duplicate email is detected by the backend).
+- Updated `rr_validate_registration` in `frontend/web/services/validators.php`: added `confirm_password` to `$data`; after the password block (guarded by `!isset($errors['password'])`), validates that `confirm_password` is non-empty and matches `password`, recording "Please confirm your password." or "Passwords do not match." in `$errors['confirm_password']`; calls `unset($data['confirm_password'])` before returning so the field is never forwarded to the backend API payload.
+- Updated `frontend/web/public/register.php`: after `rr_register_user` returns a non-ok 400 result whose message contains "already registered", injects the error into `$registerErrors['email']` as "An account with this email already exists. Try signing in instead." and sets `$registerResult = null` to suppress the duplicate general alert banner — the error now appears inline under the email field, directing the user precisely to the conflict.
+- Updated `frontend/web/views/register.php`: added `.reg-pw-match` CSS (opacity 0 by default, transitions to `oklch(0.40 0.12 148)` forest green on `data-state="match"` and `oklch(0.36 0.18 25)` red on `data-state="mismatch"` at 0.18s ease) and extended the `prefers-reduced-motion` block to include `.reg-pw-match`; inserted the confirm password field between the password and ZIP fields using the same `reg-pw-wrap` / `.reg-pw-toggle` pattern as the existing password field, with an `aria-live="polite"` `.reg-pw-match` live region and server-side `$registerErrors['confirm_password']` error rendering; updated the JS IIFE to add the confirm toggle (same `innerHTML` SVG swap + `aria-label` update), an `updateMatch()` function that sets `data-state` on the match indicator and `aria-invalid` on the confirm input based on a direct string comparison with the main password field, and event listeners on both password inputs so the match status updates in real time as either field changes.
+
+Why this was done:
+- The existing registration form had no confirm password field, meaning a typo in the password could permanently lock a user out of their account without any indication at registration time.
+- When a user attempted to register with an email address already in the database, the backend 400 response was displayed as a floating general-purpose warning banner with no visual connection to the email field — the user had to read the message, understand the implication, and locate the affected field manually.
+- PHP-only validation provides no real-time feedback; the confirm password check needed a client-side counterpart so users could see immediately whether their passwords match while still typing, without a round-trip to the server.
+
+How this improved the project:
+- Users now receive real-time match feedback on the confirm password field: green "Passwords match" text appears as soon as the two fields agree, and red "Passwords do not match" appears on any divergence — reducing submission attempts with mismatched passwords to near zero.
+- Server-side confirm password validation in `rr_validate_registration` ensures the constraint holds even when JavaScript is disabled or bypassed, and the `unset($data['confirm_password'])` call guarantees the field is never forwarded to the backend API.
+- The email-already-registered error is now surfaced inline under the email input with `aria-invalid="true"` and a `role="alert"` paragraph, matching the accessible error pattern used for all other field-level validation errors on the form — no new error display mechanism was introduced.
+- Setting `$registerResult = null` after injecting the inline email error eliminates the redundant floating warning banner, reducing visual noise and keeping the error message in one predictable location.
+- The confirm password toggle mirrors the main password toggle precisely (same SVG icons, same `aria-label` update, same transition behavior), maintaining a fully consistent interaction pattern across both password fields.
+- All changes are contained within the `reg-` namespace and the existing PHP validation / controller architecture — no new CSS classes, no new PHP functions, and no new JavaScript globals were introduced.
+
+# Stage 5: Profile Preferences Pre-population & Deprecation Fix Session (2026-05-07)
+Summary:
+- Read `frontend/web/public/profile.php`, `frontend/web/views/profile.php`, `frontend/web/services/api_client.php`, and `backend/schemas/user.py` to understand how saved preferences were fetched but never used to seed the form on GET requests.
+- Identified that `$preferencesForm` was always initialized with empty values (`zip_code: ''`, `alert_types: []`, `notify_severity: ''`, `health_conditions: []`, `device_token: ''`) and was only populated from `$_POST` data. The `$currentUser` object returned by `rr_fetch_current_user()` was available in the controller but never read for pre-population.
+- Identified that `rr_normalize_user()` in `frontend/web/services/api_client.php` did not include `health_conditions` in its return array, even though `UserOut` in `backend/schemas/user.py` exposes it as an optional JSON string field.
+- Identified a PHP deprecation warning in `api_client.php` at line 191: the implicit `$http_response_header` superglobal populated by `file_get_contents()` is deprecated in favor of the explicit `http_get_last_response_headers()` function.
+- Added `'health_conditions' => rr_safe_nullable_string($user['health_conditions'] ?? null)` to the return array of `rr_normalize_user()` in `frontend/web/services/api_client.php`.
+- Updated `frontend/web/public/profile.php`: initialized `$preferencesForm['health_conditions']` to `[]` in the base declaration; added a pre-population block guarded by `$_SERVER['REQUEST_METHOD'] !== 'POST' && $currentUser !== null` that seeds `zip_code` and `notify_severity` directly from `$currentUser`, and JSON-decodes `alert_types` and `health_conditions` from their stored JSON string form into PHP arrays for use by the tile checkbox `in_array` checks in the view.
+- Fixed the deprecation warning in `frontend/web/services/api_client.php` by replacing the reference to `$http_response_header[0]` with a call to `http_get_last_response_headers()`, storing the result in a local `$responseHeaders` variable with a `?? []` guard.
+
+Why this was done:
+- The profile page rendered a completely blank form on every page load regardless of what preferences the user had previously saved, requiring them to re-enter all values from memory each time they visited the page. This was a significant usability regression given that the backend (`GET /auth/me`) already returns all saved preference fields on every authenticated page load.
+- The `health_conditions` field was already part of the `UserOut` schema and was being returned by the API, but was silently dropped inside `rr_normalize_user()`, making it impossible for the controller to access it.
+- The `$http_response_header` deprecation produces a visible warning in the frontend output, degrading page quality and indicating the use of a PHP behavior that is scheduled for removal in a future version.
+- `device_token` is intentionally omitted from `UserOut` for security reasons and therefore correctly remains blank on page load — this is an accepted constraint.
+
+How this improved the project:
+- Authenticated users now see all their previously saved preferences (ZIP code, alert types, severity threshold, and health conditions) pre-filled and pre-checked when they open the profile page, eliminating the need to re-enter values they have already configured.
+- The pre-population only applies on GET requests; POST requests that fail validation continue to repopulate the form from the submitted values as before, preserving error recovery behavior.
+- `health_conditions` is now a first-class field in the normalized user object, making it accessible to any view or controller that calls `rr_fetch_current_user()`, not only to the profile form.
+- The `http_get_last_response_headers()` fix removes the deprecation warning from the frontend output and prepares the HTTP client layer for future PHP versions.
+
+# Stage 5: Local Digest Scope Selector Session (2026-05-02)
+Summary:
+- Invoked `/impeccable craft I want to add an option to create a local daily digest summary to the summary generation view.` to extend the existing `create_summary.php` generation page with a Nationwide / Local digest scope selector, using the established project design context from `.impeccable.md`.
+- Read the newly built `frontend/web/views/create_summary.php` and `frontend/web/public/create_summary.php`, and `frontend/web/services/api_client.php` (confirmed `rr_fetch_current_user($config)` returns a normalized user including `zip_code` via `rr_normalize_user()`). Ran `/shape` to structure the discovery interview. Key questions surfaced: what does "local" mean (zipcode radius), how does a guest provide location, and whether the zip should be pre-populated for authenticated users. Evaluated Option A (separate gate page before the generator) and Option B (inline zip input field revealed on the same page when Local is selected). User confirmed Option B.
+- Updated `frontend/web/public/create_summary.php` to fetch the authenticated user's ZIP: reads `rr_access_context()` and skips the API call for guests and anonymous users; for authenticated users calls `rr_fetch_current_user($config)` and extracts `zip_code` from the normalized user array; passes `$userZip` (empty string when unavailable) to the view.
+- Fully rewrote `frontend/web/views/create_summary.php` to add the scope selector inside `#csg-ready`: a `.csg-scope-selector` two-tab group (`role="group"`, `aria-label="Briefing scope"`) containing two `.csg-scope-opt` buttons with `aria-pressed`; a `.csg-zip-zone` div (default `grid-template-rows: 0fr`, transitioning to `1fr` on `.csg-zip-zone--open`) with `.csg-zip-inner` (`overflow: hidden; min-height: 0` — required for the grid-template-rows collapse) holding a labeled `#csg-zip-input` (Geist Mono, `inputmode="numeric"`, `pattern="[0-9]{5}"`, `autocomplete="postal-code"`) and a `#csg-zip-error` `role="alert"` paragraph. PHP safely injects the server-side zip via `var userZip = <?php echo json_encode($userZip ?? ''); ?>;`.
+- Implemented JS scope logic: `setScope(scope)` toggles `.csg-scope-opt--active` class and `aria-pressed` on both buttons, adds/removes `.csg-zip-zone--open`, pre-populates the zip input from `userZip` when switching to Local if the field is empty, calls `syncButton()`; `syncButton()` disables the generate button when Local + invalid zip and updates the label ("Generate local digest" vs "Generate briefing"); `isValidZip(val)` validates `/^\d{5}$/`; blur validation shows inline error for partially-entered invalid values; Enter key in the zip input triggers `generate()` when enabled.
+- Updated `generate()` to branch on `currentScope`: Local calls `POST apiBase + apiPrefix + '/summaries/generate/zipcode'` with `Content-Type: application/json` body `{ zip_code: zipInput.value.trim() }`; Nationwide calls `POST /summaries/generate` unchanged. 404 error is scope-aware: Local shows "No alerts found near that zip code. Try a different area or switch to Nationwide." with retry enabled; Nationwide 404 explains that generation requires fresh alert data with no retry.
+- Appended additional `csg-*` CSS to `frontend/web/public/assets/app.css`: `.csg-scope-selector` (`display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line)`), `.csg-scope-opt` (`border-bottom: 2px solid transparent; margin-bottom: -1px` — the active underline overlaps the container border creating a classic tab indicator without an extra element), `.csg-scope-opt--active` (border-bottom-color forest green `oklch(0.52 0.14 150)`), `.csg-zip-zone` (`display: grid; grid-template-rows: 0fr; transition 280ms cubic-bezier(0.16, 1, 0.3, 1)`), `.csg-zip-zone--open` (`grid-template-rows: 1fr`), `.csg-zip-inner` (`overflow: hidden`), `.csg-zip-input` (Geist Mono 1.1rem, green focus ring, amber `[aria-invalid="true"]` state), `.csg-generate-btn:disabled` (opacity 0.42, `cursor: not-allowed`, no hover transform/shadow), `prefers-reduced-motion` disabling the zip zone transition.
+- Conformed to all impeccable absolute bans: no border-left/right accent stripes (the active tab indicator uses border-bottom, which is explicitly not covered by the ban), no gradient text.
+
+Why this was done:
+- The initial generation page supported only a nationwide digest. The backend already had a `POST /api/v1/summaries/generate/zipcode` endpoint capable of producing a location-scoped briefing, but no frontend path existed to reach it.
+- RiskRadar's core audience — travelers, truckers, and logistics professionals — has an immediate need for location-specific risk information. A briefing scoped to their ZIP code is more actionable than a nationwide overview when assessing a specific route stop or destination.
+- Authenticated users already provide a ZIP code at registration; surfacing it as a pre-populated default removes all friction for the most common case. The inline approach (Option B) keeps the scope choice and zip entry on a single page with no additional navigation step.
+- The `grid-template-rows: 0fr → 1fr` animation technique was chosen to avoid animating `height` directly (which triggers layout recalculation) while producing a natural slide-in reveal — consistent with the same technique used in the map page's personalized config reveal and aligned with the motion-design reference file guidance.
+
+How this improved the project:
+- Users and guests can now generate AI briefings scoped to a specific ZIP code area directly from the generation page, completing the frontend integration with the zipcode summary backend endpoint.
+- Authenticated users with a stored ZIP see it pre-populated immediately on selecting Local digest — zero additional input required for the most common case.
+- Users without a stored ZIP (including guests) receive a clear, accessible zip input field with inline validation, a `role="alert"` error message for screen reader announcements, and automatic focus when the field opens.
+- The generate button is disabled until a valid 5-digit zip is entered in Local mode, preventing wasted API calls with invalid input and communicating the requirement through button state rather than a blocking modal or alert.
+- Scope-aware 404 handling lets the Local path offer a meaningful retry ("Try a different area or switch to Nationwide") while the Nationwide 404 correctly communicates that the issue is not user-correctable — matching the error message to the actual situation.
+- All scope logic, zip validation, and API routing are encapsulated within the same vanilla JS IIFE as the existing state machine, requiring no new dependencies and adding no global variables.
+- The `csg-*` CSS namespace extension is fully additive — no existing styles were modified, no new namespaces introduced, and no regression risk to any other page or component.
+
+# Stage 5: Summary Generation View Session (2026-05-02)
+Summary:
+- Invoked `/impeccable craft For RiskRadarWeb, I want to add a new view that will allow users to create a new AI generated summary.` to add a dedicated page for triggering AI-generated briefings, using the established project design context from `.impeccable.md`.
+- Read `frontend/web/views/summaries.php` (the existing list view: `.page-heading` + `.summ-list` with `.summ-entry` articles, no generate trigger), `backend/api/summaries.py` (confirmed `POST /api/v1/summaries/generate` returns a `SummaryOut` with `id` field used for redirect to `summary_detail.php?id=`), `frontend/web/components/layout.php` (layout shell, confirmed global `window.__RISKRADAR_API_BASE__` and `window.__RISKRADAR_API_PREFIX__` injection), and `frontend/web/public/assets/app.css` (full design token set). Ran `/shape` to conduct a structured discovery interview; user confirmed Option B (dedicated full page), generate trigger on `summaries.php`, guests allowed, and a visible loading animation.
+- Designed a CSS state machine approach: a `data-csg-state="ready|loading|error"` attribute on a container div with CSS attribute selectors controlling which of three `.csg-state` child divs is visible. All states live in the DOM simultaneously; only the active one is shown. This eliminates JS show/hide complexity and makes state transitions a single `setAttribute` call.
+- Created `frontend/web/public/create_summary.php` — the page controller: calls `rr_require_feature_access()` (allows guests, blocks anonymous) and requires the view.
+- Created `frontend/web/views/create_summary.php` — the full page template. Structure: `.csg-wrapper` (max-width 720px, entrance animation) containing an `sd-back` link, a `.csg-header` eyebrow/title/description block, and a `.csg-action-zone` div with `data-csg-state="ready"`. Three child `.csg-state` divs: `#csg-ready` (rate-note paragraph + `.csg-generate-btn` button with a sparkle SVG icon and label "Generate briefing"), `#csg-loading` (`role="status"` + `aria-label`, `.csg-pulse` radar animation — three `.csg-pulse-ring` divs expanding from `scale(0.18)` to `scale(1)`, staggered at 0s / 0.52s / 1.04s, plus a `.csg-pulse-core` solid center dot), `#csg-error` (error-icon SVG, `#csg-error-title`, `#csg-error-body`, ghost retry button hidden by default, back-to-summaries link).
+- Implemented a vanilla JS controller: `setState(state)` sets `data-csg-state`; `showError(title, body, canRetry)` populates and shows the error state; `generate()` calls `POST apiBase + apiPrefix + '/summaries/generate'`, redirects to `summary_detail.php?id=` on success, shows tailored messages for 429 (rate limit), 404 (no alerts), and network errors; the ghost retry button resets state to `'ready'`.
+- Modified `frontend/web/views/summaries.php`: wrapped page-heading contents in a `.summ-heading-row` flex row and added a `.csg-trigger-link` anchor with an inline sparkle SVG icon pointing to `create_summary.php`.
+- Appended a `/* Create Summary Generation */` section to `frontend/web/public/assets/app.css`: `@keyframes csg-page-in` entrance animation, `.csg-title` at Bricolage Grotesque 2.8rem, CSS state machine (`[data-csg-state="X"] #csg-X { display: block; animation: csg-state-in }`), `.csg-generate-btn` (forest green `oklch(0.52 0.14 150)`, 15px 28px padding, 18px border-radius, hover lift), `.csg-generate-btn--ghost`, `@keyframes csg-ring-pulse` and `csg-core-blink` for the radar animation (three rings expanding from center, staggered), error state layout, `.csg-trigger-link` / `.summ-heading-row` for the summaries heading button, `prefers-reduced-motion` overrides, and a 640px responsive breakpoint.
+- Conformed to all impeccable absolute bans: no border-left/right accent stripes, no gradient text.
+
+Why this was done:
+- The summaries list (`summaries.php`) was a read-only archive page with no way to trigger a new briefing. The `POST /api/v1/summaries/generate` backend endpoint existed and worked but had no corresponding frontend entry point.
+- A modal was ruled out (impeccable guidelines designate modals as a last resort) and a gate page before the action would have added an unnecessary navigation step. A dedicated full page matched the weight of the action — generating a briefing is a meaningful, rate-limited operation that warrants focused UI.
+- The loading state required visual feedback proportional to the wait time. A standard spinner felt mismatched for a platform centered on environmental awareness; a radar pulse motif — concentric rings radiating outward from a center point — directly references the platform's risk-monitoring identity.
+- The CSS state machine pattern (attribute selector + three always-present child divs) was chosen over JS show/hide because it requires no DOM manipulation for transitions, keeps all state logic in one `setState()` call, and remains trivially inspectable via browser DevTools.
+
+How this improved the project:
+- Users and guests can now initiate an AI-generated safety briefing directly from the UI for the first time, closing the gap between the completed backend capability and an accessible frontend entry point.
+- The "Generate new briefing" link in the `summaries.php` heading gives the generate action prominent placement within the existing summary archive flow, discoverable without requiring navigation to a separate section.
+- The three-state page (ready / loading / error) provides meaningful feedback at every stage: users know when a request is in flight (radar pulse), why it failed (rate limit vs no alerts vs network), and whether they can retry.
+- Rate-limit (429) and no-alerts (404) error states have distinct messages so users understand the system's behavior and know whether waiting or checking back later is the right next step.
+- The `rr_require_feature_access()` gate allows guests to use the feature while blocking unauthenticated anonymous requests, consistent with the access-control approach used across all other gated pages.
+- All `csg-*` CSS is scoped to the new class namespace, introducing zero collision risk with shared `app.css` classes or any other view. The `.summ-heading-row` and `.csg-trigger-link` additions to `summaries.php` are fully additive with no change to existing markup or styles.
+
+# Stage 5: AI Zipcode Summary Endpoint Session (2026-05-02)
+Summary:
+- Read `backend/api/summaries.py`, `backend/llm/summarizer.py`, `backend/llm/prompts.py`, `backend/db/models.py`, `backend/schemas/summary.py`, `backend/api/packing.py`, and `backend/api/forecast.py` to understand the existing summary, alert-query, and LLM-call patterns before writing any new code.
+- Added two new prompt constants — `ZIPCODE_SUMMARY_SYSTEM` and `ZIPCODE_SUMMARY_USER` — to `backend/llm/prompts.py`. The system prompt instructs the LLM to produce a local safety briefing with a location-specific header, an active alerts section (omitted when empty), and a safety recommendations section. The user prompt passes date, ZIP code, region label, alert count, and an alerts JSON block.
+- Added a `_parse_datetime` helper method to the `Summarizer` class in `backend/llm/summarizer.py` to normalize ISO 8601 datetime strings (including `Z`-suffix and naive variants) into timezone-aware `datetime` objects, following the same logic used by `packing.py` and `forecast.py`.
+- Added `generate_zipcode_summary(db, zip_code, lat, lon, location)` to `Summarizer`. The method queries `Alert` rows using a lat/lon bounding box when coordinates are provided, falls back to an `ilike` match on `location_name` when only a `location` string is given, and falls back to matching the ZIP code string itself when neither is supplied. It filters the candidates to active alerts within a 72-hour window, caps results at 50, builds an `alerts_data` list, calls `_call_llm` with the new prompts (falling back to `_build_fallback_summary` on LLM errors), and persists a `Summary` row (`summary_type="zipcode"`, `region=zip_code`) with linked `SummaryAlertLink` rows before returning the committed object.
+- Added a `ZipcodeSummaryRequest` Pydantic model (`zip_code: str`, optional `lat`, `lon`, `location`) to `backend/api/summaries.py`.
+- Added `POST /api/v1/summaries/generate/zipcode` endpoint in `backend/api/summaries.py` that accepts a `ZipcodeSummaryRequest` body, delegates to `Summarizer.generate_zipcode_summary`, and returns a `SummaryOut`.
+- Added an optional `zip_code` query parameter to the existing `GET /api/v1/summaries` endpoint; when provided, the query is filtered by `Summary.region == zip_code`, enabling retrieval of all locally stored summaries for a specific ZIP code.
+
+Why this was done:
+- The platform had no way for a user to request an AI-generated safety briefing scoped to their specific ZIP code — the only generation endpoint was the nationwide daily digest.
+- The existing `GET /api/v1/summaries` endpoint had no location filter, so there was no way to retrieve previously generated ZIP-level summaries from the database without fetching all summaries and filtering client-side.
+- ZIP code is already the primary location identifier used throughout the user profile (`users.zip_code`) and the trip packing guide, making it the natural input for a locally scoped summary request.
+- The alert query strategy mirrors the pattern already established in `forecast.py` (`_query_alerts`) and `packing.py` (`_query_location_alerts`), using lat/lon bounding boxes when available and falling back to `ilike` location-name matching — so the new method is consistent with existing data-access patterns rather than introducing a new approach.
+
+How this improved the project:
+- Users and frontend views can now request a personalized, LLM-generated safety briefing for any ZIP code via a single `POST` call, with the result automatically persisted to the database for later retrieval.
+- The `GET /api/v1/summaries?zip_code=<zip>` filter enables the frontend to load previously cached summaries for a ZIP code without a new LLM call, reducing latency and API cost for repeat queries.
+- ZIP code summaries are saved with `summary_type="zipcode"` and `region=<zip_code>`, making them trivially distinguishable from daily and breaking summaries in the database and filterable via the existing `summary_type` query parameter.
+- The fallback path (`_build_fallback_summary` + `model="fallback"`) ensures the endpoint always returns a usable response even when the LLM provider is unavailable, consistent with the resilience pattern already used in `generate_trip_packing_guide`.
+- All existing summary endpoints, database models, and LLM infrastructure are unchanged — the feature is a pure additive extension with no impact on the daily digest, breaking summary, or trip packing guide flows.
+
+# Stage 5: Risk Score Page Redesign Session (2026-05-02)
+Summary:
+- Invoked `/impeccable craft Redesign the risk.php view.` to perform a full visual redesign of the personal risk score page using the established project design context from `.impeccable.md`.
+- Read `.impeccable.md` (design context: Clean · Confident · Civilian-friendly brand; Cream + Forest Green palette; Bricolage Grotesque headings, Atkinson Hyperlegible Next body; Geist Mono for data labels; WCAG AAA baseline), `frontend/web/views/risk.php` (the existing view: a page-heading section, a `.filter-grid` five-column form, a three-card `.stats-grid` with `.accent-coral`/`.accent-amber`/`.accent-teal` tiles, a `.factor-grid` of `repeat(auto-fill, minmax(200px, 1fr))` identical factor cards, and a compact `.alert-row` list where `.prioritized-card` used `border-left: 4px solid var(--accent-coral)`), `frontend/web/public/assets/app.css` (the full token and component system), `frontend/web/components/layout.php` (global shell confirming font stack), `frontend/web/services/presentation.php` (helper functions), and `frontend/web/views/dashboard.php` (reference implementation for the `.dash-*` log-list pattern).
+- Replaced the three identical `.stat-card` tiles (coral, amber, teal accents) with a single full-width `.risk-verdict` panel whose background tint, border color, and level-label text color are semantically keyed to the computed risk level: forest green tint for low (`oklch(0.95 0.05 148 / 0.84)`), amber tint for medium (`oklch(0.95 0.05 75 / 0.84)`), and muted red tint for high (`oklch(0.95 0.05 25 / 0.84)`). The risk level label ("High Risk") renders at 3rem Bricolage Grotesque 800 weight so the verdict is legible in under a second without any scanning.
+- Added two `.risk-verdict-cell` data tiles (Score / Nearby Alerts) inside the verdict panel in Bricolage Grotesque 2rem tabular-nums to preserve all three key data points while establishing a clear hierarchy: the level label dominates, the cells support.
+- Implemented an animated horizontal score gauge (`.risk-gauge-track` / `.risk-gauge-fill`) that fills to `var(--score-pct)` via a `scaleX` transform animation (`0.9s cubic-bezier(0.16, 1, 0.3, 1)`, 0.3s delay) with fill color keyed to the risk level class; a Geist Mono legend row labels the 0 / 40 / 70 / 100 thresholds; reduced-motion users receive a static bar via `@media (prefers-reduced-motion: reduce)`.
+- Replaced the `repeat(auto-fill, minmax(200px, 1fr))` identical factor card grid (banned identical-card-grid anti-pattern) with `.risk-factor-list` — a stacked ledger where each `.risk-factor-row` shows: a Geist Mono uppercase factor name and weight label in a `.risk-factor-top` flex row; a `.risk-factor-bar-wrap` with an animated horizontal bar (`.risk-factor-bar::after` using `--factor-pct`, forest green `oklch(0.52 0.14 148)` fill, 0.7s entrance at 0.5s delay) and a Bricolage Grotesque 1.5rem tabular-nums value; and an optional Atkinson Hyperlegible description at 72ch. Rows are separated by `1px solid var(--line)` hairlines — no side-stripe borders.
+- Replaced the `.alert-row` layout (which used `border-left: 4px solid var(--accent-coral)` on `.prioritized-card` — an impeccable absolute ban) with `.risk-alert-log` — each `.risk-alert-entry` uses a three-column grid leading with a large muted rank number (`.risk-alert-rank` in Bricolage Grotesque 1.5rem, `oklch(0.72 0.04 148)`) instead of a priority stripe; severity and priority pills remain as secondary chips; a `.risk-alert-meta` column holds Geist Mono score and type labels.
+- Replaced the generic `<p class="empty-state">` with a `.risk-empty-state` block — an inline SVG info-circle icon, a Bricolage Grotesque headline, and Atkinson Hyperlegible instructional body copy linking to the Profile page, teaching the interface to users who don't yet have a user ID.
+- Replaced the `.filter-grid` five-column layout with a `.risk-form` three-column grid (`1fr 1fr auto`), sized for the two inputs and one button this form actually contains, collapsing to a single column at 640px.
+- Added all page-specific styles as a `/* Risk Score Page */` section at the end of `app.css` using the `risk-` namespace, consistent with the `dash-`, `fc-`, `ad-`, `pf-`, and `map-controls-*` scoping patterns across all other redesigned pages; included responsive breakpoints at 960px and 640px and `@media (prefers-reduced-motion: reduce)` disabling all `@keyframes`.
+- Conformed to all impeccable absolute bans: no `border-left`/`border-right` accent stripes, no gradient text, no glassmorphism.
+
+Why this was done:
+- The existing risk view presented score, risk level, and alert count as three identical `.stat-card` tiles with equal visual weight — making it impossible to identify the verdict at a glance and violating the "scannable in under 10 seconds" principle defined in `.impeccable.md`.
+- The `.accent-coral`, `.accent-amber`, and `.accent-teal` tile backgrounds were chosen by position rather than by semantic meaning, so the colors conveyed no information about the actual risk outcome — a user with a "High Risk" score saw a coral tile beside an amber tile beside a teal tile with no visual connection between color and severity.
+- The factor breakdown used a `repeat(auto-fill, minmax(200px, 1fr))` identical card grid — the anti-pattern explicitly banned in the impeccable guidelines as one of the most recognizable AI design tells.
+- The `.filter-grid` class was designed for five filter inputs (as used on the alerts and smart alerts pages); applying it to a two-input form left three empty grid columns, creating a visually unbalanced layout.
+- `.prioritized-card` used `border-left: 4px solid var(--accent-coral)` — the impeccable absolute ban explicitly names this exact pattern as forbidden regardless of color or variable name.
+- The generic empty state provided no instruction — a user who lands on the page without a user ID would see only a muted paragraph with no path forward.
+
+How this improved the project:
+- The verdict panel gives users an immediate, unambiguous answer to "what is my risk level?" in a single glance: the colored panel background, large level label, and filled gauge communicate the result before any number is read.
+- The semantic color system (green / amber / red keyed to the actual risk level) makes the visual language meaningful — every tint, text color, and gauge fill on the page tells the same story, reinforcing rather than contradicting the risk verdict.
+- The animated gauge makes the score feel like a live instrument reading, consistent with the platform's "Environmental grounding" design principle from `.impeccable.md`.
+- The factor ledger replaces identical cards with a scannable format — Geist Mono uppercase factor names read as labels, Bricolage Grotesque values read as data, and weight labels answer the follow-up question ("which factor matters most?") without a tooltip or extra click.
+- Leading alert entries with large rank numbers communicates priority order immediately and removes the border-left stripe, making the triage order legible to screen readers and keyboard users as well as visual users.
+- The structured empty state teaches the interface — a user who arrives without a user ID now has a clear next step (Profile page link) and understands what the page is for before entering any data.
+- All `risk-` CSS is scoped to the new class namespace, introducing zero collision risk with shared `app.css` classes or any other view.
+- All PHP template logic, `rr_fetch_risk_score`, `rr_fetch_prioritized_alerts`, `rr_severity_class`, `rr_priority_class`, `rr_render_message`, and `e()` encoding are preserved — the redesign is a pure presentation-layer change with no behavioral risk.
+
+# Stage 5: Register Page Redesign Session (2026-05-01)
+Summary:
+- Invoked `/impeccable craft Redesign register.php view in the frontend.` to perform a full visual redesign of the new-user registration page using the established project design context from `.impeccable.md`.
+- Read `.impeccable.md` (design context: Clean · Confident · Civilian-friendly brand; Cream + Forest Green palette; Bricolage Grotesque headings, Atkinson Hyperlegible Next body; WCAG AAA baseline), the existing `register.php` view (single-column `.auth-wrap > .auth-panel panel` layout with a basic `.form-stack` form, no scoped CSS, no explicit label/input ID associations, no accessibility attributes), and `login.php` (reference implementation: two-column `.auth-split` grid, scoped `<style>` block with OKLCH-based CSS classes, full accessibility via `aria-describedby`/`aria-invalid`, password field, guest mode) to establish the design language.
+- Adopted the two-column `42fr / 58fr` split grid from `login.php` for visual consistency, with the same dark forest-green page background (`oklch(0.26 0.045 148)`), frosted-glass topbar (`oklch(0.32 0.06 148 / 0.6)` with `backdrop-filter: blur(12px)`), and warm cream form panel (`oklch(0.97 0.009 100)`).
+- Differentiated the brand panel from login's "Know before you go." messaging with a register-specific headline ("Your safety profile starts here.") and three numbered feature callouts (01 — Personalized to your area, 02 — 5+ live data sources, 03 — Risk in under 10 seconds) separated by `1px` horizontal rules in `oklch(0.46 0.09 148 / 0.5)`, replacing login's single "Live data" footer card.
+- Implemented a password show/hide toggle: a `<button type="button">` (`.reg-pw-toggle`) positioned absolutely inside `.reg-pw-wrap` with an SVG eye icon that swaps between open (`<path>` + `<circle>`) and closed (crossed-out path + `<line>`) on click via `innerHTML` replacement, updating `aria-label` from "Show password" to "Hide password" in sync.
+- Added a 3-bar password strength meter (`.reg-pw-strength`) below the password field — three `flex: 1` bars initialized to `oklch(0.88 0.010 148)`; a `getStrength()` function scores length ≥8 (+1), length ≥12 (+1), and mixed uppercase + symbols (+1); `data-strength` attribute drives `:nth-child` selectors coloring bar fills with red (`oklch(0.56 0.17 25)`) at score 1, amber (`oklch(0.60 0.14 65)`) at score 2, and forest green (`oklch(0.52 0.12 148)`) at score 3.
+- Upgraded all form fields from implicit `<label>` wrappers to explicit `<label for="id">` / `<input id="id">` associations; added `aria-describedby` pointing to hint paragraphs on clean fields and error paragraphs on invalid fields; applied `aria-invalid="true"` and `role="alert"` on server-side validation errors; scoped all classes under the `reg-` namespace to prevent any collision with shared `app.css` classes.
+- Added contextual ZIP field hint ("Tailors your dashboard to local hazards. You can change this later.") connected via `aria-describedby="reg-zip-hint"`, making the field's purpose explicit without requiring the user to guess why it is asked.
+- Added all interactive states for every control: `:hover` (border lightens to `oklch(0.60 0.05 148)`), `:focus` (border darkens, `box-shadow: 0 0 0 3px oklch(0.38 0.115 148 / 0.18)`), `:focus-visible` (explicit `outline: 2.5px solid` with `outline-offset`), and `:active` on the submit button (`transform: translateY(1px)`).
+- Added responsive breakpoints: 860px (split collapses to single column, feature callouts wrap into a horizontal flex row with `flex: 1 1 180px` per item); 480px (tighter shell padding, feature callouts restack vertically, form padding reduces to 36px/24px).
+- Added `@media (prefers-reduced-motion: reduce)` disabling all transitions on the button, inputs, strength bars, and password toggle.
+- Conformed to all impeccable absolute bans: no `border-left` or `border-right` accent stripes, no gradient text, no glassmorphism.
+
+Why this was done:
+- The existing register view used the basic `.auth-wrap > .auth-panel panel` layout with no page-specific visual identity, while the login page had received a full two-column split redesign — creating a jarring visual discontinuity between the two most-trafficked pages for unauthenticated users.
+- Form fields used implicit `<label>` wrappers with no `for`/`id` linking, no `aria-describedby` on hints or errors, and no `aria-invalid` on server-side validation failures — falling short of the WCAG AAA accessibility baseline established in `.impeccable.md`.
+- The password field had no show/hide toggle and no strength feedback, increasing friction for new users setting a password and providing no guidance about whether their chosen password is sufficiently strong.
+- The ZIP code field appeared with only an "(optional)" label in a `<small>` tag but no explanation of why the platform asks for it, potentially causing hesitation or omission from users who don't understand its purpose.
+- Register is the first interaction new users have with the platform — the brand panel's "Know before you go." login messaging was not appropriate for the registration context, which needs to motivate sign-up rather than reinforce a returning user's intent.
+- All button and interactive element styling relied on the shared `.button-primary` class from `app.css`, which uses the retiring coral gradient instead of the forest green accent established as the brand direction in `.impeccable.md`.
+
+How this improved the project:
+- The register and login pages now share a cohesive two-column split design language — same background, same topbar treatment, same typography pairing, same form field styling — while each panel carries distinct messaging appropriate to its context (value-proposition callouts for register, data-source credibility for login).
+- Three numbered feature callouts (01/02/03) on the brand panel give a new user a clear, scannable answer to "why should I sign up?" before they fill in a single field — directly supporting the "confidence through clarity" design principle from `.impeccable.md`.
+- The password show/hide toggle and 3-bar strength meter reduce form anxiety: users can verify what they typed and receive real-time feedback without any server round-trip, lowering the likelihood of failed submissions.
+- Explicit label/input associations, `aria-describedby` connections, `aria-invalid` on error states, and `role="alert"` on error paragraphs bring the register page to full keyboard and screen reader accessibility, consistent with the WCAG AAA commitment defined in `.impeccable.md`.
+- The ZIP field hint copy makes the field's purpose concrete ("Tailors your dashboard to local hazards") and removes the friction of a data-entry request without a stated reason, likely improving completion of the optional field.
+- The `reg-` CSS namespace and scoped custom properties contain all register-specific styles within the view file, introducing zero collision risk with `app.css` shared classes or any other view.
+- All form behavior, PHP template logic, CSRF protection, value repopulation, and validation error rendering are preserved — the redesign is a pure presentation-layer change with no behavioral risk.
+
+# Stage 5: Profile Page Redesign Session (2026-05-01)
+Summary:
+- Invoked `/impeccable craft Redesign profile.php view in frontend.` to perform a full visual redesign of the user preferences/profile page using the established project design context from `.impeccable.md`.
+- Read `.impeccable.md`, the existing `profile.php` view, `theme_tokens.css`, `theme.css`, `app.css`, `register.php`, `dashboard.php`, and `alert_detail.php` (the most recently redesigned view, used as the primary design language reference for scoped CSS, OKLCH token conventions, and the `<details>`/`<summary>` collapsible pattern).
+- Replaced the single monolithic `.panel` form-stack with four numbered semantic sections (`01 — Identity`, `02 — Alert types`, `03 — Severity`, `04 — Health profile`) plus a collapsible `<details>` element for the technical device token field — matching the collapsible metadata pattern from `alert_detail.php`.
+- Implemented a CSS-only tile checkbox pattern for both the alert types and health conditions groups: visually hidden inputs using `clip-path: inset(50%)`, styled `.pf-tile-body` with checked-state color fill (forest green light background, green border, green-dark text), a 16×16px `.pf-tile-check` box with a checkmark SVG that transitions `opacity: 0 → 1` on check, and a `input:focus-visible + .pf-tile-body` focus ring for keyboard accessibility.
+- Replaced the plain `<select>` dropdown with a custom-styled `pf-select` using an SVG chevron background image in brand green and `appearance: none`, maintaining full browser and screen reader accessibility.
+- Applied forest green (`oklch(0.52 0.15 148)`) as the interactive accent throughout — tile checked states, input focus rings, select chevron, save button fill, section eyebrow labels, and back navigation link — consistent with the brand direction applied across all other redesigned pages.
+- Established all OKLCH color tokens under `--pf-*` custom properties on the `.pf` root class, following the scoped namespace pattern of `ad-*` (alert detail), `fc-*` (forecast), and `dash-*` (dashboard).
+- Added a back-to-dashboard navigation link with an animated left-arrow SVG, matching the `ad-back` pattern from `alert_detail.php`.
+- Preserved all PHP form structure: `name` attributes, `rr_csrf_token()`, hidden `action="preferences"` input, `rr_allowed_alert_types()`, `rr_allowed_severities()`, `rr_parse_alert_types()`, `$preferencesErrors` inline field error rendering, `rr_render_message()` flash message calls, and `$preferencesResult` result panel.
+- Added responsive breakpoints: 640px (section padding reduces, tile grids collapse to 2 columns, action button stacks full-width); 380px (tile grids collapse to 1 column).
+- Conformed to all impeccable absolute bans: no border-left accent stripes, no gradient text, no glassmorphism.
+
+Why this was done:
+- The existing profile view was a flat single-panel form with no visual hierarchy — all fields from User ID through health conditions were presented at equal weight and importance, giving users no sense of grouping, purpose, or logical progression.
+- Both checkbox groups (alert types and health conditions) used the generic `.checkbox-grid` layout with default browser checkbox styling — visually inconsistent with the polished tile and chip patterns used across all other redesigned pages.
+- The device token field — a technical value most users should never need to set manually — was surfaced at the same visual level as ZIP code and alert types, adding unnecessary complexity and potential confusion for non-technical users.
+- The plain `<select>` for minimum severity used the browser's native dropdown appearance, visually inconsistent with the custom-styled inputs established across the rest of the redesigned app.
+- The page used the generic `.page-heading` and `.panel` shared classes with no page-specific design identity, making it indistinguishable in style from a generic admin utility page rather than a personal safety configuration experience.
+- Labels used administrative language ("Write path", "User preferences") rather than user-centric language aligned with the "clean, confident, civilian-friendly" brand voice defined in `.impeccable.md`.
+
+How this improved the project:
+- Four numbered sections give the form a clear information architecture — users can immediately see the logical structure (identity → what to monitor → how sensitive → health context) rather than a homogeneous list of inputs.
+- The tile checkbox pattern transforms both checkbox groups from generic browser form controls into visually distinct selection interfaces: users can assess at a glance which alert types and health conditions are active, and the checked-state green fill provides an immediate, unambiguous confirmation of selection.
+- The collapsible `<details>` element for the device token removes it from the primary visual flow without eliminating the functionality — advanced users can still access it, while the majority of users see a cleaner form.
+- The custom `<select>` with an SVG chevron is consistent with the custom input styling used across the redesigned app, removing the visual inconsistency of the native OS dropdown in an otherwise designed interface.
+- The `pf-` CSS namespace and scoped custom properties on the `.pf` root class introduce zero collision risk with existing shared classes, consistent with the namespace isolation pattern used across all other redesigned pages.
+- User-centric language ("Your account", "Alert profile", "What you want to know about", "Sensitivities & conditions") replaces administrative framing, aligning the page with the "trusted ranger" voice established in `.impeccable.md`.
+- All form behavior, PHP template logic, CSRF protection, validation error rendering, and result display are preserved — the redesign is a pure presentation-layer change with no behavioral risk.
+
+# Stage 5: Map Page Redesign Session (2026-04-30)
+Summary:
+- Invoked `/impeccable craft Redesign the map.php view.` to perform a full visual redesign of the Interactive Risk Map page using the established project design context from `.impeccable.md`.
+- Ran `/shape` to produce a confirmed design brief before writing any code, establishing: region pills replacing the `<select>` dropdown, layer toggle chips replacing bare checkboxes, personalized mode config as an inline reveal triggered by the Personalized chip, map container height raised from 480px to 600px, legend moved from a disconnected section below the map to an absolute overlay at bottom-left inside the canvas, forest green accent replacing coral throughout all controls, and the per-page dark mode toggle removed (global concern only).
+- Loaded `spatial-design.md`, `interaction-design.md`, and `motion-design.md` reference files to inform the control bar rhythm, toggle chip interaction states, and accordion-style reveal transitions.
+- Rewrote `frontend/web/views/map.php` as a clean, layout-correct view: moved `rr_render_layout_start` to the first line of the file (eliminating the orphaned `</section>` tag, the premature `<style>` block, and the toast/script fragments that previously appeared before the layout shell was opened); added a scoped `<style>` block with fourteen new CSS component namespaces (`map-controls-panel`, `region-pill`, `layer-chip`, `layer-chip-personalized`, `personalized-config`, `map-legend`, `legend-header-btn`, `legend-body`, `legend-item`, etc.); rewrote the page heading, controls panel, map container, legend overlay, help modal, and toast as clean semantic HTML.
+- Applied forest green (`oklch(0.55 0.145 150)`) as the interactive accent throughout — active region pill fill, active layer chip fill, loading spinner border, focus rings on all controls, and the Help button hover state — consistent with the brand direction applied across all other redesigned pages.
+- Implemented layer toggle chips using CSS `:has(input:checked)` — a hidden `<input type="checkbox">` inside each `<label>` handles state; no JS needed for the visual active state. Personalized chip uses purple (`oklch(0.42 0.12 285)`) to visually distinguish it as a mode toggle rather than a data layer.
+- Implemented two `grid-template-rows: 0fr → 1fr` reveal transitions with `cubic-bezier(0.16, 1, 0.3, 1)` easing (300ms for the personalized config section, 280ms for the legend collapse) — animating `grid-template-rows` rather than `height` per motion-design guidance, using the inner wrapper `min-height: 0` pattern to allow zero-height collapse.
+- Replaced region `<select>` with button pills using `aria-pressed` and `role="group"` — click sets `currentRegion` state and re-renders the map with no additional UI step needed.
+- Updated all JS event listeners: `#region-filter` select listener replaced with `.region-pill` click delegation; personalized toggle now also calls `classList.toggle('is-open', personalizedMode)` on `#personalized-config`; legend toggle uses `classList.toggle('is-collapsed', expanded)` on `#legend-body` instead of inline `maxHeight` manipulation; toast is now only called on errors, not on every layer toggle change.
+- Removed the per-page dark mode toggle button entirely; theme is now a global layout-level concern.
+- Moved legend from a sticky `position: sticky; top: 0` section below the map to `position: absolute; bottom: 20px; left: 16px` inside `#risk-map-container`, using `!important` to override any residual `app.css` sticky positioning. Legend header uses uppercase Atkinson Hyperlegible label with a rotating chevron SVG.
+- Added `prefers-reduced-motion` media query disabling all transitions and animations on the new components; updated focus rings to use `var(--map-green)` via `:focus-visible` consistently across all interactive elements.
+- Added responsive breakpoints: 960px (600px → 480px map height), 768px (controls header stacks vertically), 640px (chip and pill font/padding reduce, layer divider hides, 380px map height), 480px (260px map height, personalized config body stacks vertically, popup card anchors to bottom-left on small screens).
+
+Why this was done:
+- The existing map view had a structural defect: a `</section>` close tag, `<style>` block, and `<script>` block all appeared before `rr_render_layout_start` was called, placing presentation markup outside the layout shell.
+- The region filter was a plain `<select>` dropdown — visually inconsistent with the pill/chip patterns used elsewhere in the redesigned app, and slower to interact with than single-click pills.
+- Layer toggles were bare `<input type="checkbox">` elements inside plain `<label>` wrappers with no styled affordance — they didn't communicate their on/off state clearly at a glance and had no visual connection to the forest green brand accent.
+- The personalized user ID input was always visible, adding visual complexity even for the majority of users who do not use personalized mode.
+- The map container was 480px tall — small relative to its importance as the primary content surface, and using a neutral border that didn't visually connect it to the forest green brand palette.
+- The legend sat below the map in a separate scroll area, disconnecting it from the data it annotated and forcing users to scroll between the map and its key.
+- The dark mode toggle was per-page with emoji labels, inconsistent with a global theme-level concern and out of step with every other redesigned page.
+- All interactive elements (buttons, primary actions) used the coral accent (`--accent-coral`, `#ef6f51`) which `.impeccable.md` explicitly designates as retired in favor of forest green.
+- Toast feedback was fired on every layer toggle, producing noisy notifications that the brief confirmed should be reserved for errors only.
+
+How this improved the project:
+- The view file now has the correct PHP layout structure — `rr_render_layout_start` is the first thing called, all HTML content is inside the layout shell, and there are no orphaned tags or misplaced style/script blocks.
+- Region pills provide single-click filtering with an immediately visible active state (forest green fill), eliminating the open-and-select interaction overhead of a dropdown and matching the interaction pattern of other pill-style selectors in the redesigned app.
+- Layer chips communicate their state visually through color fill rather than a checkbox tick — users can assess at a glance which layers are active without reading individual checkbox states. The `:has()` CSS-only approach means the visual state is always in sync with the underlying checkbox value with no JS required.
+- The personalized config section is hidden by default and revealed only when the Personalized chip is activated, reducing visual complexity for the majority of users. The `grid-template-rows` animation makes the reveal feel purposeful rather than abrupt.
+- The map container is taller (600px on desktop) and has a forest green accent border (`oklch(0.55 0.145 150 / 0.32)`), giving it more visual prominence as the primary content surface and visually connecting it to the brand palette.
+- The legend is now inside the map frame — users can read the legend while looking at the map without any scroll, and the backdrop-blur treatment (`blur(10px)`) gives it visual separation from the map content without blocking it.
+- All coral accent references are eliminated from the map page; forest green is now consistent with every other redesigned view.
+- Toast notifications fire only on errors, eliminating noise from routine layer toggling and reserving the toast as a meaningful signal that something went wrong.
+- The scoped CSS custom properties (`--map-green`, `--map-purple`, `--ease-out-expo`) and component namespaces (`map-controls-panel`, `layer-chip`, `map-legend`, etc.) introduce zero collision risk with existing shared classes and no regression exposure for any other page or view.
+
+# Stage 5: Forecast Page Redesign Session (2026-04-30)
+Summary:
+- Invoked `/impeccable craft Redesign the forecast.php view.` to perform a full visual redesign of the forecast page using the established project design context from `.impeccable.md`.
+- Spawned an Explore agent to map the full design system — read `layout.php`, `app.css`, `theme_tokens.css`, `forecast-location.js`, and reference views — extracting all CSS custom properties, font loading patterns, component classes, and responsive breakpoints.
+- Rewrote `frontend/web/views/forecast.php` with a scoped `fc-` CSS namespace: a `.fc-hero` section (Geist Mono eyebrow "24–48 Hour Outlook" in forest green, Bricolage Grotesque 2.2rem headline at −0.025em tracking, Atkinson Hyperlegible sub-copy at 54ch), a `.fc-search-wrap` section (inset-icon search input with a forest green focus ring, a solid "Get Forecast" button, and a ghost GPS location button with an SVG icon and a `.fc-btn-text` span that hides on mobile), and a `#forecast-results` div seeded with a cloud-icon `.fc-empty-state` initial state.
+- Applied forest green (`oklch(0.52 0.14 150)`) throughout — focus rings, eyebrow text, primary button, status badge pill, SVG chart line, and area fill — consistent with the brand direction applied to all other redesigned pages.
+- Rewrote render functions in `frontend/web/public/assets/forecast-location.js` (all fetch/API/geolocation logic, URL construction, race-condition guard, and `escapeHtml` are unchanged): `renderForecast` populates `#forecast-location-status` with a `.fc-status-badge` Geist Mono pill + bold location + summary excerpt + muted timestamp, then injects a `.fc-stat-strip` (four cells: Confidence, Trend, Window, Baseline) with Bricolage Grotesque 1.7rem tabular-nums values and Geist Mono labels; `renderTimeline` produces an SVG with dashed grid lines at 25/50/75 (opacity 0.13), a `#3d7a52` polygon area fill (opacity 0.1), a `#3d7a52` polyline risk line (stroke-width 2.5, round caps/joins), and risk-colored dot markers (`#c23b2a` high / `#b07300` moderate / `#3d7a52` low) with cream stroke; `renderZoneFallback` outputs a `.fc-zone-section` with risk-count pills; `renderPointList` outputs a `.fc-points-section` with a 4-column grid per hourly point (hour label, type, score/100, risk badge); `renderNoDataState` outputs a matching empty state.
+- Added entrance animation `fc-rise` (opacity 0→1, translateY 6px→0, 0.26s ease-out) with staggered delays on the stat strip, chart section, and point list; `prefers-reduced-motion` disables all animations and transitions.
+- Added a 640px responsive breakpoint: stat strip collapses to 2×2, GPS button text label hides (icon remains), point score column hides.
+- Conformed to all impeccable absolute bans: no border-left accent stripes (stat strip dividers are 1px structural hairlines only), no gradient text, no glassmorphism.
+
+Why this was done:
+- The existing forecast view used inline styles with `var(--primary)` blue tokens and a Space Grotesk font reference — both misaligned with the forest green brand accent and the Bricolage Grotesque / Atkinson Hyperlegible / Geist Mono type system established across all other redesigned pages.
+- The two-panel layout (an inline-styled search form plus a separate static SVG preview with hardcoded "Confidence: 85%" and fictional timeline labels) had no visual hierarchy connecting them to each other or to the rest of the app, and the static chart was potentially misleading — it appeared to show real data.
+- The JS-rendered results used `var(--primary)`, `var(--chart-1)`, and `var(--muted-foreground)` tokens from the old pre-redesign palette, making dynamic forecast results visually inconsistent with every other redesigned page.
+- The forecast page is where users arrive with the highest information need — "what is the risk at my destination over the next 48 hours?" — yet it was the only primary content page that had not received a design pass aligned with the project's core principle of "scannable in under 10 seconds."
+
+How this improved the project:
+- The redesigned forecast page now has a clear visual identity consistent with the rest of the app: forest green accent, Bricolage Grotesque large values, Geist Mono labels, and Atkinson Hyperlegible body copy — the same system applied to the dashboard, alert detail, assistant, and error pages.
+- The stat strip delivers the four most decision-relevant forecast metrics (confidence, trend, window, baseline risk) at a glance as the first piece of dynamic content, before the chart or hourly list, matching the user's priority hierarchy.
+- The SVG timeline chart is now meaningfully data-driven in visual terms: risk-colored dots allow users to see severity distribution across the 48-hour window without reading text, and dashed grid lines at 25/50/75 provide a reference scale without visual noise.
+- The initial empty state (cloud icon, "Locating your forecast" title, instructional body) gives users a purposeful holding state rather than a blank panel, and transitions naturally to the loaded forecast when geolocation resolves or a location is submitted.
+- The `fc-` CSS namespace and the self-contained `<style>` block in the view introduce zero collision risk with existing shared classes and no regression exposure for any other page or view.
+- The JS render functions remain API-compatible with the existing backend — function signatures, URL construction, geolocation handling, and race-condition guard are all untouched — so the redesign is a pure presentation-layer change with no behavioral risk.
+
+# Stage 5: Error Page Redesign Session (2026-04-30)
+Summary:
+- Invoked `/impeccable craft Redesign the error.php view.` to perform a full visual redesign of the error page using the established project design context from `.impeccable.md`.
+- Spawned an Explore agent to map the full design system — read `layout.php`, `app.css`, `theme_tokens.css`, and three existing views — extracting CSS custom properties, font loading patterns, component classes, button styles, and responsive breakpoints.
+- Rewrote `frontend/web/views/error.php` with a scoped `<style>` block: a centered `.error-scene` panel with a radial OKLCH forest-green glow in the background, a 136×136px SVG topographic contour rings motif (five concentric circles at stepped opacity, three filled center halos, and a 2.8px center dot), a Geist Mono uppercase "REQUEST STATUS" badge pill with `role="status"`, a Bricolage Grotesque fluid headline (`clamp(1.8rem, 5vw, 2.45rem)`), Atkinson Hyperlegible body text at 42ch max-width, and a forest-green return button with a left-facing chevron SVG icon.
+- Applied forest green (`oklch(0.54 0.15 148)`) throughout the badge, rings, and button — no coral accent — advancing the brand direction established in `.impeccable.md`.
+- Used OKLCH for all color values: background glow (`oklch(0.54 0.15 148 / 0.06)`), badge background (`oklch(0.93 0.035 148)`), badge border (`oklch(0.80 0.075 148)`), badge text (`oklch(0.41 0.14 148)`), button background, and button shadow glow.
+- Added two `prefers-reduced-motion`-gated animations: a 0.55s content entrance fade-and-rise (`cubic-bezier(0.33, 1, 0.68, 1)`) and a 2.8s infinite center-dot pulse (scale + opacity) using `transform-box: fill-box` and `transform-origin: center` for correct SVG element scaling. Added a 480px mobile breakpoint reducing panel padding and SVG dimensions.
+- Conformed to all impeccable absolute bans: no border-left accent stripes, no gradient text, no glassmorphism, no hero-metric layout template.
+
+Why this was done:
+- The existing error page was a minimal four-line view with no visual design beyond the global panel class — indistinguishable from a partially-rendered page and offering users no meaningful context about what went wrong or where to go next.
+- An error page on a safety-critical platform, where users may be mid-route or under time pressure, carries the same brand obligation as every other page: communicate calmly, clearly, and with confidence — not with a blank panel and a single sentence.
+- The coral accent used in the existing `.button-primary` class is designated as retired in `.impeccable.md`; the error page needed a new button style using the forest green accent, making it a natural place to advance that brand direction without touching shared classes.
+- The existing view's `.eyebrow` and `.button-primary` classes both rely on the coral/amber palette, creating an inconsistency with the evolving brand that the redesign resolves cleanly through a scoped style block.
+
+How this improved the project:
+- The redesigned error page now has a clear visual identity consistent with the rest of the app: the topographic rings motif connects it to the platform's environmental data narrative, and the forest green palette is immediately recognizable as belonging to RiskRadar rather than a generic server error page.
+- The calm, non-alarmist visual language (no red, no warning triangles, concentric rings rather than error icons) aligns with the brand principle of maintaining confidence even in error states — users see a well-designed, intentional screen rather than a system failure.
+- The scoped `.error-*` / `.topo-*` CSS namespace introduces zero collision risk with existing shared classes and no regression exposure for other views.
+- The `role="status"` on the badge and the `:focus-visible` ring on the return button bring the error page into compliance with the project's WCAG AAA accessibility baseline.
+- Both animations respect `prefers-reduced-motion` and use only `opacity` and `transform` (no layout-property animation), keeping the motion purposeful and performant.
+- PHP data is rendered via `e()` throughout, preserving the XSS-safe output encoding pattern established across all other views.
+
+# Stage 5: Dashboard Redesign Session (2026-04-21)
+Summary:
+- Invoked `/impeccable craft Redesign the dashboard.php view for the frontend while preserving key functionality.` to perform a full visual redesign of the main dashboard using the established project design context from `.impeccable.md`.
+- Ran `/shape` to produce a confirmed design brief before any code was written, establishing: a Status Declaration hero with a dynamic plain-language headline, a horizontal stat strip replacing the three-card grid, a 3:2 column content layout, clickable alert rows, a tooltip on "Loaded Alerts", teaching empty states, and forest green action links.
+- Rewrote `frontend/web/views/dashboard.php`: replaced the static h1 with a PHP conditional headline ("X alerts active" / "1 alert active" / "You're clear"); replaced `.stat-card` boxes with a single `.dash-stat-strip` panel (three cells divided by `::before` hairline rules, not boxed cards); replaced `.alert-row` `<article>` elements with `<a class="dash-alert-entry">` links routing to `alert_detail.php?id=`; removed the `.panel-feature` distinction — both content panels are now plain `.panel`; added a CSS tooltip on "Loaded Alerts" with `aria-describedby` and `role="tooltip"`; replaced generic empty states with teaching copy; replaced `.content-action` links with `.dash-action` forest green arrows.
+- Appended a `/* Dashboard — Status Declaration Redesign */` section to `frontend/web/public/assets/app.css` with all `dash-*` classes: hero layout with OKLCH green-tinted background, Bricolage Grotesque stat headline at 2.5rem, green-tinted stat boxes, CSS tooltip with keyboard accessibility, stat strip with `overflow: hidden` and separator rules, alert log with hover-underline interaction on titles (no layout-property animation), summary briefing-note layout with Geist Mono meta line. Applied `font-variant-numeric: tabular-nums` to all numeric stat values.
+- Scoped `.page-dashboard .content-grid` to a 3:2 column ratio giving the alerts panel more visual weight than the summary panel.
+- Scoped `.page-dashboard .topnav a.is-active` to forest green (`oklch(0.49 0.14 150)` gradient) replacing the global coral/amber active pill — first page in the app to use the retired green brand accent in navigation.
+- Added responsive breakpoints: hero collapses to single-column at 960px, stat strip goes 2-column with third cell spanning full width, content-grid stacks; at 640px all multi-column layouts go single-column with border-top separators replacing vertical `::before` rules.
+
+Why this was done:
+- The previous dashboard used a static heading ("Desktop-first environmental awareness.") that conveyed no situational information — users still had to read and count the stats below to understand the current risk picture, violating the project's core principle of "scannable in under 10 seconds."
+- The three `.stat-card` boxes with coral/amber/teal gradients were a textbook hero-metric layout template (big number + gradient accent + supporting text per card) — one of the explicit anti-patterns in the impeccable guidelines — and used the coral brand accent that the design context established as retired.
+- Alert rows in the original dashboard were `<article>` elements with no link, making them dead-end previews despite an alert detail page existing at `alert_detail.php?id=`.
+- "Loaded Alerts" displayed a bare integer with no explanation, which was confusing to non-technical users who couldn't distinguish it from the Total Alerts count.
+- The `.panel-feature` class on the summary panel created a visual distinction between the two content panels with no meaningful purpose, adding inconsistency without added clarity.
+- The generic empty states ("No alerts are available from the backend right now.") told users the system had a problem rather than teaching them about normal state behavior.
+
+How this improved the project:
+- The dynamic headline ("12 alerts active" / "You're clear") delivers the primary user job-to-be-done — current risk status — as the first piece of information users read, without requiring any scrolling or counting.
+- The stat strip reads as a cohesive supporting brief rather than three competing metric cards, keeping visual weight subordinate to the headline and content panels.
+- Alert rows are now full anchor elements linking to individual alert detail pages, closing the previously broken navigation path between the dashboard preview and the full alert record.
+- The tooltip on "Loaded Alerts" clarifies the distinction between total backend count and the request-limited fetch count without cluttering the label for users who already understand the difference. It is keyboard accessible via `tabindex="0"` and uses `aria-describedby` for screen readers.
+- Scoping the green active nav pill to `.page-dashboard` advances the forest green brand direction without touching the nav styles on other pages, making the dashboard the first page where the retired coral accent is fully replaced.
+- All new styles use the `dash-*` prefix — zero collision risk with existing shared classes, and no regression exposure for other views.
+- OKLCH is used throughout for all new color values (green tints, tooltip backgrounds, action link colors, nav active state), consistent with the color reference's guidance on perceptually uniform palettes.
+
+# Stage 5: ChatInterface TypeScript Error Fix Session (2026-04-21)
+Summary:
+- Removed a redundant `&& category !== 'playful'` condition from `formatResponseForStyle` in `frontend/web/components/golby/ChatInterface.tsx` line 356. After the early return on line 341 (`if (style === 'balanced' || category === 'playful')`), TypeScript narrows `category` to `Exclude<ResponseCategory, 'playful'>`, making the condition always `true` — a TypeScript unnecessary-condition error.
+- Removed the unused `React` default import from line 1 of `ChatInterface.tsx`, resolving a TS6133 hint. The file uses only named hooks (`useState`, `useRef`, `useEffect`) from `'react'` and does not require the `React` namespace under the modern JSX transform.
+
+Why this was done:
+- TypeScript's control flow analysis correctly identified `category !== 'playful'` as redundant after the prior early return, producing a compiler error that blocked clean compilation.
+- The `React` default import was declared but never read under the modern JSX transform, producing a TS6133 unused-variable hint surfaced by the IDE diagnostic hook after the first edit.
+
+How this improved the project:
+- Both diagnostics in `ChatInterface.tsx` are now resolved, giving the file a clean TypeScript compilation state with no errors or hints.
+- Removing the redundant condition simplifies the `formatResponseForStyle` guard and makes the control flow easier to read — the `if (text.length < 160)` branch now clearly applies only to the remaining `'detailed'` style case without a spurious second condition.
+- Dropping the unused `React` import aligns with the project's modern JSX transform setup and removes a stale import that could mislead future readers.
+
+# Stage 5: Golby Assistant Page Redesign Session (2026-04-21)
+Summary:
+- Invoked `/impeccable craft Redesign the 'assistant.php' view located in /frontend/web/views. Keep all current functionality.` to perform a full visual redesign of the Golby assistant page using the established project design context from `.impeccable.md`.
+- Added an OKLCH brand token system to `frontend/web/src/golby-widget.css` (fourteen CSS custom properties covering accent, background, surface, text, and border values, all tinted to hue 148 — forest green) and added all component CSS classes replacing the blue/teal Tailwind class strings throughout the Golby component tree.
+- Rewrote `frontend/web/components/golby/PageWelcome.tsx` with an editorial two-column grid layout: left column has a small-caps badge, a Bricolage Grotesque headline ("Ask Golby anything about your route."), Atkinson Hyperlegible sub-copy, three plain-prose capability bullets with OKLCH forest green dot pseudo-elements, and a solid "Start a conversation →" CTA; right column has the Golby waving SVG inside a warm cream circle. All animations use `useReducedMotion()` and exponential easing; no emoji, no teal speech bubble, no "Hi I'm Golby!" centered intro.
+- Simplified `frontend/web/components/golby/PageChat.tsx`: removed the outer duplicate "Chat with Golby" header (which shadowed `ChatInterface`'s own header containing the same title, back button, and admin panel), replaced the slate/teal gradient background with the `.golby-page-chat` cream class, and introduced a `fullPage` prop passed to `ChatInterface`.
+- Updated `frontend/web/components/golby/ChatInterface.tsx`: added `fullPage?: boolean` prop (defaults `false` for backward compatibility with the floating widget); when `true`, removes the `max-h-[600px]` constraint and fills viewport height instead; replaced all blue gradient/gray class strings in the JSX with brand CSS classes — forest green header, warm cream message area, brand-styled suggestion pills, rectangular input, forest green send button; back/close button shows `←` in full-page mode and `×` in widget mode with correct `aria-label` in both cases. All logic untouched: feedback, adaptive response profile, admin diagnostics panel, analytics table, guardrails, session management.
+- Updated `frontend/web/components/golby/ChatBubble.tsx`: replaced `bg-gradient-to-br from-blue-500 to-blue-600` with `.golby-bubble-golby` (white surface, subtle border, dark text) and `.golby-bubble-user` (forest green background, inverse text).
+- Updated `frontend/web/components/golby/TypingIndicator.tsx`: replaced blue gradient container with `.golby-typing-indicator` (white surface, subtle border matching Golby bubbles) and white dots with `.golby-typing-dot` (forest green, opacity-animated).
+- Updated the noscript fallback in `frontend/web/views/assistant.php` to use brand-toned inline styles and plain language.
+- Ran `npm run build:web` — clean build, 2143 modules transformed, no warnings or errors.
+
+Why this was done:
+- The existing assistant page used a teal and blue palette throughout (`from-teal-500 to-teal-600`, `from-blue-600 to-blue-700`, `bg-gradient-to-br from-blue-500 to-blue-600`) — entirely misaligned with the forest green brand accent established in `.impeccable.md` and applied to every other page in the app.
+- The `PageWelcome` layout (centered emoji speech-bubble, "Hi I'm Golby!" large heading, emoji tip cards, rounded "Get Started ✨" button) is a textbook instance of the generic AI chatbot intro pattern — identical to hundreds of AI products and directly at odds with the project's "Clean · Confident · Civilian-friendly" brand personality and the impeccable absolute bans on decorative elements and gradient-heavy UI.
+- `PageChat` was rendering its own "Chat with Golby" heading and back button, while `ChatInterface` rendered the same heading again immediately below — users saw two stacked "Chat with Golby" titles on the assistant page, a clear layout bug.
+- The `max-h-[600px]` constraint on `ChatInterface` is appropriate for the floating widget (which is compact by design) but made no sense on the full-page assistant route, cutting off the chat area far below the available viewport height.
+- The blue-gradient `ChatBubble` for Golby's messages and the blue-gradient `TypingIndicator` were inconsistent with the brand palette on every other page.
+
+How this improved the project:
+- The welcome screen now has a clear point of view: editorial, left-aligned, no gimmicks. It communicates what Golby does ("ask anything about your route") and why it matters (live RiskRadar data, confidence in decisions) in the same calm authoritative tone as the rest of the app.
+- The two-column layout with Golby in a cream circle on the right gives the character a deliberate visual home without centering or dominating the screen — consistent with the "embedded intelligence, never takes over" design principle in `.impeccable.md`.
+- The chat interface now fills the full viewport on the assistant page, giving users the space a full-page chat warrants, while the floating widget retains its compact 600px cap unchanged (backward compatible via `fullPage` defaulting to `false`).
+- Removing the duplicate header from `PageChat` eliminates a real visual bug and simplifies the component hierarchy — `ChatInterface` is now the single source of truth for the chat header, both in the full-page view and the widget.
+- All six brand CSS classes in the redesign (`golby-bubble-golby`, `golby-bubble-user`, `golby-chat-header`, `golby-messages-area`, `golby-typing-indicator`, `golby-typing-dot`) are scoped to the `.golby-*` namespace, so the redesign introduces no regression risk to any other page or component.
+- The OKLCH token system (`--golby-accent`, `--golby-bg`, `--golby-text`, etc.) gives the Golby component tree a coherent, maintainable color API aligned with the same perceptual color model used in the rest of the app's design system.
+
+# Stage 5: Alert Detail Page Redesign Session (2026-04-16)
+Summary:
+- Invoked `/impeccable craft redesign alert_detail.php view` to perform a full redesign of the alert detail view using the established project design context from `.impeccable.md`.
+- Updated `frontend/web/components/layout.php` to replace the Google Fonts import — removed Space Grotesk and IBM Plex Mono (both on the impeccable reflex-rejection list) and added Bricolage Grotesque, Atkinson Hyperlegible Next, and Geist Mono, applying the font pair specified in the project design context project-wide.
+- Updated `frontend/web/public/assets/app.css` to set the body font-family to Atkinson Hyperlegible Next and replaced all four IBM Plex Mono references with Geist Mono.
+- Rewrote `frontend/web/views/alert_detail.php` with a scoped `.ad-*` CSS system implementing a triage-ordered layout: animated forest green back-navigation link; two-column header (Bricolage Grotesque title + severity block with OKLCH semantic color tokens for high/medium/low); three-column quick-facts strip (Location, Event window, Source) with Geist Mono labels; Atkinson Hyperlegible description body at 70ch max-width; collapsible `<details>/<summary>` technical metadata grid with tabular-nums Geist Mono values.
+- Applied OKLCH color tokens throughout (`oklch(0.52 0.15 148)` forest green accent, OKLCH-based red/amber/green severity tokens) with no border-left accent stripes, no gradient text, and no glassmorphism, conforming to all impeccable absolute bans.
+- Added responsive breakpoints at 700px (stacked header, inline severity pill, single-column facts strip) and 420px (single-column metadata grid).
+- Added a PHP `match` expression to map raw severity strings (including `critical`, `extreme`, `moderate`) to the three severity CSS variant classes.
+
+Why this was done:
+- The existing alert detail view was a generic flat panel with a small severity pill and a uniform metadata grid — it gave users no visual hierarchy and required reading every field to find critical decision-relevant information, violating the project's core principle of "scannable in under 10 seconds."
+- Space Grotesk and IBM Plex Mono, the fonts previously loaded by the global layout shell, are both on the impeccable reflex-rejection list and are high-frequency defaults in AI-generated UIs; Bricolage Grotesque and Atkinson Hyperlegible Next are the fonts explicitly specified in `.impeccable.md` for this project and had never been applied to the global shell.
+- The previous color scheme retained the coral/amber palette that the design context established in the Login Page Redesign session specifically retired in favor of forest green as the brand accent.
+
+How this improved the project:
+- The redesigned alert detail page now leads with the most critical decision-relevant information — severity (large, color-coded), location, and event window — before presenting supporting details, matching the users' stated job-to-be-done of assessing risk in under 10 seconds.
+- Updating the global font stack in `layout.php` and `app.css` applies the correct project fonts consistently across all pages, not just the alert detail view, closing the gap between the design context and the live interface.
+- The scoped `.ad-*` CSS system avoids modifying any shared component classes, so the redesign is fully isolated and introduces no regression risk for other views.
+- The collapsible technical metadata section gives power users access to audit-relevant IDs and timestamps without forcing that information into the primary visual hierarchy for all users.
+- The severity block uses semantically meaningful OKLCH colors (red/amber/green) that are universally understood, calm in tone at lower saturations, and meet WCAG contrast requirements against their respective background tints.
+
+# Stage 5: Login Page Redesign Session (2026-04-15)
+Summary:
+- Ran `/impeccable teach` to establish a project-wide design context: gathered brand personality (Clean · Confident · Civilian-friendly), emotional goal (prepared and informed), palette direction (Cream + Forest Green light mode, retiring coral as brand accent), font pair (Bricolage Grotesque headings + Atkinson Hyperlegible body), accessibility target (WCAG AAA), and Golby positioning (embedded helper). Wrote the synthesized context to `.impeccable.md` at the project root.
+- Replaced `frontend/web/views/login.php`'s centered card layout with an asymmetric two-column split: a 42% deep forest green brand panel (`oklch(0.38 0.115 148)`) carrying the headline "Know before you go.", environmental body copy, and a live data footer; a 58% warm cream form panel (`oklch(0.97 0.009 100)`) with left-aligned form fields, a primary sign-in button, and a ghost guest-access button separated by a visual divider.
+- Applied OKLCH color values throughout for perceptually uniform contrast ratios targeting WCAG AAA (7:1 for body text).
+- Added `aria-describedby` and `aria-invalid="true"` to error-state inputs, `role="alert"` to flash and error messages, and `:focus-visible` rings on all interactive elements.
+- Added a `prefers-reduced-motion` media query disabling transitions for users who have opted out of animation.
+- Added responsive breakpoints: single-column stacked layout at ≤820px (tablet), reduced padding and font sizes at ≤480px (mobile).
+- Loaded Bricolage Grotesque and Atkinson Hyperlegible Next via Google Fonts `@import` in a scoped `<style>` block within the view, leaving the global layout font stack unchanged.
+
+Why this was done:
+- The previous login form was a generic centered card with no brand identity, indistinguishable from a default web form and giving users no context about what they were signing into or why it mattered.
+- The coral/amber palette used throughout the app carried no environmental meaning; a forest green palette directly connects the visual language to the natural world the product monitors.
+- Space Grotesk and IBM Plex Mono (the previous fonts) are high-frequency defaults in AI-generated UIs; Bricolage Grotesque and Atkinson Hyperlegible produce a more distinctive and legible result, with Atkinson Hyperlegible specifically designed for maximum readability in support of the WCAG AAA target.
+- The login page lacked proper semantic accessibility wiring: no `id`/`for` label pairing on error fields, no `role="alert"` on flash messages, no `aria-invalid` signals for assistive technology.
+
+How this improved the project:
+- The login page now has a clear visual identity that orients users before they authenticate: the brand panel's headline and live data sources communicate the product's purpose and value in under five seconds.
+- The asymmetric split layout is distinctive and memorable — the deep green panel is immediately recognizable as belonging to an environmental platform rather than a generic SaaS tool.
+- WCAG AAA contrast and full keyboard/screen reader wiring bring the login page into compliance with the project's stated accessibility standard.
+- Scoping new fonts and styles to `.page-login` via a `<style>` block within the view keeps the change contained to the login page without disrupting the rest of the app's existing design system.
+- The ghost button hierarchy clearly separates the primary action (sign in with account) from the secondary action (continue as guest), reducing the chance a user accidentally continues as a guest when they intended to log in.
 
 # Stage 5: Login Page UI Refinements Session (2026-04-15)
 Summary:
@@ -113,7 +543,96 @@ Summary:
 - Configured severity mapping for weather condition names: Tornado → critical, Thunderstorm/Squall → high, Snow/Rain → moderate, Drizzle → low, with a safe default of low.
 - The registry skips the source automatically if `OPENWEATHER_API_KEY` is empty, so the entry is safe in environments without the key.
 
+Why this was done:
+- The OpenWeather API key had been added to `.env` to enable additional alert data, but without a `sources.yaml` entry the key was never used and no weather data was being fetched.
+- The YAML indentation error risked silent misconfiguration — parsers that are strict about document structure could reject or misinterpret the `gbif_occurrences` entry depending on how the root-level comment broke the mapping context.
 
+How this improved the project:
+- OpenWeather current weather data is now actively scraped and ingested as `weather` alerts every 30 minutes, expanding the alert feed with real atmospheric condition data.
+- The `sources.yaml` file is now structurally valid with all entries consistently indented inside `api_sources`, reducing the risk of future parse errors when adding new sources.
+- The severity mapping gives weather alerts meaningful priority tiers immediately upon ingestion without requiring any additional code changes.
+
+# Stage 5: Registration Fix and Backend Settings Extension Session (2026-04-14)
+Summary:
+- Diagnosed silent registration failures caused by a password validation mismatch between the PHP frontend and the FastAPI backend.
+- Updated `rr_validate_registration()` in `frontend/web/services/validators.php` to enforce full password strength rules (uppercase, lowercase, digit, and special character) matching the backend's `validate_password_strength()` in `backend/auth/security.py`.
+- Updated `rr_register_user()` in `frontend/web/services/api_client.php` to surface the backend's `detail` error message on 400 responses instead of always showing a generic fallback string.
+- Identified that the `401 Unauthorized` on `GET /api/v1/auth/me` is expected Golby widget behavior (polling for a user session on every page load) and not related to the registration issue.
+- Diagnosed a Pydantic `ValidationError` on backend startup caused by `OPENWEATHER_API_KEY` being present in `.env` without a corresponding field in `backend/config/settings.py`; provided a plan to add the field to the `Settings` class.
+
+Why this was done:
+- Registration was silently failing because passwords passing the frontend's length-only check were rejected by the backend's stronger requirements, and the resulting backend error was replaced by a misleading generic message.
+- A new OpenWeather API key added to `.env` for additional environmental alert data sources caused the entire backend to fail to start due to pydantic-settings' strict extra-field rejection.
+
+How this improved the project:
+- Users can now successfully create accounts and receive clear, actionable password requirement feedback inline before any API call is made.
+- Backend error messages for registration failures are now surfaced accurately to users rather than being obscured by a generic fallback.
+- The new OpenWeather API key integration path is unblocked by declaring its field in `Settings`, enabling additional alert data sources to be wired in cleanly.
+
+# Stage 5: Database Schema Migration Merge Session (2026-04-14)
+Summary:
+- Diagnosed `DATABASE_URL` placeholder values in `.env` causing MySQL connection failures (`getaddrinfo failed` then `Access denied for user 'user'`). Explained the SQLite fallback behavior built into `backend/db/database.py`.
+- Read all seven migration files under `backend/db/migrations/` and cross-referenced against `backend/db/models.py` as the canonical source of truth for final column shapes.
+- Rewrote `riskradarweb_db.sql` as a clean final-state bootstrap schema — no ALTER chains, only correct CREATE TABLE definitions — incorporating every migration in order.
+- Key schema changes applied: PKs renamed (`alert_id`→`id`, `log_id`→`id`, `user_id`→`id`), legacy columns dropped (`article_id`, `priority`, `token_id`, `is_active`, `last_login_at`, `scraped_at`, `http_status`, `articles_found`, `articles_inserted`), column types corrected and nullability updated throughout, `reigon` typo fixed to `region`, `json_valid` CHECK constraints removed, HASH-based unique indexes replaced with named unique keys.
+- Added four new tables: `feedback` (with FK to `users.id` ON DELETE SET NULL), `summary_alerts` (junction table with CASCADE FKs to `summaries` and `alerts`), `user_alert_preferences` (FK to `users.id` CASCADE), `user_health_conditions` (FK to `users.id` CASCADE).
+- Added `is_admin` column present in `models.py` but missing from all migration files.
+- Retained legacy tables (`articles`, `article_tags`, `categories`, etc.) with indexes moved inline for compatibility.
+
+Why this was done:
+- The `.env` placeholder `DATABASE_URL` prevented backend startup entirely; clarifying the fallback behavior unblocked local development.
+- The base `riskradarweb_db.sql` was generated from the original mobile-era schema (Feb 2026) and had never been updated to reflect seven subsequent migrations, making it unusable for bootstrapping a fresh MySQL/MariaDB database.
+- Without a correct bootstrap script, new team members or fresh database deployments would produce a broken schema that would immediately cause backend API failures.
+
+How this improved the project:
+- `riskradarweb_db.sql` is now a reliable single-file bootstrap for any fresh MariaDB deployment — import once and the database is fully up to date.
+- Eliminated the need for any additional ALTER chains or manual migration steps when setting up a new MySQL environment.
+- Improved schema correctness by catching and applying the `is_admin` column that existed in the ORM but was absent from all migration files.
+- Reduced onboarding friction and demo setup risk by ensuring the canonical SQL file matches the running backend exactly.
+
+# Stage 5: Forecast Icon SVG Asset Fix Session (2026-04-14)
+Summary:
+- Diagnosed missing forecast icons on the frontend caused by six empty placeholder SVG files at `frontend/web/public/assets/illustrations/`.
+- Identified the correct illustrated SVG content in `UI_UX_STYLE_FILES/assets/svg/illustrations/` for all six icons: weather, fire, air-quality, flood, pollen, and earthquake.
+- Copied all six SVG files to the public assets path, overwriting the empty stubs. Verified all files populated with expected byte counts.
+- All six forecast icons now render correctly on the forecast page.
+
+Why this was done:
+- The forecast page icon row displayed broken images because the public asset files lacked content despite existing at the correct path.
+- The `UI_UX_STYLE_FILES` design-source set contained the canonical illustrated SVGs that were never propagated to the served assets directory.
+
+How this improved the project:
+- Restored visual completeness to the forecast page by ensuring all six condition icons render with proper illustrated content.
+- Eliminated a visible UI defect without requiring any code or path changes — a purely asset-propagation fix.
+- Improved frontend polish and demo readiness by making the forecast icon row fully functional.
+
+# Stage 5: Final Golby Verification Pass, Safe Artifact Reversion, and Documentation Synchronization Session (2026-04-14)
+Summary:
+- Completed a final Golby verification pass on live local services covering connectivity preflight, frontend build, and assistant journey automation.
+- Verified full PASS outcomes for preflight and build, and **6/6** pass for the demo journey.
+- Reverted generated runtime/evidence artifacts after verification to preserve a clean, review-focused working set.
+- Synchronized README, STAGES, TODO, TRANSCRIPT, REFLECTION, and AUTHORS with this session in chronological Stage 5 order.
+- Ran transcript duplicate-heading pass and confirmed unique stage headings.
+
+Why this was done:
+- To close the verification loop with high confidence after implementation completion.
+- To ensure documentation and history files reflect the verified runtime state and final operational outcomes.
+- To prevent generated artifacts from obscuring intentional implementation and documentation review scope.
+
+How this improved the project:
+- Strengthened confidence that Golby behavior and project wiring remain stable in canonical local execution.
+- Improved repository hygiene by separating generated runtime churn from intentional tracked changes.
+- Preserved historical accuracy by synchronizing all major tracking docs with the final verification session.
+
+# Stage 5: Connectivity Hardening Completion, Safe Option Selection, and Documentation Synchronization Session (2026-04-13)
+Summary:
+- Completed the remaining Stage 5 connectivity hardening tasks and verified both gates: connectivity preflight and end-to-end demo journey.
+- Resolved verification-time issues that surfaced during real execution (frontend document-root mismatch and login-gated map preflight false negatives).
+- Applied safe cleanup via artifact isolation stashes so generated runtime/evidence outputs do not obscure review intent.
+- Synchronized the requested documentation set in chronological Stage 5 order, including transcript/reflection/authorship updates.
+
+Why this was done:
+- To fully close unresolved wiring reliability concerns before demos and grading workflows.
 - To ensure verification tooling reflects real application access control behavior instead of producing false negatives.
 - To preserve a clean, review-friendly repository state while retaining historical accuracy in project documentation.
 
@@ -240,7 +759,7 @@ How this improved the project:
 6. Stage 5 Golby Operational Frontend Wiring, Verification, and Documentation Synchronization Session (2026-04-12): Operationalized assistant runtime with compiled assets and validated interaction path.
 7. Stage 5 RiskRadar Top-Text Removal and Documentation Synchronization Session (2026-04-12): Removed leaked top-of-page raw text and synchronized docs.
 8. Stage 5 Frontend Contrast Accessibility Final Pass and Documentation Synchronization Session (2026-04-12): Finalized contrast/readability polish and synchronized records.
-9. Stage 5 Review-Ready Commit Split and Push Session (2026-04-12): Split changes into review-friendly commits and pushed branch.
+9. Stage 5 Review-Ready Commit Split and Push Session (2026-04-12): Split changes into review-focused commits and pushed branch.
 10. Stage 5 Frontend Visual Refresh Low-Risk Implementation and Max Validation Handoff Session (2026-04-12): Applied low-risk visual refresh and assigned remaining manual signoff to Max.
 11. Stage 5 Web-Only Scope Hardening and S3 Evidence Closeout Session (2026-04-11): Hardened required workflows to backend+web scope and closed S3 evidence gate.
 12. Stage 5 Rebecca Implementation Closeout and Max Handoff Session (2026-04-11): Closed Rebecca-safe scope and formalized manual-evidence handoff.
@@ -976,30 +1495,3 @@ Why this was done:
 
 How this improved the project:
 - Improved UI implementation consistency and review confidence.
-
-# Stage 5: Per-Risk Forecast Feature Implementation, Testing Assignment, and Backend/Frontend Run Context Issue (2026-04-15)
-Summary:
-- Implemented per-risk forecast breakdown in the backend, adding a `detailed` query parameter and updating schema models for per-risk forecast output.
-- Updated frontend (PHP, JS, CSS) to render per-risk forecasts with icons and color-coding, ensuring accessibility and backward compatibility.
-- All backend and frontend files pass error checks, but encountered a backend run context issue due to relative imports.
-- Recommended running the backend as a package (`python -m backend.main`) to resolve import issues and ensure compatibility for all contributors.
-- Assigned all remaining integration testing, regression testing, accessibility/UX review, and documentation updates for the per-risk forecast feature to Max in the project TODO.md while Rebecca resolves the backend/frontend run context issue.
-
-
-# Stage 5: Guest Lockout, Benefit Messaging, and Daily Request Limit Implementation Session (2026-04-18)
-Summary:
-- Designed and implemented a robust guest lockout system in Golby’s chat interface, including clear benefit-focused messaging and a daily request limit for guest users.
-- Updated both frontend (React/TypeScript) and backend (FastAPI) to enforce guest restrictions, provide actionable sign-in/register prompts, and validate all guest access attempts.
-- Assigned all remaining manual/automated testing, code review, and documentation updates to Max due to user’s inability to perform these tasks.
-
-Why this was done:
-- To prevent guests from accessing personalized or account-linked features, improving security and user experience.
-- To provide clear, user-facing explanations and actionable next steps for guests encountering feature restrictions.
-- To enforce a fair daily usage policy for guests and encourage registration for full access.
-- To ensure all restrictions are validated on both frontend and backend for security and consistency.
-
-How this improved the project:
-- Enhanced security by closing guest access loopholes for user-only features.
-- Improved user experience with clear, benefit-oriented messaging and actionable prompts.
-- Reduced support burden by making guest restrictions transparent and self-explanatory.
-- Maintained project momentum by clearly assigning outstanding testing, review, and documentation tasks to Max and recording all developments in project history.

@@ -1,7 +1,9 @@
+import logging
 import time
 from datetime import datetime, timedelta, timezone
 from typing import Any, Optional
 
+from config.settings import settings
 from auth.dependencies import get_optional_current_user
 from db.database import get_db
 from db.models import Alert, User
@@ -17,9 +19,10 @@ from services.assistant_personality import (
     shape_reply,
     style_directive_ack,
 )
-from backend.schemas.assistant import AssistantRequest, AssistantResponse
+from schemas.assistant import AssistantRequest, AssistantResponse
 
 router = APIRouter(prefix="/assistant", tags=["Assistant"])
+logger = logging.getLogger(__name__)
 
 GUARDRAIL_KEYWORDS: dict[str, list[str]] = {
     "medical": ["diagnose", "diagnosis", "prescription", "dosage", "medication", "treatment", "medical advice"],
@@ -114,7 +117,7 @@ def _severity_weight(severity: Optional[str]) -> float:
     return mapping.get((severity or "").lower(), 0.35)
 
 
-GUEST_DAILY_LIMIT = 10  # Should match frontend, or make configurable
+GUEST_DAILY_LIMIT = settings.GUEST_DAILY_LIMIT
 
 # Simple in-memory guest rate limit (per IP, per day)
 _guest_limit_cache: dict[str, int] = {}
@@ -138,18 +141,22 @@ def _get_guest_limit(request: Request) -> int:
     return _guest_limit_cache.get(key, 0)
 
 
-@router.post("/respond", response_model=AssistantResponse)
+@router.post("/respond", response_model=AssistantResponse, response_model_exclude_unset=True)
+
+
 def respond(
     body: AssistantRequest,
+    request: Request,
     db: Session = Depends(get_db),
     current_user: Optional[User] = Depends(get_optional_current_user),
-    request: Optional[Request] = None,
-) -> AssistantResponse:
+) -> Any:
 
     # Guest daily limit enforcement
     is_guest = current_user is None
-    if is_guest and request is not None:
+    if is_guest:
         if _get_guest_limit(request) >= GUEST_DAILY_LIMIT:
+            client_ip = request.client.host if request.client else "unknown"
+            logger.warning("Guest assistant daily limit reached for %s", client_ip)
             return AssistantResponse(
                 reply=(
                     f"You have reached the daily limit for guest users ({GUEST_DAILY_LIMIT} messages per day). "
@@ -168,6 +175,8 @@ def respond(
     ]
     lower_msg = body.message.lower()
     if is_guest and any(k in lower_msg for k in personalized_keywords):
+        client_ip = request.client.host if request.client else "unknown"
+        logger.info("Guest assistant personalization lockout triggered for %s", client_ip)
         return AssistantResponse(
             reply=(
                 "This feature is only available to registered users.\n\nWhy register?\n"

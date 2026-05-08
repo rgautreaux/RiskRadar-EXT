@@ -10,6 +10,7 @@ from db.models import User
 
 def _extract_session_token(request: Request) -> str | None:
     authorization = request.headers.get("Authorization", "")
+    token: str | None = None
     if authorization.lower().startswith("bearer "):
         token = authorization[7:].strip()
         if token:

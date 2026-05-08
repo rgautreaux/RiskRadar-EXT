@@ -7,10 +7,10 @@ import json
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
-from ..db.database import get_db
-from ..db.models import Alert, User
-from ..schemas.risk_score import ForecastPoint, MapRiskOverlayOut, MapRiskZone
-from ..services.risk_scoring import RiskFactors, UserSensitivities, compute_risk_score
+from db.database import get_db
+from db.models import Alert, User
+from schemas.risk_score import ForecastPoint, MapRiskOverlayOut, MapRiskZone
+from services.risk_scoring import RiskFactors, UserSensitivities, compute_risk_score
 
 router = APIRouter(prefix="/forecast", tags=["Forecast"])
 FORECAST_STEP_HOURS = 6
@@ -51,7 +51,7 @@ def _parse_datetime(value: Optional[str]) -> Optional[datetime]:
                     tzinfo=timezone.utc
                 )
             return value
-        except Exception:
+        except (TypeError, ValueError):
             return value
 
     cleaned = value.strip().replace("Z", "+00:00")

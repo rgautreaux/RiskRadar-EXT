@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { fetchUserGuide, searchDocForAnswer } from './docSearch';
 import { fetchAssistantReply, fetchCurrentAlerts, fetchRiskOverlay, fetchForecast, fetchWeeklyFeedbackAnalytics, sendGolbyFeedback, syncGolbyStyleProfile } from './apiClient';
 import { motion } from 'framer-motion';
@@ -10,6 +10,11 @@ import { Send, ThumbsUp, ThumbsDown, Smile } from 'lucide-react';
 type ResponseCategory = 'docs' | 'page' | 'live' | 'playful' | 'static';
 type FeedbackReaction = 'thumbs_up' | 'thumbs_down' | 'smile';
 type GuardrailCategory = 'medical' | 'legal' | 'emergency' | 'unsafe';
+type GolbyResponse = {
+	text: string;
+	category: ResponseCategory;
+	sources?: string[];
+};
 
 // Guardrail patterns for sensitive topics
 const GUARDED_PATTERNS: { regex: RegExp; category: GuardrailCategory }[] = [
@@ -78,6 +83,7 @@ interface ChatInterfaceProps {
 	pageContext?: string;
 	isAdmin?: boolean;
 	currentUserId?: number;
+	fullPage?: boolean;
 }
 
 const defaultSuggestions = [
@@ -412,20 +418,21 @@ function formatResponseForStyle(text: string, style: ResponseStyle, category: Re
 		}
 		return text;
 	}
-	if (text.length < 160 && !['playful', 'page', 'docs', 'live', 'static'].includes(category)) {
+
+	if (text.length < 160) {
 		return `${text} If you want, I can provide a deeper breakdown.`;
 	}
 	return text;
 }
 
-// Response type that includes optional sources from the backend
-interface GolbyResponse {
-	text: string;
-	category: ResponseCategory;
-	sources?: string[];
-}
-
-export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageContext = 'unknown', isAdmin = false, currentUserId }: ChatInterfaceProps) {
+export function ChatInterface({
+	suggestions = defaultSuggestions,
+	onClose,
+	pageContext = 'unknown',
+	isAdmin = false,
+	currentUserId,
+	fullPage = false,
+}: ChatInterfaceProps) {
 	const [messages, setMessages] = useState<Message[]>([
 		{
 			id: '1',
@@ -777,18 +784,18 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 	};
 
 	return (
-		<div className="flex flex-col h-full max-h-[600px] bg-white rounded-2xl shadow-xl overflow-hidden">
+		<div className={`golby-chat-root ${fullPage ? 'full-page' : 'widget-mode'}`}>
 			{/* Header */}
-			<div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 flex items-center gap-3" role="banner" aria-label="Golby chat header">
-				<GolbyIcon expression="happy" size="md" aria-label="Golby assistant icon" />
-				<div className="flex-1">
-					<h2 className="text-white font-medium" tabIndex={0}>Chat with Golby</h2>
-					<p className="text-blue-100 text-sm" tabIndex={0}>Your AI Travel Assistant</p>
+			<div className="golby-chat-header">
+				<GolbyIcon expression="happy" size="sm" />
+				<div className="golby-chat-header-info">
+					<h2 className="golby-chat-header-title">Chat with Golby</h2>
+					<p className="golby-chat-header-subtitle">Your AI Travel Assistant</p>
 				</div>
 				{isAdmin && (
 					<button
-						onClick={() => setShowDiagnostics((current: boolean) => !current)}
-						className="text-blue-100 hover:text-white text-xs px-2 py-1 border border-blue-300/50 rounded-md transition focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400"
+						onClick={() => setShowDiagnostics((current) => !current)}
+						className="golby-header-btn"
 						aria-label="Toggle diagnostics panel"
 						tabIndex={0}
 					>
@@ -796,21 +803,29 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 					</button>
 				)}
 				{onClose && (
-					<button onClick={onClose} className="text-white hover:text-blue-200 text-xl font-bold ml-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400" aria-label="Close chat" tabIndex={0}>×</button>
+					<button
+						onClick={onClose}
+						className="golby-header-close"
+						aria-label={fullPage ? 'Back to welcome' : 'Close chat'}
+					>
+						{fullPage ? '←' : '×'}
+					</button>
 				)}
 			</div>
+
+			{/* Admin diagnostics */}
 			{isAdmin && showDiagnostics && (
-				<div className="bg-blue-50 border-b border-blue-100 px-6 py-3 space-y-3">
+				<div className="golby-diagnostics">
 					{runtimeDiagnostics && (
-						<div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900" data-golby-runtime-diagnostic="true">
+						<div className="golby-warning-banner" data-golby-runtime-diagnostic="true">
 							{runtimeDiagnostics}
 						</div>
 					)}
-					<div className="rounded-lg border border-blue-200 bg-white p-3">
-						<p className="text-xs font-semibold text-blue-900 mb-2">Local Learning Panel</p>
-						<div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-700">
+					<div className="golby-diagnostics-card">
+						<p className="golby-diagnostics-title">Local Learning Panel</p>
+						<div className="golby-diagnostics-grid">
 							<span>Session ID</span>
-							<span className="font-mono text-[11px] break-all">{sessionIdRef.current}</span>
+							<span style={{ fontFamily: 'monospace', fontSize: '11px', wordBreak: 'break-all' }}>{sessionIdRef.current}</span>
 							<span>Current User ID</span>
 							<span>{currentUserId ?? 'Anonymous'}</span>
 							<span>Access</span>
@@ -827,22 +842,22 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 							</span>
 						</div>
 					</div>
-					<div className="rounded-lg border border-blue-200 bg-white p-3">
-						<div className="flex items-center justify-between mb-2">
-							<p className="text-xs font-semibold text-blue-900">Backend Weekly Analytics Panel</p>
+					<div className="golby-diagnostics-card">
+						<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+							<p className="golby-diagnostics-title" style={{ margin: 0 }}>Backend Weekly Analytics Panel</p>
 							<button
 								onClick={refreshWeeklyAnalytics}
-								className="text-xs text-blue-700 hover:text-blue-900 underline"
+								style={{ fontSize: '0.75rem', color: 'var(--golby-accent)', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', fontFamily: 'var(--golby-font-body)' }}
 								aria-label="Refresh backend analytics"
 							>
 								Refresh
 							</button>
 						</div>
-						{analyticsLoading && <p className="text-xs text-gray-600">Loading analytics...</p>}
-						{analyticsError && <p className="text-xs text-red-600">{analyticsError}</p>}
+						{analyticsLoading && <p style={{ fontSize: '0.75rem', color: 'var(--golby-text-muted)', margin: 0 }}>Loading analytics...</p>}
+						{analyticsError && <p style={{ fontSize: '0.75rem', color: 'oklch(0.52 0.18 25)', margin: 0 }}>{analyticsError}</p>}
 						{weeklyAnalytics && !analyticsLoading && !analyticsError && (
-							<div className="space-y-2">
-								<div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-700">
+							<div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+								<div className="golby-diagnostics-grid">
 									<span>Window</span>
 									<span>{weeklyAnalytics.from_date} to {weeklyAnalytics.to_date}</span>
 									<span>Total Feedback</span>
@@ -850,21 +865,21 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 									<span>Average Rating</span>
 									<span>{weeklyAnalytics.average_rating ?? 'N/A'}</span>
 								</div>
-								<div className="border border-blue-100 rounded-md overflow-hidden">
-									<table className="w-full text-xs">
-										<thead className="bg-blue-100 text-blue-900">
+								<div style={{ border: '1px solid var(--golby-border)', borderRadius: '6px', overflow: 'hidden' }}>
+									<table style={{ width: '100%', fontSize: '0.75rem', borderCollapse: 'collapse' }}>
+										<thead style={{ background: 'var(--golby-accent-subtle)' }}>
 											<tr>
-												<th className="text-left px-2 py-1">Date</th>
-												<th className="text-left px-2 py-1">Count</th>
-												<th className="text-left px-2 py-1">Avg</th>
+												<th style={{ textAlign: 'left', padding: '6px 10px', color: 'var(--golby-text)', fontWeight: 600 }}>Date</th>
+												<th style={{ textAlign: 'left', padding: '6px 10px', color: 'var(--golby-text)', fontWeight: 600 }}>Count</th>
+												<th style={{ textAlign: 'left', padding: '6px 10px', color: 'var(--golby-text)', fontWeight: 600 }}>Avg</th>
 											</tr>
 										</thead>
 										<tbody>
-											{weeklyAnalytics.by_day.map((day: WeeklyAnalyticsPoint) => (
-												<tr key={day.date} className="border-t border-blue-50">
-													<td className="px-2 py-1">{day.date}</td>
-													<td className="px-2 py-1">{day.count}</td>
-													<td className="px-2 py-1">{day.average_rating ?? 'N/A'}</td>
+											{weeklyAnalytics.by_day.map((day) => (
+												<tr key={day.date} style={{ borderTop: '1px solid var(--golby-border-subtle)' }}>
+													<td style={{ padding: '5px 10px', color: 'var(--golby-text-secondary)' }}>{day.date}</td>
+													<td style={{ padding: '5px 10px', color: 'var(--golby-text-secondary)' }}>{day.count}</td>
+													<td style={{ padding: '5px 10px', color: 'var(--golby-text-secondary)' }}>{day.average_rating ?? 'N/A'}</td>
 												</tr>
 											))}
 										</tbody>
@@ -875,50 +890,53 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 					</div>
 				</div>
 			)}
+
+			{/* Runtime warning (non-admin view) */}
 			{runtimeDiagnostics && !showDiagnostics && (
-				<div className="bg-amber-50 border-b border-amber-200 px-6 py-2 text-xs text-amber-900" data-golby-runtime-diagnostic="true">
+				<div className="golby-warning-banner" data-golby-runtime-diagnostic="true">
 					{runtimeDiagnostics}
 				</div>
 			)}
+
 			{/* Messages */}
-			<div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50" role="log" aria-live="polite">
-				{messages.map((message: Message) => (
+			<div className="golby-messages-area">
+				{messages.map((message) => (
 					<div
 						key={message.id}
-						className={`flex gap-3 ${message.isGolby ? 'justify-start' : 'justify-end'}`}
+						style={{ display: 'flex', gap: '10px', justifyContent: message.isGolby ? 'flex-start' : 'flex-end' }}
 					>
 						{message.isGolby && (
-							<div className="flex-shrink-0">
-								<GolbyIcon expression="happy" size="sm" aria-label="Golby message icon" />
+							<div style={{ flexShrink: 0 }}>
+								<GolbyIcon expression="happy" size="sm" />
 							</div>
 						)}
-						<div className={`flex flex-col ${message.isGolby ? 'items-start' : 'items-end'}`} tabIndex={0} aria-label={message.isGolby ? 'Golby message' : 'Your message'}>
+						<div style={{ display: 'flex', flexDirection: 'column', alignItems: message.isGolby ? 'flex-start' : 'flex-end' }}>
 							<ChatBubble message={message.text} isGolby={message.isGolby} />
 							{message.isGolby && (
-								<div className="flex gap-2 mt-2">
+								<div className="golby-feedback-row">
 									<button
-										className="text-gray-400 hover:text-green-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400"
+										className="golby-feedback-btn"
 										onClick={() => handleFeedback(message, 'thumbs_up')}
 										aria-label="This was helpful"
 										tabIndex={0}
 									>
-										<ThumbsUp className="w-4 h-4" />
+										<ThumbsUp size={14} />
 									</button>
 									<button
-										className="text-gray-400 hover:text-red-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+										className="golby-feedback-btn"
 										onClick={() => handleFeedback(message, 'thumbs_down')}
 										aria-label="This wasn't helpful"
 										tabIndex={0}
 									>
-										<ThumbsDown className="w-4 h-4" />
+										<ThumbsDown size={14} />
 									</button>
 									<button
-										className="text-gray-400 hover:text-yellow-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400"
+										className="golby-feedback-btn"
 										onClick={() => handleFeedback(message, 'smile')}
 										aria-label="Rate with emoji"
 										tabIndex={0}
 									>
-										<Smile className="w-4 h-4" />
+										<Smile size={14} />
 									</button>
 								</div>
 							)}
@@ -926,34 +944,36 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 					</div>
 				))}
 				{isTyping && (
-					<div className="flex gap-3 justify-start">
-						<div className="flex-shrink-0">
-							<GolbyIcon expression="thinking" size="sm" aria-label="Golby is typing" />
+					<div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-start' }}>
+						<div style={{ flexShrink: 0 }}>
+							<GolbyIcon expression="thinking" size="sm" />
 						</div>
 						<TypingIndicator />
 					</div>
 				)}
 				<div ref={messagesEndRef} />
 			</div>
+
 			{/* Quick Suggestions */}
 			{messages.length === 1 && (
 				<motion.div
-					initial={{ opacity: 0, y: 10 }}
+					initial={{ opacity: 0, y: 8 }}
 					animate={{ opacity: 1, y: 0 }}
-					className="px-6 py-3 bg-white border-t border-gray-200"
+					transition={{ duration: 0.25 }}
+					className="golby-suggestions"
 				>
-					<p className="text-xs text-gray-500 mb-2">Quick suggestions:</p>
-					<div className="flex flex-wrap gap-2">
+					<span className="golby-suggestions-label">Quick suggestions</span>
+					<div className="golby-suggestions-pills">
 						{suggestions.map((suggestion, index) => (
 							<motion.button
 								key={index}
-								initial={{ opacity: 0, scale: 0.9 }}
+								initial={{ opacity: 0, scale: 0.92 }}
 								animate={{ opacity: 1, scale: 1 }}
-								transition={{ delay: index * 0.1 }}
+								transition={{ delay: index * 0.08, duration: 0.2 }}
 								onClick={() => handleSuggestionClick(suggestion)}
-								className="bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full text-sm transition-colors border border-blue-200"
-								whileHover={{ scale: 1.05 }}
-								whileTap={{ scale: 0.95 }}
+								className="golby-suggestion-pill"
+								whileHover={{ scale: 1.03 }}
+								whileTap={{ scale: 0.97 }}
 							>
 								{suggestion}
 							</motion.button>
@@ -961,34 +981,33 @@ export function ChatInterface({ suggestions = defaultSuggestions, onClose, pageC
 					</div>
 				</motion.div>
 			)}
+
 			{/* Input */}
-			<div className="bg-white px-6 py-4 border-t border-gray-200">
+			<div className="golby-input-area">
 				<form
 					onSubmit={(e) => {
 						e.preventDefault();
 						handleSendMessage(inputValue);
 					}}
-					className="flex gap-2"
-					role="search"
-					aria-label="Send a message to Golby"
+					className="golby-input-form"
 				>
 					<input
 						type="text"
 						value={inputValue}
 						onChange={(e) => setInputValue(e.target.value)}
 						placeholder="Ask Golby anything..."
-						className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+						className="golby-input-field"
 						aria-label="Message input"
 						tabIndex={0}
 					/>
 					<button
 						type="submit"
 						disabled={!inputValue.trim()}
-						className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white p-2 rounded-full transition-colors disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500"
+						className="golby-send-btn"
 						aria-label="Send message"
 						tabIndex={0}
 					>
-						<Send className="w-5 h-5" />
+						<Send size={17} />
 					</button>
 				</form>
 			</div>
