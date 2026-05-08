@@ -19,8 +19,8 @@ from datetime import datetime, timezone
 
 from sqlalchemy.orm import Session
 
-from db.models import Alert, User
-from schemas.risk_score import RiskScoreOut, RiskFactor
+from ..db.models import Alert, User
+from ..schemas.risk_score import RiskScoreOut, RiskFactor
 
 # ---------------------------------------------------------------------------
 # Constants

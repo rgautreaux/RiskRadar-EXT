@@ -5,8 +5,8 @@ import pytest
 from sqlalchemy import inspect
 from sqlalchemy.exc import IntegrityError
 
-from auth.security import decrypt_email, hash_email, password_hash, verify_password
-from db.models import Alert, Summary, SummaryAlertLink, User, UserAlertPreference, ScrapeLog
+from ..auth.security import decrypt_email, hash_email, password_hash, verify_password
+from ..db.models import Alert, Summary, SummaryAlertLink, User, UserAlertPreference, ScrapeLog
 from scripts.backfill_summary_alert_links import backfill_summary_alert_links
 from scripts.backfill_user_health_conditions import backfill_user_health_conditions
 from scripts.backfill_user_alert_preferences import backfill_user_alert_preferences

@@ -7,7 +7,7 @@ from datetime import datetime, timedelta, timezone
 import pytest
 
 from backend.api import assistant as assistant_api
-from config.settings import settings
+from ..config.settings import settings
 
 
 @pytest.fixture(autouse=True)

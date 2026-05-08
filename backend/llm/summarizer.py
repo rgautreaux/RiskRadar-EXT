@@ -7,9 +7,9 @@ from datetime import date, datetime, timedelta, timezone
 import openai
 from sqlalchemy.orm import Session
 
-from config.settings import settings
-from db.models import Alert, Summary, SummaryAlertLink
-from llm.prompts import (
+from ..config.settings import settings
+from ..db.models import Alert, Summary, SummaryAlertLink
+from ..llm.prompts import (
     BREAKING_SYSTEM,
     BREAKING_USER,
     DAILY_DIGEST_SYSTEM,

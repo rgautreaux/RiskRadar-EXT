@@ -7,8 +7,8 @@ Requires a MAP_KEY (free registration).
 import json
 import httpx
 
-from config.settings import settings
-from scrapers.base_scraper import BaseScraper
+from ..config.settings import settings
+from .base_scraper import BaseScraper
 
 
 def _fire_severity(confidence: str, brightness: float) -> str:

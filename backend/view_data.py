@@ -11,8 +11,8 @@ Run from the backend directory:
 import argparse
 import json  # noqa: F401 (used in optional debugging scenarios)
 
-from db.database import SessionLocal
-from db.models import Alert, Summary, ScrapeLog
+from ..db.database import SessionLocal
+from ..db.models import Alert, Summary, ScrapeLog
 
 
 def view_alerts(db, source_filter=None, show_full=False):

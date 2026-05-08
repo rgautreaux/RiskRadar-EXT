@@ -5,11 +5,11 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from auth.dependencies import get_optional_current_user, require_admin_user
-from db.database import get_db
-from db.models import Feedback, User
+from ..auth.dependencies import get_optional_current_user, require_admin_user
+from ..db.database import get_db
+from ..db.models import Feedback, User
 from backend.schemas.feedback import FeedbackCreate, FeedbackOut
-from services.assistant_personality import (
+from ..services.assistant_personality import (
     apply_feedback_to_profile,
     parse_profile,
     serialize_profile,

@@ -11,7 +11,7 @@ from functools import lru_cache
 from cryptography.fernet import Fernet, InvalidToken
 from passlib.context import CryptContext
 
-from config.settings import settings
+from ..config.settings import settings
 
 _pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 SESSION_COOKIE_NAME = "riskradar_session"

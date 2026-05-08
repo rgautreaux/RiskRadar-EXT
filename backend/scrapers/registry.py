@@ -7,14 +7,14 @@ from typing import Any
 
 import yaml
 
-from config.settings import settings
-from scrapers.base_scraper import BaseScraper as _BaseScraper  # noqa: F401
-from scrapers.generic_api_scraper import GenericAPIScraper
-from scrapers.web_scraper import WebScraper
-from scrapers.nws_scraper import NWSScraper
-from scrapers.airnow_scraper import AirNowScraper
-from scrapers.epa_scraper import EPAScraper
-from scrapers.firms_scraper import FIRMSScraper
+from ..config.settings import settings
+from .base_scraper import BaseScraper as _BaseScraper  # noqa: F401
+from .generic_api_scraper import GenericAPIScraper
+from .web_scraper import WebScraper
+from .nws_scraper import NWSScraper
+from .airnow_scraper import AirNowScraper
+from .epa_scraper import EPAScraper
+from .firms_scraper import FIRMSScraper
 
 logger = logging.getLogger(__name__)
 

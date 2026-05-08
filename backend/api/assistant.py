@@ -3,14 +3,14 @@ import time
 from datetime import datetime, timedelta, timezone
 from typing import Any, Optional
 
-from config.settings import settings
-from auth.dependencies import get_optional_current_user
-from db.database import get_db
-from db.models import Alert, User
+from ..config.settings import settings
+from ..auth.dependencies import get_optional_current_user
+from ..db.database import get_db
+from ..db.models import Alert, User
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 
-from services.assistant_personality import (
+from ..services.assistant_personality import (
     Profile,
     apply_style_directive,
     parse_profile,
@@ -19,7 +19,7 @@ from services.assistant_personality import (
     shape_reply,
     style_directive_ack,
 )
-from backend.schemas.assistant import AssistantRequest, AssistantResponse
+from ..schemas.assistant import AssistantRequest, AssistantResponse
 
 router = APIRouter(prefix="/assistant", tags=["Assistant"])
 logger = logging.getLogger(__name__)

@@ -4,8 +4,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from datetime import datetime, timezone
 from sqlalchemy.orm import Session  # noqa: F401 (import kept for script compatibility)
-from db.models import Alert
-from db.database import SessionLocal
+from ..db.models import Alert
+from ..db.database import SessionLocal
 
 # Insert a single test alert into the alerts table
 

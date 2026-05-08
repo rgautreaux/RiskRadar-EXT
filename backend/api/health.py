@@ -8,9 +8,9 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
-from db.database import Base, engine
-from db.init_db import CRITICAL_SCHEMA_TABLES
-from db.schema_validator import build_required_schema_from_models, validate_required_schema  # type: ignore[import]
+from ..db.database import Base, engine
+from ..db.init_db import CRITICAL_SCHEMA_TABLES
+from ..db.schema_validator import build_required_schema_from_models, validate_required_schema  # type: ignore[import]
 
 router = APIRouter(prefix="/health", tags=["Health"])  # type: ignore[misc]
 

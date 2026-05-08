@@ -2,7 +2,7 @@
 
 import json
 
-from auth.security import decrypt_email, hash_email, verify_password
+from ..auth.security import decrypt_email, hash_email, verify_password
 
 
 

@@ -8,8 +8,8 @@ import json
 import logging
 from typing import Any
 
-from config.settings import settings
-from scrapers.base_scraper import BaseScraper
+from ..config.settings import settings
+from .base_scraper import BaseScraper
 
 logger = logging.getLogger(__name__)
 

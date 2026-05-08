@@ -8,7 +8,7 @@ from typing import Any
 from sqlalchemy import ForeignKey, Integer, Text, UniqueConstraint, event
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-from auth.security import decrypt_email, encrypt_email, hash_email, is_encrypted_email, normalize_email
+from ..auth.security import decrypt_email, encrypt_email, hash_email, is_encrypted_email, normalize_email
 
 
 def _now() -> str:

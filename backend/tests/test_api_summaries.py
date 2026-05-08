@@ -3,7 +3,7 @@
 import json
 from unittest.mock import patch
 
-from db.models import Summary, SummaryAlertLink
+from ..db.models import Summary, SummaryAlertLink
 
 
 class TestListSummaries:

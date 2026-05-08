@@ -24,8 +24,8 @@ from typing import Any
 # Add backend directory to path for package imports (auth, db, etc.)
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from auth.security import create_session_token, encrypt_email, hash_email, password_hash
-from db.models import Alert, Base, Summary, User
+from ..auth.security import create_session_token, encrypt_email, hash_email, password_hash
+from ..db.models import Alert, Base, Summary, User
 from sqlalchemy import text, create_engine
 from sqlalchemy.orm import sessionmaker
 

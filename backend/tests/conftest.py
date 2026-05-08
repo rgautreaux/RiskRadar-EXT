@@ -13,8 +13,8 @@ from sqlalchemy.pool import StaticPool
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from db.database import get_db
-from db.models import Alert, Base, Summary, User
+from ..db.database import get_db
+from ..db.models import Alert, Base, Summary, User
 
 
 # ---------------------------------------------------------------------------
@@ -52,7 +52,7 @@ def test_client(db_session: Session) -> Generator[TestClient, None, None]:
     """
     from fastapi.middleware.cors import CORSMiddleware
     from api.router import api_router
-    from config.settings import settings
+    from ..config.settings import settings
 
     # Build a clean app without the lifespan that starts the scheduler
     test_app = FastAPI(title="RiskRadar API Test")

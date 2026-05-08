@@ -563,3 +563,90 @@ The interactive map and overlays are fully accessible by keyboard and screen rea
 - Overlay toggling and marker focus are announced for assistive tech.
 
 See README for more details and troubleshooting.
+
+---
+
+## 9. End-to-End Testing with Playwright
+
+The project includes automated E2E tests using Playwright to verify core user flows on desktop, mobile, and accessibility criteria.
+
+### Running E2E Tests Locally
+
+1. **Start backend and frontend (see steps 2 and 3 above)**
+
+2. **Install Playwright browsers** (one-time setup):
+   ```bash
+   npm run playwright:install
+   ```
+
+3. **Run all E2E tests:**
+   ```bash
+   npm run web:test:e2e
+   ```
+
+4. **Run a specific test file:**
+   ```bash
+   npx playwright test frontend/web/tests/e2e/demo-journey.spec.js
+   ```
+
+5. **Run tests in headed mode (see browser):**
+   ```bash
+   npx playwright test --headed
+   ```
+
+6. **View the HTML report:**
+   ```bash
+   npx playwright show-report
+   ```
+
+### Test Coverage
+
+- **demo-journey.spec.js** — Guest → Register → Login → Alerts → Assistant flow
+- **mobile-responsive.spec.js** — Mobile (360px) responsive behavior on all pages
+- **accessibility.spec.js** — Keyboard navigation, form labels, button names, focus management, heading hierarchy
+
+### In CI/CD (GitHub Actions)
+
+Tests automatically run on push/PR to `main` or `Rebecca-Gautreaux-*` branches. Reports are uploaded as artifacts for 14 days.
+
+---
+
+## 10. Troubleshooting & Common Issues
+
+### Backend fails to start with "IndentationError" or "pydantic_settings" error
+
+**Solution:** Your `backend/config/settings.py` may have incorrect indentation or schema issues. Use the fix in [docs/LOCAL_SETUP_FIX_REBECCA.md](./docs/LOCAL_SETUP_FIX_REBECCA.md) (see **FIX 1**).
+
+### Frontend on different port than backend
+
+**Solution:** Update `frontend/web/config/config.local.php` to point to your backend port:
+```php
+<?php
+return [
+    'api' => [
+        'base_url' => 'http://127.0.0.1:8001',  // Change port here
+        'prefix' => '/api/v1',
+        'timeout' => 5.0,
+    ],
+];
+```
+
+### Pylint shows "E0401 import errors" in VS Code
+
+**Solution:** These are false positives. Your `.vscode/settings.json` is already configured to fix them. Reload VS Code:
+- `Ctrl+Shift+P` → "Developer: Reload Window"
+
+### E2E tests timeout or fail to connect
+
+**Solution:** 
+1. Verify both backend and frontend are running and accessible
+2. Check `RISKRADAR_WEB_BASE_URL` is set correctly (defaults to `http://127.0.0.1:8080`)
+3. Ensure browser services are installed: `npm run playwright:install`
+
+### Database/password rejected during registration
+
+**Solution:** Passwords must be at least 12 characters. Use: `TestPassword123!`
+
+---
+
+For additional troubleshooting, see [docs/LOCAL_SETUP_FIX_REBECCA.md](./docs/LOCAL_SETUP_FIX_REBECCA.md).

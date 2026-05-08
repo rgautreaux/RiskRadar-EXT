@@ -4,13 +4,13 @@ import json
 import pytest
 from unittest.mock import patch, MagicMock
 
-from scrapers.airnow_scraper import _aqi_to_severity
-from scrapers.firms_scraper import _fire_severity
-from scrapers.generic_api_scraper import (
+from ..scrapers.airnow_scraper import _aqi_to_severity
+from ..scrapers.firms_scraper import _fire_severity
+from ..scrapers.generic_api_scraper import (
     _extract_path, _resolve_template, _safe_float, _build_template_vars,
     GenericAPIScraper,
 )
-from scrapers.web_scraper import WebScraper
+from ..scrapers.web_scraper import WebScraper
 
 
 # ---------------------------------------------------------------------------

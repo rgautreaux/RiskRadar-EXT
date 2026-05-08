@@ -29,8 +29,8 @@ from typing import Any, Dict
 import json
 from datetime import datetime, timezone
 from sqlalchemy.orm import Session
-from db.models import Alert, User
-from schemas.alert import PrioritizedAlertListOut, PrioritizedAlertOut, PriorityFactors
+from ..db.models import Alert, User
+from ..schemas.alert import PrioritizedAlertListOut, PrioritizedAlertOut, PriorityFactors
 from . import (
     MAX_RADIUS_KM,
     haversine_km,

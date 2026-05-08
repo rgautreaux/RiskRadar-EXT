@@ -3,9 +3,9 @@ from __future__ import annotations
 from fastapi import Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
-from auth.security import SESSION_COOKIE_NAME, verify_session_token
-from db.database import get_db
-from db.models import User
+from .security import SESSION_COOKIE_NAME, verify_session_token
+from ..db.database import get_db
+from ..db.models import User
 
 
 def _extract_session_token(request: Request) -> str | None:

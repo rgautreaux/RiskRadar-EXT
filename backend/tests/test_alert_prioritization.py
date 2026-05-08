@@ -4,8 +4,8 @@ import json
 import pytest
 from datetime import datetime, timezone, timedelta
 
-from db.models import Alert, User
-from scoring.prioritization import (
+from ..db.models import Alert, User
+from ..scoring.prioritization import (
     prioritize_alerts,
     compute_alert_priority,
     _distance_priority,

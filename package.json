@@ -19,6 +19,7 @@
     "demo:run": "npm run build:web && npm run verify:connectivity && node frontend/web/tests/demo/demo_journey.js",
     "demo:report": "node frontend/web/tests/demo/report_generator.js",
     "web:test:e2e": "playwright test",
+    "playwright:install": "npx playwright install --with-deps",
     "web:test:a11y": "node frontend/web/tests/accessibility/audit.mjs",
     "web:check": "npm run build:web && npm run web:test:e2e && npm run web:test:a11y"
   },

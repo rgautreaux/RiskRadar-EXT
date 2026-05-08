@@ -8,9 +8,9 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from auth.dependencies import get_optional_current_user
-from db.database import get_db
-from db.models import Alert, User
+from ..auth.dependencies import get_optional_current_user
+from ..db.database import get_db
+from ..db.models import Alert, User
 
 router = APIRouter(prefix="/packing", tags=["Packing"])
 logger = logging.getLogger(__name__)

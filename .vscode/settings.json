@@ -5,5 +5,18 @@
   "pylint.args": [
     "--init-hook",
     "import sys; sys.path.insert(0, 'backend')"
-  ]
+  ],
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.python",
+    "editor.formatOnSave": true
+  },
+  "[php]": {
+    "editor.formatOnSave": false
+  },
+  "search.exclude": {
+    ".venv": true,
+    "node_modules": true,
+    "backend/__pycache__": true,
+    "playwright-report": true
+  }
 }
