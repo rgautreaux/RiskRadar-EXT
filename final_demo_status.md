@@ -7,7 +7,10 @@
 - End-to-end web workflow is present: dashboard, alert browsing, summaries, profile/preferences, login/register/guest access (`frontend/web/public/*.php`).
 - Personalized risk scoring and ranked alerts are implemented and connected in both API and UI (`backend/scoring`, `backend/api/risk.py`, `backend/api/alerts.py`, `frontend/web/views/risk.php`, `frontend/web/views/smart_alerts.php`).
 - Explainable outputs are present via factor breakdowns and formula/breakdown endpoints (`/alerts/risk_formula`, `/alerts/risk_breakdown/...`) with corresponding UI rendering.
-- Stretch demo features are implemented and wired: interactive map with overlays/toggles/personalized mode (`frontend/web/views/map.php`, `backend/api/alerts.py`, `backend/api/risk.py`), 24–48 hour forecast (`backend/api/forecast.py`, `frontend/web/views/forecast.php`), and Golby assistant + packing guide (`backend/api/assistant.py`, `backend/api/packing.py`, `frontend/web/views/assistant.php`).
+- Stretch demo features are implemented and wired:
+  - Interactive map with overlays/toggles/personalized mode (`frontend/web/views/map.php`, `backend/api/alerts.py`, `backend/api/risk.py`).
+  - 24–48 hour forecast (`backend/api/forecast.py`, `frontend/web/views/forecast.php`).
+  - Golby assistant + packing guide (`backend/api/assistant.py`, `backend/api/packing.py`, `frontend/web/views/assistant.php`).
 
 ## Implementation Status vs Proposal
 
@@ -35,4 +38,14 @@
 
 ## Overall Completion Estimate
 - **Estimated completion:** **95%**
-- **Basis:** Relative to proposal goals, all core capabilities and listed stretch features have concrete implementations in `grading` with API/UI/test evidence (`backend/tests/test_risk_scoring.py`, `test_alert_prioritization.py`, `test_api_map.py`, `test_api_forecast.py`, `test_api_assistant.py`, `test_api_packing.py`). From `v0.2-checkpoint..grading`, the branch adds substantial final-stage work (137 commits; 182 files changed; +24,377/-6,431), indicating completion beyond checkpoint state with remaining gaps primarily in depth/polish rather than missing major functionality; the remaining ~5% is mainly production-readiness hardening, broader edge-case validation, and final UX reliability polish.
+- **Basis:** Relative to proposal goals, all core capabilities and listed stretch features have concrete implementations in `grading` with API/UI/test evidence:
+  - `backend/tests/test_risk_scoring.py`
+  - `backend/tests/test_alert_prioritization.py`
+  - `backend/tests/test_api_map.py`
+  - `backend/tests/test_api_forecast.py`
+  - `backend/tests/test_api_assistant.py`
+  - `backend/tests/test_api_packing.py`
+  From `v0.2-checkpoint..grading`, the branch adds substantial final-stage work
+  (137 commits; 182 files changed; +24,377/-6,431), indicating completion beyond
+  checkpoint state. The remaining ~5% is mainly production-readiness hardening,
+  broader edge-case validation, and final UX reliability polish.
