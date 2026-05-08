@@ -1,24 +1,30 @@
 # Student Contributors
 
-## Contributor Breakdown
+## Contributor Breakdown (grading branch)
 | Name | Commit Count | Average Changes Per Commit | Estimated Contribution | Major Areas |
 |---|---:|---:|---:|---|
-| rgautreaux | 272 | 552.5 | 53.8% | frontend interface and workflow (dashboard, react); backend APIs and services (logic, fastapi); ai and analytics (golby, forecast) |
-| Rebecca Gautreaux | 76 | 1551.7 | 42.2% | frontend interface and workflow (dashboard, react); backend APIs and services (logic, fastapi); documentation and coordination (proposal, architecture) |
-| Max Compeaux | 18 | 492.7 | 3.2% | frontend interface and workflow (dashboard, react); backend APIs and services (packing, openrouter); documentation and coordination (proposal, architecture) |
-| copilot-swe-agent[bot] | 38 | 57.1 | 0.8% | automation and repository setup |
-| github-classroom[bot] | 3 | 0.3 | 0.0% | automation and repository setup |
+| Rebecca Gautreaux | 448 | 653.9 | 94.3% | frontend/web + integration assets, documentation/transcripts, backend API/scoring updates |
+| Max Compeaux | 50 | 357.2 | 5.7% | frontend UX (map/auth/profile/alerts), map styling/interactivity, packing/assistant-adjacent backend and docs |
 
 ## Notes on Attribution
-### Commit-History Table Basis
-- Contribution percentages in the table above are estimated from git commit history and line-change totals across all branches.
-- Some commits may use inconsistent author names or emails, which can split attribution across aliases.
-- Commits from instructor accounts (Lipari) are excluded from all contribution calculations.
+- Scope: full `grading` branch history.
+- Instructor identities were excluded from all calculations (`Nicholas Lipari, PhD`, `nicholas-g-lipari-phd`).
+- Non-student automation accounts were also excluded from student attribution percentages.
+- Alias normalization applied from commit metadata:
+  - `rgautreaux` + `Rebecca Gautreaux` merged as **Rebecca Gautreaux**.
+  - Max Compeaux commits from both personal and GitHub noreply emails merged as **Max Compeaux**.
+- `Estimated Contribution` uses commit-history weighting: `commit_count × average_lines_changed_per_commit` (equivalent to each contributor's total lines changed), normalized across included students.
 
-### Final-Code Feature Estimate
-- Separate from the commit-history table above, a final-code-only estimate based on surviving feature presence places Rebecca Gautreaux / rgautreaux at about 83% and Max Compeaux at about 17% of the final product.
-- This final-code estimate is based on feature ownership in the code that remains present in the repository, not on commit counts, per-commit averages, or raw line counts.
-- Under that final-product estimate, bot commits are treated as 0% of final feature ownership.
+## Surviving-Code Proxy (commit-history only)
+Because blame-level surviving-line attribution is unavailable, the table below uses a conservative proxy from commit history only.
 
-### Identity Normalization
-- rgautreaux and Rebecca Gautreaux are the same contributor under different git identities.
+| Name | Proxy Net Added Lines (Adds − Deletes, floored at 0) | Estimated Surviving-Code Share |
+|---|---:|---:|
+| Rebecca Gautreaux | 105,703 | 89.1% |
+| Max Compeaux | 12,952 | 10.9% |
+
+### Proxy Method
+- For each contributor: sum all historical additions and deletions on `grading`.
+- Compute `max(additions - deletions, 0)` as a rough surviving-code proxy.
+- Normalize proxy totals across included student contributors.
+- This is an approximation for final attribution context; it is not equivalent to git-blame ownership.
