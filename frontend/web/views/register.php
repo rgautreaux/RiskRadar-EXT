@@ -1,5 +1,13 @@
 <?php rr_render_layout_start('Create account', 'register'); ?>
 
+<?php
+// Initialize variables to prevent undefined warnings
+$flash = isset($flash) ? $flash : null;
+$registerForm = isset($registerForm) ? $registerForm : [];
+$registerResult = isset($registerResult) ? $registerResult : null;
+$registerErrors = isset($registerErrors) ? $registerErrors : [];
+?>
+
 <style>
 /* ─── Font imports ────────────────────────────────────────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap');
@@ -31,7 +39,7 @@ body.page-register .brand {
 }
 
 body.page-register .eyebrow {
-    color: oklch(0.60 0.07 148);
+    color: #1a202c;
     font-family: 'Atkinson Hyperlegible Next', sans-serif;
 }
 
@@ -230,7 +238,7 @@ body.page-register .page-shell {
     font-family: 'Atkinson Hyperlegible Next', sans-serif;
     font-size: 0.875rem;
     font-weight: 700;
-    color: oklch(0.26 0.022 148);
+    color: oklch(0.22 0.022 148);
     letter-spacing: 0.01em;
     display: flex;
     align-items: center;

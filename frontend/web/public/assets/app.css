@@ -323,7 +323,7 @@ a {
 
 .eyebrow {
     margin: 0 0 8px;
-    color: var(--muted);
+    color: #2d3748;
     font-family: 'Geist Mono', monospace;
     font-size: 0.75rem;
     letter-spacing: 0.12em;
@@ -792,7 +792,7 @@ select:invalid {
 
 .empty-state,
 .field-error {
-    color: var(--muted);
+    color: #2d3748;
 }
 
 .field-error {
@@ -1111,7 +1111,7 @@ dd {
 
 .dash-hero-sub {
     margin: 12px 0 0;
-    color: var(--muted);
+    color: #2d3748;
     max-width: 52ch;
     line-height: 1.6;
     font-size: 1rem;
@@ -1409,7 +1409,7 @@ dd {
 }
 
 .dash-empty-body {
-    color: var(--muted);
+    color: #2d3748;
     margin: 0;
     font-size: 0.9rem;
     line-height: 1.5;

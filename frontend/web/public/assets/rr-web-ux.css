@@ -5,8 +5,8 @@
   z-index: 3000;
   padding: 10px 14px;
   border-radius: 8px;
-  background: #122231;
-  color: #ffffff;
+  background: #000000 !important;
+  color: #ffffff !important;
   font-weight: 700;
   text-decoration: none;
 }

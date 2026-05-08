@@ -31,7 +31,7 @@ body.page-login .brand {
 }
 
 body.page-login .eyebrow {
-    color: oklch(0.60 0.07 148);
+    color: #1a202c;
     font-family: 'Atkinson Hyperlegible Next', sans-serif;
 }
 
@@ -203,7 +203,7 @@ body.page-login .page-shell {
     font-family: 'Atkinson Hyperlegible Next', sans-serif;
     font-size: 0.875rem;
     font-weight: 700;
-    color: oklch(0.26 0.022 148);
+    color: oklch(0.22 0.022 148);
     letter-spacing: 0.01em;
 }
 
