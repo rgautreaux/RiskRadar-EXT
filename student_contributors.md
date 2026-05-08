@@ -25,6 +25,6 @@ Because blame-level surviving-line attribution is unavailable, the table below u
 
 ### Proxy Method
 - For each contributor: sum all historical additions and deletions on `grading`.
-- Compute `max(additions - deletions, 0)` as a rough surviving-code proxy.
+- Compute `max(additions - deletions, 0)` as a rough surviving-code proxy (negative values imply net code removal in history, so they are normalized to 0 for share calculations).
 - Normalize proxy totals across included student contributors.
 - This is an approximation for final attribution context; it is not equivalent to git-blame ownership.
