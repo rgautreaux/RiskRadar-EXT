@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     AIRNOW_API_KEY: str = ""
     OpenAQ_API_KEY: str = ""
     NASA_FIRMS_MAP_KEY: str = ""
+    OPENWEATHER_API_KEY: str = ""
 
     # Firecrawl API Key
     FIRECRAWL_API_KEY: str = ""
@@ -43,7 +44,10 @@ class Settings(BaseSettings):
     SOURCES_CONFIG_PATH: str = str(BASE_DIR / "config" / "sources.yaml")
 
     # CORS
-    CORS_ALLOWED_ORIGINS: str = "http://127.0.0.1:8080,http://localhost:8080,http://127.0.0.1:8000,http://localhost:8000"
+    CORS_ALLOWED_ORIGINS: str = "http://127.0.0.1:8080,http://localhost:8080,http://riskradar.local"
+
+    # Startup safety
+    SCHEMA_VALIDATION_STRICT: bool = True
 
     model_config = SettingsConfigDict(
         env_file=str(BASE_DIR.parent / ".env"),

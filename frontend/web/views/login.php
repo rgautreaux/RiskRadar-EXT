@@ -19,6 +19,7 @@
 
         <form method="post" action="login.php" class="form-stack">
             <input type="hidden" name="csrf_token" value="<?php echo e(rr_csrf_token()); ?>">
+            <input type="hidden" name="action" value="login">
             <label>
                 <span>Email</span>
                 <input type="email" name="email" maxlength="120" autocomplete="email" value="<?php echo e($loginForm['email']); ?>" required>
@@ -35,6 +36,11 @@
                 <?php if (isset($loginErrors['zip_code'])) : ?><small class="field-error"><?php echo e($loginErrors['zip_code']); ?></small><?php endif; ?>
             </label>
             <button class="button-primary" type="submit">Sign in</button>
+        </form>
+
+        <form method="post" action="login.php" class="form-stack">
+            <input type="hidden" name="csrf_token" value="<?php echo e(rr_csrf_token()); ?>">
+            <button class="button-primary" type="submit" name="action" value="guest">Continue as Guest</button>
         </form>
 
         <p class="auth-foot">Don&rsquo;t have an account? <a href="register.php">Create one</a></p>

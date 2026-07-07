@@ -1,14 +1,14 @@
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from auth.dependencies import get_optional_current_user, require_admin_user
-from db.database import get_db
-from db.models import Feedback, User
-from schemas.feedback import FeedbackCreate, FeedbackOut
-from services.assistant_personality import (
+from backend.auth.dependencies import get_optional_current_user, require_admin_user
+from backend.db.database import get_db
+from backend.db.models import Feedback, User
+from backend.schemas.feedback import FeedbackCreate, FeedbackOut
+from backend.services.assistant_personality import (
     apply_feedback_to_profile,
     parse_profile,
     serialize_profile,
@@ -83,13 +83,19 @@ def record_feedback(
 
 
 @router.get("/session/{session_id}", response_model=list[FeedbackOut])
-def list_session_feedback(session_id: str, db: Session = Depends(get_db)):
-    return (
-        db.query(Feedback)
-        .filter(Feedback.session_id == session_id)
-        .order_by(Feedback.updated_at.desc())
-        .all()
-    )
+def list_session_feedback(
+    session_id: str,
+    db: Session = Depends(get_db),
+    current_user: User | None = Depends(get_optional_current_user),
+):
+    if current_user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication required")
+
+    query = db.query(Feedback).filter(Feedback.session_id == session_id)
+    if not bool(current_user.is_admin):
+        query = query.filter(Feedback.user_id == current_user.id)
+
+    return query.order_by(Feedback.updated_at.desc()).all()
 
 
 @router.get("/analytics")

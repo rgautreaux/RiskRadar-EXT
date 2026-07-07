@@ -3,12 +3,12 @@
 from unittest.mock import patch, mock_open
 import yaml
 
-from scrapers.registry import load_all_scrapers, _load_yaml_config
+from backend.scrapers.registry import load_all_scrapers, _load_yaml_config
 
 
 class TestLoadYamlConfig:
     def test_missing_file_returns_empty(self, tmp_path):
-        with patch("scrapers.registry.settings") as mock_settings:
+        with patch("backend.scrapers.registry.settings") as mock_settings:
             mock_settings.SOURCES_CONFIG_PATH = str(tmp_path / "nonexistent.yaml")
             config = _load_yaml_config()
         assert config == {"api_sources": [], "web_sources": []}
@@ -21,7 +21,7 @@ class TestLoadYamlConfig:
         yaml_file = tmp_path / "sources.yaml"
         yaml_file.write_text(yaml.dump(yaml_content))
 
-        with patch("scrapers.registry.settings") as mock_settings:
+        with patch("backend.scrapers.registry.settings") as mock_settings:
             mock_settings.SOURCES_CONFIG_PATH = str(yaml_file)
             config = _load_yaml_config()
         assert len(config["api_sources"]) == 1
@@ -32,7 +32,7 @@ class TestLoadAllScrapers:
     def test_loads_legacy_scrapers(self):
         """With empty YAML config, should still load legacy scrapers."""
         empty_config = {"api_sources": [], "web_sources": []}
-        with patch("scrapers.registry._load_yaml_config", return_value=empty_config):
+        with patch("backend.scrapers.registry._load_yaml_config", return_value=empty_config):
             scrapers = load_all_scrapers()
 
         ids = [s["id"] for s in scrapers]
@@ -70,7 +70,7 @@ class TestLoadAllScrapers:
             }],
             "web_sources": [],
         }
-        with patch("scrapers.registry._load_yaml_config", return_value=config):
+        with patch("backend.scrapers.registry._load_yaml_config", return_value=config):
             scrapers = load_all_scrapers()
 
         ids = [s["id"] for s in scrapers]

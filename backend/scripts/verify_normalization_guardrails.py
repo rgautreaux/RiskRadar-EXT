@@ -11,7 +11,7 @@ BACKEND_DIR = Path(__file__).resolve().parents[1]
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
-from db.database import SessionLocal  # noqa: E402
+from backend.db.database import SessionLocal  # noqa: E402
 from scripts.backfill_summary_alert_links import backfill_summary_alert_links  # noqa: E402
 from scripts.backfill_user_alert_preferences import backfill_user_alert_preferences  # noqa: E402
 from scripts.backfill_user_health_conditions import backfill_user_health_conditions  # noqa: E402

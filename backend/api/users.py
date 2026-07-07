@@ -5,11 +5,12 @@ from collections import defaultdict
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from auth.security import decrypt_email, hash_email, normalize_email, password_hash, validate_password_strength
-from db.database import get_db
-from db.models import User, UserAlertPreference, UserHealthCondition
-from schemas.user import UserCreate, UserPrefsUpdate, UserOut
-from services.assistant_personality import default_profile_json
+from backend.auth.dependencies import require_self_or_admin
+from backend.auth.security import decrypt_email, hash_email, normalize_email, password_hash, validate_password_strength
+from backend.db.database import get_db
+from backend.db.models import User, UserAlertPreference, UserHealthCondition
+from backend.schemas.user import UserCreate, UserPrefsUpdate, UserOut
+from backend.services.assistant_personality import default_profile_json
 
 router = APIRouter(prefix="/users", tags=["Users"])
 LOGGER = logging.getLogger(__name__)
@@ -184,7 +185,12 @@ def register_user(body: UserCreate, db: Session = Depends(get_db)):
 
 
 @router.put("/{user_id}/preferences", response_model=UserOut)
-def update_preferences(user_id: int, body: UserPrefsUpdate, db: Session = Depends(get_db)):
+def update_preferences(
+    user_id: int,
+    body: UserPrefsUpdate,
+    _current_user: User = Depends(require_self_or_admin),
+    db: Session = Depends(get_db),
+):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")

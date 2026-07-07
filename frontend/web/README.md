@@ -84,8 +84,8 @@ It started as the CMPS 357 Stage 1 web extension and now includes:
 	- Handles account creation with server-side validation and CSRF protection.
 	- Calls `POST users/register` and redirects to login on success.
 - `public/login.php` (Login UI)
-	- Implements validated, CSRF-protected login form scaffolding.
-	- Displays clear UX messaging that backend login/auth endpoint is not yet active.
+	- Implements validated, CSRF-protected login form.
+	- Supports three entry paths: sign in, create an account, or continue as guest.
 
 ### Stage 2 Kickoff (Connected to Planned Endpoints)
 
@@ -108,6 +108,13 @@ It started as the CMPS 357 Stage 1 web extension and now includes:
 
 - `public/error.php` renders explicit error title/message with HTTP 500 behavior.
 - `public/404.php` renders a dedicated not-found page.
+
+### Access Control
+
+- `public/login.php` and `public/register.php` are anonymous entry pages.
+- Feature pages (dashboard, alerts, summaries, profile, risk, smart alerts, map, forecast, assistant) require either:
+	- an authenticated session cookie (`riskradar_session`), or
+	- guest-mode session state created from the Login page.
 
 ## How the Web App Works
 
@@ -163,6 +170,8 @@ The current web frontend reads/writes through the existing API prefix (`/api/v1`
 - `GET /summaries/latest`
 - `GET /summaries/{id}`
 - `POST /users/register`
+- `POST /auth/login`
+- `GET /auth/me`
 - `PUT /users/{id}/preferences`
 - `GET /users/{id}/risk-score` (Stage 2 kickoff integration)
 
@@ -209,7 +218,7 @@ For local rebuild-on-change during UI work:
 npm run build:web:watch
 ```
 
-4. Open `http://127.0.0.1:8080/index.php`.
+4. Open `http://127.0.0.1:8080/login.php`.
 
 Run the connectivity preflight before demos (after backend/frontend are running):
 
@@ -218,6 +227,7 @@ npm run verify:connectivity
 ```
 
 If backend port `8001` is unavailable, set `RISKRADAR_API_BASE_URL` (for example to `http://127.0.0.1:8002`) or use `config/config.local.php`.
+If backend port `8001` is unavailable, set `RISKRADAR_API_BASE_URL` (for example to `http://127.0.0.1:8001`) or use `config/config.local.php`.
 
 ## Troubleshooting Wiring Issues
 
@@ -245,6 +255,12 @@ Invoke-RestMethod http://127.0.0.1:8001/api/v1/alerts?limit=1
 5. CORS check for split-origin local setup:
 	- Ensure backend `CORS_ALLOWED_ORIGINS` includes frontend host/port values.
 	- Restart backend after changing environment values.
+
+6. If assistant/user API calls fail with HTTP 500 and backend logs show `no such column: users.is_admin`:
+	- This is local SQLite schema drift, not frontend wiring.
+	- Stop backend and rebuild the backend database using project fixtures:
+	  - `c:/Users/rebec/OneDrive/Documents/GitHub/cmps-357-sp26-final-project-cmps357-team-3/.venv/Scripts/python.exe backend/demo/seed_demo_data.py --mode fresh --db-path backend/riskradar.db`
+	- Restart backend on `127.0.0.1:8001` and re-run `npm run verify:connectivity`.
 
 ## Security and Validation Notes
 

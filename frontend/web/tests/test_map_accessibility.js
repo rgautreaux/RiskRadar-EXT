@@ -4,12 +4,22 @@
 const { AxePuppeteer } = require('axe-puppeteer');
 const puppeteer = require('puppeteer');
 
+const BASE_URL = process.env.RISKRADAR_WEB_BASE_URL || 'http://127.0.0.1:8080';
+
+async function continueAsGuest(page) {
+  await page.goto(`${BASE_URL}/login.php`, { waitUntil: 'networkidle2' });
+  await page.waitForSelector('button[name="action"][value="guest"]', { timeout: 10000 });
+  await page.click('button[name="action"][value="guest"]');
+  await page.waitForNavigation({ waitUntil: 'networkidle2' });
+}
+
 describe('Risk Map Accessibility & Navigation', () => {
   let browser, page;
   beforeAll(async () => {
     browser = await puppeteer.launch();
     page = await browser.newPage();
-    await page.goto('http://localhost:8000/web/views/map.php'); // Adjust URL as needed
+    await continueAsGuest(page);
+    await page.goto(`${BASE_URL}/map.php`, { waitUntil: 'networkidle2' });
   });
   afterAll(async () => {
     await browser.close();

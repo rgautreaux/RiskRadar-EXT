@@ -8,12 +8,19 @@
     <p>Use this page to manage alert preferences for an existing user account. Account creation now lives on the dedicated registration page.</p>
 </section>
 
-<?php if ($flash) : ?>
-    <?php rr_render_message($flash['message'], $flash['type']); ?>
-<?php endif; ?>
 
-<?php if ($preferencesResult && $preferencesResult['message']) : ?>
-    <?php rr_render_message($preferencesResult['message']); ?>
+<?php if ($isGuest) : ?>
+    <section class="panel warning-panel">
+        <p class="empty-state">Guest mode: Profile management is only available to registered users. <a href="login.php">Sign in</a> or <a href="register.php">create an account</a> for full access.</p>
+    </section>
+<?php else : ?>
+    <?php if ($flash) : ?>
+        <?php rr_render_message($flash['message'], $flash['type']); ?>
+    <?php endif; ?>
+
+    <?php if ($preferencesResult && $preferencesResult['message']) : ?>
+        <?php rr_render_message($preferencesResult['message']); ?>
+    <?php endif; ?>
 <?php endif; ?>
 
 <section class="panel">

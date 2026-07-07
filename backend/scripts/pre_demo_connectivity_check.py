@@ -16,14 +16,16 @@ Optional:
 from __future__ import annotations
 
 import argparse
+import http.cookiejar
 import json
 import subprocess
+from html.parser import HTMLParser
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlparse
-from urllib.request import Request, urlopen
+from urllib.parse import urlencode, urlparse
+from urllib.request import HTTPCookieProcessor, Request, build_opener, urlopen
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -62,13 +64,77 @@ def _http_request(url: str, timeout: float, method: str = "GET", headers: dict[s
         return response.status, body, response_headers
 
 
+def _extract_csrf_token(html: str) -> str | None:
+    class _CsrfTokenParser(HTMLParser):
+        def __init__(self) -> None:
+            super().__init__()
+            self.token: str | None = None
+
+        def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+            if self.token is not None or tag.lower() != "input":
+                return
+
+            attr_map = {key.lower(): (value or "") for key, value in attrs}
+            if attr_map.get("name") == "csrf_token" and attr_map.get("value"):
+                self.token = attr_map["value"]
+
+    parser = _CsrfTokenParser()
+    parser.feed(html)
+    return parser.token
+
+
+def _fetch_frontend_map_with_guest(frontend_origin: str, timeout: float) -> tuple[bool, str]:
+    cookie_jar = http.cookiejar.CookieJar()
+    opener = build_opener(HTTPCookieProcessor(cookie_jar))
+
+    login_url = f"{frontend_origin}/login.php"
+    map_url = f"{frontend_origin}/map.php"
+
+    try:
+        login_response = opener.open(Request(url=login_url, method="GET"), timeout=timeout)
+        login_html = login_response.read().decode("utf-8", errors="replace")
+    except (HTTPError, URLError, TimeoutError, OSError) as error:
+        reason = getattr(error, "reason", str(error))
+        return False, f"Unable to load login page for guest session setup: {reason}"
+
+    csrf_token = _extract_csrf_token(login_html)
+    if not csrf_token:
+        return False, "Unable to extract CSRF token from login page for guest session setup"
+
+    payload = urlencode({"csrf_token": csrf_token, "action": "guest"}).encode("utf-8")
+    guest_request = Request(
+        url=login_url,
+        method="POST",
+        data=payload,
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+    )
+
+    try:
+        opener.open(guest_request, timeout=timeout)
+    except (HTTPError, URLError, TimeoutError, OSError) as error:
+        reason = getattr(error, "reason", str(error))
+        return False, f"Unable to establish guest session via login.php: {reason}"
+
+    try:
+        map_response = opener.open(Request(url=map_url, method="GET"), timeout=timeout)
+        map_body = map_response.read().decode("utf-8", errors="replace")
+    except HTTPError as error:
+        return False, f"HTTP {error.code} from {map_url} after guest session setup"
+    except (URLError, TimeoutError, OSError) as error:
+        reason = getattr(error, "reason", str(error))
+        return False, f"Connection error to {map_url} after guest session setup: {reason}"
+
+    return True, map_body
+
+
 def _check_json_endpoint(name: str, url: str, timeout: float) -> CheckResult:
     try:
         status, body, _ = _http_request(url, timeout=timeout)
     except HTTPError as error:
         return CheckResult(name=name, ok=False, details=f"HTTP {error.code} from {url}")
-    except URLError as error:
-        return CheckResult(name=name, ok=False, details=f"Connection error to {url}: {error.reason}")
+    except (URLError, TimeoutError, OSError) as error:
+        reason = getattr(error, "reason", str(error))
+        return CheckResult(name=name, ok=False, details=f"Connection error to {url}: {reason}")
 
     if status != 200:
         return CheckResult(name=name, ok=False, details=f"Expected HTTP 200, got {status} from {url}")
@@ -79,6 +145,66 @@ def _check_json_endpoint(name: str, url: str, timeout: float) -> CheckResult:
         return CheckResult(name=name, ok=False, details=f"Response from {url} is not valid JSON")
 
     return CheckResult(name=name, ok=True, details=f"OK ({url})")
+
+
+def _check_assistant_user_lookup(base_url: str, api_prefix: str, timeout: float) -> CheckResult:
+    url = f"{base_url}{api_prefix}/assistant/respond"
+    payload = json.dumps(
+        {
+            "message": "connectivity probe",
+            "page_context": "assistant",
+            "user_id": 1,
+            "location": "Baton Rouge",
+        }
+    ).encode("utf-8")
+
+    request = Request(
+        url=url,
+        method="POST",
+        data=payload,
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+
+    try:
+        with urlopen(request, timeout=timeout) as response:
+            status = response.status
+            body = response.read().decode("utf-8", errors="replace")
+    except HTTPError as error:
+        status = error.code
+        body = error.read().decode("utf-8", errors="replace")
+    except (URLError, TimeoutError, OSError) as error:
+        reason = getattr(error, "reason", str(error))
+        return CheckResult(
+            name="assistant user lookup",
+            ok=False,
+            details=f"Connection error to {url}: {reason}",
+        )
+
+    if status >= 500:
+        return CheckResult(
+            name="assistant user lookup",
+            ok=False,
+            details=(
+                f"Received HTTP {status} from {url}. "
+                "This usually indicates backend/db schema drift (for example missing users columns)."
+            ),
+        )
+
+    # Any non-5xx response keeps connectivity health green; auth/validation can vary by environment.
+    try:
+        if body:
+            json.loads(body)
+    except json.JSONDecodeError:
+        return CheckResult(
+            name="assistant user lookup",
+            ok=False,
+            details=f"Response from {url} is not valid JSON",
+        )
+
+    return CheckResult(name="assistant user lookup", ok=True, details=f"OK (HTTP {status})")
 
 
 def _load_frontend_api_config() -> dict[str, Any]:
@@ -163,6 +289,7 @@ def run_preflight(enforce_canonical: bool, timeout_seconds: float) -> int:
 
     # Backend root and representative API routes.
     results.append(_check_json_endpoint("backend root", f"{configured_base_url}/", timeout_seconds))
+    results.append(_check_json_endpoint("readiness API", f"{configured_base_url}{configured_prefix}/health/ready", timeout_seconds))
     results.append(_check_json_endpoint("alerts API", f"{configured_base_url}{configured_prefix}/alerts?limit=1", timeout_seconds))
     results.append(
         _check_json_endpoint(
@@ -171,11 +298,12 @@ def run_preflight(enforce_canonical: bool, timeout_seconds: float) -> int:
             timeout_seconds,
         )
     )
+    results.append(_check_assistant_user_lookup(configured_base_url, configured_prefix, timeout_seconds))
 
     # Frontend pages should render and map page should include API endpoints.
     for label, page_url in (("frontend index", DEFAULT_FRONTEND_URL), ("frontend map", DEFAULT_MAP_URL)):
         try:
-            status, body, _ = _http_request(page_url, timeout=timeout_seconds)
+            status, _page_body, _ = _http_request(page_url, timeout=timeout_seconds)
         except HTTPError as error:
             results.append(CheckResult(name=label, ok=False, details=f"HTTP {error.code} from {page_url}"))
             continue
@@ -189,14 +317,24 @@ def run_preflight(enforce_canonical: bool, timeout_seconds: float) -> int:
             continue
 
         if label == "frontend map":
+            guest_ok, map_body = _fetch_frontend_map_with_guest(_frontend_origin(DEFAULT_FRONTEND_URL), timeout_seconds)
+            if not guest_ok:
+                results.append(CheckResult(name="frontend map API wiring", ok=False, details=map_body))
+                continue
+
             expected_alerts_url = f"{configured_base_url}{configured_prefix}/alerts/map"
             expected_risk_url = f"{configured_base_url}{configured_prefix}/risk/map"
-            map_ok = (expected_alerts_url in body) and (expected_risk_url in body)
+            expected_alerts_url_escaped = expected_alerts_url.replace("/", "\\/")
+            expected_risk_url_escaped = expected_risk_url.replace("/", "\\/")
+            map_ok = (
+                (expected_alerts_url in map_body or expected_alerts_url_escaped in map_body)
+                and (expected_risk_url in map_body or expected_risk_url_escaped in map_body)
+            )
             details = (
                 "Map page includes configured API endpoints"
                 if map_ok
                 else (
-                    "Map page did not include configured API endpoints. "
+                    "Map page did not include configured API endpoints after guest session setup. "
                     f"Expected markers for {expected_alerts_url} and {expected_risk_url}"
                 )
             )

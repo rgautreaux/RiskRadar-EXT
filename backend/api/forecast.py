@@ -1,16 +1,18 @@
+
 from collections import Counter
 from datetime import datetime, timedelta, timezone
 from math import atan2, cos, radians, sin, sqrt
-from typing import Any, Optional
+from typing import Optional
 
 import json
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
-from db.database import get_db
-from db.models import Alert, User
-from schemas.risk_score import ForecastPoint, MapRiskOverlayOut, MapRiskZone
-from services.risk_scoring import RiskFactors, UserSensitivities, compute_risk_score
+from backend.auth.dependencies import require_account_owner_or_admin, get_current_user
+from backend.db.database import get_db
+from backend.db.models import Alert, User
+from backend.schemas.risk_score import ForecastPoint, MapRiskOverlayOut, MapRiskZone
+from backend.services.risk_scoring import RiskFactors, UserSensitivities, compute_risk_score
 
 router = APIRouter(prefix="/forecast", tags=["Forecast"])
 FORECAST_STEP_HOURS = 6
@@ -57,6 +59,10 @@ def _parse_datetime(value: Optional[str]) -> Optional[datetime]:
 
 def _severity_score(alert: Alert) -> float:
     return SEVERITY_SCORES.get((alert.severity or "").lower(), 0.4)
+
+
+def _type_weight(alert: Alert) -> float:
+    return TYPE_WEIGHTS.get(_alert_type_key(alert), 0.8)
 
 
 def _alert_type_key(alert: Alert) -> str:
@@ -244,7 +250,7 @@ def _build_response(
             "lon": float(alert_lon) if alert_lon is not None else 0.0,
         }
         zone_score = _clamp(
-            base_score * _severity_score(alert) * _distance_factor(alert, lat, lon) * _recency_factor(alert, now),
+            base_score * _severity_score(alert) * _type_weight(alert) * _distance_factor(alert, lat, lon) * _recency_factor(alert, now),
             0.0,
             100.0,
         )
@@ -280,6 +286,8 @@ def _build_response(
     )
 
 
+
+
 @router.get("/personalized/{user_id}", response_model=MapRiskOverlayOut)
 def get_personalized_forecast(
     user_id: int,
@@ -287,6 +295,7 @@ def get_personalized_forecast(
     lon: Optional[float] = Query(None, description="Longitude for location-based forecast"),
     location: Optional[str] = Query(None, description="Location string (ZIP or City, State)"),
     hours: int = Query(48, ge=1, le=72, description="Forecast window in hours (default 48)"),
+    _current_user: User = Depends(require_account_owner_or_admin),
     db: Session = Depends(get_db),
 ):
     """Returns a personalized risk forecast for the next 24-48 hours for a given user and location."""
@@ -304,8 +313,9 @@ def get_forecast(
     lon: Optional[float] = Query(None, description="Longitude for location-based forecast"),
     location: Optional[str] = Query(None, description="Location string (ZIP or City, State)"),
     hours: int = Query(48, ge=1, le=72, description="Forecast window in hours (default 48)"),
+    _current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Returns a risk forecast for the next 24-48 hours for a given location."""
+    """Returns a risk forecast for the next 24-48 hours for a given location. Requires authentication."""
     alerts = _query_alerts(db, lat, lon, location, hours)
     return _build_response(alerts=alerts, lat=lat, lon=lon, location=location, hours=hours)

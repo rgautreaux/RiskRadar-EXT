@@ -2,6 +2,11 @@
 
 require_once __DIR__ . '/../services/bootstrap.php';
 
+if (rr_access_context() !== 'anonymous') {
+    header('Location: index.php');
+    exit;
+}
+
 $flash = rr_get_flash();
 $registerErrors = [];
 $registerResult = null;

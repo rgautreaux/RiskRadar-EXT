@@ -2,8 +2,8 @@ from datetime import datetime, timezone
 
 from sqlalchemy import Column, Integer, Text, Float, Boolean, ForeignKey, UniqueConstraint, event
 from sqlalchemy.orm import relationship
-from db.database import Base
-from auth.security import decrypt_email, encrypt_email, hash_email, is_encrypted_email, normalize_email
+from backend.db.database import Base
+from backend.auth.security import decrypt_email, encrypt_email, hash_email, is_encrypted_email, normalize_email
 
 
 def _now():
@@ -98,6 +98,7 @@ class User(Base):
     email_lookup_hash = Column(Text, unique=True, nullable=False)
     password_hash = Column(Text)
     is_admin = Column(Boolean, nullable=False, default=False)
+    is_guest = Column(Boolean, nullable=False, default=False)  # New: True if user is a guest
     zip_code = Column(Text)
     latitude = Column(Float)
     longitude = Column(Float)

@@ -1,12 +1,11 @@
 """Tests for Stage 2 Step 1: Personal Risk Scoring Engine."""
 
 import json
-import math
 import pytest
 from datetime import datetime, timezone
 
-from db.models import Alert, User
-from scoring import (
+from backend.db.models import Alert, User
+from backend.scoring import (
     compute_risk_score,
     haversine_km,
     _proximity_score,
@@ -68,7 +67,7 @@ class TestSeverityScore:
     def test_empty_returns_zero(self):
         assert _severity_score([]) == 0.0
 
-    def test_single_critical(self, db_session):
+    def test_single_critical(self):
         alert = Alert(
             source="test", alert_type="weather", severity="critical",
             title="t", fetched_at=NOW, created_at=NOW, updated_at=NOW,
@@ -76,7 +75,7 @@ class TestSeverityScore:
         score = _severity_score([alert])
         assert score == 100.0
 
-    def test_single_low(self, db_session):
+    def test_single_low(self):
         alert = Alert(
             source="test", alert_type="weather", severity="low",
             title="t", fetched_at=NOW, created_at=NOW, updated_at=NOW,
@@ -84,7 +83,7 @@ class TestSeverityScore:
         score = _severity_score([alert])
         assert score == 25.0
 
-    def test_mixed_severity_weighted(self, db_session):
+    def test_mixed_severity_weighted(self):
         alerts = [
             Alert(source="test", alert_type="weather", severity="critical",
                   title="t", fetched_at=NOW, created_at=NOW, updated_at=NOW),
@@ -232,7 +231,6 @@ class TestComputeRiskScore:
         assert result["user_id"] == user.id
 
     def test_health_conditions_amplify_score(self, db_session):
-        user_no_cond = self._make_user(db_session, conditions=[])
 
         # Need a different email for second user
         db_session.query(User).delete()
@@ -286,6 +284,13 @@ class TestRiskScoreAPI:
         db_session.commit()
         db_session.refresh(user)
 
+        # Login as the user
+        resp = test_client.post(
+            "/api/v1/auth/login",
+            json={"email": "apiuser@test.com", "password": "pass"},
+        )
+        assert resp.status_code == 200
+
         resp = test_client.get(f"/api/v1/risk/score/{user.id}")
         assert resp.status_code == 200
         data = resp.json()
@@ -294,7 +299,29 @@ class TestRiskScoreAPI:
         assert "factors" in data
         assert len(data["factors"]) == 4
 
-    def test_risk_score_user_not_found(self, test_client):
+    def test_risk_score_user_not_found(self, test_client, db_session):
+        # Create and login as a valid user
+        from passlib.context import CryptContext
+        pwd = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
+        user = User(
+            display_name="API User",
+            email="apiuser@test.com",
+            password_hash=pwd.hash("pass"),
+            latitude=34.05,
+            longitude=-118.24,
+            created_at=NOW,
+            updated_at=NOW,
+        )
+        db_session.add(user)
+        db_session.commit()
+        db_session.refresh(user)
+
+        resp = test_client.post(
+            "/api/v1/auth/login",
+            json={"email": "apiuser@test.com", "password": "pass"},
+        )
+        assert resp.status_code == 200
+
         resp = test_client.get("/api/v1/risk/score/9999")
         assert resp.status_code == 404
 
@@ -314,6 +341,13 @@ class TestRiskScoreAPI:
         db_session.add(user)
         db_session.commit()
         db_session.refresh(user)
+
+        # Login as the user
+        resp = test_client.post(
+            "/api/v1/auth/login",
+            json={"email": "nearla@test.com", "password": "pass"},
+        )
+        assert resp.status_code == 200
 
         resp = test_client.get(f"/api/v1/risk/score/{user.id}")
         assert resp.status_code == 200
@@ -338,12 +372,19 @@ class TestRiskScoreAPI:
         db_session.refresh(user)
 
         # Very small radius should exclude most alerts
+        # Login as the user
+        resp = test_client.post(
+            "/api/v1/auth/login",
+            json={"email": "radius@test.com", "password": "RadiusPass123!"},
+        )
+        assert resp.status_code == 200
+
         resp = test_client.get(f"/api/v1/risk/score/{user.id}?radius_km=1")
         assert resp.status_code == 200
         data = resp.json()
         assert data["nearby_alert_count"] <= 1
 
-    def test_update_health_conditions(self, test_client, db_session):
+    def test_update_health_conditions(self, test_client):
         # Register user
         resp = test_client.post("/api/v1/users/register", json={
             "display_name": "Health User",
@@ -351,6 +392,13 @@ class TestRiskScoreAPI:
             "password": "HealthPass123!",
         })
         user_id = resp.json()["id"]
+
+        # Login as the user
+        resp = test_client.post(
+            "/api/v1/auth/login",
+            json={"email": "health@test.com", "password": "HealthPass123!"},
+        )
+        assert resp.status_code == 200
 
         # Update with health conditions
         resp = test_client.put(f"/api/v1/users/{user_id}/preferences", json={

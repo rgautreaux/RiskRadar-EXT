@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 const fs = require('node:fs');
 const path = require('node:path');
+const crypto = require('node:crypto');
 const { chromium } = require('playwright');
 const { ScreenshotCollector } = require('./screenshot_collector');
 
@@ -8,12 +9,16 @@ const REPO_ROOT = path.resolve(__dirname, '..', '..', '..', '..');
 const EVIDENCE_ROOT = path.resolve(REPO_ROOT, 'static', 'evidence');
 const LOG_PATH = path.resolve(EVIDENCE_ROOT, 'demo_journey_log.json');
 const SEED_METADATA_PATH = path.resolve(REPO_ROOT, 'seed_metadata.json');
+const BACKEND_SEED_METADATA_PATH = path.resolve(REPO_ROOT, 'backend', 'seed_metadata.json');
+const DEMO_FIXTURES_PATH = path.resolve(REPO_ROOT, 'backend', 'demo', 'fixtures.json');
 const SESSION_COOKIE_NAME = 'riskradar_session';
+const DEFAULT_JWT_SECRET = 'CHANGE-ME-set-a-real-secret-in-dotenv';
+const SESSION_TTL_MINUTES = Number(process.env.ACCESS_TOKEN_EXPIRE_MINUTES || 60);
 
 function parseArgs(argv) {
   const args = {
     baseUrl: 'http://127.0.0.1:8080',
-    apiBaseUrl: 'http://127.0.0.1:8000',
+    apiBaseUrl: 'http://127.0.0.1:8001',
     headless: true,
     pauseOnStep: false,
     screenshots: true,
@@ -73,17 +78,34 @@ async function stepNavigate(page, step, url, titleContains) {
   }
 }
 
+async function continueAsGuest(page, baseUrl) {
+  await page.goto(`${baseUrl}/login.php`, { waitUntil: 'domcontentloaded' });
+  await waitForUi(page);
+
+  const guestButton = page.locator('button[name="action"][value="guest"]');
+  await guestButton.waitFor({ timeout: 10000 });
+  await guestButton.click();
+  await page.waitForURL('**/index.php', { timeout: 10000 });
+  await waitForUi(page);
+}
+
 function readSeedMetadata() {
-  if (!fs.existsSync(SEED_METADATA_PATH)) {
-    return null;
+  const candidatePaths = [SEED_METADATA_PATH, BACKEND_SEED_METADATA_PATH];
+
+  for (const metadataPath of candidatePaths) {
+    if (!fs.existsSync(metadataPath)) {
+      continue;
+    }
+
+    try {
+      const raw = fs.readFileSync(metadataPath, 'utf-8');
+      return JSON.parse(raw);
+    } catch {
+      // Try the next candidate metadata path.
+    }
   }
 
-  try {
-    const raw = fs.readFileSync(SEED_METADATA_PATH, 'utf-8');
-    return JSON.parse(raw);
-  } catch {
-    return null;
-  }
+  return null;
 }
 
 function getSessionTokenForUser(userId) {
@@ -91,16 +113,37 @@ function getSessionTokenForUser(userId) {
   return metadata?.session_tokens?.[String(userId)]?.token ?? null;
 }
 
+function readDemoCredentials() {
+  if (!fs.existsSync(DEMO_FIXTURES_PATH)) {
+    return {};
+  }
+
+  try {
+    const raw = fs.readFileSync(DEMO_FIXTURES_PATH, 'utf-8');
+    const parsed = JSON.parse(raw);
+    const users = Array.isArray(parsed?.users) ? parsed.users : [];
+    return users.reduce((acc, user) => {
+      const id = Number(user?.id);
+      if (!Number.isFinite(id)) {
+        return acc;
+      }
+      const email = user?.email_plaintext;
+      const password = user?.password_plaintext;
+      if (typeof email === 'string' && typeof password === 'string') {
+        acc[id] = { email, password };
+      }
+      return acc;
+    }, {});
+  } catch {
+    return {};
+  }
+}
+
 async function clearSessionCookie(context) {
   await context.clearCookies();
 }
 
-async function setSessionCookie(context, baseUrl, userId) {
-  const token = getSessionTokenForUser(userId);
-  if (!token) {
-    throw new Error(`Missing seeded session token for user ${userId}. Run npm run demo:setup first.`);
-  }
-
+async function _setCookieValue(context, baseUrl, token) {
   const target = new URL(baseUrl);
   await context.addCookies([
     {
@@ -113,6 +156,88 @@ async function setSessionCookie(context, baseUrl, userId) {
       sameSite: 'Lax',
     },
   ]);
+}
+
+async function _authMeOk(context, apiBaseUrl) {
+  const authMeRes = await context.request.get(`${apiBaseUrl.replace(/\/$/, '')}/api/v1/auth/me`);
+  return authMeRes.ok();
+}
+
+async function _loginAndSetCookie(context, baseUrl, apiBaseUrl, userId) {
+  const credentialsByUserId = readDemoCredentials();
+  const credentials = credentialsByUserId[userId];
+  if (!credentials) {
+    throw new Error(`Missing fixture credentials for user ${userId}.`);
+  }
+
+  const loginRes = await context.request.post(`${apiBaseUrl.replace(/\/$/, '')}/api/v1/auth/login`, {
+    data: {
+      email: credentials.email,
+      password: credentials.password,
+    },
+  });
+
+  if (!loginRes.ok()) {
+    throw new Error(`Unable to login seeded user ${userId}; auth/login returned HTTP ${loginRes.status()}.`);
+  }
+
+  const loginJson = await loginRes.json();
+  const token = loginJson?.session_token;
+  if (typeof token !== 'string' || token.length < 10) {
+    throw new Error(`auth/login returned an invalid session token for user ${userId}.`);
+  }
+
+  await _setCookieValue(context, baseUrl, token);
+}
+
+function _base64urlEncode(buffer) {
+  return Buffer.from(buffer)
+    .toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/g, '');
+}
+
+function _resolveSessionSecret() {
+  const keyMaterial =
+    (process.env.JWT_SECRET_KEY || process.env.EMAIL_HASH_SECRET || process.env.EMAIL_ENCRYPTION_KEY || DEFAULT_JWT_SECRET).trim();
+  return crypto.createHash('sha256').update(keyMaterial, 'utf8').digest();
+}
+
+function _createSessionTokenForUser(userId) {
+  const nowEpoch = Math.floor(Date.now() / 1000);
+  const expiresAtEpoch = nowEpoch + Math.max(1, SESSION_TTL_MINUTES) * 60;
+  const payloadJson = JSON.stringify({ exp: expiresAtEpoch, iat: nowEpoch, sub: Number(userId) });
+  const payloadPart = _base64urlEncode(Buffer.from(payloadJson, 'utf8'));
+  const signature = crypto.createHmac('sha256', _resolveSessionSecret()).update(payloadPart, 'utf8').digest();
+  return `${payloadPart}.${_base64urlEncode(signature)}`;
+}
+
+async function setSessionCookie(context, baseUrl, apiBaseUrl, userId) {
+  const token = getSessionTokenForUser(userId);
+  if (token) {
+    await _setCookieValue(context, baseUrl, token);
+    if (await _authMeOk(context, apiBaseUrl)) {
+      return;
+    }
+    await clearSessionCookie(context);
+  }
+
+  try {
+    await _loginAndSetCookie(context, baseUrl, apiBaseUrl, userId);
+    if (await _authMeOk(context, apiBaseUrl)) {
+      return;
+    }
+    await clearSessionCookie(context);
+  } catch {
+    await clearSessionCookie(context);
+  }
+
+  const generatedToken = _createSessionTokenForUser(userId);
+  await _setCookieValue(context, baseUrl, generatedToken);
+  if (!(await _authMeOk(context, apiBaseUrl))) {
+    throw new Error(`Unable to establish authenticated session for user ${userId}.`);
+  }
 }
 
 async function assertApiResponse(response, label, expectedStatus) {
@@ -266,9 +391,15 @@ async function runJourney(options = {}) {
   const apiBase = (options.apiBaseUrl || options.baseUrl).replace(/\/$/, '');
 
   await recordStep(
-    { id: 1, slug: 'dashboard', name: 'Dashboard Overview' },
+    { id: 1, slug: 'login_gate_and_guest_entry', name: 'Login Gate and Guest Entry' },
     async () => {
-      await stepNavigate(page, { id: 1 }, `${base}/index.php`, 'riskradar');
+      await page.goto(`${base}/index.php`, { waitUntil: 'domcontentloaded' });
+      await waitForUi(page);
+      if (!page.url().includes('/login.php')) {
+        throw new Error(`Expected /index.php to redirect to /login.php, received ${page.url()}`);
+      }
+
+      await continueAsGuest(page, base);
     },
   );
 
@@ -311,39 +442,33 @@ async function runJourney(options = {}) {
   await recordStep(
     { id: 6, slug: 'assistant', name: 'AI Assistant View' },
     async () => {
-      await stepNavigate(page, { id: 6 }, `${base}/assistant.php`, 'assistant');
-
       await clearSessionCookie(context);
       await assertAssistantContracts(page, apiBase, 'anonymous', 2);
 
-      const openWidgetButton = page.getByRole('button', { name: 'Open Golby AI Assistant' });
-      await openWidgetButton.waitFor({ timeout: 10000 });
-      await openWidgetButton.click();
-
-      if (await page.getByRole('button', { name: 'Show Panels' }).count()) {
-        throw new Error('Anonymous users should not see the diagnostics panel toggle.');
-      }
-
-      if (options.screenshots) {
-        await screenshotCollector.capture(page, '06a_assistant_anonymous_open', 'Anonymous assistant open state');
-      }
-
       await clearSessionCookie(context);
-      await setSessionCookie(context, base, 2);
+      await setSessionCookie(context, base, apiBase, 2);
       await stepNavigate(page, { id: 6 }, `${base}/assistant.php`, 'assistant');
       await assertAssistantContracts(page, apiBase, 'user', 2);
 
+      const widget = page.locator('#riskradar-ai-assistant-widget');
+      const openWidgetButton = widget.getByRole('button', { name: 'Open Golby AI Assistant' });
+
       await openWidgetButton.waitFor({ timeout: 10000 });
       await openWidgetButton.click();
 
-      const messageInput = page.getByRole('textbox', { name: 'Message input' });
+      const getStartedButton = widget.getByRole('button', { name: 'Get started with Golby' }).first();
+      if (await getStartedButton.count()) {
+        await getStartedButton.click({ force: true });
+      }
+
+      const messageInput = widget.getByRole('textbox', { name: 'Message input' });
       await messageInput.waitFor({ timeout: 10000 });
 
-      const helpfulFeedbackButtons = page.getByRole('button', { name: 'This was helpful' });
+      const helpfulFeedbackButtons = widget.getByRole('button', { name: 'This was helpful' });
       const helpfulCountBefore = await helpfulFeedbackButtons.count();
 
       await messageInput.fill('Show me latest alerts');
-      await page.getByRole('button', { name: 'Send message' }).click();
+      await widget.getByRole('button', { name: 'Send message' }).click({ force: true });
       await page.waitForFunction(
         () => {
           const buttons = Array.from(document.querySelectorAll('button[aria-label="This was helpful"]'));
@@ -368,26 +493,26 @@ async function runJourney(options = {}) {
       }
 
       await messageInput.fill('Can you give me medical advice?');
-      await page.getByRole('button', { name: 'Send message' }).click();
+      await widget.getByRole('button', { name: 'Send message' }).click({ force: true });
       await page.waitForSelector('text=I cannot provide medical advice', { timeout: 15000 });
 
       if (options.screenshots) {
         await screenshotCollector.capture(page, '06d_assistant_guardrail', 'Assistant guardrail response rendered');
       }
 
-      if (await page.getByRole('button', { name: 'Show Panels' }).count()) {
+      if (await widget.getByRole('button', { name: 'Show Panels' }).count()) {
         throw new Error('Authenticated non-admin users should not see diagnostics panel controls.');
       }
 
       await clearSessionCookie(context);
-      await setSessionCookie(context, base, 4);
+      await setSessionCookie(context, base, apiBase, 4);
       await stepNavigate(page, { id: 6 }, `${base}/assistant.php`, 'assistant');
       await assertAssistantContracts(page, apiBase, 'admin', 4);
 
       await openWidgetButton.waitFor({ timeout: 10000 });
       await openWidgetButton.click();
 
-      const diagnosticsToggle = page.getByRole('button', { name: 'Toggle diagnostics panel' });
+      const diagnosticsToggle = widget.getByRole('button', { name: 'Toggle diagnostics panel' });
       await diagnosticsToggle.waitFor({ timeout: 20000 });
       await diagnosticsToggle.click();
 

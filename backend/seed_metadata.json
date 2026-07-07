@@ -1,0 +1,118 @@
+{
+  "status": "success",
+  "mode": "fresh",
+  "demo_users": {
+    "1": {
+      "id": 1,
+      "email": "demo_low@riskradar.local",
+      "display_name": "Demo User (Low Risk)",
+      "health_conditions": {
+        "asthma": 0,
+        "copd": 0,
+        "allergies": 0,
+        "heart_disease": 0,
+        "elderly": 0,
+        "pregnant": 0,
+        "children": 0,
+        "immunocompromised": 0
+      }
+    },
+    "2": {
+      "id": 2,
+      "email": "demo_medium@riskradar.local",
+      "display_name": "Demo User (Medium Risk)",
+      "health_conditions": {
+        "asthma": 3,
+        "copd": 0,
+        "allergies": 2,
+        "heart_disease": 0,
+        "elderly": 0,
+        "pregnant": 0,
+        "children": 0,
+        "immunocompromised": 0
+      }
+    },
+    "3": {
+      "id": 3,
+      "email": "demo_high@riskradar.local",
+      "display_name": "Demo User (High Risk)",
+      "health_conditions": {
+        "asthma": 4,
+        "copd": 3,
+        "allergies": 3,
+        "heart_disease": 2,
+        "elderly": 0,
+        "pregnant": 0,
+        "children": 0,
+        "immunocompromised": 1
+      }
+    },
+    "4": {
+      "id": 4,
+      "email": "demo_admin@riskradar.local",
+      "display_name": "Demo Admin",
+      "health_conditions": {
+        "asthma": 0,
+        "copd": 0,
+        "allergies": 1,
+        "heart_disease": 0,
+        "elderly": 1,
+        "pregnant": 0,
+        "children": 0,
+        "immunocompromised": 0
+      }
+    }
+  },
+  "session_tokens": {
+    "1": {
+      "token": "eyJleHAiOjE3NzYyMTMxNDgsImlhdCI6MTc3NjIwOTU0OCwic3ViIjoxfQ.Gv8popCe5N4HSDjH87zID5k9h2vbaJpR934HQBJVtR0",
+      "expires_at": "2026-04-15T00:32:28.838076+00:00",
+      "user_id": 1,
+      "email_plaintext": "demo_low@riskradar.local"
+    },
+    "2": {
+      "token": "eyJleHAiOjE3NzYyMTMxNDgsImlhdCI6MTc3NjIwOTU0OCwic3ViIjoyfQ.gnlht_yMtUKy34yivIRxUtQLsyaJCzGCC446_6S3ZhQ",
+      "expires_at": "2026-04-15T00:32:28.861128+00:00",
+      "user_id": 2,
+      "email_plaintext": "demo_medium@riskradar.local"
+    },
+    "3": {
+      "token": "eyJleHAiOjE3NzYyMTMxNDgsImlhdCI6MTc3NjIwOTU0OCwic3ViIjozfQ.ybjwalV_fN5D9dAxCfrNTB34bU_rhwBfVOUpZsYUArw",
+      "expires_at": "2026-04-15T00:32:28.875243+00:00",
+      "user_id": 3,
+      "email_plaintext": "demo_high@riskradar.local"
+    },
+    "4": {
+      "token": "eyJleHAiOjE3NzYyMTMxNDgsImlhdCI6MTc3NjIwOTU0OCwic3ViIjo0fQ.Wg-0h7Bo-8xqD0n8A8-9KHXdn-jQ6TWRQQmI5SvedD4",
+      "expires_at": "2026-04-15T00:32:28.889721+00:00",
+      "user_id": 4,
+      "email_plaintext": "demo_admin@riskradar.local"
+    }
+  },
+  "alerts_created": 15,
+  "alert_ids": [
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115
+  ],
+  "summaries_created": 2,
+  "summary_ids": [
+    1,
+    2
+  ],
+  "db_path": "C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\backend\\riskradar.db",
+  "seed_timestamp": "2026-04-14T23:32:28.908397+00:00",
+  "fixtures_version": "1.0"
+}

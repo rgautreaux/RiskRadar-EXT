@@ -15,6 +15,8 @@ Optional stretch goals:
 
 ## Verification Snapshot (Latest)
 
+- Latest login-first entry and feature-access guard verification pass: protected pages require sign-in or guest mode, login/register are first-touch anonymous pages, and guest continuation path is active (2026-04-14).
+- Latest final Golby verification pass: connectivity preflight **PASS**, frontend build **PASS**, and demo journey **6/6 passed** (2026-04-14).
 - Latest full backend verification (`npm run verify:backend`): **211 passed** plus standalone smoke test pass and normalization guardrail step pass (2026-04-12).
 - S3-06 closeout command added: `npm run verify:evidence:s3` (passes when all required evidence files and links are present).
 
@@ -253,6 +255,86 @@ Maintain delivered features, harden security, and keep documentation and verific
 
 ### Stage 5 Session Entries (After Checklist)
 
+#### Stage 5: Login-First Entry With Guest Path Completion, Verification, and Documentation Synchronization Session (2026-04-14)
+Summary:
+- Confirmed complete implementation of login-first entry behavior with explicit login, sign-up, and guest continuation paths.
+- Confirmed strict feature-page access guards now enforce authenticated-or-guest session requirements.
+- Confirmed shared layout/nav access-context rendering is aligned for anonymous, guest, and authenticated states.
+- Confirmed demo/accessibility test updates reflect login-first redirect and guest bootstrap flow.
+- Synchronized top-level docs (README, STAGES, TODO, TRANSCRIPT, REFLECTION, AUTHORS, PROGRAM_EXECUTION, USER_GUIDE) in chronological Stage 5 order.
+- Ran transcript duplicate-heading pass and confirmed `NO_DUPLICATE_STAGE_HEADINGS`.
+
+#### Stage 5: Final Golby Verification Pass, Safe Artifact Reversion, and Documentation Synchronization Session (2026-04-14)
+Summary:
+- Ran the final end-to-end Golby verification chain on live canonical local services.
+- Confirmed pre-demo connectivity preflight reached full PASS, web frontend build succeeded, and demo journey passed **6/6**.
+- Reverted generated runtime artifacts (`backend/riskradar.db`, pycache files, and evidence output churn) to keep review scope clean.
+- Confirmed transcript stage-heading uniqueness with duplicate-heading pass (`NO_DUPLICATE_STAGE_HEADINGS`).
+- Synchronized top-level progress-tracking documentation in chronological Stage 5 order.
+
+#### Stage 5: Connectivity Hardening Completion, Safe Artifact Isolation, and Documentation Synchronization Session (2026-04-13)
+Summary:
+- Completed remaining connectivity/wiring hardening tasks and validated all Stage 5 reliability checks.
+- Confirmed readiness and schema-validation guardrails operate in runtime and preflight flows.
+- Updated map-wiring preflight to authenticate guest session before endpoint-marker validation to avoid login-page false negatives.
+- Re-ran `npm run verify:connectivity` to full PASS and re-ran demo journey to **6/6 passed**.
+- Performed safe artifact isolation using dedicated safety stashes so generated runtime/evidence files do not contaminate review scope.
+- Synchronized top-level documentation (README, STAGES, TODO, TRANSCRIPT, REFLECTION, AUTHORS, PROGRAM_EXECUTION, DEMO_RUNBOOK, USER_GUIDE).
+
+#### Stage 5: SVG Asset White-Pixel Removal and Documentation Synchronization Session (2026-04-13)
+Summary:
+- Removed white background pixel paths from `frontend/web/public/assets/icons/ai-assistant-reacting.svg` and `frontend/web/public/assets/golby-asset-ai-assistant-reacting-DRoynDD7.svg`.
+- Preserved all non-background vector paths so assistant artwork and expressions remain unchanged.
+- Verified both files remain valid SVG assets and now render with transparent backgrounds.
+- Synchronized Stage 5 documentation updates across TODO, STAGES, README, TRANSCRIPT, REFLECTION, AUTHORS, and docs README.
+- Ran transcript duplicate-heading pass; no duplicate Stage-session headings were detected.
+
+#### Stage 5: Golby Feature Verification and RiskRadar Branding Restoration Session (2026-04-13)
+Summary:
+- Verified feature equivalence between floating widget and full-page assistant paths, confirming both use the same ChatInterface capabilities.
+- Replaced placeholder Golby rendering in `frontend/web/components/golby/GolbyIcon.tsx` with the globe-based `ai-assistant-reacting.svg` asset.
+- Rebuilt facial overlays for the 495x468 globe coordinate space and validated all supported expression states.
+- Re-ran frontend build verification (`npm run build:web`) with no TypeScript errors.
+- Synchronized this session across TRANSCRIPT, REFLECTION, STAGES, TODO, AUTHORS, and README in chronological Stage 5 order.
+
+#### Stage 5: Backend/Auth Import Path Refactor, Test Verification, and Documentation Synchronization Session (2026-04-14)
+Summary:
+- Refactored all backend and test files to use absolute imports from the project root, resolving persistent import errors and enabling reliable test discovery.
+- Fixed test environment issues (PYTHONPATH, working directory, interpreter activation) and installed missing dependencies (`pydantic[email]`, `email-validator`).
+- Enforced strict guest/account access control in backend endpoints and verified guest restriction milestone with passing backend tests.
+- Synchronized all top-level documentation files (TODO, STAGES, TRANSCRIPT, REFLECTION, AUTHORS, README) to reflect these developments, ensuring deduplication and correct chronological order.
+- Confirmed all backend tests pass and documentation is grading/onboarding ready.
+
+#### Stage 5: Golby Chat Interface Visibility Enhancement and Auto-Open Wiring Session (2026-04-12)
+Summary:
+- Diagnosed chat interface visibility issues as two separate frontend blockers: missing route detection in pageContext.ts and missing facial expressions in GolbyIcon.tsx.
+- Implemented three targeted fixes: (1) added 'assistant' route fallback detection, (2) added waving/winking facial expression overlays, (3) added conditional auto-open logic in GolbyAssistantWidget.tsx.
+- Rebuilt frontend bundle (354.72 kB golby-widget.js) and verified with Playwright browser checks: before fixes showed inputCount=0 (chat hidden), after fixes showed inputCount=1 (chat visible and ready to close).
+- Synchronized this session's transcript entry and updates to REFLECTION, TODO, STAGES, AUTHORS, and README in chronological Stage 5 order.
+
+#### Stage 5 Frontend-Backend Wiring Completion, Verification, and Documentation Synchronization Session (2026-04-12)
+Summary:
+- Completed frontend-backend wiring fixes so forecast/map browser requests use configured backend API origin/prefix instead of fragile same-origin fallback paths.
+- Hardened backend CORS origin parsing and startup logging for clearer split-origin diagnostics.
+- Verified runtime behavior with syntax checks, endpoint injection checks, CORS preflight checks, and fallback-state regression checks on dashboard/alerts/summaries.
+- Ran transcript dedupe passes (heading-level and section-body-level); duplicates reported as zero.
+- Synchronized README, STAGES, TODO, TRANSCRIPT, REFLECTION, AUTHORS, and docs README entries for this session.
+
+#### Stage 5 Unrelated-Change Isolation via Separate Worktree/Branch Session (2026-04-12)
+Summary:
+- Reviewed active local changes and isolated unrelated files from the main branch workflow.
+- Split and committed unrelated updates (`backend/scripts/pre_demo_connectivity_check.py`, `frontend/web/README.md`) into dedicated branch/worktree `chore/unrelated-connectivity-readme`.
+- Created isolated commit `67abd7b2` and pushed branch to origin for separate PR review.
+- Preserved a clean, focused current branch state for continued feature/documentation work.
+
+#### Stage 5 Connectivity Preflight, Canonical Local Topology, and Documentation Synchronization Session (2026-04-12)
+Summary:
+- Added a fail-fast connectivity preflight workflow (`npm run verify:connectivity`) to validate backend/frontend/API wiring before demos.
+- Added new preflight scripts (`backend/scripts/pre_demo_connectivity_check.py`, `backend/scripts/run_connectivity_preflight.mjs`) and wired `demo:run` to execute preflight before journey automation.
+- Standardized canonical local runtime topology to backend `127.0.0.1:8001` and frontend `127.0.0.1:8080` in config defaults and docs.
+- Updated runbook/execution/frontend setup docs with explicit pre-demo connectivity validation flow.
+- Ran transcript duplicate-entry pass; stage-session headings remain unique and chronologically ordered.
+
 #### Stage 5 Golby Runtime Resilience and Interaction Verification Hardening Session (2026-04-12)
 Summary:
 - Added lightweight user-visible diagnostics in Golby chat for backend assistant call, feedback sync, and profile sync failure paths while preserving local fallback behavior.
@@ -326,6 +408,7 @@ Summary:
 - Implemented low-risk settings-first key lookup fix in `backend/scrapers/registry.py` to avoid false skip warnings when `.env` contains required keys.
 - Re-verified post-run dataset integrity and retained generated evidence artifacts for grading workflow.
 
+
 #### Stage 5 Frontend Visual Refresh Validation and Signoff (Open)
 Summary:
 - Visual refresh implementation is complete; remaining closeout is manual validation and signoff.
@@ -336,6 +419,129 @@ Open Tasks (Assigned: Max):
 - [ ] Run manual accessibility spot-check for keyboard flow, focus visibility, and readable contrast on refreshed UI states.
 - [ ] Confirm map visual behavior after style extraction (legend collapse/expand, modals, loading/fallback, overlay toggles).
 - [ ] Add final signoff note in documentation confirming validation date, owner, and outcome.
+
+---
+
+#### Stage 5 Documentation Synchronization and Backend/Auth Completion Session (2026-04-14)
+Summary:
+- Synchronized all top-level documentation (README, TODO, STAGES, TRANSCRIPT, REFLECTION, AUTHORS, docs/README) to reflect the completion of backend/auth implementation, test validation, and persistent environment fixes.
+- Ensured all entries are unique, deduplicated, and in correct chronological order, preserving style and format.
+- Updated contributor attributions and session summaries for historical accuracy.
+
+#### Stage 5 Login-First Entry, Guest Path, and Verification Session (2026-04-14)
+Summary:
+- Confirmed complete implementation of login-first entry behavior with explicit login, sign-up, and guest continuation paths.
+- Strict feature-page access guards now enforce authenticated-or-guest session requirements.
+- Shared layout/nav access-context rendering is aligned for anonymous, guest, and authenticated states.
+- Demo/accessibility test updates reflect login-first redirect and guest bootstrap flow.
+- Synchronized top-level docs in chronological Stage 5 order.
+
+#### Stage 5 Final Golby Verification, Safe Artifact Reversion, and Documentation Sync Session (2026-04-14)
+Summary:
+- Ran the final end-to-end Golby verification chain on live canonical local services.
+- Confirmed pre-demo connectivity preflight reached full PASS, web frontend build succeeded, and demo journey passed 6/6.
+- Reverted generated runtime artifacts to keep review scope clean.
+- Synchronized top-level progress-tracking documentation in chronological Stage 5 order.
+
+#### Stage 5 Connectivity Hardening, Safe Artifact Isolation, and Documentation Sync Session (2026-04-13)
+Summary:
+- Completed remaining connectivity/wiring hardening tasks and validated all Stage 5 reliability checks.
+- Confirmed readiness and schema-validation guardrails operate in runtime and preflight flows.
+- Map-wiring preflight authenticates guest session before endpoint-marker validation to avoid login-page false negatives.
+- Re-ran connectivity verification to full PASS and demo journey to 6/6 passed.
+- Performed safe artifact isolation using dedicated safety stashes.
+- Synchronized top-level documentation.
+
+#### Stage 5 SVG Asset White-Pixel Removal and Documentation Sync Session (2026-04-13)
+Summary:
+- Removed white background pixel paths from assistant SVG assets.
+- Verified both files remain valid SVG assets and now render with transparent backgrounds.
+- Synchronized Stage 5 documentation updates across all top-level docs.
+
+#### Stage 5 Golby Feature Verification and Branding Restoration Session (2026-04-13)
+Summary:
+- Verified feature equivalence between floating widget and full-page assistant paths.
+- Replaced placeholder Golby rendering with globe-based asset.
+- Rebuilt facial overlays and validated all supported expression states.
+- Synchronized this session across all top-level documentation.
+
+#### Stage 5 Golby Chat Interface Visibility Enhancement and Auto-Open Wiring Session (2026-04-12)
+Summary:
+- Diagnosed chat interface visibility issues and implemented targeted fixes for route detection, facial expressions, and auto-open logic.
+- Rebuilt frontend bundle and verified with browser checks.
+- Synchronized this session's transcript entry and updates to all top-level docs.
+
+#### Stage 5 Frontend-Backend Wiring Completion, Verification, and Documentation Sync Session (2026-04-12)
+Summary:
+- Completed frontend-backend wiring fixes for forecast/map browser requests and backend CORS origin parsing.
+- Verified runtime behavior with syntax checks, endpoint injection checks, and regression checks.
+- Ran transcript dedupe passes; duplicates reported as zero.
+- Synchronized README, STAGES, TODO, TRANSCRIPT, REFLECTION, AUTHORS, and docs README entries for this session.
+
+#### Stage 5 Unrelated-Change Isolation via Separate Worktree/Branch Session (2026-04-12)
+Summary:
+- Reviewed active local changes and isolated unrelated files from the main branch workflow.
+- Split and committed unrelated updates into dedicated branch/worktree for separate PR review.
+- Preserved a clean, focused current branch state for continued feature/documentation work.
+
+#### Stage 5 Connectivity Preflight, Canonical Local Topology, and Documentation Sync Session (2026-04-12)
+Summary:
+- Added a fail-fast connectivity preflight workflow to validate backend/frontend/API wiring before demos.
+- Added new preflight scripts and wired demo:run to execute preflight before journey automation.
+- Standardized canonical local runtime topology in config defaults and docs.
+- Updated runbook/execution/frontend setup docs with explicit pre-demo connectivity validation flow.
+- Ran transcript duplicate-entry pass; stage-session headings remain unique and chronologically ordered.
+
+#### Stage 5 Golby Runtime Resilience and Interaction Verification Hardening Session (2026-04-12)
+Summary:
+- Added user-visible diagnostics in Golby chat for backend assistant call, feedback sync, and profile sync failure paths.
+- Retired obsolete scaffold widget loader assets after migration to compiled golby-widget artifacts.
+- Expanded assistant demo coverage to include endpoint contract checks and role-context validation.
+- Updated package.json demo:run script to build assistant assets before journey execution.
+- Updated CI to build and validate Golby widget assets.
+- Updated demo runbook setup checklist.
+- Re-ran verification: assistant interaction journey passed 6/6, backend verification passed 211/211 plus smoke test.
+
+#### Stage 5 Frontend Contrast Accessibility Final Pass and Documentation Sync Session (2026-04-12)
+Summary:
+- Completed a final frontend visual polish pass to tighten edge-case contrast while preserving the richer, energetic color direction.
+- Applied WCAG-focused contrast hardening for navigation, actions, links, muted/supporting text, and keyboard focus visibility.
+- Synchronized top-level documentation updates for all major docs.
+
+#### Stage 5 RiskRadar Top-Text Removal and Documentation Sync Session (2026-04-12)
+Summary:
+- Removed distracting top-of-page raw text output on RiskRadar web pages by correcting PHP file-header/tag placement.
+- Fixed helper declarations so no raw helper text leaks into rendered pages.
+- Performed transcript hygiene pass to remove duplicate replay-style transcript entries.
+
+#### Stage 5 Review-Ready Commit Split and Push Session (2026-04-12)
+Summary:
+- Grouped backend normalization and guardrail changes into one focused commit.
+- Grouped evidence-index/checklist additions into a separate docs commit.
+- Grouped top-level status-document updates into a distinct docs sync commit.
+- Isolated the local SQLite runtime artifact into its own commit for reviewer convenience.
+
+#### Stage 5 Rebecca-Safe Database Normalization Guardrails and Closeout Session (2026-04-12)
+Summary:
+- Completed remaining Rebecca-safe normalization hardening tasks using compatibility-first changes only.
+- Added normalization fallback observability in summaries/users API compatibility paths.
+- Added verification scripts and extended full verification runner with normalization guardrail execution flags.
+- Added staging evidence checklist and evidence-index link for normalization rollout proof.
+- Re-validated backend after updates: 211/211 tests passed.
+
+#### Stage 5 Frontend Visual Refresh Low-Risk Implementation and Max Validation Handoff Session (2026-04-12)
+Summary:
+- Completed Rebecca-safe frontend visual refresh implementation across shared styles and key pages.
+- Consolidated map presentation styling by removing inline style attributes and moving style control into shared CSS.
+- Added page-level polish hooks and accessibility-friendly interaction treatments.
+- Updated tracker docs to assign remaining manual frontend validation/signoff tasks to Max.
+- Verified edited frontend files report no diagnostics errors.
+
+#### Stage 5 Verified Map Closeout and Documentation Sync Session (2026-04-11)
+Summary:
+- Confirmed the Stage 3 map closeout is verifier-clean after normalizing frontend coordinate parsing for alerts and risk polygons.
+- Verified that all required S3-06 evidence artifacts are present and that npm run verify:evidence:s3 passes.
+- Synchronized the top-level project summary to reflect the validated map state and evidence bundle.
 
 #### Stage 5 Sprint Remediation Implementation and Verification Closeout Session (2026-04-11)
 Summary:

@@ -161,6 +161,13 @@ function rr_http_request(array $config, string $method, string $path, array $que
         $decoded = json_decode($bodyText, true);
 
         if ($status < 200 || $status >= 300) {
+            // Custom user-facing messages for restricted endpoints
+            if ($status === 401) {
+                return rr_fallback_result($decoded, 'You must be signed in to access this feature.', $status);
+            }
+            if ($status === 403) {
+                return rr_fallback_result($decoded, 'This feature is only available to registered users. Please sign in or create an account.', $status);
+            }
             return rr_fallback_result($decoded, 'The backend returned an error response.', $status);
         }
 
@@ -198,6 +205,13 @@ function rr_http_request(array $config, string $method, string $path, array $que
 
     $decoded = json_decode($bodyText, true);
     if (($status !== null && ($status < 200 || $status >= 300))) {
+        // Custom user-facing messages for restricted endpoints
+        if ($status === 401) {
+            return rr_fallback_result($decoded, 'You must be signed in to access this feature.', $status);
+        }
+        if ($status === 403) {
+            return rr_fallback_result($decoded, 'This feature is only available to registered users. Please sign in or create an account.', $status);
+        }
         return rr_fallback_result($decoded, 'The backend returned an error response.', $status);
     }
 
@@ -367,9 +381,14 @@ function rr_register_user(array $config, array $payload): array
 {
     $result = rr_http_request($config, 'POST', 'users/register', [], $payload);
     if (!$result['ok']) {
-        $message = ($result['status'] ?? 0) === 400
-            ? 'That email address is already registered or the form data is invalid.'
-            : 'Registration failed. Please verify the backend is running and try again.';
+        $backendDetail = is_array($result['data']) ? ($result['data']['detail'] ?? null) : null;
+        if (is_string($backendDetail) && $backendDetail !== '') {
+            $message = $backendDetail;
+        } elseif (($result['status'] ?? 0) === 400) {
+            $message = 'That email address is already registered or the form data is invalid.';
+        } else {
+            $message = 'Registration failed. Please verify the backend is running and try again.';
+        }
 
         return rr_fallback_result(rr_normalize_user(is_array($result['data']) ? $result['data'] : null), $message, $result['status'] ?? null);
     }

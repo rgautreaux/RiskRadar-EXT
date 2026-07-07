@@ -1,11 +1,11 @@
 # Documentation Synchronization Note
 
-All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) has been reviewed and updated for consistency and agreement through the Stage 5 closeout/handoff sessions (2026-04-11). This ensures grading clarity, onboarding readiness, and a single source of truth for project status and history.
+All top-level documentation (README, STAGES.md, TODO.md, AUTHORS.md, TRANSCRIPT.md, REFLECTION.md) has been reviewed and updated for consistency and agreement through the Stage 5 login-first entry with guest path completion, verification, and documentation synchronization session (2026-04-14). This ensures grading clarity, onboarding readiness, and a single source of truth for project status and history.
 
 
 # RiskRadar Web-Extension User Guide
 
-This guide walks you through how to run and use the RiskRadar Web-Extension, including all features and updates through Stage 5 closeout (2026-04-12).
+This guide walks you through how to run and use the RiskRadar Web-Extension, including all features and updates through Stage 5 login-first entry with guest path completion closeout (2026-04-14).
 
 ## Documentation Navigation Hub
 
@@ -145,13 +145,13 @@ cd backend
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-uvicorn main:app --reload --host 127.0.0.1 --port 8000
+uvicorn main:app --reload --host 127.0.0.1 --port 8001
 ```
 
 When successful, the API is available at:
 
-- `http://127.0.0.1:8000`
-- Health/root check: `http://127.0.0.1:8000/`
+- `http://127.0.0.1:8001`
+- Health/root check: `http://127.0.0.1:8001/`
 
 Notes:
 
@@ -182,7 +182,13 @@ npm run build:web:watch
 
 Open the app in your browser:
 
-- `http://127.0.0.1:8080/index.php`
+- `http://127.0.0.1:8080/login.php`
+
+Run the connectivity preflight before demos or manual validation:
+
+```powershell
+npm run verify:connectivity
+```
 
 ---
 
@@ -190,7 +196,7 @@ Open the app in your browser:
 
 By default, the web app points to:
 
-- Base URL: `http://127.0.0.1:8000`
+- Base URL: `http://127.0.0.1:8001`
 - API prefix: `/api/v1`
 
 If your backend runs on another port:
@@ -209,9 +215,19 @@ Alternative: set environment variables before starting PHP:
 
 ## 5. Use the Web-Extension (Step-by-Step)
 
-### Step A: Create an Account
+### Step A: Start at Login (Required Entry)
 
-1. Open `http://127.0.0.1:8080/register.php`
+1. Open `http://127.0.0.1:8080/login.php`
+2. Choose one of three paths:
+   - **Sign in** with an existing account
+   - **Create one** to open the registration form
+   - **Continue as Guest** to access the app without account sign-in
+
+Expected result: successful sign-in or guest entry opens the Dashboard and allows access to feature pages.
+
+### Step B: Create an Account (Optional but Recommended)
+
+1. From Login, select **Create one** (or open `http://127.0.0.1:8080/register.php`)
 2. Fill in:
    - Display name
    - Email
@@ -219,16 +235,16 @@ Alternative: set environment variables before starting PHP:
    - ZIP code (optional)
 3. Select **Create account**
 
-Expected result: successful registration redirects you to the Login page with a success message.
+Expected result: successful registration redirects to the Login page with a success message.
 
-### Step B: Understand Login Status
+### Step C: Sign In or Continue as Guest
 
 1. Open `http://127.0.0.1:8080/login.php`
-2. Enter credentials and submit
+2. Either sign in with your account or select **Continue as Guest**
 
-Current behavior: the backend login endpoint is not implemented for Stage 1, so the page shows a message explaining login is not yet supported.
+Expected result: you are redirected to `index.php` and can navigate to protected pages.
 
-### Step C: Set Profile Preferences
+### Step D: Set Profile Preferences
 
 1. Open `http://127.0.0.1:8080/profile.php`
 2. Enter your numeric **User ID** (created during registration)
@@ -241,7 +257,7 @@ Current behavior: the backend login endpoint is not implemented for Stage 1, so 
 
 Expected result: success message and stored preference summary.
 
-### Step D: Explore the Dashboard
+### Step E: Explore the Dashboard
 
 1. Open `http://127.0.0.1:8080/index.php`
 2. Review:
@@ -253,7 +269,7 @@ Expected result: success message and stored preference summary.
 
 Use this as your high-level status page.
 
-### Step E: Browse Alerts
+### Step F: Browse Alerts
 
 1. Open `http://127.0.0.1:8080/alerts.php`
 2. Use filters:
@@ -266,7 +282,7 @@ Use this as your high-level status page.
 
 Expected result: filtered alert cards with metadata and timestamps.
 
-### Step F: Browse Summaries
+### Step G: Browse Summaries
 
 1. Open `http://127.0.0.1:8080/summaries.php`
 2. Use filters:
@@ -277,7 +293,7 @@ Expected result: filtered alert cards with metadata and timestamps.
 
 Expected result: summary cards with type, generated time, region, model, and full text preview.
 
-### Step G: View Risk Score (Stage 2)
+### Step H: View Risk Score (Stage 2)
 
 1. Open `http://127.0.0.1:8080/risk.php`
 2. Enter your numeric **User ID**
@@ -287,7 +303,7 @@ Expected result: summary cards with type, generated time, region, model, and ful
 
 Expected result: personalized risk score with factor-level breakdown based on your location and health preferences.
 
-### Step H: View Smart Alerts (Stage 2)
+### Step I: View Smart Alerts (Stage 2)
 
 1. Open `http://127.0.0.1:8080/smart_alerts.php`
 2. Enter your numeric **User ID**
@@ -295,7 +311,7 @@ Expected result: personalized risk score with factor-level breakdown based on yo
 
 Expected result: alerts sorted by composite priority score with urgency labels (High / Medium / Low).
 
-### Step I: Interactive Map (Stage 3)
+### Step J: Interactive Map (Stage 3)
 
 Open `http://127.0.0.1:8080/map.php` to access the interactive risk map.
 
@@ -317,7 +333,7 @@ Open `http://127.0.0.1:8080/map.php` to access the interactive risk map.
 ### Web page says no data / empty state
 
 - Confirm backend is running on the expected port.
-- Visit `http://127.0.0.1:8000/` and verify it returns a JSON status payload.
+- Visit `http://127.0.0.1:8001/` and verify it returns a JSON status payload.
 - Verify web config points to the correct API base URL and prefix.
 
 ### PHP server command fails
@@ -330,9 +346,10 @@ Open `http://127.0.0.1:8080/map.php` to access the interactive risk map.
 - Ensure virtual environment is activated.
 - Re-run `pip install -r backend/requirements.txt` (or from `backend/`, `pip install -r requirements.txt`).
 
-### Login does not work even with valid account
+### Login or protected-page redirect issues
 
-- This is expected in Stage 1. Registration and preference updates are available; backend login auth flow is not yet implemented.
+- Protected pages redirect to `/login.php` when no authenticated session and no guest session are active.
+- If redirected unexpectedly, sign in again or choose **Continue as Guest** from `/login.php`.
 
 ---
 
@@ -349,12 +366,13 @@ For a full first run:
 
 1. Start backend API
 2. Start PHP web server
-3. Register account (`/register.php`)
-4. Update preferences in Profile (`/profile.php`)
-5. Check Dashboard (`/index.php`)
-6. Explore Alerts and Summaries (`/alerts.php`, `/summaries.php`)
-7. View your Risk Score and Smart Alerts (`/risk.php`, `/smart_alerts.php`) using your user ID
-8. Explore the Interactive Map (`/map.php`) with live overlays and personalized risk layers
+3. Open Login (`/login.php`)
+4. Choose sign-in, register, or guest path
+5. Update preferences in Profile (`/profile.php`) if signed in
+6. Check Dashboard (`/index.php`)
+7. Explore Alerts and Summaries (`/alerts.php`, `/summaries.php`)
+8. View your Risk Score and Smart Alerts (`/risk.php`, `/smart_alerts.php`) using your user ID
+9. Explore the Interactive Map (`/map.php`) with live overlays and personalized risk layers
 
 You are now ready to use and demonstrate the current RiskRadar Web-Extension features.
 
@@ -419,11 +437,14 @@ To verify all features are functional:
 # Backend verification (full test suite)
 npm run verify:backend
 
+# Connectivity preflight (frontend/backend wiring)
+npm run verify:connectivity
+
 # Demo database verification
 npm run demo:verify
 
 # Frontend navigation (manual)
-# Navigate to: http://localhost:8000/index.php → /risk.php → /map.php → /forecast.php
+# Navigate to: http://127.0.0.1:8080/index.php → /risk.php → /map.php → /forecast.php
 ```
 
 ### Common Grading Questions
@@ -487,7 +508,7 @@ The interactive map and overlays are fully accessible by keyboard and screen rea
 ### Automated Testing
 - Run the automated test script at `frontend/web/tests/test_map_accessibility.js` (requires Node.js, puppeteer, axe-puppeteer, jest):
   1. `npm install puppeteer axe-puppeteer jest`
-  2. Start the PHP server and ensure the map is available at http://localhost:8000/web/views/map.php
+   2. Start the PHP server and ensure the map is available at http://127.0.0.1:8080/map.php
   3. `npx jest frontend/web/tests/test_map_accessibility.js`
 - This script checks:
   - No critical accessibility violations (axe-core)

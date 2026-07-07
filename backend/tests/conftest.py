@@ -3,7 +3,6 @@
 import json
 import pytest
 from datetime import datetime, timezone
-from contextlib import asynccontextmanager
 from unittest.mock import patch
 
 from sqlalchemy import create_engine
@@ -12,9 +11,9 @@ from sqlalchemy.pool import StaticPool
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from db.database import Base, get_db
-from db.models import Alert, Summary, User, ScrapeLog
-from config.settings import settings
+from backend.db.database import Base, get_db
+from backend.db.models import Alert, Summary, User, ScrapeLog
+from backend.config.settings import settings
 
 
 # ---------------------------------------------------------------------------
@@ -51,7 +50,7 @@ def test_client(db_session):
     so tests run isolated and fast.
     """
     from fastapi.middleware.cors import CORSMiddleware
-    from api.router import api_router
+    from backend.api.router import api_router
 
     # Build a clean app without the lifespan that starts the scheduler
     test_app = FastAPI(title="RiskRadar API Test")
@@ -80,7 +79,7 @@ def test_client(db_session):
         finally:
             pass
 
-    test_app.dependency_overrides[get_db] = _override_get_db
+    test_app.dependency_overrides[get_db] = lambda: db_session
     client = TestClient(test_app)
     yield client
     test_app.dependency_overrides.clear()

@@ -1,82 +1,75 @@
 {
-  "generatedAt": "2026-04-13T04:30:21.048Z",
-  "count": 11,
+  "generatedAt": "2026-04-14T04:49:59.859Z",
+  "count": 10,
   "screenshots": [
     {
-      "filename": "demo_01_dashboard.png",
-      "path": "C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_01_dashboard.png",
-      "description": "Dashboard Overview",
-      "capturedAt": "2026-04-13T04:30:09.185Z",
+      "filename": "demo_01_login_gate_and_guest_entry.png",
+      "path": "C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_01_login_gate_and_guest_entry.png",
+      "description": "Login Gate and Guest Entry",
+      "capturedAt": "2026-04-14T04:49:48.787Z",
       "url": "http://127.0.0.1:8080/index.php"
     },
     {
       "filename": "demo_02_risk_scoring.png",
       "path": "C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_02_risk_scoring.png",
       "description": "Personalized Risk Scoring",
-      "capturedAt": "2026-04-13T04:30:10.168Z",
+      "capturedAt": "2026-04-14T04:49:49.954Z",
       "url": "http://127.0.0.1:8080/risk.php?user_id=2&radius_km=50"
     },
     {
       "filename": "demo_03_smart_alerts.png",
       "path": "C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_03_smart_alerts.png",
       "description": "Smart Alerts Prioritization",
-      "capturedAt": "2026-04-13T04:30:12.060Z",
+      "capturedAt": "2026-04-14T04:49:51.796Z",
       "url": "http://127.0.0.1:8080/smart_alerts.php?user_id=2&radius_km=100&limit=10"
     },
     {
       "filename": "demo_04_map.png",
       "path": "C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_04_map.png",
       "description": "Interactive Risk Map",
-      "capturedAt": "2026-04-13T04:30:16.966Z",
+      "capturedAt": "2026-04-14T04:49:55.826Z",
       "url": "http://127.0.0.1:8080/map.php"
     },
     {
       "filename": "demo_05_forecast.png",
       "path": "C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_05_forecast.png",
       "description": "Forecast View",
-      "capturedAt": "2026-04-13T04:30:17.679Z",
+      "capturedAt": "2026-04-14T04:49:56.657Z",
       "url": "http://127.0.0.1:8080/forecast.php"
-    },
-    {
-      "filename": "demo_06a_assistant_anonymous_open.png",
-      "path": "C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_06a_assistant_anonymous_open.png",
-      "description": "Anonymous assistant open state",
-      "capturedAt": "2026-04-13T04:30:18.475Z",
-      "url": "http://127.0.0.1:8080/assistant.php"
     },
     {
       "filename": "demo_06b_assistant_response.png",
       "path": "C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_06b_assistant_response.png",
       "description": "Assistant reply rendered after sending a prompt",
-      "capturedAt": "2026-04-13T04:30:19.399Z",
+      "capturedAt": "2026-04-14T04:49:57.904Z",
       "url": "http://127.0.0.1:8080/assistant.php"
     },
     {
       "filename": "demo_06c_assistant_feedback.png",
       "path": "C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_06c_assistant_feedback.png",
       "description": "Assistant feedback interaction complete",
-      "capturedAt": "2026-04-13T04:30:19.712Z",
+      "capturedAt": "2026-04-14T04:49:58.232Z",
       "url": "http://127.0.0.1:8080/assistant.php"
     },
     {
       "filename": "demo_06d_assistant_guardrail.png",
       "path": "C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_06d_assistant_guardrail.png",
       "description": "Assistant guardrail response rendered",
-      "capturedAt": "2026-04-13T04:30:20.006Z",
+      "capturedAt": "2026-04-14T04:49:58.543Z",
       "url": "http://127.0.0.1:8080/assistant.php"
     },
     {
       "filename": "demo_06e_assistant_admin_diagnostics.png",
       "path": "C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_06e_assistant_admin_diagnostics.png",
       "description": "Admin diagnostics panel visibility check",
-      "capturedAt": "2026-04-13T04:30:20.849Z",
+      "capturedAt": "2026-04-14T04:49:59.537Z",
       "url": "http://127.0.0.1:8080/assistant.php"
     },
     {
       "filename": "demo_06_assistant.png",
       "path": "C:\\Users\\rebec\\OneDrive\\Documents\\GitHub\\cmps-357-sp26-final-project-cmps357-team-3\\static\\evidence\\demo_screenshots\\demo_06_assistant.png",
       "description": "AI Assistant View",
-      "capturedAt": "2026-04-13T04:30:21.048Z",
+      "capturedAt": "2026-04-14T04:49:59.859Z",
       "url": "http://127.0.0.1:8080/assistant.php"
     }
   ]

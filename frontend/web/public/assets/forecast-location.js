@@ -5,8 +5,8 @@ const forecastState = {
 };
 
 function normalizeApiConfig() {
-    const explicitBase = (window.__RISKRADAR_FORECAST_API_BASE__ || '').trim();
-    const explicitPrefix = (window.__RISKRADAR_FORECAST_API_PREFIX__ || '/api/v1').trim();
+    const explicitBase = (window.__RISKRADAR_FORECAST_API_BASE__ || window.__RISKRADAR_API_BASE__ || '').trim();
+    const explicitPrefix = (window.__RISKRADAR_FORECAST_API_PREFIX__ || window.__RISKRADAR_API_PREFIX__ || '/api/v1').trim();
     const prefix = explicitPrefix.startsWith('/') ? explicitPrefix : `/${explicitPrefix}`;
 
     if (explicitBase) {
@@ -21,11 +21,41 @@ function normalizeApiConfig() {
     };
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+async function initCurrentUser() {
+    try {
+        const api = normalizeApiConfig();
+        const res = await fetch(`${api.base}${api.prefix}/auth/me`, { credentials: 'include' });
+        if (res.ok) {
+            const user = await res.json();
+            if (user && user.id) {
+                CURRENT_USER_ID = user.id;
+            }
+        }
+    } catch (_err) {
+        // Not authenticated or network error — use anonymous forecast endpoint.
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await initCurrentUser();
     const locationForm = document.getElementById('forecast-location-form');
     const locationInput = document.getElementById('forecast-location-input');
     const useMyLocationBtn = document.getElementById('use-my-location-btn');
     const status = document.getElementById('forecast-location-status');
+
+    // Block guest forecast requests
+    if (window.__RISKRADAR_IS_GUEST__ === true || window.__RISKRADAR_IS_GUEST__ === 'true') {
+        if (status) {
+            status.textContent = 'Forecasting is only available to registered users. Please sign in or create an account.';
+        }
+        if (locationForm) {
+            locationForm.style.display = 'none';
+        }
+        if (useMyLocationBtn) {
+            useMyLocationBtn.style.display = 'none';
+        }
+        return;
+    }
 
     if (locationForm && locationInput) {
         locationForm.addEventListener('submit', event => {

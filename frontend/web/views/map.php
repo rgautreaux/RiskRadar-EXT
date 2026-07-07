@@ -1,5 +1,10 @@
 
 </section>
+<?php if (isset($isGuest) && $isGuest) : ?>
+    <section class="panel warning-panel">
+        <p class="empty-state">Guest mode: Personalized map overlays and controls are only available to registered users. <a href="login.php">Sign in</a> or <a href="register.php">create an account</a> for full access.</p>
+    </section>
+<?php endif; ?>
 <!-- Toast/Snackbar for user feedback -->
 <div class="map-toast" id="toast" aria-live="polite"></div>
 
