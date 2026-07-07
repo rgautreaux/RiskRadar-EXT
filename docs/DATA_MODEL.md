@@ -91,6 +91,7 @@ Stores account identity and user preference fields used by API routes.
 | `longitude` | `FLOAT` | User longitude |
 | `alert_types` | `TEXT` | JSON array string of preferred alert types |
 | `notify_severity` | `TEXT` | Minimum notification severity |
+| `health_conditions` | `TEXT` | JSON array of health condition keys (e.g. `["respiratory","cardiovascular"]`) |
 | `created_at` | `TEXT` | Account creation timestamp |
 | `updated_at` | `TEXT` | Last update timestamp |
 
@@ -122,6 +123,8 @@ Tracks each scraper execution and ingestion outcome.
 
 | Parent Table | Child Table | Relationship | Join Column(s) |
 |---|---|---|---|
+| `summaries` | `summary_alerts` | One-to-many | `summary_alerts.summary_id` |
+| `alerts` | `summary_alerts` | One-to-many | `summary_alerts.alert_id` |
 | `alerts` | `summaries` | Many-to-many (logical, JSON-linked) | `summaries.alert_ids` stores array of `alerts.id` |
 
 `users` and `scrape_log` are currently standalone relative to ORM foreign-key constraints.
@@ -137,6 +140,12 @@ The active runtime schema is intentionally lightweight and **not fully normalize
 - **`alerts.raw_data`** stores semi-structured source payloads as serialized JSON text.
 - **`summaries.alert_ids`** stores array-style references instead of a junction table.
 - **`users.alert_types`** stores preference lists as JSON text.
+- **`users.health_conditions`** stores health sensitivity condition keys as JSON text.
+
+### Current normalization progress
+
+- `summary_alerts` now provides a relational mapping for summary-to-alert links while preserving `summaries.alert_ids` for backward compatibility.
+- `feedback.user_id` now has an explicit foreign key to `users.id`.
 
 ### Implications
 

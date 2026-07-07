@@ -1,34 +1,319 @@
+# Stage 5 Documentation Synchronization and Backend/Auth Completion Session (2026-04-14)
+Rebecca Gautreaux:
+- Led the synchronized documentation update across all top-level files following backend/auth completion and verification.
+- Ensured deduplication, correct chronological ordering, and historical accuracy in all progress, transcript, reflection, author, and README files.
+- Synchronized contributor attributions and session summaries for traceability.
+
+Max Compeaux:
+- Supported review and validation of documentation updates and historical accuracy.
 # CMPS 357 Final Project Authors
 
-## **Max Compeaux** 
+## Stage-Categorized Contribution Log
+
+### Stage 1: Web-App Extension
+
+#### Runtime Validation, Backend Fix, and Documentation Synchronization Session (2026-03-17)
+Rebecca Gautreaux:
+- Led runtime validation and cross-doc synchronization for Stage 1 completion reporting.
+
+Max Compeaux:
+- Investigated and supported backend auth-test stabilization work and verification.
+
+### Stage 2: Environmental Risk Assessment and Alert Prioritization
+
+#### Stage 2 Documentation and Synchronization Session (2026-03-23)
+Rebecca Gautreaux:
+- Coordinated Stage 2 completion reporting across tracker and top-level docs.
+
+Max Compeaux:
+- Supported Stage 2 implementation verification and documentation consistency checks.
+
+### Stage 3: Data Visualization and UX Extension
+
+#### Stage 3 Phase 5 Completion Session (2026-03-24)
+Rebecca Gautreaux:
+- Coordinated stage finalization reporting and evidence traceability updates.
+
+Max Compeaux:
+- Supported evidence and QA review for Stage 3 completion materials.
+
+#### Stage 3 Documentation and Synchronization Session (2026-03-31)
+Rebecca Gautreaux:
+- Led comprehensive Stage 3 top-level documentation synchronization.
+
+Max Compeaux:
+- Reviewed and verified Stage 3 documentation alignment.
+
+#### Stage 3 Documentation and Synchronization Session (2026-04-27)
+Rebecca Gautreaux:
+- Executed follow-up synchronization pass to keep historical records aligned.
+
+Max Compeaux:
+- Supported review and cross-check of synchronized documentation updates.
+
+### Stage 4: Predictive Analytics and AI-Driven Insights
+
+#### Stage 4 Planning and Asset Integration Session (2026-03-26)
+Rebecca Gautreaux:
+- Led planning artifact creation and assistant asset integration planning updates.
+
+Max Compeaux:
+- Reviewed planning artifacts and contributed to documentation audit readiness.
+
+#### Stage 4 Forecast UI and Asset Integration Session (2026-03-30)
+Rebecca Gautreaux:
+- Led visual integration updates (icons, illustrations, and theme alignment).
+
+Max Compeaux:
+- Supported review of frontend alignment and documentation synchronization.
+
+#### Stage 4 Forecast UI Completion and Documentation Update Session (2026-03-31)
+Rebecca Gautreaux:
+- Verified forecast UI completion and coordinated project-wide documentation updates.
+
+Max Compeaux:
+- Supported verification and synchronization review for Stage 4 forecast deliverables.
+
+#### Stage 4 AI Assistant Widget Integration and Documentation Sync Session (2026-03-31)
+Rebecca Gautreaux:
+- Led React assistant widget integration into the PHP web frontend.
+
+Max Compeaux:
+- Supported verification and quality checks for assistant integration updates.
+
+#### Stage 4 Context-Aware Golby, Backend Data Integration, and Documentation Sync Session (2026-04-02)
+Rebecca Gautreaux:
+- Directed context-aware assistant behavior and backend data integration documentation updates.
+
+Max Compeaux:
+- Supported data-integration verification and documentation audit checks.
+
+#### Stage 4 Documentation Synchronization and Forecast UI Session (2026-04-02)
+Rebecca Gautreaux:
+- Executed full synchronization pass across top-level progress docs.
+
+Max Compeaux:
+- Supported synchronization review and consistency checks.
+
+#### Stage 4 Forecast UI and Asset Integration Session (2026-04-28)
+Rebecca Gautreaux:
+- Finalized forecast asset-path and shared styling consistency documentation.
+
+Max Compeaux:
+- Supported verification of final Stage 4 frontend and doc consistency updates.
+
+
+### Stage 5: Backend/Auth Import Path Refactor, Test Verification, and Documentation Synchronization Session (2026-04-14)
+Rebecca Gautreaux:
+- Led the refactor of all backend and test files to use absolute imports from the project root, resolving persistent import errors and enabling reliable test discovery.
+- Fixed test environment issues (PYTHONPATH, working directory, interpreter activation) and installed missing dependencies (`pydantic[email]`, `email-validator`).
+- Enforced strict guest/account access control in backend endpoints and verified guest restriction milestone with passing backend tests.
+- Synchronized all top-level documentation files (TODO, STAGES, TRANSCRIPT, REFLECTION, AUTHORS, README) to reflect these developments, ensuring deduplication and correct chronological order.
+- Confirmed all backend tests pass and documentation is grading/onboarding ready.
+
+Max Compeaux:
+- Supported verification and review of backend/auth import path refactor and test environment fixes.
+
+### Stage 5: Ongoing Maintenance, Advanced Features, and Review
+#### Stage 5: Login-First Entry With Guest Path Completion, Verification, and Documentation Synchronization Session (2026-04-14)
+Rebecca Gautreaux:
+- Completed and verified login-first entry flow closeout, including strict feature-page access guard coverage and guest path behavior alignment.
+- Coordinated synchronized Stage 5 documentation updates across README, STAGES, TODO, TRANSCRIPT, REFLECTION, AUTHORS, PROGRAM_EXECUTION, and USER_GUIDE.
+- Performed transcript uniqueness validation and preserved chronological ordering for historical accuracy.
+
+Max Compeaux:
+- No direct implementation changes in this session.
+
+#### Stage 5: Final Golby Verification Pass, Safe Artifact Reversion, and Documentation Synchronization Session (2026-04-14)
+Rebecca Gautreaux:
+- Executed final live-service verification for Golby using canonical local topology.
+- Confirmed full PASS outcomes across connectivity preflight, frontend build, and end-to-end demo journey.
+- Performed safe post-verification cleanup by reverting generated runtime/evidence artifacts.
+- Synchronized top-level documentation and historical tracking records for this session in chronological order.
+
+Max Compeaux:
+- No direct implementation changes in this session.
+
+#### Stage 5: Connectivity Hardening Completion, Safe Option Selection, and Documentation Synchronization Session (2026-04-13)
+Rebecca Gautreaux:
+- Completed the remaining Stage 5 wiring-hardening closeout implementation and verification steps.
+- Drove runtime triage and fixes for connectivity preflight realism (guest-session map wiring check) and local verification stability.
+- Re-ran and confirmed full PASS for connectivity preflight and 6/6 demo journey execution.
+- Applied safest-codebase cleanup by isolating runtime/evidence artifacts into safety stashes while preserving intentional docs/code history.
+- Synchronized top-level project governance docs in chronological Stage 5 order.
+
+Max Compeaux:
+- No direct implementation changes in this session.
+
+#### Stage 5: SVG Asset White-Pixel Removal and Documentation Synchronization Session (2026-04-13)
+Rebecca Gautreaux:
+- Removed white-background pixel paths from assistant-reacting SVG assets to enable transparent rendering.
+- Preserved non-background vector content and validated low-risk asset-only scope.
+- Synchronized Stage 5 documentation and transcript history for this session.
+
+Max Compeaux:
+- No direct implementation changes in this session.
+
+#### Stage 5: Golby Feature Verification and RiskRadar Branding Restoration Session (2026-04-13)
+Rebecca Gautreaux:
+- Verified widget and assistant-page feature equivalence and confirmed shared ChatInterface capability coverage.
+- Replaced placeholder mascot rendering by embedding `ai-assistant-reacting.svg` into `frontend/web/components/golby/GolbyIcon.tsx`.
+- Rebuilt facial overlay geometry and expression positioning for globe-compatible coordinates.
+- Ran frontend build verification and synchronized this session across top-level history/tracker documentation.
+
+Max Compeaux:
+- No direct implementation changes in this session.
+
+#### Stage 5: Golby Chat Interface Visibility Enhancement and Auto-Open Wiring Session (2026-04-12)
+Rebecca Gautreaux:
+- Diagnosed chat interface visibility blockers by reviewing component code and identifying missing route detection and missing facial expressions.
+- Implemented three targeted fixes: added 'assistant' route detection in pageContext.ts, added waving/winking expressions to GolbyIcon.tsx, and added conditional auto-open in GolbyAssistantWidget.tsx.
+- Rebuilt frontend bundle (354.72 kB golby-widget.js) and verified fixes with Playwright browser checks confirming chat interface now visible on assistant page.
+- Synchronized this session's entries across TRANSCRIPT, REFLECTION, TODO, STAGES, AUTHORS, and README in chronological Stage 5 order.
+
+Max Compeaux:
+- No direct implementation changes in this session.
+
+#### Stage 5 Frontend-Backend Wiring Completion, Verification, and Documentation Synchronization Session (2026-04-12)
+Rebecca Gautreaux:
+- Led diagnosis and implementation of frontend-backend wiring fixes across forecast/map runtime paths and backend CORS startup handling.
+- Executed runtime verification pass (syntax checks, endpoint injection checks, CORS preflight, and fallback-state checks) and resolved environment-port alignment blockers.
+- Synchronized Stage 5 documentation updates across README, STAGES, TODO, TRANSCRIPT, REFLECTION, AUTHORS, and docs README.
+- Performed transcript duplicate-entry hygiene passes and confirmed unique historical entries.
+
+Max Compeaux:
+- No direct implementation changes in this session.
+
+#### Stage 5 Connectivity Preflight, Canonical Local Topology, and Documentation Synchronization Session (2026-04-12)
+Rebecca Gautreaux:
+- Led implementation of the pre-demo connectivity verification gate and canonical local demo topology updates.
+- Drove runtime pass execution, triage, and fix verification for preflight timeout handling and map API wiring detection.
+- Synchronized top-level documentation updates across README, STAGES, TODO, TRANSCRIPT, REFLECTION, and AUTHORS.
+
+Max Compeaux:
+- No direct implementation changes in this session.
+
+#### Stage 5 Golby Operational Frontend Wiring, Verification, and Documentation Synchronization Session (2026-04-12)
+Rebecca Gautreaux:
+- Led root-cause diagnosis for Golby non-interactivity and coordinated the operational frontend wiring path.
+- Directed and validated build/runtime/demo verification sequence for assistant operability.
+- Synchronized Stage 5 documentation updates across progress, history, and contributor records.
+
+Max Compeaux:
+- No direct implementation changes in this session.
+
+#### Stage 5 Frontend Contrast Accessibility Final Pass and Documentation Synchronization Session (2026-04-12)
+Rebecca Gautreaux:
+- Led final frontend appearance refinement from saturation updates through accessibility-focused contrast hardening.
+- Implemented edge-case small-text contrast improvements for chips/pills/badges and strengthened focus visibility for keyboard navigation.
+- Synchronized TODO/STAGES/README/TRANSCRIPT/REFLECTION/AUTHORS updates in chronological Stage 5 order.
+
+Max Compeaux:
+- No direct implementation changes in this session.
+
+#### Stage 5 RiskRadar Top-Text Removal and Documentation Synchronization Session (2026-04-12)
+Rebecca Gautreaux:
+- Identified and fixed shared frontend PHP scope/header leakage that rendered distracting raw text at the top of RiskRadar pages.
+- Corrected API/layout shared files in a low-risk manner and verified syntax stability with PHP lint checks.
+- Synchronized top-level tracker and history documents (TODO, STAGES, README, TRANSCRIPT, REFLECTION, AUTHORS) for chronological consistency.
+- Executed transcript dedupe cleanup to keep historical entries unique and chronologically ordered.
+
+Max Compeaux:
+- No direct implementation changes in this session.
+
+#### Stage 5 Review-Ready Commit Split and Push Session (2026-04-12)
+Rebecca Gautreaux:
+- Split the remaining uncommitted and unpushed work into review-friendly commits organized by project area.
+- Pushed the categorized commit stack to the remote branch for easier PR review.
+- Synchronized top-level documentation to record the commit-splitting and push session.
+
+Max Compeaux:
+- No direct implementation work in this session.
+
+#### Stage 5 Frontend Visual Refresh Low-Risk Implementation and Max Validation Handoff Session (2026-04-12)
+Rebecca Gautreaux:
+- Led low-risk frontend visual refresh implementation across shared styles and key web pages.
+- Directed map inline-style extraction into shared CSS classes while preserving existing map/backend behavior.
+- Synchronized top-level documentation to record implementation outcomes and ownership handoff details.
+
+Max Compeaux:
+- Assigned owner for remaining manual frontend validation/signoff tasks (browser QA, accessibility spot-check, and final signoff documentation).
+- Responsible for confirming post-refresh visual/accessibility validation outcomes in closeout records.
+
+#### Stage 5 Web-Only Scope Hardening and S3 Evidence Closeout Session (2026-04-11)
+Rebecca Gautreaux:
+- Directed top-level documentation hardening to keep required setup/verification paths aligned to backend + web scope.
+- Coordinated Stage 3 evidence closeout workflow and final verifier-gated artifact completion.
+- Led synchronized updates across project tracking docs to preserve chronology and style consistency.
+
+Max Compeaux:
+- Supported review/readiness handoff posture for Stage 3 evidence closeout expectations.
+- Supported validation context for final documentation and verification alignment.
+
+#### Stage 5 Rebecca Implementation Closeout and Max Handoff Session (2026-04-11)
+Rebecca Gautreaux:
+- Completed final non-frontend remediation/documentation closeout review and confirmed no remaining Rebecca-safe implementation items.
+- Formalized S3-06 manual evidence capture/final filing assignment to Max across top-level tracking docs.
+
+Max Compeaux:
+- Assumed ownership for all remaining S3-06 manual evidence capture and filing tasks required for final closeout.
+- Responsible for final artifact capture completion and evidence-validator pass confirmation.
+
+#### Stage 5 Demo Verification Pass and FIRMS Warning Risk-Free Fix Session (2026-04-11)
+Rebecca Gautreaux:
+- Directed repeated demo verification passes (headless and presenter-visible) and confirmed end-to-end automation/report regeneration reliability.
+- Classified FIRMS warning impact for demo vs live ingestion scenarios and implemented the lowest-risk settings-first key-resolution fix in scraper registry.
+- Led synchronized top-level documentation updates for this session.
+
+Max Compeaux:
+- Supported verification review of demo outputs/evidence artifacts and post-run consistency checks.
+- Assisted risk assessment review for warning severity and fix scope.
+
+#### Stage 5 Demo Workflow Sanity Pass and Documentation Synchronization Session (2026-04-11)
+Rebecca Gautreaux:
+- Directed final demo command sanity pass and confirmed runbook command reliability.
+- Led safety decision to preserve required demo tooling and synchronized top-level documentation updates.
+
+Max Compeaux:
+- Supported review of demo workflow outputs and artifact handling decisions.
+- Assisted top-level documentation consistency verification for this session.
+
+#### Stage 5 Golby Personality Learning, Communication Controls, and Cross-Device Sync Session (2026-04-10)
+Rebecca Gautreaux:
+- Led implementation of persistent Golby communication profiles and feedback-driven personality adaptation logic.
+- Directed assistant command handling and frontend-backend style profile synchronization.
+- Coordinated full verification and synchronized top-level documentation updates.
+
+Max Compeaux:
+- Supported review and QA validation of assistant behavior updates and profile-sync integration.
+- Assisted evidence review for testing coverage and documentation consistency.
+
+#### Stage 5 Ongoing Maintenance, Advanced Features, and Review Session (2026-04-02)
+Rebecca Gautreaux:
+- Led maintenance transition planning and top-level documentation updates.
+
+Max Compeaux:
+- Supported maintenance planning review and evidence synchronization.
+
+#### Stage 5 User Data Security, Migration, and Full-Suite Verification Session (2026-04-02)
+Rebecca Gautreaux:
+- Led user-data security rollout and migration-path documentation.
+
+Max Compeaux:
+- Supported verification and audit of migration and security rollout documentation.
+
+---
+
+## Contributor Profiles
+
+### Max Compeaux
 - ULID: C00513380
 - RiskRadar Mobile-App Role: AI Backend Developer
 - Email: maxcompeaux@gmail.com
 - CMPS 357 Final Project Role: Page Templates Lane Lead, QA and Docs Lane Lead, Backend Configuration Contributor, and Foundational Documentation Author
 
-### Project Contributions
-- Helped brainstorm and scope AI-assisted proposal direction for the final-project extension.
-- Authored foundational project documentation files in the CMPS 357 workspace (`AUTHORS.md`, `EXAMPLES.md`, `INSTRUCTIONS.md`, `REFLECTION.md`, `STAGES.md`, `TRANSCRIPT.md`).
-- Updated project scheduling metadata in `README.md` during early planning alignment.
-- Implemented backend settings enhancements for security/integration readiness (JWT/auth and external API-key configuration updates in `backend/config/settings.py`, including OpenAQ placeholder support).
-- Added execution documentation support via `docs/PROGRAM_EXECUTION.md`.
-- Contributed branch work tied to settings/auth readiness and documentation baseline via commits such as: `cf9271d`, `5357ecb`, `15db5c9`, `2175f3d`.
-- Assigned in current wireframe execution plan as the primary owner for page-template parity and QA/docs validation/signoff phases.
-
-## **Rebecca Gautreaux**
+### Rebecca Gautreaux
 - ULID: C00460817
 - RiskRadar Mobile-App Role: Database Administrator
 - Email: rebecca.gautreaux@gmail.com
 - CMPS 357 Final Project Role: Project Manager, Layout Lane Lead, Documentation Lead, Web Frontend Implementation Lead, and Database Administrator
-
-### Project Contributions
-- Led project planning, milestone coordination, and scope control across Stage 1-4 documentation.
-- Created and continuously synchronized core project docs (`README.md`, `STAGES.md`, `TODO.md`, `PLANNING_STAGES.md`, `PROJECT_PROPOSAL.md`, `INSTRUCTIONS.md`, `PROJECT_DESCRIPTION.md`).
-- Maintained AI-usage audit artifacts by repeatedly updating and aligning `docs/TRANSCRIPT.md` and `docs/REFLECTION.md`.
-- Led Stage 1 web extension execution and verification work, including PHP frontend scaffolding, usability fixes, icon integration, and Stage 2-4 web page scaffolding prep.
-- Diagnosed and resolved backend auth test breakage by aligning password hashing compatibility settings across app and tests, then validated the clean backend test suite.
-- Produced Stage 2 planning/contract/evidence documentation and synchronized those artifacts across README, STAGES, TODO, and planning indexes.
-- Coordinated Git reliability cleanup, merge/conflict resolution, PR synchronization, and branch maintenance during active development.
-- Contributed to backend/database-aligned documentation and validation workflows to keep implementation status and evidence records accurate.
-- Delivered substantial branch implementation and synchronization work across docs and frontend scaffolding, reflected in recent commits including: `1065eb9`, `750ca00`, `f6f164d`, `97c5b00`, `8cbc463`, `46fcc73`, `51d3ac1`, `695daa2`, `c8a142e`, `40fe9b9`, `50b971f`, `c31cd81`.
-- Assigned in current wireframe execution plan as the primary owner for shared layout and CSS foundation work, with secondary ownership on page parity/signoff phases for integration support.

@@ -33,6 +33,8 @@ This document defines the backend contracts used by the Stage 1 PHP web-app impl
 | `public/alerts.php` | `rr_fetch_alerts(filters)` | `GET /api/v1/alerts` |
 | `public/summaries.php` | `rr_fetch_summaries(filters)` | `GET /api/v1/summaries` |
 | `public/profile.php` | `rr_register_user`, `rr_update_preferences` | `POST /api/v1/users/register`, `PUT /api/v1/users/{user_id}/preferences` |
+| `public/risk.php` | `rr_fetch_risk_score`, `rr_fetch_prioritized_alerts(limit=5)` | `GET /api/v1/risk/score/{user_id}`, `GET /api/v1/alerts/prioritized/{user_id}` |
+| `public/smart_alerts.php` | `rr_fetch_prioritized_alerts`, `rr_fetch_risk_score` | `GET /api/v1/alerts/prioritized/{user_id}`, `GET /api/v1/risk/score/{user_id}` |
 
 ## URL and Environment Configuration (Local and Deployed)
 
@@ -81,6 +83,8 @@ Example:
 | `/api/v1/summaries/generate` | POST | None | `SummaryOut` | `404` if no alerts to summarize, timeout | Keep page active and show non-blocking generation status/error message. |
 | `/api/v1/users/register` | POST | JSON body: `UserCreate` | `UserOut` | `400` duplicate email, validation failure, timeout | Preserve form values and show inline validation errors. |
 | `/api/v1/users/{user_id}/preferences` | PUT | Path: `user_id:int`; JSON body: `UserPrefsUpdate` | `UserOut` | `404` user not found, validation failure, timeout | Preserve preferences form state and display save-failure notice. |
+| `/api/v1/risk/score/{user_id}` | GET | Path: `user_id:int`; Query: `radius_km?` (1-500, default 150) | `RiskScoreOut` | `404` user not found, timeout | Show empty risk state with prompt to set location. |
+| `/api/v1/alerts/prioritized/{user_id}` | GET | Path: `user_id:int`; Query: `radius_km?` (1-500, default 150), `limit?` (1-200, default 50) | `PrioritizedAlertListOut` | `404` user not found, timeout, no location set | Show empty alert list with message explaining location requirement. |
 
 ## Request/Response Schema Snapshot
 
@@ -133,7 +137,54 @@ Example:
 - `zip_code: str | null`
 - `alert_types: str | null` (serialized list in current backend)
 - `notify_severity: str | null`
+- `health_conditions: str | null` (serialized JSON list of condition keys)
 - `created_at: str`
+
+### `RiskScoreOut` (Stage 2)
+- `user_id: int`
+- `overall_score: float` (0-100)
+- `risk_level: str` (low / moderate / high / critical)
+- `factors: list[RiskFactor]`
+- `nearby_alert_count: int`
+- `computed_at: str`
+
+### `RiskFactor`
+- `name: str`
+- `value: float`
+- `weight: float`
+- `description: str`
+
+### `PrioritizedAlertListOut` (Stage 2)
+- `user_id: int`
+- `total_nearby: int`
+- `alerts: list[PrioritizedAlertOut]`
+- `computed_at: str`
+
+### `PrioritizedAlertOut`
+- `alert_id: int`
+- `source: str`
+- `source_id: str | null`
+- `alert_type: str`
+- `severity: str`
+- `title: str`
+- `description: str | null`
+- `latitude: float | null`
+- `longitude: float | null`
+- `location_name: str | null`
+- `event_start: str | null`
+- `event_end: str | null`
+- `fetched_at: str | null`
+- `created_at: str | null`
+- `priority_score: float` (0-100)
+- `priority_level: str` (low / medium / high)
+- `distance_km: float`
+- `priority_factors: PriorityFactors`
+
+### `PriorityFactors`
+- `distance: float`
+- `severity: float`
+- `sensitivity: float`
+- `recency: float`
 
 ## Backend Source References
 
@@ -141,6 +192,10 @@ Example:
 - Alerts routes: `backend/api/alerts.py`
 - Summaries routes: `backend/api/summaries.py`
 - Users routes: `backend/api/users.py`
+- Risk score route: `backend/api/risk.py`
 - Alert schemas: `backend/schemas/alert.py`
+- Risk score schemas: `backend/schemas/risk_score.py`
 - Summary schemas: `backend/schemas/summary.py`
 - User schemas: `backend/schemas/user.py`
+- Risk scoring engine: `backend/scoring/__init__.py`
+- Alert prioritization engine: `backend/scoring/prioritization.py`

@@ -11,7 +11,7 @@
 <?php rr_render_message($summariesResult['message']); ?>
 
 <section class="panel">
-    <form class="filter-grid summary-filter" method="get" action="summaries.php">
+    <form class="filter-grid summary-filter filter-bar" method="get" action="summaries.php">
         <label>
             <span>Summary type</span>
             <input type="text" name="summary_type" maxlength="80" value="<?php echo e((string) ($filters['summary_type'] ?? '')); ?>" placeholder="daily, regional, travel">
@@ -35,7 +35,7 @@
                     </div>
                     <h2><?php echo e($summary['title']); ?></h2>
                     <p class="summary-copy"><?php echo nl2br(e($summary['content'])); ?></p>
-                    <p><a href="summary_detail.php?id=<?php echo e((string) $summary['id']); ?>">Open full summary</a></p>
+                    <p><a class="content-action" href="summary_detail.php?id=<?php echo e((string) $summary['id']); ?>">Open full summary</a></p>
                     <p class="summary-meta-inline">Region: <?php echo e($summary['region'] ?: 'General'); ?> | Model: <?php echo e($summary['model_used'] ?: 'Unavailable'); ?></p>
                 </article>
             <?php endforeach; ?>

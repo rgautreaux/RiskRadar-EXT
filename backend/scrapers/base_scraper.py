@@ -4,8 +4,8 @@ import time
 from abc import ABC, abstractmethod
 from datetime import datetime, timezone
 
-from db.database import SessionLocal
-from db.models import Alert, ScrapeLog
+from backend.db.database import SessionLocal
+from backend.db.models import Alert, ScrapeLog
 
 logger = logging.getLogger(__name__)
 

@@ -1,5 +1,24 @@
 <?php
 
+// Stage 3: Map Data API Client
+function rr_api_get_map_alerts(array $config, array $query = []): array
+{
+    // GET /api/v1/alerts/map
+    return rr_http_request($config, 'GET', 'alerts/map', $query);
+}
+
+function rr_api_get_map_risk_overlay(array $config, array $query = []): array
+{
+    // GET /api/v1/risk/map
+    return rr_http_request($config, 'GET', 'risk/map', $query);
+}
+
+function rr_api_get_forecast(array $config, array $query = []): array
+{
+    // GET /api/v1/forecast
+    return rr_http_request($config, 'GET', 'forecast', $query);
+}
+
 function rr_api_url(array $config, string $path, array $query = []): string
 {
     $baseUrl = rtrim($config['api']['base_url'], '/');
@@ -85,7 +104,7 @@ function rr_safe_nullable_float(mixed $value): ?float
     return is_numeric($value) ? (float) $value : null;
 }
 
-function rr_http_request(array $config, string $method, string $path, array $query = [], ?array $body = null): array
+function rr_http_request(array $config, string $method, string $path, array $query = [], ?array $body = null, array $extraHeaders = []): array
 {
     $url = rr_api_url($config, $path, $query);
     $timeout = (float) ($config['api']['timeout'] ?? 5.0);
@@ -100,6 +119,12 @@ function rr_http_request(array $config, string $method, string $path, array $que
         }
 
         $headers[] = 'Content-Type: application/json';
+    }
+
+    foreach ($extraHeaders as $header) {
+        if (is_string($header) && $header !== '') {
+            $headers[] = $header;
+        }
     }
 
     if (function_exists('curl_init')) {
@@ -136,6 +161,13 @@ function rr_http_request(array $config, string $method, string $path, array $que
         $decoded = json_decode($bodyText, true);
 
         if ($status < 200 || $status >= 300) {
+            // Custom user-facing messages for restricted endpoints
+            if ($status === 401) {
+                return rr_fallback_result($decoded, 'You must be signed in to access this feature.', $status);
+            }
+            if ($status === 403) {
+                return rr_fallback_result($decoded, 'This feature is only available to registered users. Please sign in or create an account.', $status);
+            }
             return rr_fallback_result($decoded, 'The backend returned an error response.', $status);
         }
 
@@ -173,6 +205,13 @@ function rr_http_request(array $config, string $method, string $path, array $que
 
     $decoded = json_decode($bodyText, true);
     if (($status !== null && ($status < 200 || $status >= 300))) {
+        // Custom user-facing messages for restricted endpoints
+        if ($status === 401) {
+            return rr_fallback_result($decoded, 'You must be signed in to access this feature.', $status);
+        }
+        if ($status === 403) {
+            return rr_fallback_result($decoded, 'This feature is only available to registered users. Please sign in or create an account.', $status);
+        }
         return rr_fallback_result($decoded, 'The backend returned an error response.', $status);
     }
 
@@ -306,21 +345,6 @@ function rr_fetch_alerts(array $config, array $filters = []): array
     return rr_success_result($alerts, $result['status']);
 }
 
-function rr_fetch_prioritized_alerts(array $config, int $userId, int $limit = 10): array
-{
-    $filters = [
-        'user_id' => $userId,
-        'limit' => max(1, min(50, $limit)),
-    ];
-
-    $result = rr_http_request($config, 'GET', 'alerts/prioritized', $filters);
-    if (!$result['ok'] || !is_array($result['data'])) {
-        return rr_fallback_result([], 'Prioritized alerts are unavailable. Showing an empty list.', $result['status'] ?? null);
-    }
-
-    $alerts = array_map('rr_normalize_alert', $result['data']);
-    return rr_success_result($alerts, $result['status']);
-}
 
 function rr_fetch_user_risk_score(array $config, int $userId): array
 {
@@ -357,11 +381,50 @@ function rr_register_user(array $config, array $payload): array
 {
     $result = rr_http_request($config, 'POST', 'users/register', [], $payload);
     if (!$result['ok']) {
-        $message = ($result['status'] ?? 0) === 400
-            ? 'That email address is already registered or the form data is invalid.'
-            : 'Registration failed. Please verify the backend is running and try again.';
+        $backendDetail = is_array($result['data']) ? ($result['data']['detail'] ?? null) : null;
+        if (is_string($backendDetail) && $backendDetail !== '') {
+            $message = $backendDetail;
+        } elseif (($result['status'] ?? 0) === 400) {
+            $message = 'That email address is already registered or the form data is invalid.';
+        } else {
+            $message = 'Registration failed. Please verify the backend is running and try again.';
+        }
 
         return rr_fallback_result(rr_normalize_user(is_array($result['data']) ? $result['data'] : null), $message, $result['status'] ?? null);
+    }
+
+    return rr_success_result(rr_normalize_user($result['data']), $result['status']);
+}
+
+function rr_login_user(array $config, array $payload): array
+{
+    $result = rr_http_request($config, 'POST', 'auth/login', [], $payload);
+    if (!$result['ok'] || !is_array($result['data'])) {
+        $message = ($result['status'] ?? 0) === 401
+            ? 'Invalid email or password.'
+            : 'Login failed. Please verify the backend is running and try again.';
+
+        return rr_fallback_result(
+            ['session_token' => '', 'expires_at' => '', 'user' => null],
+            $message,
+            $result['status'] ?? null,
+        );
+    }
+
+    return rr_success_result($result['data'], $result['status']);
+}
+
+function rr_fetch_current_user(array $config): array
+{
+    $sessionToken = $_COOKIE['riskradar_session'] ?? '';
+    $headers = [];
+    if (is_string($sessionToken) && $sessionToken !== '') {
+        $headers[] = 'Cookie: riskradar_session=' . $sessionToken;
+    }
+
+    $result = rr_http_request($config, 'GET', 'auth/me', [], null, $headers);
+    if (!$result['ok'] || !is_array($result['data'])) {
+        return rr_fallback_result(null, 'No authenticated user is available right now.', $result['status'] ?? null);
     }
 
     return rr_success_result(rr_normalize_user($result['data']), $result['status']);
@@ -403,4 +466,90 @@ function rr_update_preferences(array $config, int $userId, array $payload): arra
     }
 
     return rr_success_result(rr_normalize_user($result['data']), $result['status']);
+}
+
+function rr_fetch_prioritized_alerts(array $config, int $userId, array $params = []): array
+{
+    $query = array_filter([
+        'radius_km' => $params['radius_km'] ?? null,
+        'limit' => $params['limit'] ?? null,
+    ], function ($v) { return $v !== null && $v !== ''; });
+
+    $result = rr_http_request($config, 'GET', 'alerts/prioritized/' . $userId, $query);
+    if (!$result['ok'] || !is_array($result['data'])) {
+        return rr_fallback_result(
+            ['user_id' => $userId, 'total_nearby' => 0, 'alerts' => [], 'computed_at' => ''],
+            'Prioritized alerts could not be loaded. The backend may be unavailable or user location is not set.',
+            $result['status'] ?? null,
+        );
+    }
+
+    $data = $result['data'];
+    $alerts = is_array($data['alerts'] ?? null) ? array_map('rr_normalize_prioritized_alert', $data['alerts']) : [];
+
+    return rr_success_result([
+        'user_id' => (int) ($data['user_id'] ?? $userId),
+        'total_nearby' => (int) ($data['total_nearby'] ?? 0),
+        'alerts' => $alerts,
+        'computed_at' => rr_safe_string($data['computed_at'] ?? null),
+    ], $result['status']);
+}
+
+function rr_normalize_prioritized_alert(?array $alert): array
+{
+    if (!is_array($alert)) {
+        return [
+            'alert_id' => 0,
+            'source' => 'Unknown',
+            'alert_type' => 'other',
+            'severity' => 'low',
+            'title' => 'Untitled alert',
+            'description' => null,
+            'location_name' => null,
+            'fetched_at' => '',
+            'priority_score' => 0.0,
+            'priority_level' => 'low',
+            'distance_km' => 0.0,
+            'priority_factors' => ['distance' => 0, 'severity' => 0, 'sensitivity' => 0, 'recency' => 0],
+        ];
+    }
+
+    return [
+        'alert_id' => (int) ($alert['alert_id'] ?? 0),
+        'source' => rr_safe_string($alert['source'] ?? null, 'Unknown'),
+        'source_id' => rr_safe_nullable_string($alert['source_id'] ?? null),
+        'alert_type' => rr_safe_string($alert['alert_type'] ?? null, 'other'),
+        'severity' => rr_safe_string($alert['severity'] ?? null, 'low'),
+        'title' => rr_safe_string($alert['title'] ?? null, 'Untitled alert'),
+        'description' => rr_safe_nullable_string($alert['description'] ?? null),
+        'latitude' => rr_safe_nullable_float($alert['latitude'] ?? null),
+        'longitude' => rr_safe_nullable_float($alert['longitude'] ?? null),
+        'location_name' => rr_safe_nullable_string($alert['location_name'] ?? null),
+        'event_start' => rr_safe_nullable_string($alert['event_start'] ?? null),
+        'event_end' => rr_safe_nullable_string($alert['event_end'] ?? null),
+        'fetched_at' => rr_safe_string($alert['fetched_at'] ?? null),
+        'created_at' => rr_safe_string($alert['created_at'] ?? null),
+        'priority_score' => is_numeric($alert['priority_score'] ?? null) ? (float) $alert['priority_score'] : 0.0,
+        'priority_level' => rr_safe_string($alert['priority_level'] ?? null, 'low'),
+        'distance_km' => is_numeric($alert['distance_km'] ?? null) ? round((float) $alert['distance_km'], 1) : 0.0,
+        'priority_factors' => is_array($alert['priority_factors'] ?? null) ? $alert['priority_factors'] : ['distance' => 0, 'severity' => 0, 'sensitivity' => 0, 'recency' => 0],
+    ];
+}
+
+function rr_fetch_risk_score(array $config, int $userId, array $params = []): array
+{
+    $query = array_filter([
+        'radius_km' => $params['radius_km'] ?? null,
+    ], function ($v) { return $v !== null && $v !== ''; });
+
+    $result = rr_http_request($config, 'GET', 'risk/score/' . $userId, $query);
+    if (!$result['ok'] || !is_array($result['data'])) {
+        return rr_fallback_result(
+            null,
+            'Risk score could not be loaded. Ensure your location is set in your profile.',
+            $result['status'] ?? null,
+        );
+    }
+
+    return rr_success_result($result['data'], $result['status']);
 }

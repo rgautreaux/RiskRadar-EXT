@@ -4,13 +4,13 @@ import json
 import pytest
 from unittest.mock import patch, MagicMock
 
-from scrapers.airnow_scraper import _aqi_to_severity
-from scrapers.firms_scraper import _fire_severity
-from scrapers.generic_api_scraper import (
+from backend.scrapers.airnow_scraper import _aqi_to_severity
+from backend.scrapers.firms_scraper import _fire_severity
+from backend.scrapers.generic_api_scraper import (
     _extract_path, _resolve_template, _safe_float, _build_template_vars,
     GenericAPIScraper,
 )
-from scrapers.web_scraper import WebScraper
+from backend.scrapers.web_scraper import WebScraper
 
 
 # ---------------------------------------------------------------------------
@@ -291,14 +291,14 @@ class TestBaseScraperRun:
             scraper.run()  # first run: 2 new
             scraper.run()  # second run: 0 new (dedup)
 
-        from db.models import Alert
+        from backend.db.models import Alert
         alerts = db_session.query(Alert).filter(Alert.source == "fake").all()
         assert len(alerts) == 2
 
     def test_run_creates_scrape_log(self, db_session):
         """Each run should create a ScrapeLog entry."""
         from scrapers.base_scraper import BaseScraper
-        from db.models import ScrapeLog
+        from backend.db.models import ScrapeLog
 
         class EmptyScraper(BaseScraper):
             source_name = "empty"

@@ -105,6 +105,14 @@ function rr_validate_registration(array $post): array
         $errors['password'] = 'Password must be at least 8 characters.';
     } elseif (strlen($data['password']) > 255) {
         $errors['password'] = 'Password must be 255 characters or fewer.';
+    } elseif (!preg_match('/[a-z]/', $data['password'])) {
+        $errors['password'] = 'Password must include a lowercase letter.';
+    } elseif (!preg_match('/[A-Z]/', $data['password'])) {
+        $errors['password'] = 'Password must include an uppercase letter.';
+    } elseif (!preg_match('/[0-9]/', $data['password'])) {
+        $errors['password'] = 'Password must include a number.';
+    } elseif (!preg_match('/[^a-zA-Z0-9]/', $data['password'])) {
+        $errors['password'] = 'Password must include a special character.';
     }
 
     if ($data['zip_code'] !== '' && !preg_match('/^\d{5}$/', $data['zip_code'])) {
@@ -162,12 +170,26 @@ function rr_validate_preferences(array $post): array
     }));
     $alertTypes = array_values(array_unique($alertTypes));
 
+    // Health conditions: allow only known keys
+    $allowedHealth = [
+        'asthma', 'copd', 'allergies', 'heart', 'elderly', 'pregnant', 'children', 'immunocompromised'
+    ];
+    $healthConditions = $post['health_conditions'] ?? [];
+    if (!is_array($healthConditions)) {
+        $healthConditions = [];
+    }
+    $healthConditions = array_values(array_filter($healthConditions, function ($value) use ($allowedHealth) {
+        return is_string($value) && in_array($value, $allowedHealth, true);
+    }));
+    $healthConditions = array_values(array_unique($healthConditions));
+
     $data = [
         'user_id' => filter_var($post['user_id'] ?? null, FILTER_VALIDATE_INT),
         'zip_code' => trim((string) ($post['zip_code'] ?? '')),
         'alert_types' => $alertTypes,
         'notify_severity' => trim((string) ($post['notify_severity'] ?? '')),
         'device_token' => trim((string) ($post['device_token'] ?? '')),
+        'health_conditions' => $healthConditions,
     ];
     $errors = [];
 

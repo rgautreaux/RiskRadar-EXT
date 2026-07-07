@@ -6,7 +6,7 @@ $defaultConfig = [
         'base_path' => '/'
     ],
     'api' => [
-        'base_url' => getenv('RISKRADAR_API_BASE_URL') ?: 'http://127.0.0.1:8000',
+        'base_url' => getenv('RISKRADAR_API_BASE_URL') ?: 'http://127.0.0.1:8001',
         'prefix' => getenv('RISKRADAR_API_PREFIX') ?: '/api/v1',
         'timeout' => (float) (getenv('RISKRADAR_API_TIMEOUT') ?: 5.0),
     ],

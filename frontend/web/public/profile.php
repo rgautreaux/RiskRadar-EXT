@@ -2,6 +2,10 @@
 
 require_once __DIR__ . '/../services/bootstrap.php';
 
+
+rr_require_feature_access();
+$isGuest = rr_is_guest_mode();
+
 $flash = rr_get_flash();
 $preferencesErrors = [];
 $preferencesResult = null;
@@ -36,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'alert_types' => $preferencesForm['alert_types'],
                 'notify_severity' => $preferencesForm['notify_severity'],
                 'device_token' => $preferencesForm['device_token'],
+                'health_conditions' => $preferencesForm['health_conditions'],
             ];
             $preferencesResult = rr_update_preferences($config, $userId, $preferencesPayload);
             if ($preferencesResult['ok']) {

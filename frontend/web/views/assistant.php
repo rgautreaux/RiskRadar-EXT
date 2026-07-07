@@ -1,20 +1,24 @@
 <?php rr_render_layout_start('AI Assistant', 'assistant'); ?>
 
-<section class="page-heading">
-    <div>
-        <p class="eyebrow">Stage 4 scaffold</p>
-        <h1>RiskRadar AI Assistant</h1>
-    </div>
-    <p>This Stage 4 scaffold will support natural-language risk questions and contextual recommendations from backend forecast and alert data.</p>
-</section>
+<style>
+  main.page-shell {
+    padding: 0 !important;
+  }
+</style>
 
-<section class="panel">
-    <h2>Planned assistant capabilities</h2>
-    <ul class="roadmap-list">
-        <li>Question-and-answer chat interface</li>
-        <li>Context-aware recommendations for current conditions</li>
-        <li>Follow-up prompt suggestions based on location and sensitivity</li>
-    </ul>
-</section>
+<!-- Assistant Page Welcome & Chat Wrapper -->
+<div id="riskradar-assistant-page-welcome"></div>
+
+<script>
+window.__RISKRADAR_API_BASE__ = <?php echo json_encode(rtrim(rr_api_url($config, ''), '/')); ?>;
+</script>
+<link rel="stylesheet" href="/assets/golby-widget.css">
+<script type="module" src="/assets/assistant-welcome.js" defer></script>
+
+<noscript>
+  <div style="padding: 2rem; text-align: center; color: #9f1239;">
+    <p><em>Golby requires JavaScript to run. Enable JavaScript and reload this page.</em></p>
+  </div>
+</noscript>
 
 <?php rr_render_layout_end(); ?>

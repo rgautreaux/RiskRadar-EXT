@@ -3,7 +3,6 @@
 import json
 import pytest
 from datetime import datetime, timezone
-from contextlib import asynccontextmanager
 from unittest.mock import patch
 
 from sqlalchemy import create_engine
@@ -12,8 +11,9 @@ from sqlalchemy.pool import StaticPool
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from db.database import Base, get_db
-from db.models import Alert, Summary, User, ScrapeLog
+from backend.db.database import Base, get_db
+from backend.db.models import Alert, Summary, User, ScrapeLog
+from backend.config.settings import settings
 
 
 # ---------------------------------------------------------------------------
@@ -50,15 +50,21 @@ def test_client(db_session):
     so tests run isolated and fast.
     """
     from fastapi.middleware.cors import CORSMiddleware
-    from api.router import api_router
+    from backend.api.router import api_router
 
     # Build a clean app without the lifespan that starts the scheduler
     test_app = FastAPI(title="RiskRadar API Test")
+    allowed_origins = [
+        origin.strip()
+        for origin in settings.CORS_ALLOWED_ORIGINS.split(",")
+        if origin.strip()
+    ]
     test_app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
+        allow_origins=allowed_origins,
         allow_methods=["*"],
         allow_headers=["*"],
+        allow_credentials=True,
     )
     test_app.include_router(api_router)
 
@@ -73,7 +79,7 @@ def test_client(db_session):
         finally:
             pass
 
-    test_app.dependency_overrides[get_db] = _override_get_db
+    test_app.dependency_overrides[get_db] = lambda: db_session
     client = TestClient(test_app)
     yield client
     test_app.dependency_overrides.clear()
@@ -153,6 +159,27 @@ def sample_user(db_session):
         display_name="Test User",
         email="test@example.com",
         password_hash=_pwd_context.hash("password123"),
+        is_admin=False,
+        zip_code="90001",
+        created_at=NOW,
+        updated_at=NOW,
+    )
+    db_session.add(user)
+    db_session.commit()
+    db_session.refresh(user)
+    return user
+
+
+@pytest.fixture
+def admin_user(db_session):
+    from passlib.context import CryptContext
+
+    _pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
+    user = User(
+        display_name="Admin User",
+        email="admin@example.com",
+        password_hash=_pwd_context.hash("password123"),
+        is_admin=True,
         zip_code="90001",
         created_at=NOW,
         updated_at=NOW,

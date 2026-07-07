@@ -8,12 +8,19 @@
     <p>Use this page to manage alert preferences for an existing user account. Account creation now lives on the dedicated registration page.</p>
 </section>
 
-<?php if ($flash) : ?>
-    <?php rr_render_message($flash['message'], $flash['type']); ?>
-<?php endif; ?>
 
-<?php if ($preferencesResult && $preferencesResult['message']) : ?>
-    <?php rr_render_message($preferencesResult['message']); ?>
+<?php if ($isGuest) : ?>
+    <section class="panel warning-panel">
+        <p class="empty-state">Guest mode: Profile management is only available to registered users. <a href="login.php">Sign in</a> or <a href="register.php">create an account</a> for full access.</p>
+    </section>
+<?php else : ?>
+    <?php if ($flash) : ?>
+        <?php rr_render_message($flash['message'], $flash['type']); ?>
+    <?php endif; ?>
+
+    <?php if ($preferencesResult && $preferencesResult['message']) : ?>
+        <?php rr_render_message($preferencesResult['message']); ?>
+    <?php endif; ?>
 <?php endif; ?>
 
 <section class="panel">
@@ -22,7 +29,6 @@
                 <p class="eyebrow">Write path</p>
                 <h2>Update preferences</h2>
             </div>
-            <a href="register.php">Need an account? Register</a>
         </div>
         <form method="post" action="profile.php" class="form-stack">
             <input type="hidden" name="csrf_token" value="<?php echo e(rr_csrf_token()); ?>">
@@ -62,6 +68,31 @@
                 <span>Device token</span>
                 <input type="text" name="device_token" maxlength="255" value="<?php echo e((string) ($preferencesForm['device_token'] ?? '')); ?>">
             </label>
+            <fieldset>
+                <legend>Health sensitivities/preferences</legend>
+                <div class="checkbox-grid">
+                    <?php
+                    // Define available health conditions (should match backend logic)
+                    $healthConditions = [
+                        'asthma' => 'Asthma',
+                        'copd' => 'COPD',
+                        'allergies' => 'Allergies',
+                        'heart' => 'Heart Disease',
+                        'elderly' => 'Elderly',
+                        'pregnant' => 'Pregnant',
+                        'children' => 'Children',
+                        'immunocompromised' => 'Immunocompromised',
+                    ];
+                    $selectedHealth = $preferencesForm['health_conditions'] ?? [];
+                    ?>
+                    <?php foreach ($healthConditions as $key => $label) : ?>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="health_conditions[]" value="<?php echo e($key); ?>" <?php echo in_array($key, $selectedHealth, true) ? 'checked' : ''; ?>>
+                            <span><?php echo e($label); ?></span>
+                        </label>
+                    <?php endforeach; ?>
+                </div>
+            </fieldset>
             <button class="button-primary" type="submit">Save preferences</button>
         </form>
 

@@ -1,0 +1,37 @@
+<!-- RiskRadar Forecast Timeline Mockup (SVG) -->
+<div style="max-width: 600px; margin: 0 auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px #0001; padding: 24px;">
+  <h3 style="font-family: 'Space Grotesk', Arial, sans-serif; margin-bottom: 8px;">24–48 Hour Risk Forecast</h3>
+  <svg width="100%" height="220" viewBox="0 0 560 220" aria-labelledby="forecastTitle forecastDesc" role="img">
+    <title id="forecastTitle">Risk Forecast Timeline</title>
+    <desc id="forecastDesc">Shows predicted risk levels and confidence bands for the next 48 hours</desc>
+    <!-- Axes -->
+    <line x1="50" y1="180" x2="520" y2="180" stroke="#bbb" stroke-width="2" />
+    <line x1="50" y1="40" x2="50" y2="180" stroke="#bbb" stroke-width="2" />
+    <!-- Confidence band -->
+    <polygon points="50,150 90,120 130,110 170,100 210,90 250,100 290,120 330,130 370,140 410,150 450,160 490,170 520,175 520,180 50,180" fill="#8ecae6" fill-opacity="0.25" />
+    <!-- Forecast line -->
+    <polyline points="50,150 90,120 130,110 170,100 210,90 250,100 290,120 330,130 370,140 410,150 450,160 490,170 520,175" fill="none" stroke="#219ebc" stroke-width="3" />
+    <!-- Trend arrow -->
+    <polygon points="520,175 510,170 510,180" fill="#219ebc" />
+    <!-- Y-axis labels -->
+    <text x="40" y="180" font-size="12" fill="#555">Low</text>
+    <text x="35" y="100" font-size="12" fill="#555">High</text>
+    <!-- X-axis labels (hours) -->
+    <text x="50" y="200" font-size="12" fill="#555">Now</text>
+    <text x="210" y="200" font-size="12" fill="#555">+12h</text>
+    <text x="370" y="200" font-size="12" fill="#555">+24h</text>
+    <text x="520" y="200" font-size="12" fill="#555">+48h</text>
+    <!-- Confidence indicator -->
+    <rect x="400" y="50" width="120" height="28" rx="8" fill="#8ecae6" fill-opacity="0.18" />
+    <text x="410" y="70" font-size="14" fill="#023047" font-weight="bold">Confidence: 85%</text>
+  </svg>
+  <div style="margin-top: 12px; font-size: 14px; color: #555;">
+    <span style="display: inline-block; width: 12px; height: 12px; background: #219ebc; border-radius: 2px; margin-right: 6px;"></span>
+    Forecasted Risk Level
+    <span style="display: inline-block; width: 12px; height: 12px; background: #8ecae6; border-radius: 2px; margin: 0 6px 0 18px;"></span>
+    Confidence Band
+  </div>
+  <div style="margin-top: 18px; color: #b00; font-size: 13px;">
+    <strong>Note:</strong> This is a static mockup. Actual data and interactivity will be added once the backend is ready.
+  </div>
+</div>

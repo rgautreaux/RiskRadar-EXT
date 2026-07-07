@@ -12,3 +12,9 @@ class SummaryOut(BaseModel):
     model_used: Optional[str] = None
 
     model_config = {"from_attributes": True, "protected_namespaces": ()}
+
+
+class SummaryAlertIdsOut(BaseModel):
+    summary_id: int
+    alert_ids: list[int]
+    source: str

@@ -1,6 +1,9 @@
 """Tests for summary API endpoints."""
 
+import json
 from unittest.mock import patch
+
+from backend.db.models import SummaryAlertLink
 
 
 class TestListSummaries:
@@ -53,6 +56,26 @@ class TestGetSummary:
         resp = test_client.get("/api/v1/summaries/99999")
         assert resp.status_code == 404
         assert "Summary not found" in resp.json()["detail"]
+
+
+class TestSummaryAlertIds:
+    def test_prefers_relational_links(self, test_client, db_session, sample_summary, sample_alerts):
+        db_session.add(SummaryAlertLink(summary_id=sample_summary.id, alert_id=sample_alerts[0].id))
+        db_session.commit()
+
+        resp = test_client.get(f"/api/v1/summaries/{sample_summary.id}/alert-ids")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["summary_id"] == sample_summary.id
+        assert data["source"] == "summary_alerts"
+        assert data["alert_ids"] == [sample_alerts[0].id]
+
+    def test_falls_back_to_json_when_no_relational_rows(self, test_client, sample_summary):
+        resp = test_client.get(f"/api/v1/summaries/{sample_summary.id}/alert-ids")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["source"] == "summaries.alert_ids"
+        assert data["alert_ids"] == json.loads(sample_summary.alert_ids)
 
 
 class TestGenerateSummary:

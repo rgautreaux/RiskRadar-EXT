@@ -9,6 +9,8 @@
 api_sources:
 
   # USGS Earthquake API — no API key required
+  # Environmental type -> earthquake
+  # Usage -> Monitoring earthquakes worldwide, with location, magnitude, etc.
   - name: "usgs_earthquakes"
     enabled: true
     alert_type: "earthquake"
@@ -76,6 +78,219 @@ api_sources:
   #       - gte: 5.0
   #         value: "critical"
   #       - default: "low"
+
+  # World Bank Open Data API — no API key required
+  # Environmental type -> Environmental, social, and governance (ESG) indicators
+  # Usage -> Monitoring ESG indicators worldwide, such as CO2 emissions per capita, deforestation rates, etc.
+  - name: "world_bank_esg"
+    enabled: false
+    alert_type: "environmental"
+    url: "https://api.worldbank.org/v2/en/indicator/EN.ATM.CO2E.PC"
+    method: "GET"
+    interval_minutes: 1440  # Updated annually, so daily checks are sufficient
+    request:
+      params: 
+        format: "json"
+      headers: {}
+    auth:
+      type: "none"
+    response:
+      format: "json"
+      items_path: "1"  # World Bank returns data in a nested array
+    field_mapping:
+      source_id: "country.id"
+      title: "country.value"
+      description: null
+      latitude: null
+      longitude: null
+      location_name: "country.value"
+      event_start: "date"
+      event_end: null
+      raw_data: "__full_item__"
+    severity:
+      type: "threshold"
+      field: "value"
+      thresholds:
+        - gte: 15.0
+          value: "critical"   # Very high CO2 emissions per capita
+        - gte: 5.0
+          value: "high"       # High emissions
+        - gte: 1.0
+          value: "moderate"   # Moderate emissions
+        - default: "low"
+
+  # C02 Earth - no API key required
+  # Environmental type -> CO2 levels at Mauna Loa Observatory
+  # Usage -> C02 monitoring
+  
+  
+  # OpenAQ API — API key required
+  # Environmental type -> Air quality measurements worldwide
+  # Usage -> Monitoring air quality (PM2.5, PM10, etc.) in different cities globally.
+  - name: "openaq_air_quality"
+    enabled: true  # can enable if we want to monitor global air quality levels
+    alert_type: "environmental"
+    url: "https://api.openaq.org/v3/parameters/2/latest"
+    method: "GET"
+    interval_minutes: 30
+    request:
+      params:
+        limit: 1000
+        page: 1
+    auth:
+      type: "header"
+      env_var: "OpenAQ_API_KEY"
+      header_name: "X-API-Key"
+    response:
+      format: "json"
+      items_path: "results"
+    field_mapping:
+      source_id: "sensorsId"
+      title: "sensorsId"
+      description: "value"
+      latitude: "coordinates.latitude"
+      longitude: "coordinates.longitude"
+      location_name: "locationsId"
+      event_start: "datetime.utc"
+      event_end: null
+      raw_data: "__full_item__"
+    severity:
+      type: "threshold"
+      field: "value"
+      thresholds:
+        - gte: 55.5
+          value: "critical"   # EPA "Unhealthy" PM2.5 threshold (µg/m³)
+        - gte: 35.5
+          value: "high"       # EPA "Unhealthy for Sensitive Groups"
+        - gte: 12.1
+          value: "moderate"   # EPA "Moderate"
+        - default: "low"
+
+  # OpenWeather Current Weather API — API key required
+  # Environmental type -> weather
+  # Usage -> Current weather conditions (temperature, pressure, wind, precipitation type)
+  #          for the configured default location. Updated every 30 minutes.
+  - name: "openweather_current"
+    enabled: true
+    alert_type: "weather"
+    url: "https://api.openweathermap.org/data/2.5/weather"
+    method: "GET"
+    interval_minutes: 30
+    request:
+      params:
+        lat: "{default_lat}"
+        lon: "{default_lon}"
+        units: "imperial"
+      headers: {}
+    auth:
+      type: "query_param"
+      env_var: "OPENWEATHER_API_KEY"
+      param_name: "appid"
+    response:
+      format: "json"
+      items_path: null  # Single-object response; scraper wraps it in a list automatically
+    field_mapping:
+      source_id: "id"
+      title: "weather[0].main"
+      description: "weather[0].description"
+      latitude: "coord.lat"
+      longitude: "coord.lon"
+      location_name: "name"
+      event_start: "dt"
+      event_end: null
+      raw_data: "__full_item__"
+    severity:
+      type: "mapping"
+      field: "weather[0].main"
+      map:
+        Tornado: "critical"
+        Thunderstorm: "high"
+        Squall: "high"
+        Snow: "moderate"
+        Rain: "moderate"
+        Drizzle: "low"
+      default: "low"
+
+  # Global Biodiversity Information Facility (GBIF) API — no API key required
+  # Environmental type -> Invasive species occurrences
+  - name: "gbif_occurrences"
+    enabled: true  # can enable if we want to monitor invasive species occurrences worldwide
+    alert_type: "environmental"
+    url: "https://api.gbif.org/v1/occurrence/search"
+    method: "GET"
+    interval_minutes: 1440  # Not updated frequently, so we can check less often
+    request:
+      params:
+        hasCoordinate: true
+        hasGeospatialIssue: false
+        degreeOfEstablishment: "invasive"
+        limit: 300
+      headers: {}
+    auth:
+      type: "none"
+    response:
+      format: "json"
+      items_path: "results"
+    field_mapping:
+      source_id: "gbifID"
+      title: "species"
+      description: "scientificName"
+      latitude: "decimalLatitude"
+      longitude: "decimalLongitude"
+      location_name: "countryCode"
+      event_start: "eventDate"
+      event_end: null
+      raw_data: "__full_item__"
+    severity:
+      type: "mapping"
+      field: "taxonRank"
+      map:
+        "SPECIES": "high"
+        "GENUS": "moderate"
+        "FAMILY": "low"
+      default: "low"
+
+  # Our World in Data (OWID) — Natural Disaster Events — no API key required
+  # Environmental type -> Natural disasters and climate impacts
+  # Usage -> Country-level count of reported natural disaster events (latest year)
+  #          Source: EM-DAT / CRED, processed by OWID. Updated annually (~October).
+  #          ~195 country rows per fetch; deduped on ISO3 country code.
+  - name: "owid_natural_disasters"
+    enabled: true
+    alert_type: "environmental"
+    url: "https://ourworldindata.org/grapher/number-of-natural-disaster-events.csv"
+    method: "GET"
+    interval_minutes: 1440  # Annual dataset — daily checks are sufficient
+    request:
+      params:
+        time: "latest"               # Fetch only the most recent year (~195 rows)
+        useColumnShortNames: "true"  # Columns: Entity, Code, Year, n_events
+      headers: {}
+    auth:
+      type: "none"
+    response:
+      format: "csv"
+    field_mapping:
+      source_id: "Code"              # ISO3 country code (e.g. "USA") — unique per latest-year fetch
+      title: "Entity"                # Country/region name
+      description: "n_events"        # Raw disaster event count
+      latitude: null
+      longitude: null
+      location_name: "Entity"
+      event_start: "Year"
+      event_end: null
+      raw_data: "__full_item__"
+    severity:
+      type: "threshold"
+      field: "n_events"
+      thresholds:
+        - gte: 20
+          value: "critical"   # High-disaster countries (e.g. USA, China, India)
+        - gte: 10
+          value: "high"
+        - gte: 5
+          value: "moderate"
+        - default: "low"
 
 web_sources: []
 
