@@ -10,10 +10,53 @@ Use `2026-03-03_mariadb_scraper_alignment.sql` to align an existing MariaDB sche
 - `users` shape to match `db.models.User`
 - Removes constraints/indexes that block recurring scraper inserts
 
+## Additional normalization step
+
+Use `2026-04-11_add_summary_alerts_and_feedback_fk.sql` to introduce the normalized `summary_alerts` junction table and the `feedback.user_id` foreign key without removing the legacy `summaries.alert_ids` JSON column.
+
+After applying the SQL migration, backfill existing summary links:
+
+```bash
+python backend/scripts/backfill_summary_alert_links.py --dry-run
+python backend/scripts/backfill_summary_alert_links.py
+python backend/scripts/reconcile_summary_alert_links.py
+python backend/scripts/reconcile_summary_alert_links.py --fail-on-mismatch
+```
+
+Use `2026-04-12_add_user_alert_preferences.sql` to add the normalized `user_alert_preferences` mapping table without removing the legacy `users.alert_types` JSON field.
+
+Backfill existing user alert preference rows:
+
+```bash
+python backend/scripts/backfill_user_alert_preferences.py --dry-run
+python backend/scripts/backfill_user_alert_preferences.py
+```
+
+Use `2026-04-12_add_user_health_conditions.sql` to add the normalized `user_health_conditions` mapping table without removing the legacy `users.health_conditions` JSON field.
+
+Backfill existing user health condition rows:
+
+```bash
+python backend/scripts/backfill_user_health_conditions.py --dry-run
+python backend/scripts/backfill_user_health_conditions.py
+
+# Optional one-shot guardrail check (safe in pre-migration envs)
+python backend/scripts/verify_normalization_guardrails.py --allow-missing-tables
+
+# Strict mode for migrated environments (fails on summary-link drift)
+python backend/scripts/verify_normalization_guardrails.py --strict
+
+# Full verification with guardrails
+python backend/scripts/run_full_verification.py --include-normalization-guardrails
+```
+
 ## Apply migration
 
 ```sql
 SOURCE backend/db/migrations/2026-03-03_mariadb_scraper_alignment.sql;
+SOURCE backend/db/migrations/2026-04-11_add_summary_alerts_and_feedback_fk.sql;
+SOURCE backend/db/migrations/2026-04-12_add_user_alert_preferences.sql;
+SOURCE backend/db/migrations/2026-04-12_add_user_health_conditions.sql;
 ```
 
 ## Runtime configuration

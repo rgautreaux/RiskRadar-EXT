@@ -1,0 +1,42 @@
+name: Assistant Assets Build
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - Rebecca-Gautreaux-Work-Branch
+
+jobs:
+  build-golby-assets:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web assistant assets
+        run: npm run build:web
+
+      - name: Verify generated artifacts
+        run: |
+          test -s frontend/web/public/assets/golby-widget.js
+          test -s frontend/web/public/assets/golby-widget.css
+
+      - name: Upload assistant assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: golby-widget-assets
+          path: |
+            frontend/web/public/assets/golby-widget.js
+            frontend/web/public/assets/golby-widget.css
+            frontend/web/public/assets/.vite/manifest.json

@@ -1,6 +1,13 @@
 <?php
 
+// LOCAL DEBUG: Enable error reporting for troubleshooting
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require_once __DIR__ . '/../services/bootstrap.php';
+
+rr_require_feature_access();
 
 $statsResult = rr_fetch_alert_stats($config);
 $alertsResult = rr_fetch_alerts($config, ['limit' => 5, 'offset' => 0]);

@@ -1,0 +1,39 @@
+{
+  "scripts": {
+    "build:web": "vite build --config frontend/web/vite.config.mjs",
+    "build:web:watch": "vite build --watch --config frontend/web/vite.config.mjs",
+    "dev:web": "vite --config frontend/web/vite.config.mjs",
+    "backend:run": "cd backend && python -m uvicorn main:app --host 0.0.0.0 --port 8001",
+    "backend:test": "cd backend && python -m pytest",
+    "backend:check": "npm run backend:test && npm run verify:backend",
+    "verify:backend": "node backend/scripts/run_full_verification.mjs",
+    "verify:connectivity": "node backend/scripts/run_connectivity_preflight.mjs",
+    "verify:evidence:s3": "node backend/scripts/verify_stage3_evidence.mjs",
+    "demo:setup": "node backend/scripts/run_demo.mjs --mode fresh",
+    "demo:seed": "node backend/scripts/run_demo.mjs --mode seed",
+    "demo:reset": "node backend/scripts/run_demo.mjs --mode reset",
+    "demo:clean": "node backend/scripts/run_demo.mjs --clean",
+    "demo:verify": "node backend/scripts/run_demo.mjs --verify",
+    "demo:info": "node backend/scripts/run_demo.mjs --info",
+    "demo:generate-alerts": "node backend/scripts/run_demo.mjs --generate-alerts",
+    "demo:run": "npm run build:web && npm run verify:connectivity && node frontend/web/tests/demo/demo_journey.js",
+    "demo:report": "node frontend/web/tests/demo/report_generator.js"
+  },
+  "dependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "framer-motion": "^12.38.0",
+    "lucide-react": "^1.7.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.12",
+    "@vitejs/plugin-react": "^4.7.0",
+    "jest": "^30.3.0",
+    "playwright": "^1.54.2",
+    "puppeteer": "^24.42.0",
+    "tailwindcss": "^4.1.12",
+    "vite": "^6.3.5"
+  }
+}

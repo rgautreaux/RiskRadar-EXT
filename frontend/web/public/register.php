@@ -1,6 +1,16 @@
 <?php
 
+// LOCAL DEBUG: Enable error reporting for troubleshooting registration issues
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require_once __DIR__ . '/../services/bootstrap.php';
+
+if (rr_access_context() !== 'anonymous') {
+    header('Location: index.php');
+    exit;
+}
 
 $flash = rr_get_flash();
 $registerErrors = [];

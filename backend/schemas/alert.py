@@ -1,5 +1,12 @@
+
 from pydantic import BaseModel, ConfigDict
-from typing import Optional
+from typing import Any, Optional
+
+# Stage 3: Map Alert List Output
+class MapAlertListOut(BaseModel):
+    alerts: list["AlertOut"]
+    region: str | dict[str, Any]
+    generated_at: str
 
 
 class AlertOut(BaseModel):
@@ -25,3 +32,50 @@ class AlertStats(BaseModel):
     total: int
     by_type: dict[str, int]
     by_severity: dict[str, int]
+
+
+
+class PriorityFactors(BaseModel):
+    """
+    Factor scores (0-100) contributing to the alert's priority/risk score.
+    - distance: Proximity to user (closer = higher)
+    - severity: Severity of the alert
+    - sensitivity: User health sensitivity to this alert type
+    - recency: How recent the alert is
+    """
+    distance: float
+    severity: float
+    sensitivity: float
+    recency: float
+
+
+
+class PrioritizedAlertOut(BaseModel):
+    """
+    Alert with computed priority/risk score and factor breakdown for user transparency.
+    """
+    alert_id: int
+    source: str
+    source_id: Optional[str] = None
+    alert_type: str
+    severity: str
+    title: str
+    description: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    location_name: Optional[str] = None
+    event_start: Optional[str] = None
+    event_end: Optional[str] = None
+    fetched_at: Optional[str] = None
+    created_at: Optional[str] = None
+    priority_score: float
+    priority_level: str
+    distance_km: float
+    priority_factors: PriorityFactors
+
+
+class PrioritizedAlertListOut(BaseModel):
+    user_id: int
+    total_nearby: int
+    alerts: list[PrioritizedAlertOut]
+    computed_at: str

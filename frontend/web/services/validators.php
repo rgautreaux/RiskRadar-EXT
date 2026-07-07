@@ -105,6 +105,14 @@ function rr_validate_registration(array $post): array
         $errors['password'] = 'Password must be at least 8 characters.';
     } elseif (strlen($data['password']) > 255) {
         $errors['password'] = 'Password must be 255 characters or fewer.';
+    } elseif (!preg_match('/[a-z]/', $data['password'])) {
+        $errors['password'] = 'Password must include a lowercase letter.';
+    } elseif (!preg_match('/[A-Z]/', $data['password'])) {
+        $errors['password'] = 'Password must include an uppercase letter.';
+    } elseif (!preg_match('/[0-9]/', $data['password'])) {
+        $errors['password'] = 'Password must include a number.';
+    } elseif (!preg_match('/[^a-zA-Z0-9]/', $data['password'])) {
+        $errors['password'] = 'Password must include a special character.';
     }
 
     if ($data['zip_code'] !== '' && !preg_match('/^\d{5}$/', $data['zip_code'])) {
@@ -162,18 +170,27 @@ function rr_validate_preferences(array $post): array
     }));
     $alertTypes = array_values(array_unique($alertTypes));
 
+    // Health conditions: allow only known keys
+    $allowedHealth = [
+        'asthma', 'copd', 'allergies', 'heart', 'elderly', 'pregnant', 'children', 'immunocompromised'
+    ];
+    $healthConditions = $post['health_conditions'] ?? [];
+    if (!is_array($healthConditions)) {
+        $healthConditions = [];
+    }
+    $healthConditions = array_values(array_filter($healthConditions, function ($value) use ($allowedHealth) {
+        return is_string($value) && in_array($value, $allowedHealth, true);
+    }));
+    $healthConditions = array_values(array_unique($healthConditions));
+
     $data = [
-        'user_id' => filter_var($post['user_id'] ?? null, FILTER_VALIDATE_INT),
         'zip_code' => trim((string) ($post['zip_code'] ?? '')),
         'alert_types' => $alertTypes,
         'notify_severity' => trim((string) ($post['notify_severity'] ?? '')),
         'device_token' => trim((string) ($post['device_token'] ?? '')),
+        'health_conditions' => $healthConditions,
     ];
     $errors = [];
-
-    if (!$data['user_id'] || $data['user_id'] < 1) {
-        $errors['user_id'] = 'Enter a valid user ID.';
-    }
 
     if ($data['zip_code'] !== '' && !preg_match('/^\d{5}$/', $data['zip_code'])) {
         $errors['zip_code'] = 'ZIP code must be a 5-digit US ZIP code.';
@@ -201,5 +218,72 @@ function rr_validate_preferences(array $post): array
         $data['device_token'] = null;
     }
 
+    // Parse and validate personality profile if provided
+    $personalityJson = trim((string) ($post['personality_profile_json'] ?? ''));
+    $assistantStyleProfile = null;
+    if ($personalityJson !== '') {
+        $decoded = json_decode($personalityJson, true);
+        if (!is_array($decoded) || !rr_validate_personality_profile($decoded)) {
+            $errors['personality_profile_json'] = 'Invalid Golby personality profile format.';
+        } else {
+            $assistantStyleProfile = $decoded;
+        }
+    }
+    $data['assistant_style_profile'] = $assistantStyleProfile;
+
     return [$data, $errors];
+}
+
+function rr_validate_personality_profile(?array $profile): bool
+{
+    if ($profile === null) {
+        return true; // Optional field
+    }
+
+    if (!is_array($profile)) {
+        return false;
+    }
+
+    // Check required top-level sections
+    if (!isset($profile['tone']) || !isset($profile['delivery']) || !isset($profile['voice'])) {
+        return false;
+    }
+
+    // Validate tone section
+    $tone = $profile['tone'];
+    if (!is_array($tone) || !isset($tone['warmth'], $tone['calmness'], $tone['humor'])) {
+        return false;
+    }
+    if (!is_numeric($tone['warmth']) || !is_numeric($tone['calmness']) || !is_numeric($tone['humor'])) {
+        return false;
+    }
+    if ($tone['warmth'] < 0 || $tone['warmth'] > 1 || $tone['calmness'] < 0 || $tone['calmness'] > 1 || $tone['humor'] < 0 || $tone['humor'] > 1) {
+        return false;
+    }
+
+    // Validate delivery section
+    $delivery = $profile['delivery'];
+    if (!is_array($delivery) || !isset($delivery['conciseness'], $delivery['detail'])) {
+        return false;
+    }
+    if (!is_numeric($delivery['conciseness']) || !is_numeric($delivery['detail'])) {
+        return false;
+    }
+    if ($delivery['conciseness'] < 0 || $delivery['conciseness'] > 1 || $delivery['detail'] < 0 || $delivery['detail'] > 1) {
+        return false;
+    }
+
+    // Validate voice section
+    $voice = $profile['voice'];
+    if (!is_array($voice) || !isset($voice['formality'])) {
+        return false;
+    }
+    if (!is_numeric($voice['formality'])) {
+        return false;
+    }
+    if ($voice['formality'] < 0 || $voice['formality'] > 1) {
+        return false;
+    }
+
+    return true;
 }

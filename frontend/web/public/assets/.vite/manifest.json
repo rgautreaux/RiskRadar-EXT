@@ -1,0 +1,37 @@
+{
+  "_golby-chunk-ChatInterface-DD_uUCIS.js": {
+    "file": "golby-chunk-ChatInterface-DD_uUCIS.js",
+    "name": "ChatInterface",
+    "css": [
+      "golby-widget.css"
+    ]
+  },
+  "_golby-widget.css": {
+    "file": "golby-widget.css",
+    "src": "_golby-widget.css"
+  },
+  "frontend/web/src/assistant-welcome.tsx": {
+    "file": "assistant-welcome.js",
+    "name": "assistant-welcome",
+    "src": "frontend/web/src/assistant-welcome.tsx",
+    "isEntry": true,
+    "imports": [
+      "_golby-chunk-ChatInterface-DD_uUCIS.js"
+    ]
+  },
+  "frontend/web/src/golby-expression-mockup.tsx": {
+    "file": "golby-expression-mockup.js",
+    "name": "golby-expression-mockup",
+    "src": "frontend/web/src/golby-expression-mockup.tsx",
+    "isEntry": true
+  },
+  "frontend/web/src/golby-widget.tsx": {
+    "file": "golby-widget.js",
+    "name": "golby-widget",
+    "src": "frontend/web/src/golby-widget.tsx",
+    "isEntry": true,
+    "imports": [
+      "_golby-chunk-ChatInterface-DD_uUCIS.js"
+    ]
+  }
+}

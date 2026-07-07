@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RiskRadar Visual Regression Showcase</title>
+  <link rel="stylesheet" href="../frontend/web/public/assets/app.css">
+  <link rel="stylesheet" href="../frontend/web/public/assets/theme_tokens.css">
+  <style>
+    body { padding: 32px; }
+    .showcase-section { margin-bottom: 48px; }
+    .showcase-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 16px; }
+    .showcase-row { display: flex; gap: 24px; align-items: center; margin-bottom: 12px; }
+    .showcase-bg { width: 80px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <div class="showcase-section">
+    <div class="showcase-title">Layout Utility Classes</div>
+    <div class="flex-row gap-md"><span>Item 1</span><span>Item 2</span></div>
+    <div class="flex-col gap-sm"><span>Col 1</span><span>Col 2</span></div>
+  </div>
+  <div class="showcase-section">
+    <div class="showcase-title">Typography</div>
+    <div class="text-xs">Extra Small</div>
+    <div class="text-sm">Small</div>
+    <div class="text-md">Medium</div>
+    <div class="text-lg">Large</div>
+    <div class="text-xl">Extra Large</div>
+    <div class="text-muted">Muted Text</div>
+    <div class="text-ink">Ink Text</div>
+  </div>
+  <div class="showcase-section">
+    <div class="showcase-title">Color Tokens</div>
+    <div class="showcase-row"><div class="showcase-bg bg-coral"></div> Coral</div>
+    <div class="showcase-row"><div class="showcase-bg bg-amber"></div> Amber</div>
+    <div class="showcase-row"><div class="showcase-bg bg-teal"></div> Teal</div>
+    <div class="showcase-row"><div class="showcase-bg bg-panel"></div> Panel</div>
+    <div class="showcase-row"><div class="showcase-bg bg-panel-strong"></div> Panel Strong</div>
+  </div>
+  <div class="showcase-section">
+    <div class="showcase-title">Icon Slots & Badges</div>
+    <span class="icon-slot"><img src="../wireframe_icons/alerts.png" class="nav-icon" alt="Alerts"></span>
+    <span class="icon-badge">1</span>
+  </div>
+</body>
+</html>
