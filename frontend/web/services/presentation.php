@@ -44,6 +44,20 @@ function rr_severity_class(?string $severity): string
     return 'severity-low';
 }
 
+function rr_priority_class(?string $level): string
+{
+    $normalized = strtolower((string) $level);
+    if ($normalized === 'high') {
+        return 'priority-high';
+    }
+
+    if ($normalized === 'medium') {
+        return 'priority-medium';
+    }
+
+    return 'priority-low';
+}
+
 function rr_parse_alert_types(?string $value): array
 {
     if (!$value) {
@@ -87,6 +101,19 @@ function rr_format_risk_score(?float $score): string
     }
 
     return number_format($score, 2);
+}
+
+function rr_format_confidence(?float $confidence): string
+{
+    if ($confidence === null) {
+        return 'Unavailable';
+    }
+
+    if ($confidence >= 0 && $confidence <= 1) {
+        return number_format($confidence * 100, 0) . '%';
+    }
+
+    return number_format($confidence, 0) . '%';
 }
 
 function rr_priority_label(?string $urgency): string

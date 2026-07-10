@@ -3,7 +3,7 @@
 from unittest.mock import patch, mock_open
 import yaml
 
-from scrapers.registry import load_all_scrapers, _load_yaml_config
+from ..scrapers.registry import load_all_scrapers, _load_yaml_config
 
 
 class TestLoadYamlConfig:

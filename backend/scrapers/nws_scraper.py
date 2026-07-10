@@ -7,8 +7,8 @@ No API key required, but a User-Agent header is mandatory.
 import json
 import httpx
 
-from config.settings import settings
-from scrapers.base_scraper import BaseScraper
+from ..config.settings import settings
+from .base_scraper import BaseScraper
 
 SEVERITY_MAP = {
     "Extreme": "critical",

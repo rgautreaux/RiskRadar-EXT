@@ -5,8 +5,8 @@ from datetime import datetime, timedelta, timezone
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from config.settings import settings
-from scrapers.registry import load_all_scrapers
+from ..config.settings import settings
+from .registry import load_all_scrapers
 
 logger = logging.getLogger(__name__)
 

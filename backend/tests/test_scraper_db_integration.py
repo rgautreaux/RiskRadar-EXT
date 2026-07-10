@@ -6,10 +6,10 @@ to verify end-to-end writes into Alert and ScrapeLog tables.
 
 from unittest.mock import patch
 
-from db.models import Alert, ScrapeLog
-from scrapers.epa_scraper import EPAScraper
-from scrapers.generic_api_scraper import GenericAPIScraper
-from scrapers.nws_scraper import NWSScraper
+from ..db.models import Alert, ScrapeLog
+from ..scrapers.epa_scraper import EPAScraper
+from ..scrapers.generic_api_scraper import GenericAPIScraper
+from ..scrapers.nws_scraper import NWSScraper
 
 
 class _FakeResponse:

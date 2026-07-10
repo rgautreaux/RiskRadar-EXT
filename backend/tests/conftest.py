@@ -1,19 +1,20 @@
 """Shared fixtures for all tests."""
 
+# pylint: disable=redefined-outer-name
 import json
-import pytest
+from collections.abc import Generator
 from datetime import datetime, timezone
-from contextlib import asynccontextmanager
-from unittest.mock import patch
 
+import pytest
+from passlib.context import CryptContext
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from db.database import Base, get_db
-from db.models import Alert, Summary, User, ScrapeLog
+from ..db.database import get_db
+from ..db.models import Alert, Base, Summary, User
 
 
 # ---------------------------------------------------------------------------
@@ -21,7 +22,7 @@ from db.models import Alert, Summary, User, ScrapeLog
 # ---------------------------------------------------------------------------
 
 @pytest.fixture
-def db_session():
+def db_session() -> Generator[Session, None, None]:
     """In-memory SQLite session — fresh tables per test.
 
     Uses StaticPool so all connections share the same :memory: database.
@@ -33,8 +34,8 @@ def db_session():
         poolclass=StaticPool,
     )
     Base.metadata.create_all(bind=engine)
-    Session = sessionmaker(bind=engine)
-    session = Session()
+    SessionLocal = sessionmaker(bind=engine)
+    session: Session = SessionLocal()
     try:
         yield session
     finally:
@@ -43,7 +44,7 @@ def db_session():
 
 
 @pytest.fixture
-def test_client(db_session):
+def test_client(db_session: Session) -> Generator[TestClient, None, None]:
     """FastAPI TestClient wired to the in-memory DB.
 
     Creates a fresh app without lifespan (no scheduler, no prod DB init)
@@ -51,23 +52,30 @@ def test_client(db_session):
     """
     from fastapi.middleware.cors import CORSMiddleware
     from api.router import api_router
+    from ..config.settings import settings
 
     # Build a clean app without the lifespan that starts the scheduler
     test_app = FastAPI(title="RiskRadar API Test")
+    allowed_origins = [
+        origin.strip()
+        for origin in settings.CORS_ALLOWED_ORIGINS.split(",")
+        if origin.strip()
+    ]
     test_app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
+        allow_origins=allowed_origins,
         allow_methods=["*"],
         allow_headers=["*"],
+        allow_credentials=True,
     )
     test_app.include_router(api_router)
 
-    # Wire the root endpoint
     @test_app.get("/")
-    def root():
+    def root() -> dict[str, str]:  # type: ignore[misc]
+        """Root liveness endpoint used only during testing."""
         return {"name": "RiskRadar API", "version": "1.0.0", "status": "running"}
 
-    def _override_get_db():
+    def _override_get_db() -> Generator[Session, None, None]:
         try:
             yield db_session
         finally:
@@ -85,9 +93,11 @@ def test_client(db_session):
 
 NOW = datetime.now(timezone.utc).isoformat()
 
+_pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
+
 
 @pytest.fixture
-def sample_alerts(db_session):
+def sample_alerts(db_session: Session) -> list[Alert]:
     """Insert 3 alerts of different types."""
     alerts = [
         Alert(
@@ -144,15 +154,13 @@ def sample_alerts(db_session):
 
 
 @pytest.fixture
-def sample_user(db_session):
+def sample_user(db_session: Session) -> User:
     """Insert a test user."""
-    from passlib.context import CryptContext
-
-    _pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
     user = User(
         display_name="Test User",
         email="test@example.com",
         password_hash=_pwd_context.hash("password123"),
+        is_admin=False,
         zip_code="90001",
         created_at=NOW,
         updated_at=NOW,
@@ -164,8 +172,26 @@ def sample_user(db_session):
 
 
 @pytest.fixture
-def sample_summary(db_session, sample_alerts):
-    """Insert a test summary."""
+def admin_user(db_session: Session) -> User:
+    """Insert an admin test user."""
+    user = User(
+        display_name="Admin User",
+        email="admin@example.com",
+        password_hash=_pwd_context.hash("password123"),
+        is_admin=True,
+        zip_code="90001",
+        created_at=NOW,
+        updated_at=NOW,
+    )
+    db_session.add(user)
+    db_session.commit()
+    db_session.refresh(user)
+    return user
+
+
+@pytest.fixture
+def sample_summary(db_session: Session, sample_alerts: list[Alert]) -> Summary:
+    """Insert a test summary linked to sample_alerts."""
     summary = Summary(
         title="Environmental Digest — Mar 02, 2026",
         content="## Executive Summary\nMultiple alerts detected.",
